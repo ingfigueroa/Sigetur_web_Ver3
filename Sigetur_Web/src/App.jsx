@@ -1,20 +1,25 @@
 import "bootstrap/dist/css/bootstrap.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import Home from './components/Home'
 
-import NavBar from "./components/NavBar";
 
-import Home from "./components/Home";
+import Login from "./components/Login";
+import Registrarconsultorio from "./components/Registrarconsultorio";
+import Pizarradeturnos from "./components/pizarradeturnos";
 
 function App() {
   return (
-  
-     <div>
-      <div>
-      <NavBar />
-    </div>
-        <Home />
-     </div>
-    
+    <BrowserRouter>
+      
+      <Routes>
+        <Route path='' element={<Home />}/>
+        <Route path='/login' element={<Login />}/>
+        <Route path='/Registrarconsultorio' element={<Registrarconsultorio />}/>
+        <Route path='/pizarradeturnos' element={<Pizarradeturnos />}/>
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 

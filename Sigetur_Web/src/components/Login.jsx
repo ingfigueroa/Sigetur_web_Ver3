@@ -1,23 +1,23 @@
 import React, { Component } from "react";
-// import "../css/login.css";
-import Login1 from "./Login1";
-import Login2 from "./Login2";
-import Header from "./header";
 
-export class Login extends Component {
+import Login1 from "./Login1";
+import Footer from "./Footer";
+
+import NavBar from "./NavBar";
+
+export default class Login extends Component {
   render() {
     return (
-      <div>
-        <div>
-          <Header />
-        </div>
-        <div className="login">
+      <>
+      
+        
+          <NavBar />
+        
+      
           <Login1 />
-          <Login2 />
-        </div>
-      </div>
+          <Footer />
+      
+      </>
     );
   }
 }
-
-export default Login;

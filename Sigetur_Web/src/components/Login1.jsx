@@ -1,11 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import "../css/login.css";
-
-
 
 function Login1() {
   return (
-    <section id="fondo1">
+    <div id="fondo1">
+      <div id = "loginform">
       <form action="">
         <div id="sigeturportal">
           <h3>Si.Ge.Tur. - Portal de turnos</h3>
@@ -19,10 +18,9 @@ function Login1() {
           <input type="password" />
         </div>
 
-       
-
         <div>
-          <input
+          <input onClick={<pizarradeturnos />}
+            className="buttons"
             type="button"
             id="iniciarsesion"
             value="Ingresar"
@@ -31,25 +29,32 @@ function Login1() {
         </div>
         <div>
           <h6>
-             <a href="/">¿Olvido su contraseña?</a>{" "}
+            <a href="/">¿Olvido su contraseña?</a>{" "}
           </h6>
         </div>
 
         <div id="fondo2">
-      
+          <h5>¿NO TIENES UNA CUENTA?</h5>
           <h5>
-            ¿NO TIENES UNA CUENTA?
-          </h5>
-          <h5>
-           
-              <a href="/Registrarconsultorio">
-                Registrá tu consultorio o clínica
-              </a>
-            
+            <a href="/Registrarconsultorio">
+              Registrá tu consultorio o clínica
+            </a>
           </h5>
         </div>
       </form>
-    </section>
+      </div>
+      <div id="fondo">
+        <h1 classname="">Portal de turnos Si.Ge.Tur.</h1>
+
+        <h2 classname="">
+          Administrá los turnos <br></br>de tu consultorio o clínica
+        </h2>
+
+        <h4 className="">te ayudamos a gestionar y organizar </h4>
+        <h4 className=""> los turnos de tu consultorio</h4>
+        <h4 className="">pacientes / profesionales / turnos </h4>
+      </div>
+    </div>
   );
 }
 

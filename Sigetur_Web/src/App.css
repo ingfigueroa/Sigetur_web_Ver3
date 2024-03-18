@@ -6,10 +6,13 @@
 }
 html {
   max-width: 1250px;
-   background-color: white; 
+ 
   } 
 
 body {
   max-width: 1250px;
-  background-color: white;
+
+  display: grid;
+  place-items: center;
+ 
 }

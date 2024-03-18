@@ -4,16 +4,20 @@
 
 .sb_footer{
   display: flex;
-  flex-direction: column;
+ 
+  
+  
+  place-items: center ;
   background-color: rgb(52, 73, 94);
-  height: 250px;
+  height: 200px;
   width: 100%;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  margin: auto;
-  margin-top: 35px;
+ 
+  margin-top: 10px;
+  margin-left: 60px;
  
  
  
@@ -28,7 +32,7 @@
     flex-wrap: wrap;
     width: 90%;
     text-align: left;
-    margin-left: 50px;
+   
     margin-bottom: 1.5rem;
 }
 

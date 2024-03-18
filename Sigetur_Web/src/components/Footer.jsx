@@ -18,9 +18,7 @@ const Footer = () => {
                   <a href='/'>
                     <p>Subtitulo2</p>
                   </a>
-                  <a href='/'>
-                    <p>Subtitulo2</p>
-                  </a>
+                  
                 </div>
               
              
@@ -38,9 +36,7 @@ const Footer = () => {
                 <a href='/'>
                   <p>Subtitulo2</p>
                 </a>
-                <a href='/'>
-                  <p>Subtitulo2</p>
-                </a>
+               
               </div>
               <div className='sb_footer-links_div'>
                 <h4>titulo 5</h4>

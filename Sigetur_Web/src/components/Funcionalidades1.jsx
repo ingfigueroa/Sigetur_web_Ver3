@@ -52,13 +52,13 @@ const Funcionalidades1 = () => {
         </div>
 
         <div className="dividirdiv">
-          <img src="../assets/fondo_4.jpg" alt="" />
+          <img src="../assets/pizarradeturnos.png" alt="" />
 
           <div className="dividirdiv1">
           <h6>
-          <strong>REGISTRAR TURNOS</strong> <br />
+          <strong>PIZARRA DE TURNOS</strong> <br />
               <br />
-              Se va a registrar un turno a un paciente, en un día y horario que atiende el profesional, entre los datos a registrar del turno tenemos:
+              La pizarra de turnos nos permite buscar un profesional, definir una fecha y luego definir una hora para registrar el turno:
             </h6>
             <div>
             <ListGroup >
@@ -89,7 +89,7 @@ const Funcionalidades1 = () => {
             </ListGroup>
             </div>
             </div>
-            <img src="../assets/op.jpg" alt="" />
+            <img src="../assets/fotoradiografia.png" alt="" />
           </div>
         </div>
       </div>

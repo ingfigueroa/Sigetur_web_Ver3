@@ -7,7 +7,6 @@ import Footer from "./Footer";
 import Funcionalidades from "./Funcionalidades";
 import Quienessomos from "./Quienessomos";
 
-
 function cuerpo() {
   return (
     <div id="cuerpo">
@@ -21,50 +20,32 @@ function cuerpo() {
         <h5 className="h5home"> los turnos de tu consultorio</h5>
         <h5 className="h5home"> y a administrar a tus</h5>
         <h5 className="h5home"> pacientes-profesionales. </h5>
-        <br></br>
-      </div>
-     <div>
 
-      <Quienessomos />
-
-     </div>
-      <div id="quienessomos">
-        <div className="quienessomostexto">
+          <br />
+          <br />
+          <br />
+          <h6>
+            <a href="/Login">Mis Turnos</a>
+          </h6>
         
-          <h4 className="">
-            Somos una empresa de software que ha desarrollado{" "}
-          </h4>
-          <br></br>
-          <h4>
-            <strong>SIGETUR <br></br>  Sistema de Gestión de Turnos</strong>
-          </h4>
-          <br></br>
-          <h5>
-            Un software que administra y organiza los turnos para profesionales
-            de la salud.
-            <br />
-            <br />
-            Nuestro propósito es facilitar un Software como Servicio -SaaS -, en donde el cliente podrá registrar
-            consultorios o clinicas y empezar a utilizarlo, cargando
-            profesionales, pacientes y registrando turnos entre otras cosas.
-          </h5>
-        </div>
-        <div className="quienessomosimg">
-
-            <img src="../assets/login2.jpg" alt="" />
-        </div>
+          <h6>
+            <a href="/Registrarconsultorio"> Registrar consultorio</a>
+          </h6>
+        
       </div>
-      <div>
-
+      
+        <Quienessomos />
+      
+      
+      
         <Funcionalidades />
-      </div>
-      <div>
+      
         <Funcionalidades1 />
-      </div>
+      
 
-      <div>
+      
         <Footer />
-      </div>
+      
     </div>
   );
 }

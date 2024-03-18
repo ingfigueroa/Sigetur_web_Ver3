@@ -42,14 +42,40 @@ background-color: white;
 
     
     color: black;
-    
+    margin: auto;
+    background-color: azure;
 
 }
 
 #funcionalidadestitulo h1{
 
-  text-align: left;
+  text-align: center;
+  margin-bottom: 20px;
+  
+
+}
+
+#funcionalidadestitulo h4{
+
+  text-align: center;
   margin-bottom: 40px;
+  
+
+}
+
+#funcionalidadestitulo h5{
+
+  text-align: left;
+  margin-bottom: 10px;
+  color: black;
+  
+
+}
+#funcionalidadestitulo div{
+
+  width: 100%;
+  margin-bottom: 40px;
+ 
   
 
 }

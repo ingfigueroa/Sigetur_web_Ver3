@@ -16,10 +16,10 @@ function NavBar() {
         <a href="/">Contacto</a>
       </div>
       <div>
-        <button><a href="/Login">Mis Turnos</a></button>
+        <button ><a href="/Login">Mis Turnos</a></button>
       </div>
       <div>
-        <button>Registrar consultorio</button>
+        <button><a href="/Registrarconsultorio"> Registrar consultorio</a></button>
       </div>
     
     </div>

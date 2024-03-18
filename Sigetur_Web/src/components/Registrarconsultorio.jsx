@@ -1,26 +1,26 @@
-import React, {Component} from "react"
-import Header from './NavBar';
-import Registrarconsultoriocuerpo from './registrarconsultoriocuerpo';
+import React, { Component } from "react";
+
+import Registrarconsultoriocuerpo from "./registrarconsultoriocuerpo";
+import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 
 export default class Registrarconsultorio extends Component {
-  render(){
- 
-  return(
-
-   
-     <div >
-       
-       <Header />
-       
-       <Registrarconsultoriocuerpo/>
-      
+  render() {
+    return (
+      <>
+        <div>
+          <NavBar />
+        </div>
+        <div>
+          <Registrarconsultoriocuerpo />
+        </div>
         
-
-    </div>
-  )
-    
-    
+        <div>
+          <Footer /> 
+        </div>
+      </>
+    );
   }
 }
 
@@ -28,5 +28,5 @@ export default class Registrarconsultorio extends Component {
 ///<h1> bienvenidos al registro </h1>
 ///</div>
 ///<div style={{width:'0%', height:'450px', background:'green'}}>
- ///   <h1>registrar consultorio</h1>
+///   <h1>registrar consultorio</h1>
 ///</div>///
