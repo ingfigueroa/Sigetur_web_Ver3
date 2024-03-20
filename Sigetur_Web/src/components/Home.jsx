@@ -5,14 +5,12 @@ import NavBar from "./NavBar";
 
 const Home = () => {
   return (
-    <div>
-     <div>
-      <NavBar />
-    </div>
-    <div>
+    <>
+       <NavBar />
+    
       <Cuerpo />
-    </div>
-  </div>
+    
+  </>
   )
 }
 

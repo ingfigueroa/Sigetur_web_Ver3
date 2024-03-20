@@ -8,18 +8,15 @@ import Footer from "./Footer";
 export default class Registrarconsultorio extends Component {
   render() {
     return (
-      <>
-        <div>
-          <NavBar />
-        </div>
-        <div>
-          <Registrarconsultoriocuerpo />
-        </div>
+      <div className="fondoprincipal">
         
-        <div>
+          <NavBar />
+        
+          <Registrarconsultoriocuerpo />
+       
           <Footer /> 
-        </div>
-      </>
+        
+      </div>
     );
   }
 }

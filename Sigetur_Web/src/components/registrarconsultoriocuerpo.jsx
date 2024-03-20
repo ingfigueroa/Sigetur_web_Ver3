@@ -6,7 +6,7 @@ import "../css/registrarconsultorio.css";
 
 function registrarconsultoriocuerpo() {
   return (
-    <div id="rccuerpo">
+    
       <div id="rccuerpo1">
         <div>
           <h1>Nueva cuenta</h1> 
@@ -46,9 +46,7 @@ function registrarconsultoriocuerpo() {
           
           <h1></h1>
         </div>
-        <div>
-         
-        </div>
+       
         <div className="volverallogin">
           <div className="volverallogin1">
             <h5>
@@ -60,7 +58,7 @@ function registrarconsultoriocuerpo() {
           </div>
         </div>
       </div>
-    </div>
+   
   );
 }
 

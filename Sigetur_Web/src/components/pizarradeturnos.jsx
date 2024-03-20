@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/pizarradeturnos.css";
+
 import Tabla from "./tablapizarradeturnos";
 
 

@@ -7,9 +7,13 @@ import Footer from "./Footer";
 import Funcionalidades from "./Funcionalidades";
 import Quienessomos from "./Quienessomos";
 
+
 function cuerpo() {
   return (
     <div id="cuerpo">
+       
+     
+    
       <div className="presentacion">
         <h1 className="">Gestión de Turnos</h1>
 

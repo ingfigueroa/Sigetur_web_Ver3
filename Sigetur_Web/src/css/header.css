@@ -1,35 +1,52 @@
+
+
+
 #encabezado{
     display: flex;
-    align-items: center;
-    justify-content: right;
-    height: 100px;
-    width: 100%;
-    background-color: white;
-    padding: 2rem;
-    margin-left: 40px;
+  
+  
+    background-color:white;
+    padding: 3rem;
+    margin-left: 60px;
+    float: left;
+    background-color: aqua;
+    
  
 
 }
 #encabezado div{
     
-    text-align: center;
-    margin-left: 35px;
-    font-size: 100%;
-    justify-content: right;
+ 
+    justify-content: space-between;
+   
+    right: 0;
+   
+ 
+
+}
+
+#encabezado img{
+
+    margin-right: 50px;
+    left: 0;
+
 }
 
 a{
 
-    text-decoration: none;
+    
     color: black;
-    margin-right: 2rem;
+    margin-right: 4rem;
 
 }
 button{
-    margin-right: 5rem;
+    margin-right: 4rem;
     color: black;
-    background-color: white;
+    background-color: rgb(32, 158, 175);
     height: 40px;
-    width: 100%;
+    width: 50%;
+    justify-content: center;
+    text-align: center;
     
 }
+
