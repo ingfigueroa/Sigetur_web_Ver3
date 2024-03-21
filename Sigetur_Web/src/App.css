@@ -4,9 +4,10 @@
    box-sizing: border-box;
     
 }
+
 html{
   max-width: 1050px;
- 
+  height: 100%;
 }
 body {
   margin: 0;
@@ -14,7 +15,8 @@ body {
   
   display: grid;
   place-items: center;
- 
+  background-color: white;
+  height: 100%;
 
  
 

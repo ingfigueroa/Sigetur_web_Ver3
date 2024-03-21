@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 
 import Registrarconsultoriocuerpo from "./registrarconsultoriocuerpo";
-import NavBar from "./NavBar";
-import Footer from "./Footer";
+import "../css/registrarconsultorio.css";
+
 
 
 export default class Registrarconsultorio extends Component {
   render() {
     return (
       <div className="fondoprincipal">
-        
-          <NavBar />
-        
-          <Registrarconsultoriocuerpo />
-       
-          <Footer /> 
-        
+        <div className="acomodarimagen">
+          <a href="/">
+            <img src="./assets/Logo_2022_resolucion.jpg" alt="" />
+          </a>
+        </div>
+
+        <Registrarconsultoriocuerpo />
       </div>
     );
   }

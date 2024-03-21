@@ -6,10 +6,10 @@
   
   
     background-color:white;
-    padding: 3rem;
+   
     margin-left: 60px;
     float: left;
-    background-color: aqua;
+    background-color: white;
     
  
 
@@ -20,6 +20,7 @@
     justify-content: space-between;
    
     right: 0;
+    margin-top: 25px;
    
  
 
@@ -29,24 +30,16 @@
 
     margin-right: 50px;
     left: 0;
+    margin-top: 25px;
+    margin-bottom: 25px;
 
 }
 
 a{
-
-    
-    color: black;
-    margin-right: 4rem;
-
-}
-button{
-    margin-right: 4rem;
-    color: black;
-    background-color: rgb(32, 158, 175);
-    height: 40px;
-    width: 50%;
     justify-content: center;
-    text-align: center;
+    align-items: center;
     
-}
+    color: black;
+    margin-right: 4rem;
 
+}
