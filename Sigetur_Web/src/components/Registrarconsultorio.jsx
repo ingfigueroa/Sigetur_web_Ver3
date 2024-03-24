@@ -20,10 +20,3 @@ export default class Registrarconsultorio extends Component {
     );
   }
 }
-
-///<div style={{width:'100%',  height:'450%', background:'red'}}>
-///<h1> bienvenidos al registro </h1>
-///</div>
-///<div style={{width:'0%', height:'450px', background:'green'}}>
-///   <h1>registrar consultorio</h1>
-///</div>///

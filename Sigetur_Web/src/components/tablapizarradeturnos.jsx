@@ -1,9 +1,17 @@
 import Table from "react-bootstrap/Table";
 
 
+
 function tablapizarradeturnos() {
+  const datatableoptions = {
+
+  }
   return (
-    <Table className="table-bordered table table-sm table-primary text-center">
+    
+    
+      <div className="row">
+      <div className="rccuerpo2 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <Table className="">
       <thead>
         <tr>
           <th key="0">Estado</th>
@@ -31,10 +39,14 @@ function tablapizarradeturnos() {
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td><i class="bi bi-download"></i>
-          <i class="bi bi-pencil-square"></i></td>
+          <td><button className="btn btn-sm btn-danger"><h7>NO</h7></button></td>
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
         </tr>
         <tr>
           <td>Lib</td>
@@ -43,9 +55,14 @@ function tablapizarradeturnos() {
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><button className="btn btn-sm btn-danger"><h7>NO</h7></button></td>
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
         </tr>
         <tr>
           <td>Lib</td>
@@ -54,9 +71,47 @@ function tablapizarradeturnos() {
           <td></td>
           <td></td>
           <td></td>
+          <td><button className="btn btn-sm btn-danger"><h7>NO</h7></button></td>
+         
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
+        </tr>
+        <tr>
+          <td>Lib</td>
+          <td>09:30</td>
           <td></td>
           <td></td>
           <td></td>
+          <td></td>
+          <td><button className="btn btn-sm btn-danger"><h7>NO</h7></button></td>
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
+        </tr>
+        <tr>
+          <td>Lib</td>
+          <td>09:30</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><button className="btn btn-sm btn-danger"><h7>NO</h7></button></td>
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
         </tr>
         <tr>
           <td>PRE-COB</td>
@@ -65,9 +120,14 @@ function tablapizarradeturnos() {
           <td>40662065</td>
           <td>PARTICULAR</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><button className="btn btn-sm btn-success"><h7>SI</h7></button></td>
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
         </tr>
         <tr>
           <td>Lib</td>
@@ -76,12 +136,20 @@ function tablapizarradeturnos() {
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><button className="btn btn-sm btn-danger"><h7>NO</h7></button></td>
+          <td><button className="btn btn-sm btn-info"><h7>NO</h7></button></td>
+          <td>
+            <button className="btn btn-sm btn-primary"><i class="fa-solid fa-pencil"></i></button>
+            <button className="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+            <button className="btn btn-sm btn-success"><i class="fa-solid fa-file-invoice-dollar"></i></button>
+
+          </td>
         </tr>
       </tbody>
     </Table>
+    </div>
+    </div>
+    
   );
 }
 

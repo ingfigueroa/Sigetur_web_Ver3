@@ -7,7 +7,7 @@
   width:  1250px;
   justify-content: left;
   align-items: center;
-  margin-left: 5%;
+  margin-left: 3%;
   color: white;
   text-align: right;
 
@@ -183,7 +183,7 @@
 
 
 .presentacion{
-  width: 100%;
+  width: 200vh;
   height: 550px;
   background-image: url("../assets/Turnos.jpg");
   background-repeat: no-repeat;
