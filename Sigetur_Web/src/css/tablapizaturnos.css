@@ -1,0 +1,38 @@
+
+.rccuerpo2{
+  
+  width: 90%;
+  
+
+  color: black;
+  justify-content: right;
+  background-color: black;
+ 
+ 
+}
+
+.highlighted-row{
+
+  background-color: lightgreen;
+}
+
+.personalizarfilas{
+
+  height: 55px;
+  font-size: x-small;
+
+}
+
+
+
+.acomodartabla{
+  width: 90%;
+  height: auto;
+  top: 0;
+  background-color: aqua;
+  justify-content: center;
+  margin-left: 50px;
+  margin-right: 10px;
+
+}
+
