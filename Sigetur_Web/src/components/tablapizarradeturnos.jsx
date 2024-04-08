@@ -1,6 +1,10 @@
+import React, { useState } from "react";
+
 import Table from "react-bootstrap/Table";
 
 import "../css/tablapizaturnos.css";
+import MdlAltaTurno from "./mdlaltaturno";
+
 
 function tablapizarradeturnos() {
   const data = [
@@ -18,6 +22,20 @@ function tablapizarradeturnos() {
     { Estado: "LIB", Hora: "11:00", Paciente: "", DNI: "", Obra_social: "" },
     
   ];
+
+
+  const [mdlAltaTurno, setModalAltaTurno] = useState(false);
+
+  
+  const openMdlAltaTurno = () => {
+    setModalAltaTurno(true);
+  };
+
+  const closeMdlAltaTurno  = () => {
+    setModalAltaTurno(false);
+  };
+
+  const valorLimite = "LIB";
 
   return (
     
@@ -45,31 +63,42 @@ function tablapizarradeturnos() {
             </tr>
           </thead>
           <tbody>
-            {data.map(item => (
-              <tr key={item.id} className={item.age > 30 ? 'highlighted-row' : ''}>
+            {data.map((item) => (
+              <tr
+               key={item.id}
+                style={{ backgroundColor: item.Estado === valorLimite ? 'green' : 'red' }}
+                >
                 <td style={{textAlign: 'center'}}>{item.Estado}</td>
                 <td>{item.Hora}</td>
                 <td>{item.Paciente}</td>
                 <td style={{textAlign: 'center'}}>{item.DNI}</td>
                 <td >{item.Obra_social}</td>
                 <td style={{textAlign: 'center'}}>
-                  <button className="btn btn-sm btn-danger">
+                  <button className="btn btn-sm btn-light btn-danger">
                     <i class="fa-solid fa-xmark"></i>
                   </button>
                 </td>
                 <td style={{textAlign: 'center'}}>
-                  <button className="btn btn-sm btn-info">
+                  <button className="btn btn-sm btn-light btn-info">
                     <i class="fa-solid fa-xmark"></i>
                   </button>
                 </td>
                 <td style={{textAlign: 'center'}}>
-                  <button className="btn btn-sm btn-primary">
-                    <i class="fa-solid fa-pencil"></i>
+                  <button 
+                  title="Registrar Turno"
+                  className="btn btn-sm btn-light btn-primary"
+                  onClick={openMdlAltaTurno}
+                  >
+                    <i class="fa-solid fa-up-right-from-square"></i>
                   </button>
-                  <button className="btn btn-sm btn-danger">
+                  <button 
+                    title="Anular turno"
+                  className="btn btn-sm btn-light btn-danger">
                     <i class="fa-solid fa-trash"></i>
                   </button>
-                  <button className="btn btn-sm btn-success">
+                  <button 
+                    title="Detalle del turno"
+                    className="btn btn-sm btn-light btn-success">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                   </button>
                 </td>
@@ -80,7 +109,12 @@ function tablapizarradeturnos() {
           </tbody>
         </Table>
       </div>
+      {mdlAltaTurno && (
+        
+        <MdlAltaTurno show={openMdlAltaTurno} handleClose={closeMdlAltaTurno}/>
+      )}
     </div>
+    
     
     
   );

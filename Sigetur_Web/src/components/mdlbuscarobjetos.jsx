@@ -1,32 +1,27 @@
-import react from 'react';
+import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
- const mdlaltaturno = ({show, handleClose}) => {
 
-  
-
+ const mdlbuscarobjetos = ({show, handleClose}) => {
   return (
     
-  
 
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Registrar turno</Modal.Title>
+        <Modal.Title>Buscar....profesional</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Para registrar un turno tiene que buscar el paciente</Modal.Body>
+      <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Cerrar
+          Close
         </Button>
         <Button variant="primary" onClick={handleClose}>
-          Aplicar cambios
+          Save Changes
         </Button>
       </Modal.Footer>
     </Modal>
-  
   );
 };
 
-
-export default mdlaltaturno;
+export default mdlbuscarobjetos;
