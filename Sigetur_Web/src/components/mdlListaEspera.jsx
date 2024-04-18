@@ -8,7 +8,7 @@ import Modal from 'react-bootstrap/Modal';
     
 
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton style={{backgroundColor: '#0277bd', color: 'white'}}>
         <Modal.Title>Lista de espera</Modal.Title>
       </Modal.Header>
       <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
