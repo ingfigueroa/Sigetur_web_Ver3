@@ -1,0 +1,16 @@
+
+.acomodarencabezadopaciente{
+  width: 100%;
+  height: 65px;
+
+  padding: 5px 5px;
+ 
+
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  background-color :white;
+
+}

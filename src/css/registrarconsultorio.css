@@ -1,0 +1,142 @@
+
+
+.fondoprincipal{
+  display: grid;
+  place-items: center;
+  width:  1350px;
+
+ 
+  background-color: white;
+
+  text-align: left;
+  
+}
+
+
+.acomodarimagen{
+ 
+  width:  1350px;
+  height: 65px;
+  background-color: #0277bd;
+
+ 
+  
+
+  text-align: left;
+  
+}
+
+img{
+  justify-content: left;
+  align-items: center;
+
+  margin-top: 20px;
+
+}
+
+#rccuerpo1{
+  margin-top: 10px;
+  width: 50%;
+  height: auto;
+  background-color:white;
+  color: black;
+ 
+    
+
+   
+    
+   
+}
+
+#rccuerpo1 h1{
+ 
+  color: #0277bd;
+
+  
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+  font-style:normal;
+
+  font-size: 35px;
+  text-transform: none;
+  text-align: left;
+  margin-bottom: 25px;
+
+}
+
+
+.rccuerpo-h5{
+
+ 
+  text-transform: none;
+  
+  
+  font-family: "Roboto", sans-serif;
+  font-weight: 30;
+  font-style: normal;
+  text-align: justify;
+  font-size: 15px;
+
+
+}
+
+.input{
+
+  width: 100%;  
+  height: 50px;
+  margin-top: 35px;
+
+  background-color: #9cb7c7;
+
+  
+
+
+}
+
+.buttons{
+    width: 60%;
+    height: 40px;
+  
+    
+    
+    background-color: #0277bd;
+    border: 2px solid #0277BD;
+    border-radius: 5px;
+    display: inline-block;
+    cursor: pointer;
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    padding: 10px 25px;
+    text-decoration: none;
+  
+  
+
+}
+.volverallogin{
+  
+  display: flex;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+
+.volverallogin1{
+  
+  width: 50%;
+  margin-top: 65px;
+}
+
+.volverallogin2{
+  
+  width: 50%;
+  margin-top: 65px;
+}
+
+
+.bolded {
+   font-weight: bold;
+}
+
+

@@ -1,0 +1,142 @@
+
+
+.fondoprincipal1{
+  display: grid;
+
+  width:  1350px;
+  height: 80px;
+  
+  background-color: blue;
+}
+
+
+.personalizarfilas{
+
+  height: 55px;
+  font-size: x-small;
+
+}
+.acomodarimagen{
+  
+ display: grid;
+ width: 250px;
+  height: 45px;
+  background-color: #0277bd;
+  
+  
+  align-items:  center;
+  justify-content: center;
+}
+
+
+
+#cuerpodiv1{
+  display:flex;
+
+}
+
+#formateo{
+
+ text-align: center;
+  height: 15vh;
+  width: 40%;
+  color: black;
+
+ 
+
+}
+
+.acomodarencabezado{
+  width: 100%;
+  height: 55px;
+
+ padding: 5px 5px;
+ 
+  background-color: #72C387;
+  display: flex;
+  margin-bottom: 20px;
+  
+
+
+}
+
+.acomodarencabezado1{
+  width: 100%;
+  height: 65px;
+
+ padding: 10px 10px;
+ 
+  background-color: #72C387;
+  display: flex;
+ 
+  
+
+
+}
+
+.acomodartitulo{
+  width: 100%;
+  height: 45px;
+
+ 
+ 
+  
+  display: flex;
+
+  
+
+
+}
+.acomodardivbotonespt{
+  width: 80%;
+  height: 45px;
+
+ 
+  text-align: right;
+  background-color: white;
+
+  
+
+
+}
+
+.acomodarbotonespt{
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+    margin-top: 5px;
+    
+    
+   
+}
+
+.buscarprofesional{
+
+display: flex;
+
+  width:  1350px;
+  height: 80px;
+  
+  background-color: rgb(197, 197, 219);
+
+  margin-bottom: 15px;
+  margin-top: 5px;
+  align-items: center;
+  
+
+}
+
+
+h6{
+  padding-top: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+input{
+  width: 230px;
+  height: 30px;
+  margin-left: 15px;
+
+}
+

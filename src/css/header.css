@@ -1,0 +1,46 @@
+
+
+
+#encabezado{
+    display: flex;
+  
+  
+    background-color:white;
+   
+    margin-left: 40px;
+    float: left;
+    width: 95%;
+   
+    
+ 
+
+}
+#encabezado div{
+    
+ 
+    justify-content: space-between;
+   
+    right: 0;
+    margin-top: 25px;
+   
+ 
+
+}
+
+#encabezado img{
+
+    margin-right: 50px;
+    left: 0;
+    margin-top: 25px;
+    margin-bottom: 25px;
+
+}
+
+a{
+    justify-content: center;
+    align-items: right;
+    
+    color: black;
+    margin-right: 4rem;
+
+}
