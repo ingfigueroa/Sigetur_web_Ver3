@@ -4,16 +4,17 @@ import Image from "react-bootstrap/Image";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Modal from "react-bootstrap/Modal";
 
 import Mdlhorarioprofesional from "./mdlhorarioprofesional"
-import Mdllistaespera from "./mdlListaEspera"
+import Mdllistaespera from "../mdlListaEspera"
 import MdlListarProfesional from "./mdllistarprofesionales"
 
 
-import "../css/registrarprofesional.css";
+import "/src/css/registrarprofesional.css";
+const registrarprofesional = ({ show, handleClose }) => {
 
-export default function registrarprofesional() {
-  const [show, setShow] = useState(false);
+
 
   const [mdlHoraProfe, setModalHoraProfe] = useState(false);
   const [mdlListaEspera, setModalListaEspera] = useState(false);
@@ -42,8 +43,20 @@ const closeMdlListarProfesional = () =>{
   const closeMdlListaEspera = () => {
     setModalListaEspera(false);
   };
+
+
+  const onSubmit = (data) => {
+    Grabar(data);
+  };
   return (
-    <>
+    <Modal show={show} onHide={handleClose} size="lg">
+       <Modal.Header closeButton style={{backgroundColor: '#0277bd', color: 'white'}} >
+        <Modal.Title>ADMINISTRAR PROFESIONAL</Modal.Title>
+      </Modal.Header>
+      <Modal.Body
+        style={{width: '600px'}}
+
+      >
       <div style={{ display: "grid", width: "100%", margin:"15px 15px", backgroundColor:"white"  }}>
         <div className="acomodarencabezadoprofesional">
          
@@ -337,31 +350,16 @@ const closeMdlListarProfesional = () =>{
         <ButtonGroup className="mb-2">
             <Button variant="success">Grabar</Button>
             <Button variant="primary">Limpiar</Button>
-            <Button variant="primary">Cerrar</Button>
+            <Button variant="primary" onClick={handleClose}>
+          Cerrar
+        </Button>
           </ButtonGroup>
              
         </div>
       </div>
-      {mdlHoraProfe && (
-        <Mdlhorarioprofesional
-          show={openMdlHoraProfe}
-          handleClose={closeMdlHoraProfe}
-        />
-      )}
-
-      {mdlListaEspera && (
-        <Mdllistaespera
-          show={openMdlListaEspera}
-          handleClose={closeMdlListaEspera}
-        />
-      )}
-
-      {mdllistarprofesionales && (
-        <MdlListarProfesional
-          show={openMdlListarProfesional}
-          handleClose={closeMdlListarProfesional}
-        />
-      )}
-    </>
+    </Modal.Body>
+    </Modal>
   );
-}
+};
+
+export default registrarprofesional;

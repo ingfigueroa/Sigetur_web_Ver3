@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../css/pizarradeturnos.css";
+import "/src/css/pizarradeturnos.css";
 
 import Table from "react-bootstrap/Table";
 
@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 
 
 
-import "../css/tablapizaturnos.css";
+import "/src/css/tablapizaturnos.css";
 
 
 
@@ -137,7 +137,7 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
                  EMail
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="5">
                  Estado
                 </th>
 
@@ -154,10 +154,10 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
               </tr>
             </thead>
             <tbody>
-            {data.slice(startIndex, endIndex).map((item) => (
+            {data.slice(startIndex, endIndex).map((item, index) => (
                 <tr>
                    <td style={{ textAlign: "center" }}>
-                   {contador}
+                   {index}
                   </td>
                   <td style={{ textAlign: "center", fontSize:"12px" }}>
                    {item.apellido}

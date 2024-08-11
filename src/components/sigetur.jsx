@@ -6,61 +6,64 @@ import Button from "react-bootstrap/Button";
 
 import Image from "react-bootstrap/Image";
 
-import PizarradeTurnos from "./pizarradeturnos";
+import PizarradeTurnos from "./turnos/pizarradeturnos";
 
 
-import RegistrarObraSocial from "./registrarobrasocial";
-import ListarProfesionales from "./listarprofesionales";
-import ListarPacientes from "./listarpacientes";
-import ListarObrasSociales from './listarobrassociales';
+import ObrasSociales from './obrassociales/obrassociales';
 
+import Profesionales from "./profesionales/profesionales";
+import Pacientes from "./pacientes/pacientes";
 
 
 export default function sigetur() {
 
-  const [listarObraSocial, setListarObraSocial] = useState(false);
+  const [mostrarProfesional, setMostrarProfesional] =  useState(false);
+  
+  const [mostrarObraSocial, setMostrarObraSocial] = useState(false);
+
+  const [mostrarPaciente, setMostrarPaciente] = useState(false);
+  
+  const [mostrarPizarradeTurnos, setMostrarPizarradeTurnos] = useState(false);
+
+
+
 
   const MostrarObraSocial = () => {
-   
+  
     setMostrarPizarradeTurnos(false);
-    setMostrarListadoPaciente(false);
-    setListarObraSocial(true);
-    setMostrarListarProfesional(false);
+    setMostrarPaciente(false);
+    setMostrarObraSocial(true);
+    setMostrarProfesional(false);
   };
 
 
-  
-  const [mostrarlistarProfesional, setMostrarListarProfesional] =
-  useState(false);
 
-const MostrarListarProfesional = () => {
+const MostrarProfesionales = () => {
   
   setMostrarPizarradeTurnos(false);
-  setMostrarListadoPaciente(false);
-  setListarObraSocial(false);
-  setMostrarListarProfesional(true);
+  setMostrarPaciente(false);
+  setMostrarObraSocial(false);
+  setMostrarProfesional(true);
 };
 
 
   
-  const [mostrarListadoPaciente, setMostrarListadoPaciente] = useState(false);
 
-  const MostrarListadoPaciente = () => {
-    setMostrarListadoPaciente(true);
+  const MostrarPacientes = () => {
+    
     setMostrarPizarradeTurnos(false);
-   
-    setListarObraSocial(false);
-    setMostrarListarProfesional(false);
+  setMostrarPaciente(true);
+  setMostrarObraSocial(false);
+  setMostrarProfesional(false);
   };
 
-  const [mostrarPizarradeTurnos, setMostrarPizarradeTurnos] = useState(true);
 
   const MostrarPizarradeTurnos = () => {
-   
-    setMostrarListadoPaciente(false);
-    setListarObraSocial(false);
+  
+    setMostrarPaciente(false);
+    setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(true);
-    setMostrarListarProfesional(false);
+    setMostrarProfesional(false);
   };
 
 
@@ -143,13 +146,13 @@ const MostrarListarProfesional = () => {
             <h1></h1>
             <Button
               variant="outline-primary"
-              onClick={MostrarListarProfesional}
+              onClick={MostrarProfesionales}
             >
               Mis Profesionales
             </Button>
             <h1></h1>
 
-            <Button variant="outline-primary" onClick={MostrarListadoPaciente}>
+            <Button variant="outline-primary" onClick={MostrarPacientes}>
               Mis Pacientes
             </Button>
             <h1></h1>
@@ -162,19 +165,19 @@ const MostrarListarProfesional = () => {
             <Button variant="outline-primary">Visualizar Consultas</Button>
           </div>
           
-          {mostrarlistarProfesional && <ListarProfesionales />}
+         
 
-          {mostrarListadoPaciente && <ListarPacientes />}
+        
 
+         
+          {mostrarProfesional && <Profesionales />}
+          {mostrarPaciente && <Pacientes />}
           {mostrarPizarradeTurnos && <PizarradeTurnos />}
-
-         
-
-          {listarObraSocial && <ListarObrasSociales />}
-
-         
+          {mostrarObraSocial && <ObrasSociales />}       
+        
         </div>
       </div>
+     
     </>
   );
 }

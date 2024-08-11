@@ -16,38 +16,6 @@ function listarobrassociales() {
   const pageSize = 7; // Tamaño de la página
   const [totalPages, setTotalPages] = useState(0);
 
-  const data = [
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "dwewd ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "dwew ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "dwewd ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "dwew ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-  ];
 
  // Función para cambiar de página
  const handleChangePage = (pageNumber) => {
@@ -59,7 +27,7 @@ function listarobrassociales() {
 const startIndex = (currentPage - 1) * pageSize;
 const endIndex = currentPage * pageSize;
 
-const [contador, setContador] = useState(0); // Inicializamos el contador en 0
+const [contador, setContador] = useState(1); // Inicializamos el contador en 0
 
   const numerarse = () => {
     setContador(contador + 1); // Incrementamos el contador en 1 y actualizamos el estado
@@ -138,7 +106,7 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
                  EMail
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="5">
                  Estado
                 </th>
 
@@ -154,10 +122,10 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
               </tr>
             </thead>
             <tbody>
-            {data.slice(startIndex, endIndex).map((item) => (
+            {data.slice(startIndex, endIndex).map((item, index) => (
                 <tr>
                    <td style={{ textAlign: "center" }}>
-                   {contador}
+                   {index}
                   </td>
                   <td style={{ textAlign: "center", fontSize:"12px" }}>
                    {item.apellido}

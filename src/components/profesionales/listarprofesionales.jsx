@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../css/pizarradeturnos.css";
+import "/src/css/pizarradeturnos.css";
 
 import Table from "react-bootstrap/Table";
 
@@ -7,43 +7,18 @@ import Button from "react-bootstrap/Button";
 
 
 
-import "../css/tablapizaturnos.css";
+import "/src/css/tablapizaturnos.css";
 
 
 import Mdlhorarioprofesional from "./mdlhorarioprofesional";
-import Mdllistaespera from "./mdlListaEspera";
-import RegistrarProfesional from './registrarprofesional';
+import Mdllistaespera from "../mdlListaEspera";
+import RegistrarProfesional from "./registrarprofesional";
 
-function listarprofesionales({ toggleMostrarRegistrar }) {
+function listarprofesionales({ Items }) {
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 5; // Tamaño de la página
   const [totalPages, setTotalPages] = useState(0);
-
-  const data = [
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "Rly", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-   
-    { apellido: "FIGUEROA", nombres: "RO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "activo" },
-    { apellido: "FIGUEROA", nombres: "RODOLFO ALFREDO", especialidad: "INGENIERO", DNI: "21382767", email: "ingfigueroa@hotmail.com", estado: "pasivo" },
-  
-   
-   
-  ];
 
   
   const [mdlHoraProfe, setModalHoraProfe] = useState(false);
@@ -118,7 +93,8 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
            <button
               title="Registrar nuevo profesional"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={toggleMostrarRegistrar}
+             
+              
 
             >
               <i class="fa-solid fa-pen-to-square"></i>
@@ -172,7 +148,7 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
                  EMail
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="5">
                  Estado
                 </th>
 
@@ -188,24 +164,26 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
               </tr>
             </thead>
             <tbody>
-              {data.slice(startIndex, endIndex).map((item) => (
-                <tr>
+            {Items &&
+            Items.map((Item) => (
+              <tr key={Item.Id}>
+               
                 <td style={{ textAlign: "center" }}>
-                {contador}
+                {Item.ID}
                </td>
                <td style={{ textAlign: "center", fontSize:"12px" }}>
-                {item.apellido}
+                {Item.Apellido}
                </td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{item.nombres}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{item.especialidad}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{item.DNI}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{item.email}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.Nombres}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.Idtipoprofesion}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.EMail}</td>
                <td style={{ textAlign: "center", fontSize:"12px"}}>
-                  {item.estado === "activo" ? (
+                  {Item.IDEstado === "activo" ? (
                       <Button variant="success" size="sm" style={{width:"70%"}}>
                         activo
                       </Button>
-                    ) : item.estado === "pasivo" ? (
+                    ) : Item.IDEstado  === "pasivo" ? (
                       <Button variant="danger" size="sm" style={{width:"70%"}}>
                         pasivo
                       </Button>
@@ -311,7 +289,7 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
       )}
     
        {mostrarRegistroProfesional && <RegistrarProfesional />}
-       {}
+       
     </>
   );
 }

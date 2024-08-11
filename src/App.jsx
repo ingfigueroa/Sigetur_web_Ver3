@@ -7,7 +7,7 @@ import Home from './components/Home'
 import Login from "./components/Login";
 import Registrarconsultorio from "./components/Registrarconsultorio";
 import Sigetur from "./components/sigetur";
-import RegistrarProfesional from './components/registrarprofesional';
+import RegistrarProfesional from './components/profesionales/registrarprofesional';
 
 function App() {
   return (

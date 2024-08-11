@@ -51,13 +51,13 @@ const mdlhorarioprofesional = ({ show, handleClose }) => {
                     Día
                   </th>
 
-                  <th style={{ textAlign: "center" }} key="3">
+                  <th style={{ textAlign: "center" }} key="1">
                     Mañana desde
                   </th>
 
                   <th key="4">Mañana hasta</th>
 
-                  <th style={{ textAlign: "center" }} key="3">
+                  <th style={{ textAlign: "center" }} key="2">
                     Intervalo
                   </th>
                   
@@ -67,16 +67,16 @@ const mdlhorarioprofesional = ({ show, handleClose }) => {
 
                   <th key="4">Tarde hasta</th>
 
-                  <th style={{ textAlign: "center" }} key="3">
+                  <th style={{ textAlign: "center" }} key="4">
                     Intervalo
                   </th>
-                  <th style={{ textAlign: "center" }} key="3">
+                  <th style={{ textAlign: "center" }} key="5">
                     Noche desde
                   </th>
 
-                  <th key="4">Noche hasta</th>
+                  <th key="6">Noche hasta</th>
 
-                  <th style={{ textAlign: "center" }} key="3">
+                  <th style={{ textAlign: "center" }} key="7">
                     Intervalo
                   </th>
 

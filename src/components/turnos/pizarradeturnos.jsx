@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../css/pizarradeturnos.css";
+import "/src/css/pizarradeturnos.css";
 
 import Table from "react-bootstrap/Table";
 
@@ -8,70 +8,30 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
-import "../css/tablapizaturnos.css";
+import "/src/css/tablapizaturnos.css";
 import MdlAltaTurno from "./mdlaltaturno";
 import MdlTurnoDetalle from "./mdlturnodetalle";
 import Mdlanularturno from "./mdlanularturno";
 import Mdlturnoregistrarcobro from "./mdlturnoregistrarcobro";
 
-import Mdlhorarioprofesional from "./mdlhorarioprofesional";
-import Mdllistaespera from "./mdlListaEspera";
+import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
+import Mdllistaespera from "../mdlListaEspera";
 
 function tablapizarradeturnos() {
-  const data = [
-    { Estado: "LIB", Hora: "08:30", Paciente: "", DNI: "", Obra_social: "" },
-    { Estado: "LIB", Hora: "09:00", Paciente: "", DNI: "", Obra_social: "" },
-    { Estado: "LIB", Hora: "09:30", Paciente: "", DNI: "", Obra_social: "" },
-    {
-      Estado: "PRE-COB",
-      Hora: "10:00",
-      Paciente: "FIGUEROA, FLORENCIA PAULA",
-      DNI: 40662065,
-      Obra_social: "PARTICULAR",
-    },
-    {
-      Estado: "PEN",
-      Hora: "10:30",
-      Paciente: "FIGUEROA, MATIAS NICOLAS",
-      DNI: 40662065,
-      Obra_social: "PARTICULAR",
-    },
-    {
-      Estado: "ASA",
-      Hora: "11:00",
-      Paciente: "FIGUEROA, MATIAS NICOLAS",
-      DNI: 40662065,
-      Obra_social: "UNIVERSIDAD TECNOLOGICA NACIONAL",
-    },
-    
-    
-    {
-      Estado: "ACA",
-      Hora: "11:30",
-      Paciente: "FIGUEROA, CAROLINA",
-      DNI: 40662065,
-      Obra_social: "DASUTEN",
-    },
-    
-    { Estado: "LIB", Hora: "09:00", Paciente: "", DNI: "", Obra_social: "" },
-    { Estado: "LIB", Hora: "09:30", Paciente: "", DNI: "", Obra_social: "" },
-    {
-      Estado: "PRE-NCOB",
-      Hora: "10:00",
-      Paciente: "FIGUEROA, CAROLINA",
-      DNI: 40662065,
-      Obra_social: "DASPU",
-    },
-    { Estado: "LIB", Hora: "10:30", Paciente: "", DNI: "", Obra_social: "" },
-    { Estado: "LIB", Hora: "11:00", Paciente: "", DNI: "", Obra_social: "" },
-  ];
+ 
+  const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
+
 
   const [mdlAltaTurno, setModalAltaTurno] = useState(false);
 
   const [mdlHoraProfe, setModalHoraProfe] = useState(false);
   const [mdlListaEspera, setModalListaEspera] = useState(false);
   const [mdlBuscarObjetos, setModalBuscarObjetos] = useState(false);
-
+  const [Items, setItems] = useState(null);
+  const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
+  const [RegistrosTotal, setRegistrosTotal] = useState(0);
+  const [Pagina, setPagina] = useState(1);
+  const [Paginas, setPaginas] = useState([]);
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
   };
@@ -103,8 +63,7 @@ function tablapizarradeturnos() {
     setModalAltaTurno(false);
   };
 
-  const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
-
+  
   const openMdlTurnoDetalle = () => {
     setModalTurnoDetalle(true);
   };
@@ -287,8 +246,9 @@ function tablapizarradeturnos() {
               </tr>
             </thead>
             <tbody>
-              {data.map((item) => (
-                <tr>
+            {Items &&
+            Items.map((Item) => (
+              <tr key={Item.Id}>
                   <td style={{ textAlign: "center", fontSize:"12px" }}>
                     {item.Estado === "LIB" ? (
                       <Button variant="success" size="sm" style={{width:"60%"}}>

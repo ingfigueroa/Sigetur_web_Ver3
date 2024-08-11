@@ -6,7 +6,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import Mdlhorarioprofesional from "./mdlhorarioprofesional";
-import Mdllistaespera from "./mdlListaEspera";
+import Mdllistaespera from "../mdlListaEspera";
 
 
 import "../css/registrarpaciente.css";
