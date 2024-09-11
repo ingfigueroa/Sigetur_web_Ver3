@@ -9,7 +9,9 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 import "/src/css/sigetur.css";
+import "/src/css/pizarradeturnos.css";
 
+import MdlAltaPaciente from "./registrarpaciente";
 
 import { pacientesService } from "/src/services/pacientes.service";
 
@@ -18,23 +20,14 @@ import { pacientesService } from "/src/services/pacientes.service";
 import modalDialogService from "/src/services/modalDialog.service";
 
 
- function Pacientes() {
-  const TituloAccionABMC = {
-    A: "(Agregar)",
-    B: "(Eliminar)",
-    M: "(Modificar)",
-    C: "(Consultar)",
-    L: "(Listado)",
-  };
-  const [AccionABMC, setAccionABMC] = useState("L");
-
+function Pacientes() {
   const [Apellido, SetApellido]  = useState(null);
 
   const [VarDNI, SetDNI]  = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   
- const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false)
+ const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false)
 
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
@@ -44,7 +37,14 @@ import modalDialogService from "/src/services/modalDialog.service";
 
 
 
+  const openMdlRegistrarPaciente = () => {
+    setModalRegistrarPaciente(true);
+  };
 
+  
+  const closeMdlRegistrarPaciente = () => {
+    setModalRegistrarPaciente(false);
+  };
 
 
 
@@ -57,7 +57,7 @@ import modalDialogService from "/src/services/modalDialog.service";
       _pagina = Pagina;
     }
     modalDialogService.BloquearPantalla(true);
-    const data = await pacientesService.Buscar(Apellido, VarDNI, _pagina);
+    const data = await pacientesService.Buscar(Apellido, VarDNI);
     modalDialogService.BloquearPantalla(false);
     
     setItems(data);
@@ -172,20 +172,28 @@ import modalDialogService from "/src/services/modalDialog.service";
        <div className="acomodarencabezadopizaturnos">
           
           <div className="tituloPagina">
-       Pacientes <small>{TituloAccionABMC[AccionABMC]}</small>
-      
+       
+          Pacientes 
             
           </div>
           
           <div style={{ width: "30%", textAlign: "right" }}>
           <button
               title="Registrar nuevo paciente"
-              className="btn btn-sm btn-light btn-outline-primary"
-              
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              onClick={(event) => {
+                event.preventDefault();
+                openMdlRegistrarPaciente();
+              }}
             >
               <i class="fa-solid fa-plus"></i>
             </button>
-           
+            <button 
+               title="Imprimir"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              onClick={() => Imprimir()}>
+              <i class="fa fa-print"></i>
+            </button>
             
            
 
@@ -206,14 +214,15 @@ import modalDialogService from "/src/services/modalDialog.service";
                 height: "38px",
               }}
             >
-              Profesional
+              Paciente
             </InputGroup.Text>
             <Form.Control
               placeholder="Buscar por apellido de paciente"
               aria-label="Buscar paciente"
               aria-describedby="basic-addon2"
-              onChange={(e) => setApellido(e.target.value)}
+              onChange={(e) => SetApellido(e.target.value.toUpperCase())}
               value={Apellido}
+              autoFocus
             />
             <Button
               title="Buscar por paciente"
@@ -224,8 +233,6 @@ import modalDialogService from "/src/services/modalDialog.service";
               color="white"
              
               onClick={() => Buscar(1) }
-              
-             
             >
                
               <i class="fa-solid fa-magnifying-glass"></i>
@@ -246,6 +253,8 @@ import modalDialogService from "/src/services/modalDialog.service";
               aria-label="Profesión"
               aria-describedby="basic-addon2"
               style={{ marginght: "20px" }}
+              onChange={(e) => SetDNI(e.target.value)}
+              value={VarDNI}
             />
             <Button
              title="Buscar por DNI"
@@ -253,7 +262,7 @@ import modalDialogService from "/src/services/modalDialog.service";
               id="button-addon1"
               style={{ height: "38px" }}
               color="white"
-             
+              onClick={() => Buscar(1) }
             >
               <i class="fa-solid fa-magnifying-glass"></i>
             </Button>
@@ -282,7 +291,7 @@ import modalDialogService from "/src/services/modalDialog.service";
                 </th>
                 <th
                   style={{
-                    textAlign: "center",
+                    textAlign: "left",
                     backgroundColor: "rgb(136, 161, 184)",
                   
                   }}
@@ -290,7 +299,7 @@ import modalDialogService from "/src/services/modalDialog.service";
                   Apellido
                 </th>
 
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="1">
+                <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)" }} >
                   Nombres
                 </th>
 
@@ -299,15 +308,15 @@ import modalDialogService from "/src/services/modalDialog.service";
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
                   }}
-                  key="3"
+                  
                 >
                   DNI
                 </th>
 
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)", width:"15%"}} >
                  EMail
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }}>
                  Estado
                 </th>
 
@@ -316,7 +325,7 @@ import modalDialogService from "/src/services/modalDialog.service";
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
                   }}
-                  key="8"
+                  
                 >
                   Acciones
                 </th>
@@ -330,10 +339,10 @@ import modalDialogService from "/src/services/modalDialog.service";
                 <td style={{ textAlign: "center" }}>
                 {Item.ID}
                </td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>
+               <td style={{ textAlign: "left", fontSize:"12px" }}>
                 {Item.Apellido}
                </td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.Nombres}</td>
+               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.Nombres}</td>
               
                <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
                <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.EMail}</td>
@@ -352,30 +361,16 @@ import modalDialogService from "/src/services/modalDialog.service";
                   </td>
                   <td style={{ textAlign: "center" }}>
                   <button
-                      title="Editar profesional"
+                      title="Editar paciente"
                       className="btn btn-sm btn-light btn-danger"
                       
                     >
                       
                       <i class="fa-solid fa-user-pen"></i>
                     </button>
+                  
                     <button
-                      title="Horarios profesional"
-                      className="btn btn-sm btn-light btn-primary"
-                     
-                    >
-                      <i class="fa-solid fa-clock"></i>
-                    </button>
-                    <button
-                      title="Lista de espera"
-                      className="btn btn-sm btn-light btn-danger"
-                      
-                    >
-                      <i class="fa-solid fa-book-open-reader"></i>
-                      
-                    </button>
-                    <button
-                       title="Agenda Semanal"
+                       title="Listar turnos pedidos"
                        className="btn btn-sm btn-light btn-danger"
                     >
                     <i class="fa-solid fa-calendar-days"></i>
@@ -409,22 +404,20 @@ import modalDialogService from "/src/services/modalDialog.service";
             &nbsp; de {Paginas?.length}
           </div>
 
-          <div className="col">
-            <button className="btn btn-primary float-end" onClick={() => Imprimir()}>
-              <i className="fa fa-print"></i>Imprimir
-            </button>
-          </div>
+          
         </div>
       </div>
     </div>
     
-    
-    { mdlRegistrarProfesional && (
-        <mdlAltaProfesionales
-          show={openMdlRegistrarProfe}
-          handleClose={closeMdlRegistrarProfe}
+    { mdlRegistrarPaciente && (
+        <MdlAltaPaciente
+
+          show={openMdlRegistrarPaciente}
+          handleClose={closeMdlRegistrarPaciente}
         />
+      
       )}
+    
 
     </>
 

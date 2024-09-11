@@ -7,9 +7,9 @@ import httpService from "./http.service";
  const urlResource = config.urlResourcePacientes;
 
 
-async function Buscar(Nombre, Pagina) {
+ async function Buscar(Apellido, VarDni) {
   const resp = await httpService.get(urlResource, {
-    params: { Nombre, Pagina },
+    params: { Apellido, VarDni },
   });
   return resp.data;
 }
@@ -26,15 +26,27 @@ async function ActivarDesactivar(item) {
 }
 
 
-async function Grabar(item) {
-  if (item.IdArticulo === 0) {
-    await httpService.post(urlResource, item);
-  } else {
-    await httpService.put(urlResource + "/" + item.Id, item);
+async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo) {
+  try {
+   
+    await httpService.post(urlResource, {
+      Nombres, 
+      Apellido, 
+      TipoDocumento,
+      NroDocumento, 
+      EMail, 
+      FechaNacimiento, 
+      TECelular, 
+      Sexo
+      
+    });
+   
+  } catch (error) {
+    console.error('Error al registrar el paciente:', error.response?.data || error.message);
   }
 }
 
 
 export const pacientesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,Grabar
+  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta
 };

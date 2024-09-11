@@ -6,7 +6,22 @@
   display: flex;
 }
 
+
 .tituloPagina {
+  width:70%;
+  font-size: 2.75rem;
+  font-weight: 500;
+  color: black;
+ 
+  border-color: gray;
+  border-bottom-width: thin;
+  padding-bottom: 0.1em;
+  margin-bottom: 0.5em;
+  text-align: left;
+}
+
+
+.tituloPaginaViejo {
   width:70%;
   font-size: 1.75rem;
   font-weight: 500;

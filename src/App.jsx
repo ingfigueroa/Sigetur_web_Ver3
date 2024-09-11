@@ -7,7 +7,7 @@ import Home from './components/Home'
 import Login from "./components/Login";
 import Registrarconsultorio from "./components/Registrarconsultorio";
 import Sigetur from "./components/sigetur";
-import RegistrarProfesional from './components/profesionales/registrarprofesional';
+
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
         <Route path='/login' element={<Login />}/>
         <Route path='/Registrarconsultorio' element={<Registrarconsultorio />}/>
         <Route path='/sigetur' element={<Sigetur />}/>
-        <Route path='/sigetur/profesionales' element={<RegistrarProfesional />}/>
+       
 
       </Routes>
     </BrowserRouter>

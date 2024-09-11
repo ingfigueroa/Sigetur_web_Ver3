@@ -1,32 +1,29 @@
 import {useState} from "react";
 import {format} from "date-fns";
 import {es} from "date-fns/locale";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import Form from 'react-bootstrap/Form';
 
-const mdlanularturno = ({ show, handleClose, enviarAlPadre, fila }) => {
-  
+const mdlSINo = ({show, handleClose, enviarAlPadre, fila}) => {
+
   const [observaciones, SetObservaciones] = useState(null);
-
   const fechaLarga = format(new Date(fila.fecha), "EEEE, d 'de' MMMM 'de' yyyy", {locale: es});
 
   const seleccionarSi = () => {
-   
-      enviarAlPadre(observaciones);
-
+    enviarAlPadre(observaciones);
     handleClose() // Envía el id al componente padre
   };
   
-
+ 
   return (
     <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#ab0308", color: "white" }}
+        style={{backgroundColor: "#1e8449", color: "white" }}
       >
-        <Modal.Title>TURNO - ANULAR</Modal.Title>
+        <Modal.Title>TURNO - CAMBIAR A PRESENTE</Modal.Title>
 
         
       </Modal.Header>
@@ -39,10 +36,10 @@ const mdlanularturno = ({ show, handleClose, enviarAlPadre, fila }) => {
           </div>
           <div>
           <InputGroup className="mb-3">
-            <InputGroup.Text  
-            style={{backgroundColor: '#b0c4de', color: 'black'}}>
+            <InputGroup.Text  style={{backgroundColor: '#b0c4de', color: 'black'}}>
 
-            ¿Realmente quiere ANULAR el turno con el siguiente detalle?
+            ¿Realmente quiere DAR el PRESENTE del paciente en el turno con el siguiente detalle?
+            
             </InputGroup.Text>
           
           
@@ -147,16 +144,17 @@ const mdlanularturno = ({ show, handleClose, enviarAlPadre, fila }) => {
       </Modal.Body>
       <Modal.Footer>
      
-      <Button variant="success" onClick={seleccionarSi}>
-          Aplicar
-        </Button>
-        <Button variant="primary" onClick={handleClose}>
-          Cerrar
-        </Button>
-      
-      </Modal.Footer>
-    </Modal>
+     <Button variant="success" onClick={seleccionarSi}>
+         Aplicar
+       </Button>
+       <Button variant="primary" onClick={handleClose}>
+         Cerrar
+       </Button>
+     
+     </Modal.Footer>
+       
+      </Modal>
   );
-};
+}; 
 
-export default mdlanularturno;
+export default mdlSINo;

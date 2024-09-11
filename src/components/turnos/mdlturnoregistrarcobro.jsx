@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import react, { useState, useEffect } from "react";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -8,96 +8,60 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import Table from "react-bootstrap/Table";
 
-const mdlturnoregistrarcobro = ({ show, handleClose }) => {
-  const data = [
-    {
-      Cod: "0004",
-      Prestación: "CONSULTA A CONSULTORIO",
-      Cantidad: "1",
-      Costounitario: "6500.00",
-      Subtotal: "6500.00",
-    },
-    {
-      Cod: "0004",
-      Prestación: "CONSULTA A CONSULTORIO",
-      Cantidad: "1",
-      Costounitario: "6500.00",
-      Subtotal: "6500.00",
-    },
-    {
-      Cod: "0004",
-      Prestación: "CONSULTA A CONSULTORIO",
-      Cantidad: "1",
-      Costounitario: "6500.00",
-      Subtotal: "6500.00",
-    },
-  ];
-  const datatarjeta = [
-    {
-      formacobro: "CONTADO",
-      Monto: "6500.00",
-      Obser: "pago contado",
-      titulartarjeta: "---",
-      nrotarjeta: "---",
-      vtotarjeta: "---",
-    },
-    {
-      formacobro: "TARJETA",
-      Monto: "7500.00",
-      Obser: "pago tarjeta",
-      titulartarjeta: "RODOLFO FIGUEROA",
-      nrotarjeta: "001502365896365",
-      vtotarjeta: "06/32",
-    },
-  ];
+import { obrassocialesService } from "/src/services/obrassociales.service";
+import  mdlListaPrestaciones  from "../prestaciones/mdllistarprestaciones";
 
-  function TableRowTarjeta({ itemtarjeta }) {
-    return (
-      <tr>
-        <td style={{ textAlign: "center" }}>{itemtarjeta.formacobro}</td>
-        <td style={{ textAlign: "center" }}>{itemtarjeta.Monto}</td>
-        <td style={{ textAlign: "center" }}>{itemtarjeta.Obser}</td>
-        <td style={{ textAlign: "center" }}>{itemtarjeta.titulartarjeta}</td>
-        <td style={{ textAlign: "center" }}>{itemtarjeta.nrotarjeta}</td>
-        <td style={{ textAlign: "center" }}>{itemtarjeta.vtotarjeta}</td>
 
-        <td style={{ textAlign: "center" }}>
-          <button
-            title="Anular prestación"
-            className="btn btn-sm btn-light btn-danger"
-          >
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-    );
-  }
-  function TableRow({ item }) {
-    return (
-      <tr>
-        <td style={{ textAlign: "center" }}>{item.Cod}</td>
-        <td style={{ textAlign: "center" }}>{item.Prestación}</td>
-        <td style={{ textAlign: "center" }}>{item.Cantidad}</td>
-        <td style={{ textAlign: "center" }}>{item.Costounitario}</td>
-        <td style={{ textAlign: "center" }}>{item.Subtotal}</td>
 
-        <td style={{ textAlign: "center" }}>
-          <button
-            title="Anular prestación"
-            className="btn btn-sm btn-light btn-danger"
-          >
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-    );
-  }
+const mdlturnoregistrarcobro = ({ show, handleClose, fila, idprofesion }) => {
 
-  const [selectedValue, setSelectedValue] = useState(""); // Estado para almacenar el valor seleccionado del dropdown
 
-  const handleDropdownChange = (eventKey) => {
-    setSelectedValue(eventKey); // Actualizar el valor seleccionado en el estado
+
+
+  const [selectedValue, setSelectedValue] = useState("");
+  const [osPorPaciente, setOsPorPaciente] = useState([]);
+  const [osElegida, setOSElegida] = useState("");
+
+  const [mdlListaPrestaciones, setModalListarPrestaciones] = useState(false);
+
+  const openMdlListarPrestaciones = () => {
+    setModalListarPrestaciones(true);
+   
   };
+
+  const closeMdlListarPrestaciones = () => {
+    setModalListarPrestaciones(false);
+   
+    
+  };
+  
+
+  useEffect(() => {
+    if (fila && fila.IDPaciente) {
+      BuscarosPorPaciente(fila.IDPaciente);
+    }
+  }, [fila]);
+
+ 
+  const handleDropdownChange = (eventKey) => {
+    setSelectedValue(eventKey);
+    setOSElegida(eventKey);
+  };
+
+  const BuscarosPorPaciente = async (idPaciente) => {
+    try {
+      console.log(idPaciente)
+      const data = await obrassocialesService.BuscarPorPaciente(idPaciente);
+      setOsPorPaciente(data); // Establece el estado con los datos obtenidos
+      console.log(osPorPaciente)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  
+
+
 
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
@@ -131,13 +95,14 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
   };
 
   return (
+    <>
     <Modal show={show} onHide={handleClose} size="lg" style={{ top: "" }}>
       <Modal.Header
         closeButton
         size="sm"
         style={{ backgroundColor: "#1e8449", color: "white" }}
       >
-        <Modal.Title>REGISTRAR COBRO</Modal.Title>
+        <Modal.Title>TURNOS - REGISTRAR COBRO</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="">
@@ -146,22 +111,30 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
             style={{ backgroundColor: "white", textAlign: "right" }}
           >
             <InputGroup className="mb-3" size="sm">
-              <DropdownButton
-                id="dropdown-basic-button"
-                title="Elija la opción de cobro"
-                onSelect={handleDropdownChange}
-              >
-                <Dropdown.Item eventKey="PARTICULAR">PARTICULAR</Dropdown.Item>
-                <Dropdown.Item eventKey="DASPU">DASPU</Dropdown.Item>
-                <Dropdown.Item eventKey={"DASUTEN"}>DASUTEN</Dropdown.Item>
-              </DropdownButton>
-              <Form.Control
+            <DropdownButton
+        id="dropdown-basic-button"
+        title="Elija la opción de cobro"
+        style={{color:"black"}}
+        onSelect={handleDropdownChange}
+      >
+        {osPorPaciente.length > 0 ? (
+          osPorPaciente.map((os) => (
+            <Dropdown.Item key={os.id} eventKey={os.Descripcion}>
+              {os.Descripcion}
+            </Dropdown.Item>
+          ))
+        ) : (
+          <Dropdown.Item disabled>No hay obras sociales disponibles</Dropdown.Item>
+        )}
+
+      </DropdownButton>
+      <Form.Control
                 type="text"
+                value={osElegida}
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
                 style={{ backgroundColor: "#d5dbdb" }}
-                value={selectedValue}
-                readOnly
+                readonly
               />
               <InputGroup.Text
                 style={{ backgroundColor: "#679bb9", color: "white" }}
@@ -187,7 +160,12 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
               <h6 style={{ marginRight: "10px", marginBottom: "5px" }}>
                 Agregar prestaciones a cobrar:{" "}
               </h6>
-              <Button variant="outline-secondary" id="button-addon1" size="sm">
+              <Button 
+                variant="outline-secondary" 
+                id="button-addon1"
+                size="sm"
+                onClick={openMdlListarPrestaciones }
+                >
                 <i class="fa-solid fa-plus"></i>
               </Button>
             </div>
@@ -197,14 +175,14 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                   <tr className="personalizarfila h-50">
                     <th
                       style={{ backgroundColor: "rgb(136, 161, 184)" }}
-                      key="1"
+                      key="100"
                     >
                       Código
                     </th>
 
                     <th
                       style={{ backgroundColor: "rgb(136, 161, 184)" }}
-                      key="2"
+                      key="101"
                     >
                       Prestación
                     </th>
@@ -214,7 +192,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                         textAlign: "center",
                         backgroundColor: "rgb(136, 161, 184)",
                       }}
-                      key="0"
+                      key="102"
                     >
                       Cantidad
                     </th>
@@ -224,7 +202,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                         textAlign: "center",
                         backgroundColor: "rgb(136, 161, 184)",
                       }}
-                      key="6"
+                      key="103"
                     >
                       Costo unitario
                     </th>
@@ -234,7 +212,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                         textAlign: "center",
                         backgroundColor: "rgb(136, 161, 184)",
                       }}
-                      key="7"
+                      key="104"
                     >
                       Subtotal
                     </th>
@@ -244,16 +222,14 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                         textAlign: "center",
                         backgroundColor: "rgb(136, 161, 184)",
                       }}
-                      key="8"
+                      key="105"
                     >
                       Acciones
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item) => (
-                    <TableRow key={item.Cantidad} item={item} />
-                  ))}
+                
                 </tbody>
               </Table>
             </div>
@@ -364,7 +340,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                           textAlign: "center",
                           backgroundColor: "rgb(136, 161, 184)",
                         }}
-                        key="7"
+                        key="17"
                       >
                         Vto. tarjeta
                       </th>
@@ -381,12 +357,8 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {datatarjeta.map((itemtarjeta) => (
-                      <TableRowTarjeta
-                        key={itemtarjeta.formacobro}
-                        itemtarjeta={itemtarjeta}
-                      />
-                    ))}
+                   
+                    
                   </tbody>
                 </Table>
               </div>
@@ -475,6 +447,19 @@ const mdlturnoregistrarcobro = ({ show, handleClose }) => {
         </Button>
       </Modal.Footer>
     </Modal>
+
+
+    
+    {mdlListaPrestaciones && (
+        <mdllistarPrestaciones 
+        show={openMdlListarPrestaciones}  
+        handleClose={closeMdlListarPrestaciones}
+        enviarAlPadre={recibirDatoDelHijo}
+        idprofesion={idprofesion}
+       
+         />
+      )}
+    </>
   );
 };
 

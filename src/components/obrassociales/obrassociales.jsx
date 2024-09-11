@@ -395,7 +395,7 @@ import modalDialogService from "/src/services/modalDialog.service";
 
           <div className="col">
             <button className="btn btn-primary float-end" onClick={() => Imprimir()}>
-              <i className="fa fa-print"></i>Imprimir
+              <i class="fa fa-print"></i>Imprimir
             </button>
           </div>
         </div>

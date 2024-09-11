@@ -9,30 +9,30 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Modal from 'react-bootstrap/Modal';
 
 import { profesionalesService } from "/src/services/profesional.service";
-import { profesionesService } from "/src/services/profesiones.service.js";
+import { prestacionesService } from "/src/services/prestaciones.service.js";
 
 
 import "/src/css/sigetur.css";
 import "/src/css/pizarradeturnos.css";
 
-const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
-  const [Apellido, SetApellido]  = useState(null);
-  const [VarDNI, SetDNI]  = useState(null);
-  const [items, setItems] = useState(null);
-  const [TipoProfesion, setTipoProfesion] = useState([]);
-  const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState('');
-  const [idProfesionEnviar, setIdProfesionEnviar] = useState('');
+const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }) => {
 
-  const seleccionarProfesional = (idProfesional) => {
-    enviarAlPadre(idProfesional);
+  const [items, setItems] = useState(null);
+  const [TipoCapitulo, setTipoCapitulo] = useState([]);
+  const [PrestacionCapitulo, setPrestacionCapitulo] = useState([]);
+  const [idPrestacionSelected, setIdPrestacionSelected] = useState('');
+
+
+  const seleccionarPrestacion = (idPrestacion) => {
+    enviarAlPadre(idPrestacion);
     handleClose() // Envía el id al componente padre
   };
     /*Carga Tipo de profesiones*/
     useEffect(() => {
       async function fetchData() {
           try {
-              const data = await profesionesService.Buscar(); // Llama a la función asíncrona
-              setTipoProfesion(data); // Establece el estado con los datos obtenidos
+              const data = await prestacionesService.BuscarCapitulos(idprofesion); // Llama a la función asíncrona
+              setTipoCapitulo(data); // Establece el estado con los datos obtenidos
           } catch (error) {
               console.error('Error fetching data:', error);
           }
@@ -44,8 +44,8 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
   
   async function Buscar() {
   
-    const data = await profesionalesService.Buscar(Apellido, VarDNI, idTipoProfesionSelected);
-    setItems(data); 
+    const data = await prestacionesService.BuscarPrestaciones(idPrestacionSelected);
+    setPrestacionCapitulo(data); 
 
   }
 
@@ -62,74 +62,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
       <Modal.Body style={{width: "100%"}}>
       <div className="acomodarencabezadopizaturnos">
            
-          <InputGroup className="mb-3">
-         
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              Profesional
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar por apellido"
-              aria-label="Buscar profesional"
-              aria-describedby="basic-addon2"
-              onChange={(e) => SetApellido(e.target.value.toUpperCase())}
-              value={Apellido}
-              autoFocus
-            />
-            
-           
-               
-        <Button
-             title="Buscar por DNI"
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "38px" }}
-              color=""
-              
-              onClick={() => Buscar() }
-             
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </InputGroup>
-         
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              DNI
-            </InputGroup.Text>
-            
-            <Form.Control
-              placeholder="Buscar por DNI"
-              aria-label="Profesión"
-              aria-describedby="basic-addon2"
-              style={{ marginght: "20px" }}
-              onChange={(e) => SetDNI(e.target.value)}
-              value= {VarDNI}
-            />
-             <Button
-             title="Buscar por DNI"
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "38px" }}
-              color="white"
-              
-              onClick={() => Buscar() }
-             
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </InputGroup>
+        
           <InputGroup.Text
                    style={{
                     backgroundColor: "#679bb9",
@@ -137,7 +70,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
                     height: "38px",
                   }}
               >
-                Profesión
+                Prestación:
               </InputGroup.Text>
               <select 
                style={{
@@ -145,19 +78,19 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
                
                 height: "38px",
               }}
-              onChange={(e) =>setIdTipoProfesionSelected(e.target.value)}
-              value={idTipoProfesionSelected}
+              onChange={(e) =>setIdPrestacionSelected(e.target.value)}
+              value={idPrestacionSelected}
               >
                  <option value="" disabled>Seleccionar</option>
-              {TipoProfesion.map(profesion => (
-                <option key={profesion.id} value={profesion.id}>
-                    {profesion.descripcion}
+              {TipoCapitulo.map(capitulo => (
+                <option key={capitulo.id} value={capitulo.id}>
+                    {capitulo.descripcion}
                 </option>
             ))}
               </select>
              
         <Button
-             title="Buscar por DNI"
+             title="Buscar por capitulo"
               variant="outline-secondary"
               id="button-addon1"
               style={{ height: "38px" }}
@@ -183,21 +116,19 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
                   
                   }}
                 >
-                  Apellido
+                  Prestación
                 </th>
 
                 <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)" }} key="1">
-                  Nombres
+                  Código
                 </th>
                
 
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="2">
-                  Profesión
+                  SubCódigo
                 </th>
 
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="3">
-                  DNI
-                </th>
+               
               
                 
                 <th
@@ -212,17 +143,17 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               </tr>
             </thead>
             <tbody>
-            {items &&
-            items.map((Item) => (
+            {PrestacionCapitulo &&
+            PrestacionCapitulo.map((Item) => (
               <tr key={Item.ID}>
                
                
                <td style={{ textAlign: "left", fontSize:"12px" }}>
-                {Item.Apellido}
+                {Item.descripcion}
                </td>
-               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.Nombres}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.especialidad}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
+               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.codigo}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.subcodigo}</td>
+             
               
                <td style={{ textAlign: "center", fontSize:"12px"}}>
                  
@@ -230,7 +161,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
                          variant="outline-success" 
                          size="sm" 
                          style={{width:"70%"}}
-                         onClick={() => seleccionarProfesional(Item.ID)}
+                         onClick={() => seleccionarPrestacion(Item.ID)}
              
                          >
                         Seleccionar
@@ -253,4 +184,4 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
   );
 };
 
-export default mdllistarprofesionales;
+export default mdllistarprestaciones;

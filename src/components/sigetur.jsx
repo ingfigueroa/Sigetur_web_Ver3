@@ -12,12 +12,14 @@ import PizarradeTurnos from "./turnos/pizarradeturnos";
 import ObrasSociales from './obrassociales/obrassociales';
 
 import Profesionales from "./profesionales/profesionales";
+
 import Pacientes from "./pacientes/pacientes";
 
 
 export default function sigetur() {
 
   const [mostrarProfesional, setMostrarProfesional] =  useState(false);
+
   
   const [mostrarObraSocial, setMostrarObraSocial] = useState(false);
 
@@ -45,6 +47,7 @@ const MostrarProfesionales = () => {
   setMostrarObraSocial(false);
   setMostrarProfesional(true);
 };
+
 
 
   
@@ -127,7 +130,7 @@ const MostrarProfesionales = () => {
         </div>
 
         <div
-          style={{ display: "flex", width: "100%", backgroundColor: "#F5EEF8" }}
+          style={{ display: "flex", width: "100%", backgroundColor: "white" }}
         >
           <div
             style={{
@@ -174,7 +177,7 @@ const MostrarProfesionales = () => {
           {mostrarPaciente && <Pacientes />}
           {mostrarPizarradeTurnos && <PizarradeTurnos />}
           {mostrarObraSocial && <ObrasSociales />}       
-        
+         
         </div>
       </div>
      

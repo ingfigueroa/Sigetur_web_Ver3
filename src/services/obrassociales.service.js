@@ -5,12 +5,24 @@ import httpService from "./http.service";
 // mas adelante podemos usar un archivo de configuracion para el urlResource
  import {config} from "../config.js";
  const urlResource = config.urlResourceObrasSociales;
+ const urlResource1 = config.urlResourceObrasSocialesPorPaciente;
 
 
 async function Buscar(Nombre, Pagina) {
   const resp = await httpService.get(urlResource, {
     params: { Nombre, Pagina },
   });
+  return resp.data;
+}
+
+async function BuscarPorPaciente(idPaciente) {
+ 
+  const resp = await httpService.get(urlResource1, {
+    
+    params: { idPaciente }
+  });
+
+  
   return resp.data;
 }
 
@@ -36,5 +48,5 @@ async function Grabar(item) {
 
 
 export const obrassocialesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,Grabar
+  Buscar, BuscarPorPaciente
 };

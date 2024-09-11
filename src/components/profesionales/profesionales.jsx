@@ -9,10 +9,11 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 import "/src/css/sigetur.css";
+import "/src/css/pizarradeturnos.css";
 
 
 import { profesionalesService } from "/src/services/profesional.service";
-import mdlAltaProfesionales from "./registrarprofesional";
+import MdlAltaProfesionales from "./registrarprofesional";
 
 
 import modalDialogService from "/src/services/modalDialog.service";
@@ -28,13 +29,13 @@ import modalDialogService from "/src/services/modalDialog.service";
   };
   const [AccionABMC, setAccionABMC] = useState("L");
 
-  const [Apellido, SetApellido]  = useState(null);
+  const [Apellido, SetApellido]  = useState("");
 
   const [VarDNI, SetDNI]  = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   
- const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false)
+ const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false);
 
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
@@ -103,54 +104,12 @@ import modalDialogService from "/src/services/modalDialog.service";
   }
   
 
-  function Consultar(item) {
-    BuscarPorId(item, "C"); // paso la accionABMC pq es asincrono la busqueda y luego de ejecutarse quiero cambiar el estado accionABMC
-  }
-  function Modificar(item) {
-    if (!item.Activo) {
-      //alert("No puede modificarse un registro Inactivo.");
-      modalDialogService.Alert("No puede modificarse un registro Inactivo.");
-      return;
-    }
-    BuscarPorId(item, "M"); // paso la accionABMC pq es asincrono la busqueda y luego de ejecutarse quiero cambiar el estado accionABMC
-  }
 
-  async function Agregar() {
-    setAccionABMC("A");
-    setItem({
-        IdArticulo: 0,
-        Nombre: '',
-        Precio: '',
-        Stock: '',
-        CodigoDeBarra: '',
-        IdArticuloFamilia: '',
-        FechaAlta: moment(new Date()).format("YYYY-MM-DD"),
-        Activo: true,
-      });
-    //modalDialogService.Alert("preparando el Alta...");
-  }
 
   function Imprimir() {
     modalDialogService.Alert("En desarrollo...");
   }
 
-  async function ActivarDesactivar(item) {
-    modalDialogService.Confirm(
-      "Esta seguro que quiere " +
-        (item.Activo ? "desactivar" : "activar") +
-        " el registro?",
-      undefined,
-      undefined,
-      undefined,
-      async () => {
-        await profesionalesService.ActivarDesactivar(item);
-        await Buscar();
-      }
-    );
-
-  }
-  
-  
 
   async function Grabar(item) {
     // agregar o modificar
@@ -192,6 +151,7 @@ import modalDialogService from "/src/services/modalDialog.service";
     }}
     >
       <form>
+        
        <div className="acomodarencabezadopizaturnos">
           
           <div className="tituloPagina">
@@ -203,13 +163,21 @@ import modalDialogService from "/src/services/modalDialog.service";
           <div style={{ width: "30%", textAlign: "right" }}>
           <button
               title="Registrar nuevo profesional"
-              className="btn btn-sm btn-light btn-outline-primary"
-              onClick={openMdlRegistrarProfe}
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              onClick={(event) => {
+                event.preventDefault();
+                openMdlRegistrarProfe();
+              }}
             >
               <i class="fa-solid fa-plus"></i>
             </button>
            
-            
+            <button 
+               title="Imprimir"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              onClick={() => Imprimir()}>
+              <i class="fa fa-print"></i>
+            </button>
           </div>
           
         </div>
@@ -232,7 +200,8 @@ import modalDialogService from "/src/services/modalDialog.service";
               placeholder="Buscar por apellido de profesional"
               aria-label="Buscar profesional"
               aria-describedby="basic-addon2"
-              onChange={(e) => SetApellido(e.target.value)}
+              type="text"
+              onChange={(e) => SetApellido(e.target.value.toUpperCase())}
               value={Apellido}
               autoFocus
             />
@@ -277,6 +246,7 @@ import modalDialogService from "/src/services/modalDialog.service";
               id="button-addon1"
               style={{ height: "38px" }}
               color="white"
+              
               onClick={() => Buscar(1) }
              
             >
@@ -294,7 +264,7 @@ import modalDialogService from "/src/services/modalDialog.service";
       <div className="">
           <Table bordered hover>
             <thead>
-              <tr className="personalizarfila h-50">
+              <tr className="h-50">
               <th
                   style={{
                     textAlign: "center",
@@ -307,7 +277,7 @@ import modalDialogService from "/src/services/modalDialog.service";
                 </th>
                 <th
                   style={{
-                    textAlign: "center",
+                    textAlign: "left",
                     backgroundColor: "rgb(136, 161, 184)",
                   
                   }}
@@ -315,9 +285,10 @@ import modalDialogService from "/src/services/modalDialog.service";
                   Apellido
                 </th>
 
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="1">
+                <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)" }} >
                   Nombres
                 </th>
+
 
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="2">
                   Especialidad
@@ -358,11 +329,11 @@ import modalDialogService from "/src/services/modalDialog.service";
                 <td style={{ textAlign: "center" }}>
                 {Item.ID}
                </td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>
+               <td style={{ textAlign: "left", fontSize:"12px" }}>
                 {Item.Apellido}
                </td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.Nombres}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.Idtipoprofesion}</td>
+               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.Nombres}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.especialidad}</td>
                <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
                <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.EMail}</td>
                <td style={{ textAlign: "center", fontSize:"12px"}}>
@@ -407,7 +378,7 @@ import modalDialogService from "/src/services/modalDialog.service";
                        className="btn btn-sm btn-light btn-danger"
                     >
                     <i class="fa-solid fa-calendar-days"></i>
-            </button>
+                  </button>
                   </td>
                 </tr>
                 //<TableRow item={item} />
@@ -438,21 +409,20 @@ import modalDialogService from "/src/services/modalDialog.service";
             &nbsp; de {Paginas?.length}
           </div>
 
-          <div className="col">
-            <button className="btn btn-primary float-end" onClick={() => Imprimir()}>
-              <i className="fa fa-print"></i>Imprimir
-            </button>
-          </div>
+         
         </div>
       </div>   
       
+    
     </div>
     
     { mdlRegistrarProfesional && (
-        <mdlAltaProfesionales
+        <MdlAltaProfesionales
+
           show={openMdlRegistrarProfe}
           handleClose={closeMdlRegistrarProfe}
         />
+      
       )}
 
     </>

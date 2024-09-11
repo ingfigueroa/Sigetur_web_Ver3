@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { format, parseISO } from "date-fns"
 import "/src/css/pizarradeturnos.css";
 
 import Table from "react-bootstrap/Table";
@@ -15,23 +16,57 @@ import Mdlanularturno from "./mdlanularturno";
 import Mdlturnoregistrarcobro from "./mdlturnoregistrarcobro";
 
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
+import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
 import Mdllistaespera from "../mdlListaEspera";
+import MdlSiNo from "../modales/mdlSiNO";
+import MdlAnular from "../modales/mdlAnular";
+
+
+
+import { turnosService } from "/src/services/turnos.service";
+import { profesionalesService} from "/src/services/profesional.service";
+
+
+
+
 
 function tablapizarradeturnos() {
  
   const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
+  const [mdlSiNoMensaje, setModalSiNoMensaje] = useState(null);
+
+  const [mdlSiNo, setModalSiNo] = useState(null);
+  const [mdlAnularTurno, setModalAnularTurno] = useState(false);
 
 
-  const [mdlAltaTurno, setModalAltaTurno] = useState(false);
 
   const [mdlHoraProfe, setModalHoraProfe] = useState(false);
   const [mdlListaEspera, setModalListaEspera] = useState(false);
-  const [mdlBuscarObjetos, setModalBuscarObjetos] = useState(false);
+  const [mdlListaProfesionales, setModalListarProfesionales] = useState(false);
+  
   const [Items, setItems] = useState(null);
-  const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
-  const [RegistrosTotal, setRegistrosTotal] = useState(0);
-  const [Pagina, setPagina] = useState(1);
-  const [Paginas, setPaginas] = useState([]);
+  const [Item, setItem] = useState(null);
+
+  const [IDProfesional, SetIDProfesional]  = useState(null);
+  const [IDProfesion, SetIDProfesion]  = useState(null);
+  const [IDEstado, setIdEstado] = useState(null);
+  const [anular, setAnular] = useState(false);
+
+  const [Fecha, SetFecha]  = useState("");
+  const [vieneDE, setVieneDE]  = useState("");
+  const [FechaLarga, SetFechaLarga]  = useState(null);
+
+  const [idusuario, setUsuario]  = useState('1');
+
+  const [filaSeleccionada, setFilaSeleccionada] = useState(null);
+  
+ 
+   
+ const [mdlRegistrarTurno, setModalRegistrarTurno] = useState(false);
+
+ const [apeyNom, setapeyNom] = useState(null)
+ const [profesion, setProfesion] = useState(null)
+
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
   };
@@ -47,24 +82,22 @@ function tablapizarradeturnos() {
   const closeMdlListaEspera = () => {
     setModalListaEspera(false);
   };
-
-  const openMdlBuscarObjetos = () => {
-    setModalBuscarObjetos(true);
+  
+  const openMdlListarProfesionales = () => {
+    setModalListarProfesionales(true);
+   
   };
 
-  const closeMdlBuscarObjetos = () => {
-    setModalBuscarObjetos(false);
+  const closeMdlListarProfesionales = () => {
+    setModalListarProfesionales(false);
+    BuscarTurnosProfesionalFecha(IDProfesional, Fecha)
+    
   };
-  const openMdlAltaTurno = () => {
-    setModalAltaTurno(true);
-  };
-
-  const closeMdlAltaTurno = () => {
-    setModalAltaTurno(false);
-  };
+  
 
   
-  const openMdlTurnoDetalle = () => {
+  const openMdlTurnoDetalle = (fila) => {
+    setItem(fila)
     setModalTurnoDetalle(true);
   };
 
@@ -72,9 +105,9 @@ function tablapizarradeturnos() {
     setModalTurnoDetalle(false);
   };
 
-  const [mdlAnularTurno, setModalAnularTurno] = useState(false);
 
   const openMdlAnularTurno = () => {
+   // setModalSiNoMensaje("¿Está seguro de anular el turno?")
     setModalAnularTurno(true);
   };
 
@@ -82,123 +115,417 @@ function tablapizarradeturnos() {
     setModalAnularTurno(false);
   };
 
-  const [mdlturnoregistrarcobro, setmModalTurnoRegistrarCobro] =
-    useState(false);
+  const [mdlturnoregistrarcobro, setModalTurnoRegistrarCobro] = useState(false);
 
-  const openMdlurnoRegistrarCobro = () => {
-    setmModalTurnoRegistrarCobro(true);
+
+  const openMdlTurnoRegistrarCobro = (fila) => {
+    setItem(fila);
+    setModalTurnoRegistrarCobro(true);
   };
 
-  const closeMdlurnoRegistrarCobro = () => {
-    setmModalTurnoRegistrarCobro(false);
+  const closeMdlTurnoRegistrarCobro = () => {
+    setModalTurnoRegistrarCobro(false);
   };
+
+
+  const definirEstadosdeTurnos = (fila, VieneDE) => {
+    
+
+    try {
+        setItem(fila);
+        setIdEstado(fila.idestado)
+        if (fila.estado == "LIBRE" && VieneDE == "LIBRE"){
+            openMdlRegistrarTurno(fila)
+
+        } else if (fila.estado == "PENDIENTE" && VieneDE == "PENDIENTE") {
+        
+          setModalSiNoMensaje("¿Esta seguro de cambiar el estado del turno a PRESENTE?");
+          setModalSiNo(true);
+
+        }  else if (fila.estado == "PENDIENTE" && VieneDE == "ANULAR") {
+
+         // setModalSiNoMensaje("¿Esta seguro de anular el turno?");
+          
+          openMdlAnularTurno();
+
+        }
+
+        setItem(fila);
+        BuscarTurnosProfesionalFecha(IDProfesional, Fecha);
+        
+    } catch (error) {
+      
+    }
+
+    
+  };
+
+  const handleYes = (observaciones) => {
+   
+     TurnosCambiarEstado(Item, 'PNC', observaciones);
+     
+     BuscarTurnosProfesionalFecha(IDProfesional, Fecha)
+
+    // Aquí agregas la lógica para cambiar el estado del turno
+  };
+
+  const handleAnular = (observaciones) => {
+       
+
+    TurnosCambiarEstado(Item, 'ANULAR', observaciones)
+    setAnular(false);
+    BuscarTurnosProfesionalFecha(IDProfesional, Fecha)
+
+   // Aquí agregas la lógica para cambiar el estado del turno
+ };
+
+  const handleClose = () => {
+   
+    setModalSiNo(false);
+  };
+
+
+  const openMdlRegistrarTurno = (fila) => {
+    setFilaSeleccionada(fila);
+  
+    setModalRegistrarTurno(true);
+    
+  };
+
+  
+  const closeMdlRegistrarTurno = () => {
+    setModalRegistrarTurno(false);
+    
+    BuscarTurnosProfesionalFecha(IDProfesional, Fecha);
+  };
+
+  const recibirDatoDelHijo = (datoRecibido) => {
+    SetIDProfesional(datoRecibido);
+   
+    BuscarProfesionalyProfesion(datoRecibido);
+};
+
+const handleFechaChangeLarga  = (event,) => {
+  
+  const selectedDate = new Date(FechaLarga);
+
+    // Formatear la fecha usando date-fns
+    const formattedDate = format(selectedDate, "EEEE d 'de' MMMM yyyy", { locale: es });
+
+    setFecha(formattedDate)
+};
+
+const handleFechaChange = (e) => {
+ 
+  SetFecha(e.target.value);
+  
+  const fechaISO = e.target.value;
+    
+  // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
+  const fechaObj = new Date(fechaISO);
+  
+
+  // Ajustar la fecha al UTC manualmente
+  const fechaLocal = new Date(fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000);
+
+  // Formatear usando toLocaleString o date-fns como prefieras
+  const fechaLarga = fechaLocal.toLocaleDateString('es-ES', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
+
+  SetFechaLarga(fechaLarga)
+  
+  
+};
+  
+  async function BuscarTurnosPorProfesionalPorFecha(idusuario, idprofesional, fecha) {
+   
+    if (idprofesional>0){
+       const data = await turnosService.CrearTurnosPorProfesionalPorFecha(idusuario, idprofesional, fecha)
+      
+        BuscarTurnosProfesionalFecha(idprofesional, fecha)
+        // Asegúrate de que `Apellido` y `Nombres` existen en `data`
+       
+      
+    }
+    
+      }
+
+
+
+  async function BuscarTurnosProfesionalFecha(idprofesional,fecha) {
+    
+ 
+ 
+    if (idprofesional>0){
+       const data = await turnosService.BuscarPorProfesionalFecha(idprofesional, fecha);
+      
+       if (data) {
+        setItems(data); // Asignar los datos a `Items`
+     
+        // Asegúrate de que `Apellido` y `Nombres` existen en `data`
+       
+      }
+    }
+    
+      }
+
+      
+  async function BuscarProfesionalyProfesion(idprofesional) {
+  
+    
+    const data = await profesionalesService.BuscarPorId(idprofesional);
+    
+   
+    if (data) {
+      setItems(data); // Asignar los datos a `Items`
+   
+      // Asegúrate de que `Apellido` y `Nombres` existen en `data`
+      if (data[0].Apellido && data[0].Nombres) {
+          setapeyNom(`${data[0].Apellido}, ${data[0].Nombres}`); // Concatenar apellido y nombres
+       
+      } else {
+          console.error("Los datos del profesional no contienen Apellido o Nombres.");
+      }
+      
+      if (data[0].especialidad) {
+          setProfesion(data[0].especialidad); // Asignar especialidad
+          SetIDProfesion(data[0].idtipoprofesion)
+         
+      }
+  }
+   
+ 
+    
+    //generar array de las páginas para mostrar en select del paginador
+      }
+
+      
+  async function TurnosCambiarEstado(fila, vieneDE, obs) {
+    
+
+
+    try {
+    
+    
+       const data = await turnosService.TurnosCambiarEstado(fila.idTurno, fila.idestado, obs, idusuario, vieneDE)
+      
+    } catch (error) {
+      
+    }
+      
+    }
+    
+      
+
+
 
   return (
     <>
       <div
         style={{
-          display: "grid",
+          
           width: "100%",
-          margin: "15px 15px",
-          backgroundColor: "white",
+         
+         marginTop:"0",
+         marginBottom: "0"
+         
         }}
       >
-        <div className="acomodarencabezadopizaturnos">
-          <div style={{ width: "70%", textAlign: "center", color: "black" }}>
-            <h3>Pizarra de turnos</h3>
-          </div>
-          <div style={{ width: "30%", textAlign: "right" }}>
-            <button
-              title="Email a todos los turnos a toda la grilla"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-            >
-              <i class="fa-solid fa-at"></i>
-            </button>
-            <button
-              title="Agenda Semanal"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-            >
-              <i class="fa-solid fa-calendar-days"></i>
-            </button>
+        <div style={{ display: "flex", backgroundColor: "white"}}>
+            <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
+          
+                  <h2> Pizarra de turnos</h2>
+            
+           </div>
+            <div style={{ width: "40%", textAlign: "right"  }}>
+              <button
+                title="Email a todos los turnos a toda la grilla"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              >
+                <i class="fa-solid fa-at"></i>
+              </button>
+              <button
+                title="Agenda Semanal"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              >
+                <i class="fa-solid fa-calendar-days"></i>
+              </button>
 
-            <button
-              title="Horarios del profesional"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={openMdlHoraProfe}
-            >
-              <i class="fa-solid fa-clock"></i>
-            </button>
-            <button
-              title="Lista de espera"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={openMdlListaEspera}
-            >
-              <i class="fa-solid fa-book-open-reader"></i>
-            </button>
-          </div>
+              <button
+                title="Horarios del profesional"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={openMdlHoraProfe}
+              >
+                <i class="fa-solid fa-clock"></i>
+              </button>
+              <button
+                title="Lista de espera"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={openMdlListaEspera}
+              >
+                <i class="fa-solid fa-book-open-reader"></i>
+              </button>
+            </div>
         </div>
+        
+            <hr></hr>
+        <div>
+            <div  style={{
+              display: "grid",
+              width: "80%",
+              paddingtop: "0",
+            
+                       
+            }}>
+            
+              <div 
+              style={{witdh: "100%"}}
+              >
+              
+              <InputGroup className="mb-3">
+                <InputGroup.Text
+                  style={{
+                    backgroundColor: "#679bb9",
+                    color: "white",
+                    height: "38px",
 
-        <div className="acomodarencabezadopizaturnos">
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              Fecha
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar profesional"
-              aria-label="Buscar profesional"
-              aria-describedby="basic-addon2"
-              type="date"
-            />
-          </InputGroup>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              Profesional
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar profesional"
-              aria-label="Buscar profesional"
-              aria-describedby="basic-addon2"
-            />
-            <Button
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ backgroundColor: "#002d38", height: "38px" }}
-              color="white"
-              onClick={openMdlBuscarObjetos}
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </InputGroup>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              Especialidad
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Profesión"
-              aria-label="Profesión"
-              aria-describedby="basic-addon2"
-              style={{ marginght: "20px" }}
-            />
-          </InputGroup>
+                  
+                  }}
+                >
+                  Elegir fecha
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Buscar profesional"
+                  aria-label="Buscar profesional"
+                  aria-describedby="basic-addon2"
+                  type="date"
+                  onChange={handleFechaChange}
+                  value={Fecha}
+                  
+                />
+                <Form.Control
+                 style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "38px",
+                  marginLeft: "15px",
+                  width: "50%"
+
+                
+                }}
+                   
+                    
+                    aria-describedby="basic-addon2"
+                    readOnly
+                    value={FechaLarga}
+                  />
+               
+              </InputGroup>
+             
+              </div>
+              
+              
+            </div>
+            <div style={{
+                  
+                  display: "flex"
+                }}>
+                    <div
+                  style={{
+                  
+                    width: "45%"
+                  
+                  
+                  }}>
+                    <InputGroup className="mb-3">
+                  
+                  <InputGroup.Text
+                    style={{
+                      backgroundColor: "#679bb9",
+                      color: "white",
+                      height: "38px",
+                    }}
+                  >
+                    Profesional:
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Buscar profesional"
+                    aria-label="Buscar profesional"
+                    aria-describedby="basic-addon2"
+                    readOnly
+                    value={apeyNom}
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    id="button-addon1"
+                    style={{ backgroundColor: "#002d38", height: "38px" }}
+                    color="white"
+                    onClick={openMdlListarProfesionales}
+                    /* onClick={() => BuscarTurnosProfesionalFecha() } */
+                  >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </Button>
+              
+                </InputGroup>
+                    </div>
+                    <div 
+                      style={{
+                                
+                        width: "35%"
+                      
+                    
+                      }}>          
+                    <InputGroup className="mb-3">
+                  
+                    
+                      <InputGroup.Text
+                        style={{
+                          backgroundColor: "#679bb9",
+                          color: "white",
+                          height: "38px"
+                          
+                        }}
+                      >
+                        Servicio:
+                      </InputGroup.Text>
+                      <Form.Control
+                        placeholder="Profesión"
+                        aria-label="Profesión"
+                        aria-describedby="basic-addon2"
+                        style={{ marginght: "20px" }}
+                        readOnly
+                        value={profesion}
+                      />
+                    </InputGroup>
+                    
+                  </div>
+                  <div  
+                    style={{
+                    
+                      width: "20%",
+                      textAlign: "right",
+                      marginRight:  "15px"
+                    }}>
+                  
+                        <Button 
+                        variant="success"
+                          size="sm"
+                          style={{ width: "70%", textAlign: "center" }}
+                      
+                          onClick={() => BuscarTurnosPorProfesionalPorFecha(idusuario, IDProfesional, Fecha)} 
+                          >
+                          Burcar Turnos
+
+                        </Button>
+                    
+                    
+                  </div>
+                  
+            </div>
         </div>
+      
+        
         <div className="acomodartabla">
           <Table bordered hover>
             <thead>
@@ -207,7 +534,7 @@ function tablapizarradeturnos() {
                   style={{
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
-                    width:"270px"
+                    width:"200px"
                   }}
                 >
                   Estado
@@ -246,106 +573,182 @@ function tablapizarradeturnos() {
               </tr>
             </thead>
             <tbody>
-            {Items &&
-            Items.map((Item) => (
-              <tr key={Item.Id}>
-                  <td style={{ textAlign: "center", fontSize:"12px" }}>
-                    {item.Estado === "LIB" ? (
-                      <Button variant="success" size="sm" style={{width:"60%"}}>
-                        libre
-                      </Button>
-                    ) : item.Estado === "PRE-COB" ? (
-                      <Button variant="primary" size="sm" style={{width:"60%"}}>
-                        presente cobrado
-                      </Button>
-                     ) : item.Estado === "PRE-NCOB" ? (
-                      <Button variant="danger" size="sm" style={{width:"60%"}}>
-                        presente no cobrado
-                      </Button>
-                     ) : item.Estado === "PEN" ? (
-                      <Button variant="warning" size="sm" style={{width:"60%"}}>
-                        pendiente
-                      </Button>
-                     ) : item.Estado === "ACA" ? (
-                      <Button variant="secondary" size="sm" style={{width:"60%"}}>
-                        ausente c/aviso
-                      </Button>
-                     ) : item.Estado === "ASA" ? (
-                      <Button variant="secondary" size="sm" style={{width:"60%"}}>
-                        ausente s/aviso
-                      </Button>
-                    
-                    ) : (
-                      <Button variant="outline-danger" size="sm" style={{width:"60%"}}>
-                        Estado no es LIB ni OTRA_OPCION
-                      </Button>
-                    )}
-                  </td>
-                  <td style={{ textAlign: "center", fontSize:"12px" }}>{item.Hora}</td>
-                  <td style={{ textAlign: "center", fontSize:"12px" }}>{item.Paciente}</td>
-                  <td style={{ textAlign: "center", fontSize:"12px" }}>{item.DNI}</td>
-                  <td style={{ textAlign: "center", fontSize:"12px" }}>{item.Obra_social}</td>
+              {Items &&
+                Items.map((item) => {
+                  // Formatear el campo "Descripcion" como hora
+                
 
-                  <td style={{ textAlign: "center", fontSize:"12px" }}>
-                    <button
-                      title="Registrar Turno"
-                      className="btn btn-sm btn-light btn-primary"
-                      onClick={openMdlAltaTurno}
-                    >
-                      <i class="fa-solid fa-up-right-from-square"></i>
-                    </button>
-                    <button
-                      title="Anular turno"
-                      className="btn btn-sm btn-light btn-danger"
-                      onClick={openMdlAnularTurno}
-                    >
-                      <i class="fa-solid fa-trash"></i>
-                    </button>
-                    <button
-                      title="Detalle del turno"
-                      className="btn btn-sm btn-light btn-success"
-                      onClick={openMdlTurnoDetalle}
-                    >
-                      <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </button>
-                    <button
-                      title="Registrar cobro"
-                      className="btn btn-sm btn-light btn-success"
-                      variant="outline-secondary"
-                      onClick={openMdlurnoRegistrarCobro}
-                    >
-                      <i class="fa-solid fa-dollar-sign"></i>
-                    </button>
-                  </td>
-                </tr>
-                //<TableRow item={item} />
-              ))}
-            </tbody>
+                  let buttonVariant;
+                  let buttonText;
+
+                  // Definir variantes y textos según el estado
+                  switch (item.sigla) {
+                    
+                    case 'ANU':
+                      buttonVariant = 'dark';
+                      buttonText = item.estado;
+                      break;
+                    case 'PEN':
+                      buttonVariant = 'warning';
+                      buttonText = item.estado;
+                      break;
+                    case 'PRE':
+                      
+                        buttonVariant = 'primary';
+                        buttonText = item.estado;
+                        break;
+                  
+                    case 'ACA':
+                    buttonVariant = 'info';
+                      buttonText = item.estado;
+                      break;
+                      case 'ASA':
+                    buttonVariant = 'danger';
+                      buttonText = item.estado;
+                      break;
+                    case 'PEN COB':
+                      buttonVariant = 'warning';
+                      buttonText = item.estado;
+                      break;
+                    case 'PRE COB':
+                      buttonVariant = 'primary';
+                      buttonText = item.estado;
+                      break;
+                  case 'NCI':
+                      buttonVariant = 'secondary';
+                      buttonText = item.estado;
+                      break;
+                    case 'PRE NCOB':
+                      buttonVariant = 'primary';
+                      buttonText = item.estado;
+                      break;
+                  
+                    case 'LIB':
+                      buttonVariant = 'success';
+                      buttonText = item.estado;
+                      break;
+                  
+                    
+                  }
+      
+
+      return (
+        <tr key={item.idTurno}>
+
+     
+          <td style={{ textAlign: "center", fontSize: "12px" }}>
+            <Button 
+            variant={buttonVariant} 
+            size="sm"
+             style={{ width: "70%", textAlign: "center" }}
+         
+             onClick={(event) => {
+              event.preventDefault();
+              if (item.estado == "PENDIENTE"){
+                definirEstadosdeTurnos(item, 'PENDIENTE');
+              } else if (item.estado == "LIBRE"){
+                definirEstadosdeTurnos(item, 'LIBRE');
+              }
+            }}
+            
+             >
+              {buttonText}
+
+            </Button>
+          </td>
+         
+          <td style={{ textAlign: "center", fontSize: "12px" }}>{item.desde}</td> {/* Mostrar hora formateada */}
+          
+          <td style={{ textAlign: "center", fontSize: "12px" }}>
+            <Button variant="" size="sm" style={{ width: "70%", textAlign: "center" }}>
+              {item.apeNom}
+            </Button>
+          </td>
+          <td style={{ textAlign: "center", fontSize: "12px" }}>
+
+           {item.nroDoc > 0 ? item.nroDoc : null}
+          </td>
+          <td style={{ textAlign: "center", fontSize: "12px" }}>{item.os}</td>
+          <td style={{ textAlign: "center", fontSize: "12px" }}>
+          {item.estado == 'PENDIENTE' && (
+            <button
+              title="Anular turno"
+              className="btn btn-sm btn-light btn-danger"
+              onClick={(event) => {
+                event.preventDefault();
+               
+                definirEstadosdeTurnos(item, 'ANULAR');
+              }}
+
+
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+            )}
+             {item.estado !== 'LIBRE' && (
+            <button
+              title="Detalle del turno"
+              className="btn btn-sm btn-light btn-success"
+              onClick={(event) => {
+                event.preventDefault();
+               
+                openMdlTurnoDetalle(item);
+              }}
+            >
+              <i className="fa-solid fa-file-invoice-dollar"></i>
+            </button>
+             )}
+            {item.estado == 'PRESENTE NO COBRADO' && (
+              <button
+                title="Registrar cobro"
+                className="btn btn-sm btn-light btn-success"
+                variant="outline-secondary"
+                onClick={(event) => {
+                  event.preventDefault();
+                 
+                  openMdlTurnoRegistrarCobro(item);
+                }}
+              
+              >
+                <i className="fa-solid fa-dollar-sign"></i>
+              </button>
+             )}
+          </td>  
+        </tr>
+      );
+    })}
+</tbody>
           </Table>
         </div>
       </div>
 
-      {mdlAltaTurno && (
-        <MdlAltaTurno show={openMdlAltaTurno} handleClose={closeMdlAltaTurno} />
+      {mdlRegistrarTurno && (
+        <MdlAltaTurno 
+        show={openMdlRegistrarTurno}  
+        handleClose={closeMdlRegistrarTurno}
+        fila={filaSeleccionada}
+        ApeyNom={apeyNom}
+        FechaTurno={Fecha}
+        profesion={profesion}
+         />
       )}
 
       {mdlTurnoDetalle && (
         <MdlTurnoDetalle
           show={openMdlTurnoDetalle}
           handleClose={CloseMdlTurnoDetalle}
+          fila={Item}
+         
         />
       )}
 
-      {mdlAnularTurno && (
-        <Mdlanularturno
-          show={openMdlAnularTurno}
-          handleClose={closeMdlAnularTurno}
-        />
-      )}
+     
       {mdlturnoregistrarcobro && (
         <Mdlturnoregistrarcobro
-          show={openMdlurnoRegistrarCobro}
-          handleClose={closeMdlurnoRegistrarCobro}
+          show={openMdlTurnoRegistrarCobro}
+          handleClose={closeMdlTurnoRegistrarCobro}
+          fila={Item}
+          idprofesion={IDProfesion}
         />
       )}
       {mdlHoraProfe && (
@@ -354,7 +757,7 @@ function tablapizarradeturnos() {
           handleClose={closeMdlHoraProfe}
         />
       )}
-
+ 
       {mdlListaEspera && (
         <Mdllistaespera
           show={openMdlListaEspera}
@@ -362,12 +765,36 @@ function tablapizarradeturnos() {
         />
       )}
 
-      {mdlBuscarObjetos && (
-        <MdlBuscarObjetos
-          show={openMdlBuscarObjetos}
-          handleClose={closeMdlBuscarObjetos}
-        />
+      {mdlListaProfesionales && (
+        <MdlListarProfesionales 
+        show={openMdlListarProfesionales}  
+        handleClose={closeMdlListarProfesionales}
+        enviarAlPadre={recibirDatoDelHijo}
+       
+         />
       )}
+
+      {mdlSiNo && (
+        <MdlSiNo 
+          show={setModalSiNoMensaje}  
+          handleClose={handleClose}
+          enviarAlPadre= {handleYes}
+          fila={Item}
+         
+         /> 
+      )}
+
+      {mdlAnularTurno && (
+        <Mdlanularturno 
+        show={setModalAnularTurno}  
+        handleClose={closeMdlAnularTurno}
+        enviarAlPadre= {handleAnular}
+        fila={Item}
+         
+         
+         />
+      )}
+
     </>
   );
 }
