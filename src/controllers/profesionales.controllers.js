@@ -39,6 +39,31 @@ export const getProfesionales = async (req, res) => {
     }
 };
 
+
+export const getProfesionalesHorarios = async (req, res) => {
+  try {
+    const { idprofesional, fecha } = req.query;
+    
+    const pool = await getConnection();
+    const request = pool.request();
+    let result;
+    
+        
+        request.input('idprofesional', sql.Int, idprofesional);
+        request.input('fecha',sql.Date,fecha)
+        result = await request.execute('sp_buscar_profesional_diashoras_trabaja');
+   
+    
+    
+    return res.json(result.recordset);
+    
+
+  } catch (error) {
+      console.error('Error en la ejecución del procedimiento almacenado:', error);
+      return res.status(500).json({ message: 'Error en el servidor' });
+  }
+};
+
 export const getProfesionalProfesion = async (req, res) => {
   try {
     const { idprofesional } = req.query;

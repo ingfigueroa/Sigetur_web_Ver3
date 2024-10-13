@@ -121,6 +121,39 @@ export const putTurnosPasaraPendiente = async (req, res) => {
 };
 
 
+export const putTurnosAnularPorPedidoProfesional = async (req, res) => {
+    try {
+      const { idprof, observaciones, fecha, idusuario } = req.body || {};
+      
+    
+      const pool = await getConnection();
+      const request = pool.request();
+      let result; 
+          
+          request.input('idprofesional', sql.Int, idprof);
+          request.input('observaciones', sql.VarChar, observaciones);
+          request.input('fecha', sql.Date, fecha);
+          request.input('idusuario', sql.Int, idusuario);
+
+          
+
+         
+          result = await request.execute('sp_turno_anular_todos_por_dia');
+          
+       
+         
+    return res.status(201).json({ 
+        message: 'Turnos anulados exitosamente', 
+        
+      });
+    } catch (error) {
+       
+        return res.status(500).json({ message: 'Error en el servidor' }, error);
+    }
+};
+
+
+
 
 export const putTurnosCambiarEstados = async (req, res) => {
     try {

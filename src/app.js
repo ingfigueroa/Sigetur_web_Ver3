@@ -9,6 +9,7 @@ import tipoDocumentoRoutes from './routes/tipodocumento.routes.js';
 import provinciasRoutes from './routes/provincias.routes.js';
 import localidadesRoutes from './routes/localidades.routes.js';
 import turnosRoutes from './routes/turnos.routes.js';
+import prestacionesRoutes from './routes/prestaciones.routes.js';
 
 import cors from 'cors';
 
@@ -39,6 +40,7 @@ app.use(tipoDocumentoRoutes);
 app.use(provinciasRoutes);
 app.use(localidadesRoutes);
 app.use(turnosRoutes);
+app.use(prestacionesRoutes);
 
 
 
