@@ -218,6 +218,12 @@ const [contador, setContador] = useState(0); // Inicializamos el contador en 0
                       <i class="fa-solid fa-book-open-reader"></i>
                       
                     </button>
+                    <button
+                       title="Cancelar turnos por fecha"
+                       className="btn btn-sm btn-light btn-danger"
+                    >
+                    <i class="fa-solid fa-power-off"></i>
+                  </button>
                     
                   </td>
                 </tr>

@@ -13,7 +13,7 @@ import { prestacionesService } from "/src/services/prestaciones.service.js";
 
 
 import "/src/css/sigetur.css";
-import "/src/css/pizarradeturnos.css";
+import "/src/css/pizarradeturnos.css";  
 
 const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }) => {
 
@@ -30,9 +30,11 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
     /*Carga Tipo de profesiones*/
     useEffect(() => {
       async function fetchData() {
+       
           try {
               const data = await prestacionesService.BuscarCapitulos(idprofesion); // Llama a la función asíncrona
               setTipoCapitulo(data); // Establece el estado con los datos obtenidos
+              
           } catch (error) {
               console.error('Error fetching data:', error);
           }
@@ -50,14 +52,15 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
   }
 
   return (
-    <Modal show={show} onHide={handleClose} size="xl"
-      style={{width: "100%"}}
+    <Modal show={show} onHide={handleClose} size="lg"
+      style={{width: "100%"}} 
+      centered
     >
       <Modal.Header
         closeButton
         style={{ backgroundColor: "#0277bd", color: "white" }}
       >
-        <Modal.Title>Buscar profesionales</Modal.Title>
+        <Modal.Title>PRESTACIONES - BUSCAR</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{width: "100%"}}>
       <div className="acomodarencabezadopizaturnos">
@@ -70,7 +73,7 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
                     height: "38px",
                   }}
               >
-                Prestación:
+                Capitulo:
               </InputGroup.Text>
               <select 
                style={{
@@ -83,8 +86,8 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
               >
                  <option value="" disabled>Seleccionar</option>
               {TipoCapitulo.map(capitulo => (
-                <option key={capitulo.id} value={capitulo.id}>
-                    {capitulo.descripcion}
+                <option key={capitulo.ID} value={capitulo.ID}>
+                    {capitulo.Descripcion}
                 </option>
             ))}
               </select>
@@ -102,7 +105,10 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
               <i class="fa-solid fa-magnifying-glass"></i>
             </Button>
             
+            
         </div>
+
+
        
         
         <Table bordered hover>
@@ -149,10 +155,10 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
                
                
                <td style={{ textAlign: "left", fontSize:"12px" }}>
-                {Item.descripcion}
+                {Item.Descripcion}
                </td>
                <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.codigo}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.subcodigo}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.SubCodigo}</td>
              
               
                <td style={{ textAlign: "center", fontSize:"12px"}}>

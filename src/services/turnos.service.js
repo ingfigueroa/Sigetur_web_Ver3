@@ -9,8 +9,27 @@ import httpService from "./http.service";
  const urlResourceTurnosCrear = config.urlResourceTurnosCrear;
  const urlResourceEstadoPorTurnos = config.urlResourceEstadoPorTurnos;
  const urlResourceTurnosCambiarEstado = config.urlResourceCambiarEstado;
+ const urlResourceTurnosAnularPorPedidoProfesional = config.urlResourceTurnosAnularPorPedidoProfesional;
 
- 
+ async function TurnosAnularPorPedidoProfesional( idprof, observaciones, fecha, idusuario) {
+  console.log(idprof)
+  console.log(observaciones)
+  console.log(fecha)
+  console.log(idusuario)
+ try {
+  const resp = await httpService.put(urlResourceTurnosAnularPorPedidoProfesional, {
+     idprof,
+     observaciones,
+     fecha,
+     idusuario },
+  );
+
+} catch (error) {
+  console.error('Error al cambiar el estado a turno:', error.response?.data || error.message);
+}
+
+  
+}
 
 
  async function CrearTurnosPorProfesionalPorFecha(idusuario, idprof, fecha) {
@@ -64,7 +83,7 @@ async function GrabarTurnoPaciente(IDTurno,IDPac,IDOS, Obs,IDUsuario) {
   try {
 
 
- console.log(Obs)
+ 
     await httpService.put(urlResourcePasaraPendiente, {
      
       IDTurno,
@@ -85,5 +104,5 @@ async function GrabarTurnoPaciente(IDTurno,IDPac,IDOS, Obs,IDUsuario) {
 
 
 export const turnosService = {
-  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno
+  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno, TurnosAnularPorPedidoProfesional
 };

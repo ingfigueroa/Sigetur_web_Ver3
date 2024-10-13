@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { format, parse } from "date-fns";
 
 import Table from "react-bootstrap/Table";
 
@@ -14,6 +14,7 @@ import "/src/css/pizarradeturnos.css";
 
 import { profesionalesService } from "/src/services/profesional.service";
 import MdlAltaProfesionales from "./registrarprofesional";
+import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 
 
 import modalDialogService from "/src/services/modalDialog.service";
@@ -33,9 +34,13 @@ import modalDialogService from "/src/services/modalDialog.service";
 
   const [VarDNI, SetDNI]  = useState(null);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [apeyNom, setapeyNom] = useState(null);
+
+  const [idProfesional, setIDProfesional] = useState(0)
   
  const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false);
+
+ const [mdlHoraProfe, setModalHoraProfe] = useState(false);
 
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
@@ -52,10 +57,20 @@ import modalDialogService from "/src/services/modalDialog.service";
   const openMdlListaEspera = () => {
     setModalListaEspera(true);
   };
-
-  const openMdlHoraProfe = () => {
+  
+  const openMdlHoraProfe = (item) => {
+    
+    setIDProfesional(item.ID)
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`;  // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim());  // Eliminar espacios en blanco innecesarios
     setModalHoraProfe(true);
   };
+   
+  useEffect(() => {
+    
+    // Esto se ejecutará cuando idProfesional cambie
+  }, [idProfesional]);
+  
 
   const closeMdlHoraProfe = () => {
     setModalHoraProfe(false);
@@ -69,6 +84,8 @@ import modalDialogService from "/src/services/modalDialog.service";
   const closeMdlRegistrarProfe = () => {
     setModalRegistrarProfesional(false);
   };
+
+  const fechaActualSinParsear = new Date().toLocaleDateString();
 
   async function Buscar(_pagina) {
     if (_pagina && _pagina !== Pagina) {
@@ -139,6 +156,25 @@ import modalDialogService from "/src/services/modalDialog.service";
   function Volver() {
     setAccionABMC("L");
   }
+
+  const formatearFecha = (fecha) => {
+    let fechaActualParseada;
+
+    // Caso 1: formato yyyy-MM-dd
+    if (/\d{4}-\d{2}-\d{2}/.test(fecha)) {
+      fechaActualParseada = parse(fecha, "yyyy-MM-dd", new Date());
+    }
+    // Caso 2: formato d/M/yyyy
+    else if (/\d{1,2}\/\d{1,2}\/\d{4}/.test(fecha)) {
+      fechaActualParseada = parse(fecha, "d/M/yyyy", new Date());
+    }
+
+    // Formatear la fecha en dd/MM/yyyy
+    return format(fechaActualParseada, "yyyy-MM-dd");
+  };
+
+
+  const fechaActual = formatearFecha(fechaActualSinParsear);
 
   return (
     <>
@@ -361,7 +397,10 @@ import modalDialogService from "/src/services/modalDialog.service";
                     <button
                       title="Horarios profesional"
                       className="btn btn-sm btn-light btn-primary"
-                      onClick={openMdlHoraProfe}
+                      
+                      onClick={() => 
+                        
+                        openMdlHoraProfe(Item)}
                     >
                       <i class="fa-solid fa-clock"></i>
                     </button>
@@ -378,6 +417,12 @@ import modalDialogService from "/src/services/modalDialog.service";
                        className="btn btn-sm btn-light btn-danger"
                     >
                     <i class="fa-solid fa-calendar-days"></i>
+                  </button>
+                  <button
+                       title="Cancelar turnos por fecha"
+                       className="btn btn-sm btn-light btn-danger"
+                    >
+                    <i class="fa-solid fa-power-off"></i>
                   </button>
                   </td>
                 </tr>
@@ -425,6 +470,16 @@ import modalDialogService from "/src/services/modalDialog.service";
       
       )}
 
+
+{mdlHoraProfe && (
+        <Mdlhorarioprofesional
+          show={openMdlHoraProfe}
+          handleClose={closeMdlHoraProfe}
+          idprofesional={idProfesional}
+          fecha={fechaActual}
+          profesional={apeyNom}
+        />
+      )}
     </>
 
   ); 

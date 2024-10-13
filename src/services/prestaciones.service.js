@@ -6,9 +6,11 @@ import httpService from "./http.service";
  import {config} from "../config.js";
  const urlResource = config.urlResourceCapitulos;
  const urlResourcePrestaciones = config.urlResourcePrestaciones;
+ const urlResourcePrestacion = config.urlResourcePrestacion;
 
 
 async function BuscarCapitulos(idprofesion) {
+  
   const resp = await httpService.get(urlResource, {
     params: { idprofesion },
 
@@ -25,7 +27,16 @@ async function BuscarPrestaciones(idcapitulo) {
 }
 
 
+async function BuscarPrestacion(idprestacion) {
+  const resp = await httpService.get(urlResourcePrestacion, {
+    params: { idprestacion },
+
+  });
+  return resp.data;
+}
+
+
 
 export const prestacionesService = {
-  BuscarCapitulos, BuscarPrestaciones
+  BuscarCapitulos, BuscarPrestaciones, BuscarPrestacion
 };

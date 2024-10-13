@@ -3,6 +3,7 @@ const urlServidor = "http://localhost:3000"
 
 const urlResourceProfesional = urlServidor + "/profesionales";
 const urlResourceProfesionalID = urlServidor + "/profesionalesid";
+const urlResourceProfesionalHorarios = urlServidor + "/profesionaleshorarios";
 
 const urlResourcePacientes = urlServidor + "/pacientes";
 const urlResourceObrasSociales = urlServidor + "/obrassociales";
@@ -19,9 +20,14 @@ const urlResourceTurnosPasaraPendiente = urlServidor + "/turnos/pasarapendiente"
 const urlResourceTurnosCrear = urlServidor + "/turnos/crearturnos"
 const urlResourceCambiarEstado = urlServidor + "/turnos/cambiarestado"
 const urlResourceEstadoPorTurnos = urlServidor + "/turnos/estadosporturno"
-
+const urlResourceTurnosAnularPorPedidoProfesional = urlServidor + "/turnos/anularturnospedidoprofesional"
+ 
 const urlResourceCapitulos = urlServidor + "/capitulos"
 const urlResourcePrestaciones = urlServidor + "/prestaciones"
+const urlResourcePrestacion = urlServidor + "/prestacion"
+
+
+console.log(urlResourceCapitulos)
 
 export const config = {
     urlServidor,
@@ -41,5 +47,8 @@ export const config = {
     urlResourceCambiarEstado,
     urlResourceEstadoPorTurnos,
     urlResourcePrestaciones,
-    urlResourceCapitulos    
+    urlResourceCapitulos,
+    urlResourcePrestacion,
+    urlResourceProfesionalHorarios,
+    urlResourceTurnosAnularPorPedidoProfesional    
 }

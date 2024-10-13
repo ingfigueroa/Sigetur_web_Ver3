@@ -7,6 +7,8 @@ import httpService from "./http.service";
 
  const urlResource = config.urlResourceProfesional;
  const urlResourceID = config.urlResourceProfesionalID;
+ const urlResourceProsefionalHorarios = config.urlResourceProfesionalHorarios;
+
 
 
 async function Buscar(Apellido, VarDni, idprofesion) {
@@ -16,6 +18,14 @@ async function Buscar(Apellido, VarDni, idprofesion) {
   return resp.data;
 }
 
+async function BuscarHorarios(idprofesional, fecha) {
+
+
+  const resp = await httpService.get(urlResourceProsefionalHorarios, {
+    params: { idprofesional, fecha },
+  });
+  return resp.data;
+}
 
 async function BuscarPorId(idprofesional) {
   const resp = await httpService.get(urlResourceID, {
@@ -54,5 +64,5 @@ async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail,
 
 
 export const profesionalesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta
+  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarHorarios
 };
