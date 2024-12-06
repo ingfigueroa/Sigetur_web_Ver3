@@ -1,12 +1,16 @@
 import { Router } from "express";
 
-import { createPacientes, getPacientes } from '../controllers/pacientes.controllers.js';
+import { createPacientes, getPacienteBuscarID, getPacientes, getPacienteTurnosUltimos } from '../controllers/pacientes.controllers.js';
 
 const router = Router();
 
 router.get("/pacientes", getPacientes);
 
-router.post("/pacientes", createPacientes);
+router.post("/pacienteadd", createPacientes);
+
+router.get("/pacienteid", getPacienteBuscarID);
+
+router.get("/pacientesultimosturnos", getPacienteTurnosUltimos);
 
 
 export default router;

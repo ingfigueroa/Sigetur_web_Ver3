@@ -9,7 +9,7 @@ export const getLocalidades = async (req, res) => {
       let result;
 
       request.input('IDprovincia', sql.Int, idprovincia )
-      console.log(idprovincia)
+     
       result = await request.execute('sp_Buscar_Localidades');
       
       return res.json(result.recordset); 

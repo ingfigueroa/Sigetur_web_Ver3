@@ -48,7 +48,7 @@ export const getProfesionalesHorarios = async (req, res) => {
     const request = pool.request();
     let result;
     
-        
+       
         request.input('idprofesional', sql.Int, idprofesional);
         request.input('fecha',sql.Date,fecha)
         result = await request.execute('sp_buscar_profesional_diashoras_trabaja');
@@ -99,7 +99,7 @@ export const getProfesionalProfesion = async (req, res) => {
 
 export const createProfesionales = async (req, res) => {
   
-    const { Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion } = req.body || {};
+    const { idProfesional, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion,idusuario, nuevo } = req.body || {};
 
 try{
     const pool = await getConnection();
@@ -110,6 +110,8 @@ try{
 
    /*  Los nombres de los paràmetros tienen que coincidir con estan definidos en el proce almacenado
    console.log('Profesional registrado exitosamente'); */
+   
+        request.input('idprofesional', sql.Int, idProfesional);
         request.input('Nombres', sql.VarChar, Nombres);
         request.input('Apellido', sql.VarChar, Apellido);
         request.input('TipoDocumento', sql.Int, TipoDocumento);
@@ -117,27 +119,57 @@ try{
         request.input('EMail', sql.VarChar, EMail);
         request.input('FechaNacimiento', sql.Date, FechaNacimiento);
         request.input('TECelular', sql.VarChar, TECelular);
-        request.input('Sexo', sql.VarChar, Sexo);
+        request.input('Sexo', sql.Int, Sexo);
         request.input('CuilCuit', sql.BigInt, CuitCuil);
         request.input('matprof', sql.VarChar, matriculanro);
         request.input('IDTipoProfesion', sql.Int, idtipoprofesion);
-
-        request.output('RETORNO', sql.Int);
-        request.output('Resultado', sql.Int);
-
+        request.input('idusuario', sql.Int, idusuario);
+        request.input('Nuevo', sql.Int, nuevo);
+        request.output('Resultado', sql.Int)
+        
+       
         result = await request.execute('sp_crear_profesional');
    
-
-
-
+       
     res.status(201).json({ 
-      message: 'Profesional registrado exitosamente', 
-      retorno, 
-      resultado 
+      message: 'Profesional registrado exitosamente' 
+       
     });
   } catch (error) {
       console.error('Error en la ejecución del procedimiento almacenado:', error);
        res.status(500).json({ message: 'Error en el servidor' });
+  }
+};
+
+export const getProfesionalBuscarID = async (req, res) => {
+  try {
+    const { idprofesional } = req.query;
+
+    const pool = await getConnection();
+    const request = pool.request();
+    let result;
+    
+    
+     
+       if (idprofesional > 0) { 
+       
+        request.input('idprofesional', sql.Int, idprofesional);
+        result = await request.execute('sp_Buscar_Profesionales_ID');
+   
+       }
+    
+    if (result && result.recordset) {
+      // Procesar los resultados
+      return res.json(result.recordset);
+  } else {
+      console.error('No se obtuvieron resultados de la consulta.');
+  }
+   
+    
+
+  } catch (error) {
+      console.error('Error en la ejecución del procedimiento almacenado:', error);
+      return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
 
