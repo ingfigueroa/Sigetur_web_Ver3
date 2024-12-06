@@ -11,16 +11,15 @@ import InputGroup from "react-bootstrap/InputGroup";
 import "/src/css/sigetur.css";
 import "/src/css/pizarradeturnos.css";
 
-
 import { profesionalesService } from "/src/services/profesional.service";
 import MdlAltaProfesionales from "./registrarprofesional";
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
-
+import Mdlanulartodoslosturnos from "../turnos/mdlanulartodoslosturnos";
+import MdlEditarProfesionales from "./modificarprofesionales";
 
 import modalDialogService from "/src/services/modalDialog.service";
 
-
- function Profesionales() {
+function Profesionales() {
   const TituloAccionABMC = {
     A: "(Agregar)",
     B: "(Eliminar)",
@@ -30,23 +29,32 @@ import modalDialogService from "/src/services/modalDialog.service";
   };
   const [AccionABMC, setAccionABMC] = useState("L");
 
-  const [Apellido, SetApellido]  = useState("");
+  const [Apellido, SetApellido] = useState("");
 
-  const [VarDNI, SetDNI]  = useState(null);
+  const [VarDNI, SetDNI] = useState(null);
 
   const [apeyNom, setapeyNom] = useState(null);
 
-  const [idProfesional, setIDProfesional] = useState(0)
-  
- const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false);
+  const [idusuario, setUsuario] = useState("2");
 
- const [mdlHoraProfe, setModalHoraProfe] = useState(false);
+  const [idProfesional, setIDProfesional] = useState(0);
+
+  const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false);
+
+    const [mdlEditarProfesional, setMdlEditarProfesional] = useState(false);
+
+
+  const [mdlHoraProfe, setModalHoraProfe] = useState(false);
+
+  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] = useState(false);
 
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Pagina, setPagina] = useState(1);
   const [Paginas, setPaginas] = useState([]);
+
+  const [Fecha, SetFecha] = useState(new Date().toLocaleDateString());
 
   const [mdlListaEspera, setModalListaEspera] = useState(false);
 
@@ -57,20 +65,18 @@ import modalDialogService from "/src/services/modalDialog.service";
   const openMdlListaEspera = () => {
     setModalListaEspera(true);
   };
-  
+
   const openMdlHoraProfe = (item) => {
-    
-    setIDProfesional(item.ID)
-    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`;  // Concatenar manejando valores nulos
-    setapeyNom(apyNom.trim());  // Eliminar espacios en blanco innecesarios
+    setIDProfesional(item.ID);
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
     setModalHoraProfe(true);
   };
-   
+
   useEffect(() => {
-    
     // Esto se ejecutará cuando idProfesional cambie
+    
   }, [idProfesional]);
-  
 
   const closeMdlHoraProfe = () => {
     setModalHoraProfe(false);
@@ -80,9 +86,34 @@ import modalDialogService from "/src/services/modalDialog.service";
     setModalRegistrarProfesional(true);
   };
 
-  
   const closeMdlRegistrarProfe = () => {
     setModalRegistrarProfesional(false);
+    Buscar(1)
+  };
+
+  const openMdlEditarProfesional = (item) => {
+    setIDProfesional(item.ID)
+    setMdlEditarProfesional(true);
+  };
+
+  const closeMdlEditarProfesional = () => {
+    setMdlEditarProfesional(false);
+    Buscar(1)
+    
+  };
+
+  const openMdlAnularTodosLosTurnos = (item) => {
+    // setModalSiNoMensaje("¿Está seguro de anular el turno?")
+    setIDProfesional(item.ID);
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
+    SetFecha(formatearFecha(Fecha));
+
+    setModalAnularTodosLosTurnos(true);
+  };
+
+  const closeMdlAnularTodosLosTurnos = () => {
+    setModalAnularTodosLosTurnos(false);
   };
 
   const fechaActualSinParsear = new Date().toLocaleDateString();
@@ -98,9 +129,9 @@ import modalDialogService from "/src/services/modalDialog.service";
     modalDialogService.BloquearPantalla(true);
     const data = await profesionalesService.Buscar(Apellido, VarDNI);
     modalDialogService.BloquearPantalla(false);
-    
+
     setItems(data);
-    
+
     setRegistrosTotal(data.length);
 
     //generar array de las páginas para mostrar en select del paginador
@@ -111,46 +142,21 @@ import modalDialogService from "/src/services/modalDialog.service";
     setPaginas(arrPaginas);
   }
 
-
-
-
   async function BuscarPorId(item, accionABMC) {
     const data = await profesionalesService.BuscarPorId(item);
     setItem(data);
     setAccionABMC(accionABMC);
   }
-  
 
-
+  async function Limpiar(params) {
+      SetApellido("")
+      SetDNI("")
+      setItems([])
+  }
 
   function Imprimir() {
     modalDialogService.Alert("En desarrollo...");
   }
-
-
-  async function Grabar(item) {
-    // agregar o modificar
-    try
-    {
-      await profesionalesService.Grabar(item);
-    }
-    catch (error)
-    {
-      modalDialogService.Alert(error?.response?.data?.message ?? error.toString())
-      return;
-    }
-    await Buscar();
-    Volver();
-  
-    //setTimeout(() => {
-      modalDialogService.Alert(
-        "Registro " +
-          (AccionABMC === "A" ? "agregado" : "modificado") +
-          " correctamente."
-      );
-    //}, 0);
-  }
-  
 
   // Volver/Cancelar desde Agregar/Modificar/Consultar
   function Volver() {
@@ -173,140 +179,126 @@ import modalDialogService from "/src/services/modalDialog.service";
     return format(fechaActualParseada, "yyyy-MM-dd");
   };
 
-
   const fechaActual = formatearFecha(fechaActualSinParsear);
 
   return (
     <>
-        <div
-    style={{
-      display: "grid",
-      width: "100%",
-      margin: "15px 15px",
-      backgroundColor: "white",
-    }}
-    >
-      <form>
-        
-       <div className="acomodarencabezadopizaturnos">
-          
-          <div className="tituloPagina">
-       Profesionales <small>{TituloAccionABMC[AccionABMC]}</small>
-      
-            
-          </div>
-          
-          <div style={{ width: "30%", textAlign: "right" }}>
-          <button
-              title="Registrar nuevo profesional"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={(event) => {
-                event.preventDefault();
-                openMdlRegistrarProfe();
-              }}
-            >
-              <i class="fa-solid fa-plus"></i>
-            </button>
-           
-            <button 
-               title="Imprimir"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={() => Imprimir()}>
-              <i class="fa fa-print"></i>
-            </button>
-          </div>
-          
-        </div>
-        <hr />
+      <div
+        style={{
+          display: "grid",
+          width: "100%",
+          margin: "15px 15px",
+          backgroundColor: "white",
+        }}
+      >
+        <form>
+          <div className="acomodarencabezadopizaturnos">
+            <div className="tituloPagina">
+              Profesionales <small>{TituloAccionABMC[AccionABMC]}</small>
+            </div>
 
-      
-        <div className="acomodarencabezadopizaturnos">
-          
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              Profesional
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar por apellido de profesional"
-              aria-label="Buscar profesional"
-              aria-describedby="basic-addon2"
-              type="text"
-              onChange={(e) => SetApellido(e.target.value.toUpperCase())}
-              value={Apellido}
-              autoFocus
-            />
-            
-            <Button
-              title="Buscar por profesional"
-             
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "38px" }}
-              color="white"
-              
-              onClick={() => Buscar(1) }
-              
-             
-            >
-               
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </InputGroup>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              DNI
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar por DNI"
-              aria-label="Profesión"
-              aria-describedby="basic-addon2"
-              style={{ marginght: "20px" }}
-              onChange={(e) => SetDNI(e.target.value)}
-              value= {VarDNI}
-            />
-            <Button
-             title="Buscar por DNI"
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "38px" }}
-              color="white"
-              
-              onClick={() => Buscar(1) }
-             
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </InputGroup>
-        </div>
-        <hr />
-        
-    </form>
+            <div style={{ width: "30%", textAlign: "right" }}>
+              <button
+                title="Registrar nuevo profesional"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={(event) => {
+                  event.preventDefault();
+                  openMdlRegistrarProfe();
+                }}
+              >
+                <i class="fa-solid fa-plus"></i>
+              </button>
 
-      
-     
-       
-      <div className="">
+              <button
+                title="Imprimir"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={() => Imprimir()}
+              >
+                <i class="fa fa-print"></i>
+              </button>
+            </div>
+          </div>
+          <hr />
+
+          <div className="acomodarencabezadopizaturnos">
+            <InputGroup className="mb-3">
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "38px",
+                }}
+              >
+                Profesional
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Buscar por apellido de profesional"
+                aria-label="Buscar profesional"
+                aria-describedby="basic-addon2"
+                type="text"
+                onChange={(e) => SetApellido(e.target.value.toUpperCase())}
+                value={Apellido}
+                autoFocus
+              />
+
+              <Button
+                title="Buscar por profesional"
+                variant="outline-secondary"
+                id="button-addon1"
+                style={{ height: "38px" }}
+                color="white"
+                onClick={() => Buscar(1)}
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </Button>
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "38px",
+                }}
+              >
+                DNI
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Buscar por DNI"
+                aria-label="Profesión"
+                aria-describedby="basic-addon2"
+                style={{ marginght: "20px" }}
+                onChange={(e) => SetDNI(e.target.value)}
+                value={VarDNI}
+              />
+              <Button
+                title="Buscar por DNI"
+                variant="outline-secondary"
+                id="button-addon1"
+                style={{ height: "38px" }}
+                color="white"
+                onClick={() => Buscar(1)}
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </Button>
+              
+                <Button variant="success" onClick={() => Limpiar()}>
+                  Limpiar
+                </Button>
+                
+             
+            </InputGroup>
+          </div>
+          <hr />
+        </form>
+
+        <div className="">
           <Table bordered hover>
             <thead>
               <tr className="h-50">
-              <th
+                <th
                   style={{
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
-                    
-                  
                   }}
                 >
                   ID
@@ -315,18 +307,27 @@ import modalDialogService from "/src/services/modalDialog.service";
                   style={{
                     textAlign: "left",
                     backgroundColor: "rgb(136, 161, 184)",
-                  
                   }}
                 >
                   Apellido
                 </th>
 
-                <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)" }} >
+                <th
+                  style={{
+                    textAlign: "left",
+                    backgroundColor: "rgb(136, 161, 184)",
+                  }}
+                >
                   Nombres
                 </th>
 
-
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="2">
+                <th
+                  style={{
+                    textAlign: "center",
+                    backgroundColor: "rgb(136, 161, 184)",
+                  }}
+                  key="2"
+                >
                   Especialidad
                 </th>
                 <th
@@ -339,11 +340,23 @@ import modalDialogService from "/src/services/modalDialog.service";
                   DNI
                 </th>
 
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="4">
-                 EMail
+                <th
+                  style={{
+                    textAlign: "center",
+                    backgroundColor: "rgb(136, 161, 184)",
+                  }}
+                  key="4"
+                >
+                  EMail
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="5">
-                 Estado
+                <th
+                  style={{
+                    textAlign: "center",
+                    backgroundColor: "rgb(136, 161, 184)",
+                  }}
+                  key="5"
+                >
+                  Estado
                 </th>
 
                 <th
@@ -358,120 +371,130 @@ import modalDialogService from "/src/services/modalDialog.service";
               </tr>
             </thead>
             <tbody>
-            {Items &&
-            Items.map((Item) => (
-              <tr key={Item.ID}>
-               
-                <td style={{ textAlign: "center" }}>
-                {Item.ID}
-               </td>
-               <td style={{ textAlign: "left", fontSize:"12px" }}>
-                {Item.Apellido}
-               </td>
-               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.Nombres}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.especialidad}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.EMail}</td>
-               <td style={{ textAlign: "center", fontSize:"12px"}}>
-               {Item.IDEstado === 1 ? (
-                      <Button variant="success" size="sm" style={{width:"70%"}}>
-                        activo
-                      </Button>
-                    ) : (
-                      <Button variant="danger" size="sm" style={{width:"70%"}}>
-                        pasivo
-                      </Button>
-                      
-                    )
-                     }
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                  <button
-                      title="Editar profesional"
-                      className="btn btn-sm btn-light btn-danger"
-                      onClick={openMdlListaEspera}
-                    >
-                      
-                      <i class="fa-solid fa-user-pen"></i>
-                    </button>
-                    <button
-                      title="Horarios profesional"
-                      className="btn btn-sm btn-light btn-primary"
-                      
-                      onClick={() => 
-                        
-                        openMdlHoraProfe(Item)}
-                    >
-                      <i class="fa-solid fa-clock"></i>
-                    </button>
-                    <button
-                      title="Lista de espera"
-                      className="btn btn-sm btn-light btn-danger"
-                      onClick={openMdlListaEspera}
-                    >
-                      <i class="fa-solid fa-book-open-reader"></i>
-                      
-                    </button>
-                    <button
-                       title="Agenda Semanal"
-                       className="btn btn-sm btn-light btn-danger"
-                    >
-                    <i class="fa-solid fa-calendar-days"></i>
-                  </button>
-                  <button
-                       title="Cancelar turnos por fecha"
-                       className="btn btn-sm btn-light btn-danger"
-                    >
-                    <i class="fa-solid fa-power-off"></i>
-                  </button>
-                  </td>
-                </tr>
-                //<TableRow item={item} />
-              ))}
+              {Items &&
+                Items.map((Item) => (
+                  <tr key={Item.ID}>
+                    <td style={{ textAlign: "center" }}>{Item.ID}</td>
+                    <td style={{ textAlign: "left", fontSize: "12px" }}>
+                      {Item.Apellido}
+                    </td>
+                    <td style={{ textAlign: "left", fontSize: "12px" }}>
+                      {Item.Nombres}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.especialidad}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.NroDocumento}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.EMail}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.IDEstado === 1 ? (
+                        <Button
+                          variant="success"
+                          size="sm"
+                          style={{ width: "70%" }}
+                        >
+                          activo
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          style={{ width: "70%" }}
+                        >
+                          pasivo
+                        </Button>
+                      )}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <button
+                        title="Editar profesional"
+                        className="btn btn-sm btn-light btn-danger"
+                        onClick={() => openMdlEditarProfesional(Item)} 
+                        //onClick={openMdlEditarProfesional(Item)}
+                      >
+                        <i class="fa-solid fa-user-pen"></i>
+                      </button>
+                      <button
+                        title="Horarios profesional"
+                        className="btn btn-sm btn-light btn-primary"
+                        onClick={() => openMdlHoraProfe(Item)}
+                      >
+                        <i class="fa-solid fa-clock"></i>
+                      </button>
+                      <button
+                        title="Lista de espera"
+                        className="btn btn-sm btn-light btn-danger"
+                        onClick={openMdlListaEspera}
+                      >
+                        <i class="fa-solid fa-book-open-reader"></i>
+                      </button>
+                      <button
+                        title="Agenda Semanal"
+                        className="btn btn-sm btn-light btn-danger"
+                      >
+                        <i class="fa-solid fa-calendar-days"></i>
+                      </button>
+                    {/*   <button
+                        title="Cancelar turnos por fecha"
+                        className="btn btn-sm btn-light btn-danger"
+                        onClick={() => openMdlAnularTodosLosTurnos(Item)}
+                        value={Fecha}
+                      >
+                        <i class="fa-solid fa-power-off"></i>
+                      </button> */}
+                    </td>
+                  </tr>
+                  //<TableRow item={item} />
+                ))}
             </tbody>
           </Table>
         </div>
-       {/* Paginación */}
-       <div className="paginador">
-        <div className="row">
-          <div className="col">
-            <span className="pyBadge">Registros: {RegistrosTotal}</span>
+        {/* Paginación */}
+        <div className="paginador">
+          <div className="row">
+            <div className="col">
+              <span className="pyBadge">Registros: {RegistrosTotal}</span>
+            </div>
+            <div className="col text-center">
+              Pagina: &nbsp;
+              <select
+                value={Pagina}
+                onChange={(e) => {
+                  Buscar(e.target.value);
+                }}
+              >
+                {Paginas?.map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; de {Paginas?.length}
+            </div>
           </div>
-          <div className="col text-center">
-            Pagina: &nbsp;
-            <select
-              value={Pagina}
-              onChange={(e) => {
-                Buscar(e.target.value);
-              }}
-            >
-              {Paginas?.map((x) => (
-                <option value={x} key={x}>
-                  {x}
-                </option>
-              ))}
-            </select>
-            &nbsp; de {Paginas?.length}
-          </div>
-
-         
         </div>
-      </div>   
-      
-    
-    </div>
-    
-    { mdlRegistrarProfesional && (
-        <MdlAltaProfesionales
+      </div>
 
+      {mdlRegistrarProfesional && (
+        <MdlAltaProfesionales
           show={openMdlRegistrarProfe}
           handleClose={closeMdlRegistrarProfe}
         />
-      
       )}
 
+      {mdlEditarProfesional && (
+        <MdlEditarProfesionales
+          show={openMdlEditarProfesional}
+          handleClose={closeMdlEditarProfesional}
+          idprofesional={idProfesional}
+        />
+      )}
 
-{mdlHoraProfe && (
+      {mdlHoraProfe && (
         <Mdlhorarioprofesional
           show={openMdlHoraProfe}
           handleClose={closeMdlHoraProfe}
@@ -480,11 +503,21 @@ import modalDialogService from "/src/services/modalDialog.service";
           profesional={apeyNom}
         />
       )}
+
+      {mdlAnularTodosLosTurnos && (
+        <Mdlanulartodoslosturnos
+          show={setModalAnularTodosLosTurnos}
+          handleClose={closeMdlAnularTodosLosTurnos}
+          fecha={Fecha}
+          idprofesional={idProfesional}
+          idusuario={idusuario}
+          apeynom={apeyNom}
+          vienede="profesionales"
+          observaciones="POR PEDIDO DEL PROFESIONAL, SE CANCELAN LOS TURNOS DE ESTE DÍA."
+        />
+      )}
     </>
-
-  ); 
-
+  );
 }
-
 
 export default Profesionales;

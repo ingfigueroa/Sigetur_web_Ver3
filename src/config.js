@@ -2,10 +2,14 @@
 const urlServidor = "http://localhost:3000"
 
 const urlResourceProfesional = urlServidor + "/profesionales";
-const urlResourceProfesionalID = urlServidor + "/profesionalesid";
+const urlResourceProfesionalProfesionID = urlServidor + "/profesionalesProfesionid";
 const urlResourceProfesionalHorarios = urlServidor + "/profesionaleshorarios";
+const urlResourceProfesionalID = urlServidor + "/profesionalid"; 
 
 const urlResourcePacientes = urlServidor + "/pacientes";
+const urlResourcePacientesAdd = urlServidor + "/pacienteadd";
+const urlResourcePacienteID = urlServidor + "/pacienteid";
+const urlResourcePacienteUltimosTurnos = urlServidor + "/pacientesultimosturnos";
 const urlResourceObrasSociales = urlServidor + "/obrassociales";
 const urlResourceObrasSocialesPorPaciente = urlServidor + "/obrassociales/pacienteos";
 const urlResourceProfesiones = urlServidor + "/profesiones";
@@ -21,18 +25,19 @@ const urlResourceTurnosCrear = urlServidor + "/turnos/crearturnos"
 const urlResourceCambiarEstado = urlServidor + "/turnos/cambiarestado"
 const urlResourceEstadoPorTurnos = urlServidor + "/turnos/estadosporturno"
 const urlResourceTurnosAnularPorPedidoProfesional = urlServidor + "/turnos/anularturnospedidoprofesional"
- 
+const urlResourceTurnosProfesionalDiaCancelados = urlServidor +  "/turnos/turnoprofesionaldiacancelado"
 const urlResourceCapitulos = urlServidor + "/capitulos"
 const urlResourcePrestaciones = urlServidor + "/prestaciones"
 const urlResourcePrestacion = urlServidor + "/prestacion"
 
 
-console.log(urlResourceCapitulos)
+
 
 export const config = {
     urlServidor,
     urlResourceProfesional,
     urlResourcePacientes,
+    urlResourcePacientesAdd,
     urlResourceObrasSociales,
     urlResourceProfesiones,
     urlResourceTipoDocumento,
@@ -42,7 +47,7 @@ export const config = {
     urlResourceTurnos,
     urlResourceObrasSocialesPorPaciente,
     urlResourceTurnosPasaraPendiente,
-    urlResourceProfesionalID,
+    urlResourceProfesionalProfesionID,
     urlResourceTurnosCrear,
     urlResourceCambiarEstado,
     urlResourceEstadoPorTurnos,
@@ -50,5 +55,9 @@ export const config = {
     urlResourceCapitulos,
     urlResourcePrestacion,
     urlResourceProfesionalHorarios,
-    urlResourceTurnosAnularPorPedidoProfesional    
+    urlResourceTurnosAnularPorPedidoProfesional,
+    urlResourceTurnosProfesionalDiaCancelados,
+    urlResourceProfesionalID,
+    urlResourcePacienteID,
+    urlResourcePacienteUltimosTurnos
 }

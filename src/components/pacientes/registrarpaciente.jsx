@@ -326,7 +326,7 @@ async function Grabar() {
                   const email = e.target.value;
                   setEMail(email);
                   if (!validarEmail(email)) {
-                    console.log("Correo electrónico no válido");
+                   
                     // Aquí podrías mostrar un mensaje de error o aplicar algún estilo al campo
                   }
                 }}

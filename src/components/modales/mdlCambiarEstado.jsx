@@ -6,13 +6,13 @@ import Button from 'react-bootstrap/Button';
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const mdlSINo = ({show, handleClose, enviaralpadre, fila}) => {
+const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
 
   const [observaciones, SetObservaciones] = useState(null);
   const fechaLarga = format(new Date(fila.fecha), "EEEE, d 'de' MMMM 'de' yyyy", {locale: es});
 
   const seleccionarSi = () => {
-    enviaralpadre(observaciones);
+    enviarAlPadre(observaciones);
     handleClose() // Envía el id al componente padre
   };
   
@@ -157,4 +157,4 @@ const mdlSINo = ({show, handleClose, enviaralpadre, fila}) => {
   );
 }; 
 
-export default mdlSINo;
+export default mdlCambiarEstado;

@@ -5,7 +5,9 @@ import httpService from "./http.service";
 // mas adelante podemos usar un archivo de configuracion para el urlResource
  import {config} from "../config.js";
  const urlResource = config.urlResourcePacientes;
-
+ const urlResourceAdd = config.urlResourcePacientesAdd;
+ const urlResourceID = config.urlResourcePacienteID;
+ const urlResourceUltimosTurnos = config.urlResourcePacienteUltimosTurnos;
 
  async function Buscar(Apellido, VarDni) {
   const resp = await httpService.get(urlResource, {
@@ -15,10 +17,25 @@ import httpService from "./http.service";
 }
 
 
-async function BuscarPorId(item) {
-  const resp = await httpService.get(urlResource + "/" + item.Id);
+async function BuscarPorId(idpaciente) {
+ 
+  const resp = await httpService.get(urlResourceID, {
+    params: {idpaciente},
+  } );
+
   return resp.data;
 }
+
+
+async function BuscarUltimosTurnos(idpaciente) {
+  console.log(idpaciente)
+  const resp = await httpService.get(urlResourceUltimosTurnos, {
+    params: {idpaciente},
+  } );
+
+  return resp.data;
+}
+
 
 
 async function ActivarDesactivar(item) {
@@ -26,10 +43,12 @@ async function ActivarDesactivar(item) {
 }
 
 
-async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo) {
+async function GrabarAlta(idpaciente, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, idusuario, nuevo) {
   try {
    
-    await httpService.post(urlResource, {
+
+    await httpService.post(urlResourceAdd, {
+      idpaciente,
       Nombres, 
       Apellido, 
       TipoDocumento,
@@ -37,7 +56,9 @@ async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail,
       EMail, 
       FechaNacimiento, 
       TECelular, 
-      Sexo
+      Sexo,
+      idusuario,
+      nuevo
       
     });
    
@@ -48,5 +69,5 @@ async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail,
 
 
 export const pacientesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta
+  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos
 };

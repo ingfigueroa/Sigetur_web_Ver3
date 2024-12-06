@@ -27,23 +27,17 @@ async function BuscarHorarios(idprofesional, fecha) {
   return resp.data;
 }
 
-async function BuscarPorId(idprofesional) {
-  const resp = await httpService.get(urlResourceID, {
-    params: {idprofesional},
-  } );
-
-  return resp.data;
-}
 
 
 async function ActivarDesactivar(item) {
   await httpService.delete(urlResource + "/" + item.Id);
 }
 
-async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion) {
+async function GrabarAlta(idProfesional, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion, idusuario, nuevo) {
   try {
    
     await httpService.post(urlResource, {
+      idProfesional,
       Nombres, 
       Apellido, 
       TipoDocumento,
@@ -54,7 +48,9 @@ async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail,
       Sexo,
       CuitCuil, 
       matriculanro, 
-      idtipoprofesion
+      idtipoprofesion,
+      idusuario,
+      nuevo
     });
    
   } catch (error) {
@@ -63,6 +59,14 @@ async function GrabarAlta(Nombres, Apellido, TipoDocumento, NroDocumento, EMail,
 }
 
 
+async function BuscarId(idprofesional) {
+  const resp = await httpService.get(urlResourceID, {
+    params: {idprofesional},
+  } );
+
+  return resp.data;
+}
+
 export const profesionalesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarHorarios
+  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios
 };

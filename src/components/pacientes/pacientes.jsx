@@ -15,7 +15,9 @@ import MdlAltaPaciente from "./registrarpaciente";
 
 import { pacientesService } from "/src/services/pacientes.service";
 
+import MdlEditarPacientes from "./modificarpacientes";
 
+import MdlultimosTurnos from "../pacientes/mdlpacienteultimosturnos";
 
 import modalDialogService from "/src/services/modalDialog.service";
 
@@ -28,14 +30,29 @@ function Pacientes() {
   const [currentPage, setCurrentPage] = useState(1);
   
  const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false)
-
+ const [mdlEditarPaciente, setMdlEditarPaciente] = useState(false);
+ const [idPaciente, setIDPaciente] = useState(false);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Pagina, setPagina] = useState(1);
   const [Paginas, setPaginas] = useState([]);
+  const [apeyNom, setapeyNom] = useState(null);
+
+  const [mdlUltimosTurnos, setModalUltimosTurnos] = useState(false);
+
+  const openMdlUltimosTurnos = (item) => {
+    
+    setIDPaciente(item.ID);
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
+    setModalUltimosTurnos(true);
+  };
 
 
+  const closeMdlUltimosTurnos = () => {
+    setModalUltimosTurnos(false);
+  };
 
   const openMdlRegistrarPaciente = () => {
     setModalRegistrarPaciente(true);
@@ -47,6 +64,17 @@ function Pacientes() {
   };
 
 
+  
+  const openMdlEditarPaciente = (item) => {
+    setIDPaciente(item.ID)
+    setMdlEditarPaciente(true);
+  };
+
+  const closeMdlEditarPaciente = () => {
+    setMdlEditarPaciente(false);
+    Buscar(1)
+    
+  };
 
   async function Buscar(_pagina) {
     if (_pagina && _pagina !== Pagina) {
@@ -128,6 +156,11 @@ function Pacientes() {
   }
   
   
+  async function Limpiar(params) {
+    SetApellido("")
+    SetDNI("")
+    setItems([])
+}
 
   async function Grabar(item) {
     // agregar o modificar
@@ -266,6 +299,9 @@ function Pacientes() {
             >
               <i class="fa-solid fa-magnifying-glass"></i>
             </Button>
+              <Button variant="success" onClick={() => Limpiar()}>
+                  Limpiar
+              </Button>
           </InputGroup>
         </div>
         <hr />
@@ -316,6 +352,9 @@ function Pacientes() {
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)", width:"15%"}} >
                  EMail
                 </th>
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)", width:"15%"}} >
+                 Celular
+                </th>
                 <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }}>
                  Estado
                 </th>
@@ -346,6 +385,7 @@ function Pacientes() {
               
                <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
                <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.EMail}</td>
+               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.TECelular}</td>
                <td style={{ textAlign: "center", fontSize:"12px"}}>
                   {Item.IDEstado === 1 ? (
                       <Button variant="success" size="sm" style={{width:"70%"}}>
@@ -363,7 +403,7 @@ function Pacientes() {
                   <button
                       title="Editar paciente"
                       className="btn btn-sm btn-light btn-danger"
-                      
+                      onClick={() => openMdlEditarPaciente(Item)}
                     >
                       
                       <i class="fa-solid fa-user-pen"></i>
@@ -372,6 +412,7 @@ function Pacientes() {
                     <button
                        title="Listar turnos pedidos"
                        className="btn btn-sm btn-light btn-danger"
+                       onClick={() => openMdlUltimosTurnos(Item)}
                     >
                     <i class="fa-solid fa-calendar-days"></i>
             </button>
@@ -419,6 +460,23 @@ function Pacientes() {
       )}
     
 
+    {mdlEditarPaciente && (
+        <MdlEditarPacientes
+          show={openMdlEditarPaciente}
+          handleClose={closeMdlEditarPaciente}
+          idpaciente={idPaciente}
+        />
+      )}
+
+      {mdlUltimosTurnos && (
+        <MdlultimosTurnos
+          show={openMdlUltimosTurnos}
+          handleClose={closeMdlUltimosTurnos}
+          idpaciente={idPaciente}
+          paciente={apeyNom}
+        />
+      )}
+      
     </>
 
   ); 

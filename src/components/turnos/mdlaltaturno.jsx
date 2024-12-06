@@ -132,7 +132,7 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
 
     catch (error)
     {
-      console.log(error)
+     
      
       openAltaExitosa('Turno no registrado exitosamente'); 
      /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */

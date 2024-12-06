@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import Button from "react-bootstrap/Button";
 
 import Form from "react-bootstrap/Form";
@@ -7,50 +8,47 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
 
 import { tiposexoService } from "/src/services/tiposexo.service.js";
-import { profesionesService } from "/src/services/profesiones.service.js";
-import { profesionalesService } from "/src/services/profesional.service.js";
+
+import { pacientesService } from "/src/services/pacientes.service.js";
 import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
-import { provinciasService } from "/src/services/provincias.service.js";
-import { localidadesService } from "/src/services/localidades.service.js";
+
 
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 
 import "/src/css/registrarprofesional.css";
-import axios from "axios";
 
-const registrarprofesional = ({ show, handleClose }) => {
+
+const modificarpaciente = ({ show, handleClose, idpaciente }) => {
   const [isDisabled, setIsDisabled] = useState(true);
-
-  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
-
-  const [item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
 
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
   const [TipoDocumento, setTipoDocumento] = useState([]);
+  const [idTipoDocumento, setIDTipoDocumento] = useState("");
   const [NroDocumento, setNroDocumento] = useState([]);
   const [EMail, setEMail] = useState("");
-
-  const [mdlAltaExitosa, setMdlAltaExitosa] = useState(null);
 
   const [FechaNacimiento, setFechaNacimiento] = useState("");
   const [TECelular, setTECelular] = useState("");
   const [CuitCuil, setCuitCuil] = useState("");
   const [TipoSexo, setTipoSexo] = useState([]);
+  const [idTipoSexo, setIDTipoSexo] = useState("");
   const [MatriculaNro, setMatriculaNro] = useState("");
   const [TipoProfesion, setTipoProfesion] = useState([]);
+
+  const [items, setItems] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
   const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
   const [idusuario, setIDusuario] = useState(2);
-  const [idprofesional, setIDProfesional] = useState("0");
+  const [idPaciente, setIDPaciente] = useState("");
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalMessageTitulo, setModalMessageTitulo] = useState("");
-  const [showModalAlta, setShowModalAlta] = useState(false);
   const [nuevo, setNuevo] = useState("");
+  const [mdlAltaExitosa, setMdlAltaExitosa] = useState(null);
 
   const showModalMessage = (message) => {
     setModalMessage(message);
@@ -69,153 +67,127 @@ const registrarprofesional = ({ show, handleClose }) => {
     setMdlAltaExitosa(false);
   };
 
-  const openModalAltaExitosa = () => {
-    setModalMessage("Se registró el profesional con éxito.")
-    setModalMessageTitulo("REGISTRAR PROFESIONAL")
-    setMdlAltaExitosa (true);
+  const openModalModificacionExitosa = () => {
+    setModalMessage("Se modificaron los datos del PACIENTE con éxito.");
+    setModalMessageTitulo("MODIFICAR PACIENTE");
+    setMdlAltaExitosa(true);
   };
 
-  const closeModalAltaExitosa = () => {
+  const closeModalModificacionExitosa = () => {
     setMdlAltaExitosa(false);
   };
-
 
   const validarEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  /*Carga Tipo de sexo*/
   useEffect(() => {
+    
     async function fetchData() {
       try {
-        const data = await tiposexoService.Buscar(); // Llama a la función asíncrona
-        setTipoSexo(data); // Establece el estado con los datos obtenidos
-        setNuevo(0);
+       
+        const data = await pacientesService.BuscarPorId(idpaciente);
+        
+        setItems(data);
+        setIDPaciente(idpaciente);
+        setApellido(data[0].Apellido);
+        setNombres(data[0].Nombres);
+        setIDTipoDocumento(data[0].TipoDocumento);
+       
+        setNroDocumento(data[0].NroDocumento);
+        setEMail(data[0].EMail);
+        
+        // setFechaNacimiento(data[0].FechaNacimiento)
+        setTECelular(data[0].TECelular);
+        
+        
+        setIDTipoSexoSelected(data[0].idsexo);
+
+        //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
+        const formattedDate = new Date(data[0].FechaNacimiento)
+          .toISOString()
+          .split("T")[0]; // Solo la parte de la fecha
+
+        
+        setFechaNacimiento(formattedDate);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
-    fetchData(); // Ejecuta la función para obtener los datos
-  }, []);
+    fetchData();
+  }, []); // Se ejecuta solo una vez al montar el componente
 
-  /*Carga Tipo de documento*/
   useEffect(() => {
-    async function fetchData() {
+    async function fetchInitialData() {
       try {
-        const data = await tipodocumentoService.Buscar(); // Llama a la función asíncrona
-        setTipoDocumento(data); // Establece el estado con los datos obtenidos
+        const [sexoData, documentoData, profesionData, provinciaData] =
+          await Promise.all([
+            tiposexoService.Buscar(),
+            tipodocumentoService.Buscar(),
+
+            //profesionalesService.BuscarPorID(idprofesional),
+          ]);
+        setTipoSexo(sexoData);
+        setTipoDocumento(documentoData);
+
+        setNuevo(1);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-
-    fetchData(); // Ejecuta la función para obtener los datos
+    fetchInitialData();
   }, []);
-
-  /*Carga Tipo de profesiones*/
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await profesionesService.Buscar(); // Llama a la función asíncrona
-        setTipoProfesion(data); // Establece el estado con los datos obtenidos
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData(); // Ejecuta la función para obtener los datos
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await provinciasService.Buscar(); // Llama a la función asíncrona
-        setProvinciaSeleccionada(data); // Establece el estado con los datos obtenidos
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData(); // Ejecuta la función para obtener los datos
-  }, []);
-
-  /* Carga provincias*/
-  useEffect(() => {
-    if (provinciaSeleccionada > 0) {
-      const fetchLocalidades = async () => {
-        const data = await localidadesService.Buscar(provinciaSeleccionada); // Función para obtener ciudades basadas en la provincia seleccionada
-        setLocalidades(data);
-      };
-      fetchLocalidades();
-    }
-  }, [provinciaSeleccionada]);
 
   async function Grabar() {
     // agregar o modificar
     //validaciones
     // Validaciones
-    if (!TipoDocumentoSelected) {
+
+    if (!idTipoDocumento) {
       showModalMessage("Debe seleccionar un tipo de documento");
       return;
-    } else if (typeof NroDocumento !== "string" || !NroDocumento.trim()) {
-      showModalMessage(
-        "El campo 'Número de Documento' es obligatorio y debe ser un texto válido"
-      );
-      return;
-    } else if (!idTipoSexoSelected) {
-      showModalMessage("Debe seleccionar un sexo");
-      return;
-    } else if (!Apellido.trim()) {
-      showModalMessage("El campo 'Apellido' es obligatorio");
-      return;
-    } else if (!Nombres.trim()) {
-      showModalMessage("El campo 'Nombres' es obligatorio");
-      return;
-    } else if (!NroDocumento.trim()) {
+    } else if (!NroDocumento) {
       showModalMessage("El campo 'Número de Documento' es obligatorio");
       return;
-    } else if (!validarEmail(EMail)) {
-      showModalMessage("El correo electrónico no es válido");
+    } else if (!idTipoSexoSelected) {
+      showModalMessage("Debe seleccionar el sexo");
+      return;
+    } else if (!Apellido.trim()) {
+      showModalMessage("El campo Apellido es obligatorio");
+      return;
+    } else if (!Nombres.trim()) {
+      showModalMessage("El campo Nombres es obligatorio");
       return;
     } else if (!FechaNacimiento) {
       showModalMessage("El campo 'Fecha de Nacimiento' es obligatorio");
       return;
-    } else if (!TECelular.trim()) {
+    } else if (!validarEmail(EMail)) {
+      console.log(EMail)
+      showModalMessage("El correo electrónico no es válido");
+      return;
+    } else if (!TECelular) {
       showModalMessage("El campo 'Teléfono Celular' es obligatorio");
       return;
-    } else if (!CuitCuil.trim()) {
-      showModalMessage("El campo 'CUIT/CUIL' es obligatorio");
-      return;
-    } else if (!MatriculaNro.trim()) {
-      showModalMessage("El campo 'Número de Matrícula' es obligatorio");
-      return;
-    } else if (!idTipoProfesionSelected) {
-      showModalMessage("Debe seleccionar un tipo de profesión");
-      return;
     }
-
+    
     try {
-      
-      await profesionalesService.GrabarAlta(
-        idprofesional,
+      await pacientesService.GrabarAlta(
+        idpaciente,
         Nombres,
         Apellido,
-        TipoDocumentoSelected,
+        idTipoDocumento,
         NroDocumento,
         EMail,
         FechaNacimiento,
         TECelular,
         idTipoSexoSelected,
-        CuitCuil,
-        MatriculaNro,
-        idTipoProfesionSelected,
         idusuario,
         nuevo
       );
 
-      openModalAltaExitosa();
+      openModalModificacionExitosa();
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
       return;
@@ -229,47 +201,12 @@ const registrarprofesional = ({ show, handleClose }) => {
           closeButton
           style={{ backgroundColor: "#0277bd", color: "white" }}
         >
-          <Modal.Title>DAR DE ALTA UN PROFESIONAL</Modal.Title>
+          <Modal.Title>MODIFICAR UN PACIENTE</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "100%", background: "white" }}>
           <div
             style={{ display: "grid", width: "100%", backgroundColor: "white" }}
           >
-            {/* <div
-              className="acomodarencabezadoprofesional"
-              style={{ background: "#D6EAF8" }}
-            >
-              <div
-                style={{ width: "70%", textAlign: "left", color: "black" }}
-              ></div>
-              <div style={{ width: "30%", textAlign: "right" }}>
-                <button
-                  title="Listar profesionales"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-calendar-days"></i>
-                </button>
-                <button
-                  title="Agenda Semanal"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-calendar-days"></i>
-                </button>
-
-                <button
-                  title="Horarios del profesional"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-clock"></i>
-                </button>
-                <button
-                  title="Lista de espera"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-book-open-reader"></i>
-                </button>
-              </div>
-            </div> */}
             <div
               style={{
                 display: "flex",
@@ -287,8 +224,8 @@ const registrarprofesional = ({ show, handleClose }) => {
                     Tipo documento
                   </InputGroup.Text>
                   <select
-                    onChange={(e) => setTipoDocumentoSelected(e.target.value)}
-                    value={TipoDocumentoSelected}
+                    onChange={(e) => setIDTipoDocumento(e.target.value)}
+                    value={idTipoDocumento}
                   >
                     <option value="" disabled>
                       Seleccionar
@@ -403,6 +340,7 @@ const registrarprofesional = ({ show, handleClose }) => {
                     onChange={(e) => {
                       const email = e.target.value;
                       setEMail(email);
+                     
                       if (!validarEmail(email)) {
                         // Aquí podrías mostrar un mensaje de error o aplicar algún estilo al campo
                       }
@@ -427,63 +365,6 @@ const registrarprofesional = ({ show, handleClose }) => {
                       }
                     }}
                     value={TECelular}
-                  />
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#679bb9", color: "white" }}
-                  >
-                    CUIT/CUIL
-                  </InputGroup.Text>
-                  <Form.Control
-                    placeholder="Ingresar CUIT/CUIL"
-                    aria-label="Ingresar CUIT/CUIL"
-                    aria-describedby="basic-addon2"
-                    type="text"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (/^\d*$/.test(value)) {
-                        // Verifica que solo contenga números
-                        setCuitCuil(value);
-                      }
-                    }}
-                    value={CuitCuil}
-                  />
-                </InputGroup>
-                <InputGroup className="mb-3"></InputGroup>
-                <InputGroup className="mb-3">
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#679bb9", color: "white" }}
-                  >
-                    Profesión
-                  </InputGroup.Text>
-                  <select
-                    style={{ width: "60%" }}
-                    onChange={(e) => {
-                      setIdTipoProfesionSelected(e.target.value);
-                      console.log("Profesión seleccionada:", e.target.value);
-                    }}
-                    value={idTipoProfesionSelected}
-                  >
-                    <option value="" disabled>
-                      Seleccionar
-                    </option>
-                    {TipoProfesion.map((profesion) => (
-                      <option key={profesion.ID} value={profesion.ID}>
-                        {profesion.descripcion}
-                      </option>
-                    ))}
-                  </select>
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#679bb9", color: "white" }}
-                  >
-                    MATRICULA
-                  </InputGroup.Text>
-                  <Form.Control
-                    placeholder="Ingresar matrícula"
-                    aria-label="Ingresar matrícula"
-                    aria-describedby="basic-addon2"
-                    type="text"
-                    onChange={(e) => setMatriculaNro(e.target.value)}
-                    value={MatriculaNro}
                   />
                 </InputGroup>
               </div>
@@ -518,7 +399,7 @@ const registrarprofesional = ({ show, handleClose }) => {
 
       {mdlAltaExitosa && (
         <MdlAltaExitosa
-          show={openModalAltaExitosa}
+          show={openModalModificacionExitosa}
           handleClose={handleClose}
           varMensaje={modalMessage}
           varMensajeTitulo={modalMessageTitulo}
@@ -528,4 +409,4 @@ const registrarprofesional = ({ show, handleClose }) => {
   );
 };
 
-export default registrarprofesional;
+export default modificarpaciente;

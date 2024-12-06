@@ -10,7 +10,7 @@ const mdlvalidar = ({show, handleClose, modalMessage}) => {
         <Modal.Header closeButton style={{backgroundColor: '#ae2029', color: 'white'}}>
           <Modal.Title>Faltan datos requeridos</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{textAlign: 'center', color: 'blue'}}><strong>{modalMessage}</strong></Modal.Body>
+        <Modal.Body style={{textAlign: 'center', color: 'black'}}><strong>{modalMessage}</strong></Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={(handleClose)}>
             Cerrar

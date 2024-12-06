@@ -16,26 +16,22 @@ const mdlhorarioprofesional = ({
   fecha,
   profesional,
 }) => {
-  
   const [selectedId, setSelectedId] = useState(null);
-const [selectedItems, setSelectedItems] = useState([]);
-const [Items, setItems] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [Items, setItems] = useState(null);
 
-const handleRadioChange = (event) => {
-  console.log(event.target.value)
-  const selectedValue = parseInt(event.target.value);
-  const selectedItem = Items.find(item => item.ID == selectedValue);
+  const handleRadioChange = (event) => {
+    const selectedValue = parseInt(event.target.value);
+    const selectedItem = Items.find((item) => item.ID == selectedValue);
 
-  console.log(selectedItem)
-  if (selectedItem && !selectedItems.some(item => item.ID == selectedValue)) {
-    setSelectedId(selectedValue);
-    setSelectedItems([...selectedItems, selectedItem]);
-  }
-};
-
-
-
- 
+    if (
+      selectedItem &&
+      !selectedItems.some((item) => item.ID == selectedValue)
+    ) {
+      setSelectedId(selectedValue);
+      setSelectedItems([...selectedItems, selectedItem]);
+    }
+  };
 
   async function Buscar() {
     /*  const fechaActual = formatearFecha(fechaActualSinParsear); */
@@ -46,13 +42,12 @@ const handleRadioChange = (event) => {
     );
 
     setItems(data);
-    console.log(data)
+   
   }
 
   useEffect(() => {
     Buscar();
   }, []);
-
 
   return (
     <Modal show={show} onHide={handleClose} size="lg">
@@ -97,98 +92,6 @@ const handleRadioChange = (event) => {
             </InputGroup>
           </div>
 
-          <Table
-            striped
-            bordered
-            hover
-            style={{ width: "750px", fontSize: "12px" }}
-          >
-            <thead>
-              <tr className="personalizarfila h-50">
-                
-                <th style={{ textAlign: "center" }} key="0">
-                  Día
-                </th>
-
-                <th style={{ textAlign: "center" }} key="1">
-                  Mañana desde
-                </th>
-
-                <th key="20">Mañana hasta</th>
-
-                <th style={{ textAlign: "center" }} key="2">
-                  Intervalo
-                </th>
-
-                <th style={{ textAlign: "center" }} key="3">
-                  Tarde desde
-                </th>
-
-                <th key="22">Tarde hasta</th>
-
-                <th style={{ textAlign: "center" }} key="21">
-                  Intervalo
-                </th>
-                <th style={{ textAlign: "center" }} key="5">
-                  Noche desde
-                </th>
-
-                <th key="6">Noche hasta</th>
-
-                <th style={{ textAlign: "center" }} key="7">
-                  Intervalo
-                </th>
-                <th style={{ textAlign: "center" }} key="0">
-                  Anular todo
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-          {selectedItems.length > 0 ? (
-            selectedItems.map((item) => (
-              <tr key={item.ID}>
-                <td>{item.dia}</td>
-                <td>{item.hmd}</td>
-                <td>{item.hmh}</td>
-                <td>{item.int_m}</td>
-                <td>{item.htd}</td>
-                <td>{item.hth}</td>
-                <td>{item.int_t}</td>
-                <td>{item.hnd}</td>
-                <td>{item.hnh}</td>
-                <td>{item.int_n}</td>
-                
-                <td
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      name="select-professional"
-                     
-                      checked={selectedId == item.ID}
-                  
-                      style={{
-                        transform: "scale(0.8)",
-                        width: "30%",
-                        height: "12px",
-                      }} // Ajustar tamaño si es necesario
-                    />
-                  </td>
-                </tr>
-              
-            ))
-          ) : (
-            <tr>
-              <td colSpan="9">No hay datos seleccionados</td>
-            </tr>
-          )}
-        </tbody>
-                
-          </Table>
           <div>
             <InputGroup className="mb-3" size="sm">
               <InputGroup.Text
@@ -332,11 +235,11 @@ const handleRadioChange = (event) => {
                         }}
                       >
                         <input
-                            type="radio"
-                            name="select-item"
-                            value={item.ID}
-                            checked={selectedId == item.ID}
-                            onChange={handleRadioChange}
+                          type="radio"
+                          name="select-item"
+                          value={item.ID}
+                          checked={selectedId == item.ID}
+                          onChange={handleRadioChange}
                           style={{
                             transform: "scale(0.8)",
                             width: "30%",

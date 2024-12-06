@@ -19,7 +19,7 @@ httpService.interceptors.request.use(
     return request;
   },
   (error) => {
-    console.log("error en axios request", error);
+    
     return Promise.reject(error);
   }
 );
@@ -32,7 +32,7 @@ httpService.interceptors.response.use(
   },
   (error) => {
     // loguear el error
-    console.log("error en axios response ", error);
+    
     modalService.BloquearPantalla(false);
 
 
