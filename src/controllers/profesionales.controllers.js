@@ -8,7 +8,9 @@ export const getProfesionales = async (req, res) => {
       const pool = await getConnection();
       const request = pool.request();
       let result;
-      
+      console.log(idprofesion)
+      console.log(Apellido)
+      console.log(VarDni)
       if (Apellido != null && Apellido != '') {
          
           request.input('Apellido', sql.VarChar, Apellido);
@@ -19,7 +21,7 @@ export const getProfesionales = async (req, res) => {
           result = await request.execute('sp_Buscar_Profesionales_Dni');
 
         } else if (idprofesion > 0) { 
-          
+          console.log(idprofesion)
           request.input('idprofesion', sql.Int, idprofesion);
           result = await request.execute('sp_Buscar_Profesionales_Profesion');
       } else {

@@ -7,14 +7,14 @@ export const getCapitulos = async (req, res) => {
     try {
            
       const pool = await getConnection();
-      const request = pool.request();
-      let result;
+      const request = pool.request(); 
+      let result; 
           
-      request.input('idprofesion', sql.Int, idprofesion);
+      request.input('idprofesion', sql.Int, idprofesion); 
 
       result = await request.execute('sp_Buscar_prestaciones_por_profesion');
            
-      return res.json(result.recordset);
+      return res.json(result.recordset); 
       
     } catch (error) {
         console.error('Error en la ejecución del procedimiento almacenado - CAPITULOS:', error);

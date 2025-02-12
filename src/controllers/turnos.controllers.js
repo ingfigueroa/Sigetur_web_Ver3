@@ -42,6 +42,7 @@ export const getTurnosCrear = async (req, res) => {
 
 export const getTurnosProfesionalFecha = async (req, res) => {
   try {
+   
     const {
       IDProf,
       Fecha
@@ -50,7 +51,7 @@ export const getTurnosProfesionalFecha = async (req, res) => {
     const pool = await getConnection();
     const request = pool.request();
     let result;
-
+   
 
 
     request.input('IDProf', sql.VarChar, IDProf);
@@ -68,8 +69,8 @@ export const getTurnosProfesionalFecha = async (req, res) => {
     return res.status(500).json({
       messaSge: 'Error en el servidor'
     });
-  }
-};
+  } 
+}; 
 
 
 export const getTurnosBuscarProfesionalDiaCancelado = async (req, res) => {
