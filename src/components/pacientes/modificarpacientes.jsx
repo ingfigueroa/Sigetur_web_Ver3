@@ -164,7 +164,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
       showModalMessage("El campo 'Fecha de Nacimiento' es obligatorio");
       return;
     } else if (!validarEmail(EMail)) {
-      console.log(EMail)
+ 
       showModalMessage("El correo electrónico no es válido");
       return;
     } else if (!TECelular) {

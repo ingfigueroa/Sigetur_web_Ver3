@@ -79,6 +79,7 @@ async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, 
 
 
 async function BuscarPorProfesionalFecha(IDProf, Fecha) {
+ 
   const resp = await httpService.get(urlResource, {
     params: { IDProf, Fecha },
   });

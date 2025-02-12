@@ -179,7 +179,7 @@ const mdlpacienteultimosturnos = ({
                           <Button
                           variant={buttonVariant}
                           size="sm"
-                          style={{ width: "70%", textAlign: "center" }}
+                          style={{ width: "100%", textAlign: "center" }}
                           
                           
                         >

@@ -14,7 +14,7 @@ import Profesionales from "./profesionales/profesionales";
 
 import Pacientes from "./pacientes/pacientes";
 
-import MenuHamburguesa from "./menuhamburguesa";
+import AgendaSemanal from "./profesionales/agendasemanal";
 
 export default function sigetur() {
   const [mostrarProfesional, setMostrarProfesional] = useState(false);
@@ -25,11 +25,15 @@ export default function sigetur() {
 
   const [mostrarPizarradeTurnos, setMostrarPizarradeTurnos] = useState(false);
 
+  const [mostrarAgendaSemanal, setMostrarAgendaSemanal] = useState(false);
+
+
   const MostrarObraSocial = () => {
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(false);
     setMostrarObraSocial(true);
     setMostrarProfesional(false);
+    setMostrarAgendaSemanal(false);
   };
 
   const MostrarProfesionales = () => {
@@ -37,6 +41,7 @@ export default function sigetur() {
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
     setMostrarProfesional(true);
+    setMostrarAgendaSemanal(false);
   };
 
   const MostrarPacientes = () => {
@@ -44,6 +49,7 @@ export default function sigetur() {
     setMostrarPaciente(true);
     setMostrarObraSocial(false);
     setMostrarProfesional(false);
+    setMostrarAgendaSemanal(false);
   };
 
   const MostrarPizarradeTurnos = () => {
@@ -51,6 +57,16 @@ export default function sigetur() {
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(true);
     setMostrarProfesional(false);
+    setMostrarAgendaSemanal(false);
+  };
+
+  
+  const MostrarAgendaSemanal = () => {
+    setMostrarPaciente(false);
+    setMostrarObraSocial(false);
+    setMostrarPizarradeTurnos(false);
+    setMostrarProfesional(false);
+    setMostrarAgendaSemanal(true)
   };
 
   const varpaciente = "FIGUEROA, RODOLFO";
@@ -147,6 +163,16 @@ export default function sigetur() {
               Pizarra de turnos
             </Button>
             <h1></h1>
+            <Button 
+            style={{
+              width: "100%",
+              height: "60px"
+            }}
+            variant="outline-primary"
+             onClick={MostrarAgendaSemanal}>
+             Agenda semanal
+            </Button>
+            <h1></h1>
             <Button
            style={{
             width: "100%",
@@ -189,6 +215,7 @@ export default function sigetur() {
           {mostrarPaciente && <Pacientes />}
           {mostrarPizarradeTurnos && <PizarradeTurnos />}
           {mostrarObraSocial && <ObrasSociales />}
+          {mostrarAgendaSemanal && <AgendaSemanal />}
         </div>
       </div>
     </>

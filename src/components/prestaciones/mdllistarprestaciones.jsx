@@ -20,7 +20,8 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
   const [items, setItems] = useState(null);
   const [TipoCapitulo, setTipoCapitulo] = useState([]);
   const [PrestacionCapitulo, setPrestacionCapitulo] = useState([]);
-  const [idPrestacionSelected, setIdPrestacionSelected] = useState('');
+  const [idPrestacionSelected, setIdPrestacionSelected] = useState("");
+  const [idCapituloSelected, setIdCapituloSelected] = useState("");
 
 
   const seleccionarPrestacion = (idPrestacion) => {
@@ -30,9 +31,11 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
     /*Carga Tipo de profesiones*/
     useEffect(() => {
       async function fetchData() {
-       
+
           try {
+           
               const data = await prestacionesService.BuscarCapitulos(idprofesion); // Llama a la función asíncrona
+          
               setTipoCapitulo(data); // Establece el estado con los datos obtenidos
               
           } catch (error) {
@@ -46,8 +49,10 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
   
   async function Buscar() {
   
-    const data = await prestacionesService.BuscarPrestaciones(idPrestacionSelected);
+    const data = await prestacionesService.BuscarPrestaciones(idCapituloSelected);
+    
     setPrestacionCapitulo(data); 
+
 
   }
 
@@ -60,7 +65,7 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
         closeButton
         style={{ backgroundColor: "#0277bd", color: "white" }}
       >
-        <Modal.Title>PRESTACIONES - BUSCAR</Modal.Title>
+        <Modal.Title style={{ fontSize: "18px"}}>PRESTACIONES - BUSCAR</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{width: "100%"}}>
       <div className="acomodarencabezadopizaturnos">
@@ -70,19 +75,21 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
                    style={{
                     backgroundColor: "#679bb9",
                     color: "white",
-                    height: "38px",
+                    height: "28px",
                   }}
               >
                 Capitulo:
               </InputGroup.Text>
               <select 
+              
                style={{
                 backgroundColor: "white",
                
-                height: "38px",
+                height: "28px",
+
               }}
-              onChange={(e) =>setIdPrestacionSelected(e.target.value)}
-              value={idPrestacionSelected}
+              onChange={(e) =>setIdCapituloSelected(e.target.value)}
+              value={idCapituloSelected}
               >
                  <option value="" disabled>Seleccionar</option>
               {TipoCapitulo.map(capitulo => (
@@ -93,10 +100,11 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
               </select>
              
         <Button
+        size="sm" 
              title="Buscar por capitulo"
               variant="outline-secondary"
               id="button-addon1"
-              style={{ height: "38px" }}
+              style={{ height: "28px" }}
               color="white"
               
               onClick={() => Buscar() }
@@ -114,26 +122,29 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
         <Table bordered hover>
             <thead>
               <tr className="personalizarfila h-50">
-            
+              <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)",
+                    color: "white" }} key="1">
+                  Código
+                </th>
+               
+
+                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)",
+                    color: "white" }} key="2">
+                  SubCódigo
+                </th>
+
                 <th
                   style={{
                     textAlign: "left",
                     backgroundColor: "rgb(136, 161, 184)",
+                    color: "white"
                   
                   }}
                 >
                   Prestación
                 </th>
 
-                <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)" }} key="1">
-                  Código
-                </th>
                
-
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }} key="2">
-                  SubCódigo
-                </th>
-
                
               
                 
@@ -141,6 +152,7 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
                   style={{
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
+                    color: "white"
                   }}
                   key="8"
                 >
@@ -154,20 +166,20 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
               <tr key={Item.ID}>
                
                
-               <td style={{ textAlign: "left", fontSize:"12px" }}>
-                {Item.Descripcion}
-               </td>
-               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.codigo}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.SubCodigo}</td>
              
+               <td style={{ textAlign: "center", fontSize:"12px", width:"10%" }}>{Item.codigo}</td>
+               <td style={{ textAlign: "center", fontSize:"12px", width:"10%" }}>{Item.SubCodigo}</td>
+               <td style={{ textAlign: "left", fontSize:"12px", width:"60%" }}>
+                {Item.prestacion}
+               </td>
               
-               <td style={{ textAlign: "center", fontSize:"12px"}}>
+               <td style={{ textAlign: "center", fontSize:"12px", width:"20%"}}>
                  
                       <Button
                          variant="outline-success" 
                          size="sm" 
-                         style={{width:"70%"}}
-                         onClick={() => seleccionarPrestacion(Item.ID)}
+                         /* style={{width:"100%"}} */
+                         onClick={() => seleccionarPrestacion(Item.idprestacion)}
              
                          >
                         Seleccionar

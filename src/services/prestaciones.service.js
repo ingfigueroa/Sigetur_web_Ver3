@@ -10,7 +10,7 @@ import httpService from "./http.service";
 
 
 async function BuscarCapitulos(idprofesion) {
-  
+ 
   const resp = await httpService.get(urlResource, {
     params: { idprofesion },
 

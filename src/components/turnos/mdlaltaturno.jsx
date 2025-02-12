@@ -8,7 +8,7 @@ import { obrassocialesService } from "/src/services/obrassociales.service";
 import { turnosService } from "../../services/turnos.service";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 import MdlValidar from "../modales/mdlvalidar";
-
+import MdlListarPacientes from "../pacientes/mdllistarpacientes";
 
 
 
@@ -27,12 +27,24 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
   const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
   const [mensaje, setMensaje] = useState('');
  
-
+  const [mdlListaPacientes, setModalListarPacientes] = useState(false);
   const [idObraSocialPacienteSelected, setIdObraSocialPacienteSelected] = useState('');
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalTituloMessage, setModalTituloMessage] = useState('');
+
+
+
+  const openMdlListarPacientes = () => {
+    setModalListarPacientes(true);
+  };
+
+  const closeMdlListarPacientes = () => {
+    setModalListarPacientes(false);
+
+   
+  };
 
 
   const showModalMessage = (message) => {
@@ -58,12 +70,37 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
     
   };
 
+  const recibirDatoDelHijo = (datoRecibido) => {
+    
+    SetIdPaciente(datoRecibido);
+
+    BuscarporID(datoRecibido);
+   
+  };
+/* 
   async function Buscar() {
+    console.log
     try {
       const data = await pacientesService.Buscar(Apellido, VarDNI);
       // Asignar los valores recibidos a los estados del formulario
       acomodar(data);
-      BuscarosPorPaciente(data);
+     
+      BuscarosPorPaciente(data[0].ID);
+    } catch (error) {
+      console.error("Error al buscar paciente:", error);
+    }
+  }
+ */
+  
+  async function BuscarporID(id) {
+    
+    try {
+      const data = await pacientesService.BuscarPorId(id);
+      // Asignar los valores recibidos a los estados del formulario
+     
+      acomodar(data);
+   
+      BuscarosPorPaciente(id);
     } catch (error) {
       console.error("Error al buscar paciente:", error);
     }
@@ -71,37 +108,35 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
 
   function acomodar(Items) {
     if (Items && Items.length > 0) {
+     
+      setDNI(Items[0].NroDocumento)
       const nombreCompleto = Items.map(
         (Item) => `${Item.Apellido}, ${Item.Nombres}`
       ).join(" ");
       setNombreCompleto(nombreCompleto);
+     
+      
     }
   }
 
-  async function BuscarosPorPaciente(Items) {
+  async function BuscarosPorPaciente(id) {
     try {
       
-      if (Items && Items.length > 0) {
-          const idpac = Items[0].ID
-          SetIdPaciente(idpac);
-          
-
-          const data = await obrassocialesService.BuscarPorPaciente(idpac); // Llama a la función asíncrona
+          const data = await obrassocialesService.BuscarPorPaciente(id); // Llama a la función asíncrona
           setOsPorPaciente(data); // Establece el estado con los datos obtenidos
-      }   
+         
       
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
 
- 
-
   async function Grabar() {
     // agregar o modificar
     //validaciones
     // Validaciones
-    if (typeof VarDNI !== 'string' || !VarDNI.trim()) {
+    console.log(VarDNI)
+    if (VarDNI <= 0) {
       showModalMessage("El campo 'Número de Documento' es obligatorio y debe ser un texto válido");
       return;
     } else if (!nombreCompleto.trim()) {
@@ -154,33 +189,9 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
         <div>
           <div>
             <InputGroup.Text style={{ backgroundColor: "#b0c4de", color: "black" }}>
-              <h5>BUSCAR PACIENTE POR DNI</h5>
+              <h5>DEFINIR EL PACIENTE</h5>
             </InputGroup.Text>
-            <InputGroup className="mb-3">
-              <InputGroup.Text
-                style={{ backgroundColor: "#679bb9", color: "white" }}
-               
-              >
-                DNI
-              </InputGroup.Text>
-              <Form.Control
-                aria-label="Example text with button addon"
-                aria-describedby="basic-addon1"
-                style={{ backgroundColor: "#d5dbdb" }}
-                onChange={(e) => setDNI(e.target.value)}
-                value={VarDNI}
-
-              
-              />
-              <Button
-                variant="outline-secondary"
-                id="button-addon1"
-                style={{ backgroundColor: "#679bb9" }}
-                onClick={() => Buscar() }
-              >
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
-            </InputGroup>
+           
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{ backgroundColor: "#679bb9", color: "white" }}
@@ -197,7 +208,18 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
                 value={nombreCompleto}
 
               />
+                <Button
+                variant="outline-secondary"
+                id="button-addon1"
+              
+                onClick={openMdlListarPacientes}
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </Button>
+             
+           
             </InputGroup>
+           
             <InputGroup className="mb-3">
             <InputGroup.Text
                 style={{ backgroundColor: "#679bb9", color: "white" }}
@@ -219,6 +241,21 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
             ))}
                 
            </select>
+           <InputGroup.Text
+                style={{ backgroundColor: "#679bb9", color: "white" }}
+               
+              >
+                DNI
+              </InputGroup.Text>
+              <Form.Control
+                aria-label="Example text with button addon"
+                aria-describedby="basic-addon1"
+                style={{ backgroundColor: "#d5dbdb" }}
+                readOnly
+                value={VarDNI}
+
+              
+              />
             </InputGroup>
 
             <InputGroup className="mb-3">
@@ -312,6 +349,14 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
      </Modal.Footer>
      
     </Modal>
+
+    {mdlListaPacientes && (
+        <MdlListarPacientes
+          show={openMdlListarPacientes}
+          handleClose={closeMdlListarPacientes}
+          enviarAlPadre={recibirDatoDelHijo}
+        />
+      )}
 
     <MdlAltaExitosa
               show={modalAltaExitosa}

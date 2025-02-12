@@ -22,13 +22,13 @@ async function BuscarPorId(idpaciente) {
   const resp = await httpService.get(urlResourceID, {
     params: {idpaciente},
   } );
-
+  
   return resp.data;
 }
 
 
 async function BuscarUltimosTurnos(idpaciente) {
-  console.log(idpaciente)
+  
   const resp = await httpService.get(urlResourceUltimosTurnos, {
     params: {idpaciente},
   } );
