@@ -459,7 +459,7 @@ const registrarprofesional = ({ show, handleClose }) => {
                     style={{ width: "60%" }}
                     onChange={(e) => {
                       setIdTipoProfesionSelected(e.target.value);
-                      console.log("Profesión seleccionada:", e.target.value);
+                     
                     }}
                     value={idTipoProfesionSelected}
                   >

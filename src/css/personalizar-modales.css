@@ -1,0 +1,18 @@
+.custom-modal .modal-dialog {
+  max-width: 4000px;
+  width: 90%;
+  height: 90vh; /* alto del modal */
+}
+
+.custom-modal .modal-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-modal .modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  height: 100%;
+  max-height: none;
+}

@@ -72,11 +72,13 @@ function tablapizarradeturnos() {
 
   const [turnos, setTurnos] = useState([]);
 
-  const horaActual = new Date().toLocaleTimeString();
+  const horaActual = format(new Date(), "HH:mm");
 
   const [cantidadTurnos, setCantidadTurnos] = useState(0);
 
   const [fechaTurno, setFechaTurno] = useState(null);
+
+  const[descripcion, setDescripcion] = useState("");
 
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
@@ -106,7 +108,7 @@ function tablapizarradeturnos() {
 
   const openMdlTurnoDetalle = (fila) => {
     setItem(fila);
-  
+    
     setModalTurnoDetalle(true);
   };
 
@@ -161,7 +163,8 @@ function tablapizarradeturnos() {
       setItem(fila);
       setIdEstado(fila.idestado);
 
-      if (fila.estado == "LIBRE" && VieneDE == "LIBRE") {
+      if (fila.estado === "LIBRE" && VieneDE === "LIBRE") {
+
         openMdlRegistrarTurno(fila);
       } else if (fila.estado == "PENDIENTE" && VieneDE == "PENDIENTE") {
         setCambiarEstadoMensaje(
@@ -195,7 +198,7 @@ function tablapizarradeturnos() {
     // Aquí agregas la lógica para cambiar el estado del turno
   };
 
-  const handleClose = () => {
+  const closeCambiarAPresente = () => {
     setCambiarEstado(false);
   };
 
@@ -360,10 +363,10 @@ function tablapizarradeturnos() {
 
   async function BuscarProfesionalyProfesion(idprofesional) {
     const data = await profesionalesService.BuscarId(idprofesional);
-
+    
     if (data) {
       setItems(data); // Asignar los datos a `Items`
-
+      
       // Asegúrate de que `Apellido` y `Nombres` existen en `data`
       if (data[0].Apellido && data[0].Nombres) {
         setapeyNom(`${data[0].Apellido}, ${data[0].Nombres}`); // Concatenar apellido y nombres
@@ -396,51 +399,48 @@ function tablapizarradeturnos() {
   }
 
   useEffect(() => {
-    console.log(Fecha)
-    console.log(fechaActual)
-    if (Fecha >= fechaActual) {
-     
-      console.log(HoraTurno)
-      console.log(HoraActual)
-      if (HoraTurno > horaActual) {
-      
-        return;
-      }
+ 
+
+
+    const esFechaValida = Fecha >= fechaActual;
+    const esHoraValida = HoraTurno > horaActual;
+   
+    if (esFechaValida) {
+
+      if (esHoraValida) return;
+  
       setModalMensaje(
-        "No se puede dar un turno cuando ya pasó el día y la hora del mismo."
+        "No se puede dar un turno cuando ya pasó el día o la hora del mismo."
       );
       openMdlMensaje();
       setModalRegistrarTurno(false);
     }
-  }, [HoraTurno]);
-/* 
-  useEffect(() => {
-    SetFechaLarga(handleFechaChange(fechaActual))
-   
-  }, [FechaLarga]); */
-
+  }, [HoraTurno]); 
+  
   return (
     <>
       <div
         style={{
-          width: "90%",
+          width: "100%",
 
           marginTop: "0",
-          marginBottom: "0"
+          marginBottom: "0",
+          marginLeft:"15px"
         }}
       >
-        <div style={{ display: "flex", backgroundColor: "white" }}>
-          <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
+        <div style={{ display: "flex", backgroundColor: "white", marginBottom:"5px" }}>
+          {/* <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
             <h2> Pizarra de turnos</h2>
-          </div>
-          <div style={{ width: "40%", textAlign: "right" }}>
+          </div> */}
+          <div style={{ width: "40%", textAlign: "left", marginTop:"10px" }}>
             <button
               title="Anular todos los turnos del día."
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
               disabled={turnos.length == 0 || Fecha <= fechaActual}
+              
               onClick={(event) => {
                 event.preventDefault();
-
+                setDescripcion(event.target.buttonText)
                 if (Fecha <= fechaActual) {
                   setModalMensaje(
                     "Fecha expirada. No se puede ANULAR LOS TURNOS."
@@ -474,7 +474,11 @@ function tablapizarradeturnos() {
             <button
               title="Horarios del profesional"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={openMdlHoraProfe}
+              
+              onClick={(event) => {
+                event.preventDefault();
+                setDescripcion(event.currentTarget.textContent.trim())
+                openMdlHoraProfe}}
             >
               <i class="fa-solid fa-clock"></i>
             </button>
@@ -485,6 +489,7 @@ function tablapizarradeturnos() {
             >
               <i class="fa-solid fa-book-open-reader"></i>
             </button>
+            <h5 style={{color:"black"}}>{descripcion}</h5>
           </div>
         </div>
 
@@ -790,14 +795,15 @@ function tablapizarradeturnos() {
                           style={{ width: "70%", textAlign: "center" }}
                           onClick={(event) => {
                             event.preventDefault();
-                            setHoraTurno(item.desde); // Actualiza `setHoraTurno` con `item.desde`
+                           
+                            setHoraTurno(item.hora); // Actualiza `setHoraTurno` con `item.desde`
 
                             // Obtiene la hora actual y la asigna a `setHoraActual`
                             // O ajusta el formato según lo necesites
                             setHoraActual(horaActual);
 
                             if (item.estado == "PENDIENTE") {
-                             
+                            
                               if (Fecha > fechaActual) {
                                 setModalMensaje(
                                   "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."
@@ -809,8 +815,9 @@ function tablapizarradeturnos() {
  
                               definirEstadosdeTurnos(item, "PENDIENTE");
                             } else if (item.estado == "LIBRE") {
+                             
                               if (Fecha >= fechaActual) {
-                                
+                            
                                 definirEstadosdeTurnos(item, "LIBRE");
                               } else {
                                 setModalMensaje(
@@ -832,7 +839,7 @@ function tablapizarradeturnos() {
                         </Button>
                       </td>
                       <td style={{ textAlign: "center", fontSize: "12px" }}>
-                        {item.desde}
+                        {item.hora}
                       </td>{" "}
                       {/* Mostrar hora formateada */}
                       <td style={{ textAlign: "center", fontSize: "10px" }}>
@@ -841,7 +848,7 @@ function tablapizarradeturnos() {
                           size="sm"
                           style={{ width: "70%", textAlign: "left" }}
                         >
-                          {item.apeNom}
+                          {item.apenompaciente}
                         </Button>
                       </td>
                       <td style={{ textAlign: "center", fontSize: "12px" }}>
@@ -908,6 +915,7 @@ function tablapizarradeturnos() {
           ApeyNom={apeyNom}
           FechaTurno={Fecha}
           profesion={profesion}
+          hora={HoraTurno}
         />
       )}
 
@@ -916,6 +924,7 @@ function tablapizarradeturnos() {
           show={openMdlTurnoDetalle}
           handleClose={CloseMdlTurnoDetalle}
           fila={Item}
+          profesion={profesion}
         />
       )}
 
@@ -954,7 +963,7 @@ function tablapizarradeturnos() {
       {mdlcambiarestado && (
         <MdlCambiarEstado
           show={setCambiarEstado}
-          handleClose={handleClose}
+          handleClose={closeCambiarAPresente}
           enviarAlPadre={handleYes}
           fila={Item}
         />

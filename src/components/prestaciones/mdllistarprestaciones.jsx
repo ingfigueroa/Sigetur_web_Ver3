@@ -33,7 +33,7 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
       async function fetchData() {
 
           try {
-           
+          
               const data = await prestacionesService.BuscarCapitulos(idprofesion); // Llama a la función asíncrona
           
               setTipoCapitulo(data); // Establece el estado con los datos obtenidos

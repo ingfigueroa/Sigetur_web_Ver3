@@ -72,7 +72,7 @@ const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value={fila.desde}
+                value={fila.hora}
                 style={{backgroundColor:'#d5dbdb'}}
               />
              
@@ -85,7 +85,7 @@ const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
             <Form.Control 
               aria-label="Example text with button addon"
               aria-describedby="basic-addon1"
-              value={fila.apeNom}
+              value={fila.apenompaciente}
               style={{backgroundColor:'#d5dbdb'}}
             />
             <InputGroup.Text style={{ backgroundColor: "#679bb9", color: "white" }}>Obra social:</InputGroup.Text>
@@ -110,7 +110,7 @@ const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
              <Form.Control
                aria-label="Example text with button addon"
                aria-describedby="basic-addon1"
-               value={fila.ApeNomProfe}
+               value={fila.apenomprof}
                style={{backgroundColor:'#d5dbdb'}}
              />
              <InputGroup.Text style={{backgroundColor: '#679bb9', color: 'white'}}>Servicio:</InputGroup.Text>

@@ -11,6 +11,8 @@ import httpService from "./http.service";
  const urlResourceTurnosCambiarEstado = config.urlResourceCambiarEstado;
  const urlResourceTurnosAnularPorPedidoProfesional = config.urlResourceTurnosAnularPorPedidoProfesional;
  const urlResourceTurnosProfesionalDiaCancelados = config.urlResourceTurnosProfesionalDiaCancelados;
+ const urlResourceAgeSemTurProfFecha = config.urlResourceAgSeTurProfFecha
+ const urlResourceAgeSemTurProfFechaAgrup = config.urlResourceAgeSemTurProfFechaAgrupado
 
  async function TurnosAnularPorPedidoProfesional( idprofesional, observaciones, fecha, idusuario) {
   
@@ -33,6 +35,26 @@ import httpService from "./http.service";
   const resp = await httpService.get(urlResourceTurnosCrear, {
     params: { idusuario, idprof, fecha },
   });
+  return resp.data;
+}
+
+
+
+async function Agendasemanal_PorProfesionalPorFecha( idprof, fecha) {
+
+  const resp = await httpService.get(urlResourceAgeSemTurProfFecha, {
+    params: {  idprof, fecha },
+  });
+ 
+  return resp.data;
+}
+
+async function Agendasemanal_FechasAgrupadas( idprof, fecha) {
+
+  const resp = await httpService.get(urlResourceAgeSemTurProfFechaAgrup, {
+    params: {  idprof, fecha },
+  });
+
   return resp.data;
 }
 
@@ -111,5 +133,5 @@ async function GrabarTurnoPaciente(IDTurno,IDPac,IDOS, Obs,IDUsuario) {
 
 
 export const turnosService = {
-  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno, TurnosAnularPorPedidoProfesional, TurnosPorProfesionalDiaCancelados
+  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno, TurnosAnularPorPedidoProfesional, TurnosPorProfesionalDiaCancelados, Agendasemanal_PorProfesionalPorFecha, Agendasemanal_FechasAgrupadas
 };

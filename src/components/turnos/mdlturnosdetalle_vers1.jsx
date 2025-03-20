@@ -1,80 +1,36 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { format, parse } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
 import { turnosService } from "/src/services/turnos.service";
+import "/src/css/personalizar-modales.css"
 
-const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
+const mdlturnodetalle_Ver1 = ({ show, handleClose, fila, profesion }) => {
   const [FechaLarga, SetFechaLarga] = useState(null);
   const [Fecha, SetFecha] = useState(null);
   const [Items, setItems] = useState(null);
 
-  const formatearFecha = (fechaISO) => {
-    try {
-      // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
-      const fechaObj = new Date(fechaISO);
-  
-      // Ajustar la fecha al UTC manualmente
-      const fechaLocal = new Date(
-        fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
-      );
-  
-      // Formatear usando toLocaleString
-      return (
-        fechaLocal.toLocaleDateString("es-ES", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }) 
-        
-      );
-    } catch (error) {
-      console.error("Error al formatear la fecha:", error);
-      return "Fecha no válida";
-    }
+  const formatearFecha = (fecha) => {
+    const fechaParseada = parseISO(fecha);
+
+    // Formatear la fecha a "dd/MM/yyyy"
+    const fechaFormateada = format(fechaParseada, "EEEE d 'de' MMMM", {
+      locale: es,
+    });
+    // Formatear la fecha en dd/MM/yyyy
+    return fechaFormateada;
   };
 
   useEffect(() => {
+    
     if (fila?.fecha) {
       SetFechaLarga(formatearFecha(fila.fecha));
     }
   }, [fila]);
-
-/*   useEffect(() => {
-    async function fetchData() {
-      try {
-        const fechaISO = fila.fecha;
-
-        // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
-        const fechaObj = new Date(fechaISO);
-
-        // Ajustar la fecha al UTC manualmente
-        const fechaLocal = new Date(
-          fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
-        );
-
-        // Formatear usando toLocaleString o date-fns como prefieras
-        const fechaFormateada =
-          fechaLocal.toLocaleDateString("es-ES", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }) +
-          " " +
-          fechaLocal.toLocaleTimeString("es-ES");
-        SetFechaLarga(fechaFormateada);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-  }, []); */
 
   useEffect(() => {
     async function fetchData() {
@@ -91,10 +47,26 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
   }, []);
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg">
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="lg"
+      dialogClassName="personalizar-modales"
+      centered
+    >
       <Modal.Header
-        closeButton 
-        style={{ backgroundColor: "#044f82", color: "white", brightness: "100" }}
+        closeButton
+       /*  style={{
+          backgroundColor: "#044f82",
+          color: "white",
+          brightness: "100",
+        }} */
+          style={{
+            backgroundColor: "#044f82",
+            color: "white",
+            borderTopLeftRadius: "15px",
+            borderTopRightRadius: "15px",
+          }}
       >
         <Modal.Title>TURNO - DETALLE</Modal.Title>
       </Modal.Header>
@@ -120,7 +92,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
                 fontFamily: "verdana",
               }}
             >
-             {fila.desde}
+              {fila.hora}
             </h1>
             <h1
               style={{
@@ -149,18 +121,18 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
             }}
           >
             <div style={{ width: "100%", display: "grid" }}>
-
               <InputGroup className="mb-3">
                 <Button
                   size="sm"
-                  title="Profesional."
+                  title="Paciente"
                   variant="outline-secondary"
                   id="button-addon1"
                   style={{ height: "25px" }}
                   color="white"
                 >
                   {/*   <i class="fa-solid fa-magnifying-glass"></i> */}
-                  <i class="fa-solid fa-user-tie"></i>
+
+                  <i class="fa-solid fa-hospital-user"></i>
                 </Button>
                 <Form.Control
                   style={{
@@ -172,13 +144,13 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
                   aria-label="Buscar profesional"
                   aria-describedby="basic-addon2"
                   readOnly
-                  value={fila.ApeNomProfe}
+                  value={fila.apenompaciente}
                 />
               </InputGroup>
               <InputGroup className="mb-3">
                 <Button
                   size="sm"
-                  title="Paciente."
+                  title="Profesional"
                   variant="outline-secondary"
                   id="button-addon1"
                   style={{ height: "25px" }}
@@ -194,10 +166,9 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
                     height: "25px",
                     fontSize: "12px",
                   }}
-                 
                   aria-describedby="basic-addon2"
                   readOnly
-                  value={fila.apeNom}
+                  value={fila.apenomprof}
                 />
               </InputGroup>
               <InputGroup className="mb-3">
@@ -210,7 +181,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
                   color="white"
                 >
                   {/*   <i class="fa-solid fa-magnifying-glass"></i> */}
-                  <i class="fa-solid fa-user-tie"></i>
+                  <i class="fa-solid fa-kit-medical"></i>
                 </Button>
                 <Form.Control
                   style={{
@@ -221,7 +192,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
                   }}
                   aria-describedby="basic-addon2"
                   readOnly
-                  value={fila.servicio.trim()}
+                  value={profesion}
                 />
               </InputGroup>
               <InputGroup className="mb-3">
@@ -234,7 +205,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
                   color="white"
                 >
                   {/*   <i class="fa-solid fa-magnifying-glass"></i> */}
-                  <i class="fa-solid fa-user-tie"></i>
+                  <i class="fa-solid fa-house-medical-flag"></i>
                 </Button>
                 <Form.Control
                   style={{
@@ -256,13 +227,12 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
             marginTop: "0px",
             textAlign: "center",
             width: "100%",
-            backgroundColor: "red"
           }}
         >
           <h6
             style={{
               textAlign: "left",
-              paddingTop: "5px"
+              paddingTop: "5px",
             }}
           >
             Observaciones
@@ -285,7 +255,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
             <h6
               style={{
                 textAlign: "left",
-                paddingTop: "1px"
+                paddingTop: "1px",
               }}
             >
               Detalle de estados
@@ -324,14 +294,14 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
               <tbody>
                 {Items &&
                   Items.map((item) => {
-/*                */
-                      const fechaFormateada = formatearFecha(item.fecha);
+                    /*                */
+                    const fechaFormateada = formatearFecha(item.fecha);
                     // Verifica los datos traídos desde la base de datos
-                   
+
                     return (
                       <tr key={item.idturno}>
                         <td style={{ textAlign: "center", fontSize: "10px" }}>
-                          { fechaFormateada}
+                          {fechaFormateada}
                         </td>
                         <td style={{ textAlign: "center", fontSize: "10px" }}>
                           {item.estado}
@@ -348,9 +318,9 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, fila }) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary"
-        onClick={handleClose}
-        >Cerrar</Button>
+        <Button variant="primary" onClick={handleClose}>
+          Cerrar
+        </Button>
       </Modal.Footer>
     </Modal>
   );

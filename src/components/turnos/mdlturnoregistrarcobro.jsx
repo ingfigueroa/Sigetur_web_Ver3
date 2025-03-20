@@ -36,7 +36,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
   const [osElegida, setOSElegida] = useState("");
 
   const [idPrestacion, setIDPrestacion] = useState("");
-  const [idprofesion, setIDProfesional] = useState(fila.idservicio);
+  const [idprofesion, setIDProfesion] = useState("");
   const [nombrePrestacion, setNombrePrestacion] = useState("");
   const [nombreCapitulo, setNombreCapitulo] = useState("");
   const [subcodigoPrestacion, setSubCodigoPrestacion] = useState("");
@@ -67,9 +67,11 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
   };
 
   useEffect(() => {
-   
+    
     if (fila && fila.IDPaciente) {
       BuscarosPorPaciente(fila.IDPaciente);
+      setIDProfesion(fila.idestado) 
+     
     }
   }, [fila]);
 
@@ -758,7 +760,8 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
           show={openMdlListarPrestaciones}
           handleClose={closeMdlListarPrestaciones}
           enviarAlPadre={recibirDatoDelHijo}
-          idprofesion={idprofesion}
+          
+          idprofesion={fila.idservicio}
         />
       )}
     </>

@@ -193,11 +193,9 @@ function Profesionales() {
       >
         <form>
           <div className="acomodarencabezadopizaturnos">
-            <div className="tituloPagina">
-              Profesionales <small>{TituloAccionABMC[AccionABMC]}</small>
-            </div>
+           
 
-            <div style={{ width: "30%", textAlign: "right" }}>
+            <div style={{ width: "30%", textAlign: "left" }}>
               <button
                 title="Registrar nuevo profesional"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -218,7 +216,7 @@ function Profesionales() {
               </button>
             </div>
           </div>
-          <hr />
+         
 
           <div className="acomodarencabezadopizaturnos">
             <InputGroup className="mb-3">
@@ -288,7 +286,7 @@ function Profesionales() {
              
             </InputGroup>
           </div>
-          <hr />
+          
         </form>
 
         <div className="">

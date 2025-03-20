@@ -204,13 +204,8 @@ function Pacientes() {
       <form>
        <div className="acomodarencabezadopizaturnos">
           
-          <div className="tituloPagina">
-       
-          Pacientes 
-            
-          </div>
-          
-          <div style={{ width: "30%", textAlign: "right" }}>
+      
+          <div style={{ width: "30%", textAlign: "left" }}>
           <button
               title="Registrar nuevo paciente"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -234,7 +229,7 @@ function Pacientes() {
           </div>
           
         </div>
-        <hr />
+     
 
       
         <div className="acomodarencabezadopizaturnos">
@@ -304,7 +299,7 @@ function Pacientes() {
               </Button>
           </InputGroup>
         </div>
-        <hr />
+        
         
     </form>
 

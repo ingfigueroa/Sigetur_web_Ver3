@@ -26,6 +26,8 @@ const urlResourceCambiarEstado = urlServidor + "/turnos/cambiarestado"
 const urlResourceEstadoPorTurnos = urlServidor + "/turnos/estadosporturno"
 const urlResourceTurnosAnularPorPedidoProfesional = urlServidor + "/turnos/anularturnospedidoprofesional"
 const urlResourceTurnosProfesionalDiaCancelados = urlServidor +  "/turnos/turnoprofesionaldiacancelado"
+const urlResourceAgSeTurProfFecha = urlServidor +  "/turnos/ageseturproffecha"
+const urlResourceAgeSemTurProfFechaAgrupado = urlServidor + "/turnos/AgeSemTurProfFechaAgrupado"
 const urlResourceCapitulos = urlServidor + "/capitulos"
 const urlResourcePrestaciones = urlServidor + "/prestaciones"
 const urlResourcePrestacion = urlServidor + "/prestacion"
@@ -59,5 +61,7 @@ export const config = {
     urlResourceTurnosProfesionalDiaCancelados,
     urlResourceProfesionalID,
     urlResourcePacienteID,
-    urlResourcePacienteUltimosTurnos
+    urlResourcePacienteUltimosTurnos,
+    urlResourceAgSeTurProfFecha,
+    urlResourceAgeSemTurProfFechaAgrupado
 }

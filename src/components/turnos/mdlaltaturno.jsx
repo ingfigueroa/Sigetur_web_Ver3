@@ -12,7 +12,7 @@ import MdlListarPacientes from "../pacientes/mdllistarpacientes";
 
 
 
-const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion }) => {
+const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion, hora }) => {
  
   const [nombreCompleto, setNombreCompleto] = useState("");
   const [osPorPaciente, setOsPorPaciente] = useState([]);
@@ -77,20 +77,6 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
     BuscarporID(datoRecibido);
    
   };
-/* 
-  async function Buscar() {
-    console.log
-    try {
-      const data = await pacientesService.Buscar(Apellido, VarDNI);
-      // Asignar los valores recibidos a los estados del formulario
-      acomodar(data);
-     
-      BuscarosPorPaciente(data[0].ID);
-    } catch (error) {
-      console.error("Error al buscar paciente:", error);
-    }
-  }
- */
   
   async function BuscarporID(id) {
     
@@ -135,7 +121,7 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
     // agregar o modificar
     //validaciones
     // Validaciones
-    console.log(VarDNI)
+   
     if (VarDNI <= 0) {
       showModalMessage("El campo 'Número de Documento' es obligatorio y debe ser un texto válido");
       return;
@@ -182,6 +168,7 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
       <Modal.Header
         closeButton
         style={{ backgroundColor: "#1e8449", color: "white" }}
+        
       >
         <Modal.Title>TURNO - REGISTRAR</Modal.Title>
       </Modal.Header>
@@ -299,7 +286,7 @@ const MdlAltaTurno = ({ show, handleClose, fila, ApeyNom, FechaTurno, profesion 
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value= {fila.desde}
+                value= {hora}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
             </InputGroup>
