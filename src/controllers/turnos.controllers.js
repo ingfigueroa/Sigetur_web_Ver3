@@ -73,6 +73,67 @@ export const getTurnosProfesionalFecha = async (req, res) => {
 }; 
 
 
+
+export const getAgendaSemanalProfesionalFechaAgrupado = async (req, res) => {
+  try {
+    
+    const {
+      idprof,
+      fecha
+    } = req.query;
+
+
+    const pool = await getConnection();
+    const request = pool.request();
+    let result;
+    
+    request.input('idprofesional', sql.Int, idprof);
+    request.input('fechaInicio', sql.Date, fecha);
+
+    
+    result = await request.execute('sp_agenda_semanal_proxima_semana');
+    
+    return res.json(result.recordset);
+   
+
+  } catch (error) {
+   
+    return res.status(500).json({
+      messaSge: 'Error en el servidor'
+    });
+  } 
+}; 
+
+export const getAgendaSemanalProfesionalFecha = async (req, res) => {
+  try {
+    
+    const {
+      idprof,
+      fecha
+    } = req.query;
+
+
+    const pool = await getConnection();
+    const request = pool.request();
+    let result;
+    
+    request.input('idprofesional', sql.Int, idprof);
+    request.input('fechaInicio', sql.Date, fecha);
+
+    
+    result = await request.execute('sp_agenda_semanal_turnos_x_horario_x_profesional');
+    
+    return res.json(result.recordset);
+   
+
+  } catch (error) {
+    console.error('Error en la ejecución del procedimiento almacenado:', error);
+    return res.status(500).json({
+      messaSge: 'Error en el servidor'
+    });
+  } 
+}; 
+
 export const getTurnosBuscarProfesionalDiaCancelado = async (req, res) => {
   try {
     const {
@@ -241,7 +302,7 @@ export const putTurnosCambiarEstados = async (req, res) => {
       vieneDE
     } = req.body || {};
 
-    console.log(Observaciones)
+
     const pool = await getConnection();
     const request = pool.request();
     let result;
