@@ -44,7 +44,9 @@ import modalDialogService from "/src/services/modalDialog.service";
 
 
 
-
+useEffect(() => {
+  document.title = "Si.Ge.Tur. - Obras Sociales";
+}, []);
 
 
   async function Buscar(_pagina) {

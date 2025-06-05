@@ -73,6 +73,10 @@ function Profesionales() {
     setModalHoraProfe(true);
   };
 
+useEffect(() => {
+  document.title = "Si.Ge.Tur. - Profesionales";
+}, []);
+
   useEffect(() => {
     // Esto se ejecutará cuando idProfesional cambie
     

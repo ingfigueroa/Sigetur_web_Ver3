@@ -41,6 +41,11 @@ function Pacientes() {
 
   const [mdlUltimosTurnos, setModalUltimosTurnos] = useState(false);
 
+useEffect(() => {
+  document.title = "Si.Ge.Tur. - Pacientes";
+}, []);
+
+
   const openMdlUltimosTurnos = (item) => {
     
     setIDPaciente(item.ID);

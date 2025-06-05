@@ -26,7 +26,7 @@ async function cambiarEstados () {
     
       if (Fecha >= fechaActual) {
         
-        definirEstadosdeTurnos(turno, "LIBRE");
+        definirEstadosdeTurnos(turno, "LIBRE"); 
       } else {
         setModalMensaje(
           "Fecha expirada. No se puede cambiar el estado del turno."

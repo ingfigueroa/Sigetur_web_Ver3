@@ -251,6 +251,10 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     setTurnos([]);
   };
 
+  useEffect(() => {
+    document.title = "Si.Ge.Tur. - Agenda Semanal";
+  }, []);
+
   const definirEstadosdeTurnos = (fila, VieneDE) => {
     try {
       setItem(fila);
@@ -271,7 +275,6 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         openMdlAnularTurno();
       } else if (fila.estado == "PRES NCOB" && VieneDE == "PRENOCOBRADO") {
         // setModalSiNoMensaje("¿Esta seguro de anular el turno?");
-
         openMdlAnularTurno();
       }
 

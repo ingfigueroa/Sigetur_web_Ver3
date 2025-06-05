@@ -9,6 +9,8 @@ import httpService from "./http.service";
  const urlResourceTurnosCrear = config.urlResourceTurnosCrear;
  const urlResourceEstadoPorTurnos = config.urlResourceEstadoPorTurnos;
  const urlResourceTurnosCambiarEstado = config.urlResourceCambiarEstado;
+ const urlResourceTurnosConsultasPorFecha = config.urlResourceConsultaTurnos
+
  const urlResourceTurnosAnularPorPedidoProfesional = config.urlResourceTurnosAnularPorPedidoProfesional;
  const urlResourceTurnosProfesionalDiaCancelados = config.urlResourceTurnosProfesionalDiaCancelados;
  const urlResourceAgeSemTurProfFecha = config.urlResourceAgSeTurProfFecha
@@ -102,9 +104,7 @@ async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, 
 
 async function BuscarPorProfesionalFecha(IDProf, Fecha) {
  
-  const resp = await httpService.get(urlResource, {
-    params: { IDProf, Fecha },
-  });
+  const resp = await httpService.get(urlResource, {params: { IDProf, Fecha },});
   return resp.data;
 }
 
@@ -132,6 +132,20 @@ async function GrabarTurnoPaciente(IDTurno,IDPac,IDOS, Obs,IDUsuario) {
 }
 
 
+async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idestado) {
+  try {
+    console.log(fechadesde);
+    const resp = await httpService.get(urlResourceTurnosConsultasPorFecha, {
+      params: { fechadesde, fechahasta, idprofesion, idestado }
+    });
+    return resp.data;
+  } catch (error) {
+    console.error('Error en TurnosConsultaPorFecha:', error);
+    return null; // o lanzar error si querés que lo maneje el componente
+  }
+}
+
+
 export const turnosService = {
-  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno, TurnosAnularPorPedidoProfesional, TurnosPorProfesionalDiaCancelados, Agendasemanal_PorProfesionalPorFecha, Agendasemanal_FechasAgrupadas
+  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno, TurnosAnularPorPedidoProfesional, TurnosPorProfesionalDiaCancelados, Agendasemanal_PorProfesionalPorFecha, Agendasemanal_FechasAgrupadas, TurnosConsultaPorFecha
 };

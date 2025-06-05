@@ -18,6 +18,7 @@ const urlResourceTipoSexo = urlServidor + "/tiposexo";
 const urlResourceTipoDocumento = urlServidor + "/tipodocumento";
 const urlResourceProvincia = urlServidor + "/provincias";
 const urlResourceLocalidad = urlServidor + "/localidades";
+const urlResourceEstado = urlServidor + "/estados"
 //TURNOS
 const urlResourceTurnos = urlServidor + "/turnos";
 const urlResourceTurnosPasaraPendiente = urlServidor + "/turnos/pasarapendiente"
@@ -27,11 +28,12 @@ const urlResourceEstadoPorTurnos = urlServidor + "/turnos/estadosporturno"
 const urlResourceTurnosAnularPorPedidoProfesional = urlServidor + "/turnos/anularturnospedidoprofesional"
 const urlResourceTurnosProfesionalDiaCancelados = urlServidor +  "/turnos/turnoprofesionaldiacancelado"
 const urlResourceAgSeTurProfFecha = urlServidor +  "/turnos/ageseturproffecha"
+const urlResourceConsultaTurnos = urlServidor + "/turnos/consultasporfecha"
+
 const urlResourceAgeSemTurProfFechaAgrupado = urlServidor + "/turnos/AgeSemTurProfFechaAgrupado"
 const urlResourceCapitulos = urlServidor + "/capitulos"
 const urlResourcePrestaciones = urlServidor + "/prestaciones"
 const urlResourcePrestacion = urlServidor + "/prestacion"
-
 
 
 
@@ -63,5 +65,7 @@ export const config = {
     urlResourcePacienteID,
     urlResourcePacienteUltimosTurnos,
     urlResourceAgSeTurProfFecha,
-    urlResourceAgeSemTurProfFechaAgrupado
+    urlResourceAgeSemTurProfFechaAgrupado,
+    urlResourceConsultaTurnos,
+    urlResourceEstado
 }

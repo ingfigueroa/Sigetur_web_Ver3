@@ -35,7 +35,8 @@ function tablapizarradeturnos() {
 
   const [mdlSiNo, setModalSiNo] = useState(null);
   const [mdlAnularTurno, setModalAnularTurno] = useState(false);
-  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] = useState(false);
+  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] =
+    useState(false);
   const [mdlModalMostarMensaje, setModalMostrarMensaje] = useState(false);
   const [mdlMensaje, setModalMensaje] = useState(false);
   const [btnAnular, setBtnAnular] = useState(true);
@@ -78,7 +79,7 @@ function tablapizarradeturnos() {
 
   const [fechaTurno, setFechaTurno] = useState(null);
 
-  const[descripcion, setDescripcion] = useState("");
+  const [descripcion, setDescripcion] = useState("");
 
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
@@ -108,7 +109,7 @@ function tablapizarradeturnos() {
 
   const openMdlTurnoDetalle = (fila) => {
     setItem(fila);
-    
+
     setModalTurnoDetalle(true);
   };
 
@@ -138,7 +139,7 @@ function tablapizarradeturnos() {
 
   const openMdlMensaje = () => {
     // setModalSiNoMensaje("¿Está seguro de anular el turno?")
-
+    console.log("entra por aca");
     setModalMostrarMensaje(true);
   };
 
@@ -164,7 +165,6 @@ function tablapizarradeturnos() {
       setIdEstado(fila.idestado);
 
       if (fila.estado === "LIBRE" && VieneDE === "LIBRE") {
-
         openMdlRegistrarTurno(fila);
       } else if (fila.estado == "PENDIENTE" && VieneDE == "PENDIENTE") {
         setCambiarEstadoMensaje(
@@ -233,7 +233,7 @@ function tablapizarradeturnos() {
     setProfesion("");
     setCantidadTurnos("");
     SetFechaLarga("");
-  }
+  };
 
   const formatearFecha = (fecha) => {
     let fechaActualParseada;
@@ -310,6 +310,7 @@ function tablapizarradeturnos() {
     // Convierte la fecha actual a formato corto
 
     if (fecha >= fechaActual) {
+      console.log(idprofesional);
       if (idprofesional > 0) {
         const data = await turnosService.CrearTurnosPorProfesionalPorFecha(
           idusuario,
@@ -323,13 +324,12 @@ function tablapizarradeturnos() {
   }
 
   async function BuscarTurnosProfesionalFecha(idprofesional, fecha) {
-   
     if (idprofesional > 0) {
       const data = await turnosService.BuscarPorProfesionalFecha(
         idprofesional,
         fecha
       );
-     
+
       if (data) {
         const cantRegistros = data.length;
         setCantidadTurnos(cantRegistros);
@@ -363,16 +363,17 @@ function tablapizarradeturnos() {
 
   async function BuscarProfesionalyProfesion(idprofesional) {
     const data = await profesionalesService.BuscarId(idprofesional);
-    
+
     if (data) {
       setItems(data); // Asignar los datos a `Items`
-      
+
       // Asegúrate de que `Apellido` y `Nombres` existen en `data`
       if (data[0].Apellido && data[0].Nombres) {
         setapeyNom(`${data[0].Apellido}, ${data[0].Nombres}`); // Concatenar apellido y nombres
         setProfesion(data[0].tprofesion);
       } else {
-        console.error("Los datos del profesional no contienen Apellido o Nombres."
+        console.error(
+          "Los datos del profesional no contienen Apellido o Nombres."
         );
       }
 
@@ -399,24 +400,31 @@ function tablapizarradeturnos() {
   }
 
   useEffect(() => {
- 
-
-
-    const esFechaValida = Fecha >= fechaActual;
+    const esFechaMayor = Fecha > fechaActual;
+    const esFechaIgual = (Fecha === fechaActual);
     const esHoraValida = HoraTurno > horaActual;
-   
-    if (esFechaValida) {
+    console.log("hola");
+    console.log(Fecha);
+    console.log(fechaActual);
+    if (esFechaMayor) {
+      return;
+    } else {
+      if (esFechaIgual) {
+        if (esHoraValida) return;
 
-      if (esHoraValida) return;
-  
-      setModalMensaje(
-        "No se puede dar un turno cuando ya pasó el día o la hora del mismo."
-      );
-      openMdlMensaje();
-      setModalRegistrarTurno(false);
+        setModalMensaje(
+          "No se puede dar un turno cuando ya pasó el día o la hora del mismo."
+        );
+        openMdlMensaje(false);
+        setModalRegistrarTurno(false);
+      }
     }
-  }, [HoraTurno]); 
-  
+  }, [HoraTurno]);
+
+  useEffect(() => {
+    document.title = "Si.Ge.Tur. - Pizarra de turnos";
+  }, []);
+
   return (
     <>
       <div
@@ -425,22 +433,27 @@ function tablapizarradeturnos() {
 
           marginTop: "0",
           marginBottom: "0",
-          marginLeft:"15px"
+          marginLeft: "15px",
         }}
       >
-        <div style={{ display: "flex", backgroundColor: "white", marginBottom:"5px" }}>
+        <div
+          style={{
+            display: "flex",
+            backgroundColor: "white",
+            marginBottom: "5px",
+          }}
+        >
           {/* <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
             <h2> Pizarra de turnos</h2>
           </div> */}
-          <div style={{ width: "40%", textAlign: "left", marginTop:"10px" }}>
+          <div style={{ width: "40%", textAlign: "left", marginTop: "10px" }}>
             <button
               title="Anular todos los turnos del día."
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
               disabled={turnos.length == 0 || Fecha <= fechaActual}
-              
               onClick={(event) => {
                 event.preventDefault();
-                setDescripcion(event.target.buttonText)
+                setDescripcion(event.target.buttonText);
                 if (Fecha <= fechaActual) {
                   setModalMensaje(
                     "Fecha expirada. No se puede ANULAR LOS TURNOS."
@@ -474,11 +487,11 @@ function tablapizarradeturnos() {
             <button
               title="Horarios del profesional"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              
               onClick={(event) => {
                 event.preventDefault();
-                setDescripcion(event.currentTarget.textContent.trim())
-                openMdlHoraProfe}}
+                setDescripcion(event.currentTarget.textContent.trim());
+                openMdlHoraProfe;
+              }}
             >
               <i class="fa-solid fa-clock"></i>
             </button>
@@ -489,194 +502,191 @@ function tablapizarradeturnos() {
             >
               <i class="fa-solid fa-book-open-reader"></i>
             </button>
-            <h5 style={{color:"black"}}>{descripcion}</h5>
+            <h5 style={{ color: "black" }}>{descripcion}</h5>
           </div>
         </div>
 
         <hr></hr>
         <div
-         style={{
-          display: "flex",
-          width: "100%",
-          backgroundColor: ""
-        }}>
-         
-
-         
-            <div
-              style={{
-                width: "95%",
-                backgroundColor: "",
-              }}
-            >
-              
-               <InputGroup className="mb-3">
-                <InputGroup.Text
-                  style={{
-                    backgroundColor: "#679bb9",
-                    width: "15%",
-                    color: "white",
-                    height: "28px",
-                  }}
-                >
-                  Elegir fecha:
-                </InputGroup.Text>
-                <Form.Control
-                 style={{
-
-                  height: "28px",
-                }}
-                  placeholder="Buscar profesional"
-                  aria-label="Buscar profesional"
-                  aria-describedby="basic-addon2"
-                  type="date"
-                  onChange={handleFechaChange}
-                  value={Fecha}
-                />
-                <Form.Control
-                  style={{
-                    backgroundColor: "#679bb9",
-                    color: "white",
-                    height: "28px",
-                    marginLeft: "15px",
-                    width: "20%",
-                  }}
-                  aria-describedby="basic-addon2"
-                  readOnly
-                  value={FechaLarga}
-                />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text
-                  style={{
-                    backgroundColor: "#679bb9",
-                    color: "white",
-                    height: "28px",
-                  }}
-                >
-                  Profesional:
-                </InputGroup.Text>
-                <Form.Control
-                 style={{
-                  textAlign:"center",
-                  width:"25%",
-                  height: "28px",
-                }}
-                  placeholder="Buscar profesional"
-                  aria-label="Buscar profesional"
-                  aria-describedby="basic-addon2"
-                  readOnly
-                  value={apeyNom}
-                />
-                <Button
-                size="sm"
-                 title="Buscar profesional."
-                  variant="outline-secondary"
-                  id="button-addon1"
-                  style={{  height: "28px", }}
-                  color="white"
-                  onClick={openMdlListarProfesionales}
-                  /* onClick={() => BuscarTurnosProfesionalFecha() } */
-                >
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </Button>
-                <InputGroup.Text
-                  style={{
-                    backgroundColor: "#679bb9",
-                    color: "white",
-                    height: "28px",
-                  }}
-                >
-                  Servicio:
-                </InputGroup.Text>
-                <Form.Control
-                style={{
-                  textAlign:"center",
-                  width:"15%",
-                  height: "28px",
-                }}
-                  placeholder="Profesión"
-                  aria-label="Profesión"
-                  aria-describedby="basic-addon2"
-                  
-                  readOnly
-                  value={profesion}
-                />
-                  <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "28px",
-                width: "15%"
-              }}
-            >
-              Cant. de turnos:
-            </InputGroup.Text>
-            <Form.Control
-             style={{
-             textAlign:"center",
-              height: "28px",
+          style={{
+            display: "flex",
+            width: "100%",
+            backgroundColor: "",
+          }}
+        >
+          <div
+            style={{
+              width: "95%",
+              backgroundColor: "",
             }}
-              placeholder="turnos"
-              aria-label="cantturnos"
-              aria-describedby="basic-addon2"
-               
-              readOnly
-              value={cantidadTurnos}
-            />
-              </InputGroup>
-             
-       
-          <InputGroup style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          
-          </InputGroup>
-          
-        
-            </div>
-            <div
+          >
+            <InputGroup className="mb-3">
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  width: "15%",
+                  color: "white",
+                  height: "28px",
+                }}
+              >
+                Elegir fecha:
+              </InputGroup.Text>
+              <Form.Control
+                style={{
+                  height: "28px",
+                }}
+                placeholder="Buscar profesional"
+                aria-label="Buscar profesional"
+                aria-describedby="basic-addon2"
+                type="date"
+                onChange={handleFechaChange}
+                value={Fecha}
+              />
+              <Form.Control
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "28px",
+                  marginLeft: "15px",
+                  width: "20%",
+                }}
+                aria-describedby="basic-addon2"
+                readOnly
+                value={FechaLarga}
+              />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "28px",
+                }}
+              >
+                Profesional:
+              </InputGroup.Text>
+              <Form.Control
+                style={{
+                  textAlign: "center",
+                  width: "25%",
+                  height: "28px",
+                }}
+                placeholder="Buscar profesional"
+                aria-label="Buscar profesional"
+                aria-describedby="basic-addon2"
+                readOnly
+                value={apeyNom}
+              />
+              <Button
+                size="sm"
+                title="Buscar profesional."
+                variant="outline-secondary"
+                id="button-addon1"
+                style={{ height: "28px" }}
+                color="white"
+                onClick={openMdlListarProfesionales}
+                /* onClick={() => BuscarTurnosProfesionalFecha() } */
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </Button>
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "28px",
+                }}
+              >
+                Servicio:
+              </InputGroup.Text>
+              <Form.Control
+                style={{
+                  textAlign: "center",
+                  width: "15%",
+                  height: "28px",
+                }}
+                placeholder="Profesión"
+                aria-label="Profesión"
+                aria-describedby="basic-addon2"
+                readOnly
+                value={profesion}
+              />
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "28px",
+                  width: "15%",
+                }}
+              >
+                Cant. de turnos:
+              </InputGroup.Text>
+              <Form.Control
+                style={{
+                  textAlign: "center",
+                  height: "28px",
+                }}
+                placeholder="turnos"
+                aria-label="cantturnos"
+                aria-describedby="basic-addon2"
+                readOnly
+                value={cantidadTurnos}
+              />
+            </InputGroup>
+
+            <InputGroup
+              style={{ display: "flex", alignItems: "center", gap: "10px" }}
+            ></InputGroup>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              width: "15%",
+
+              backgroundColor: "",
+            }}
+          >
+            <Button
+              variant="success"
+              size="sm"
               style={{
-                display:"grid",
-                width: "15%",
-               
-               
-                 backgroundColor: ""
+                marginLeft: "20px",
+                marginRight: "20px",
+                width: "70%",
+                textAlign: "center",
+                height: "30px",
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+
+                BuscarTurnosPorProfesionalPorFecha(
+                  idusuario,
+                  IDProfesional,
+                  Fecha
+                );
               }}
             >
-              <Button
-                variant="success"
-                size="sm"
-                style={{ marginLeft: "20px", marginRight:"20px",  width: "70%", textAlign: "center", height:"30px" }}
-                onClick={(event) => {
-                  event.preventDefault();
-
-                  BuscarTurnosPorProfesionalPorFecha(
-                    idusuario,
-                    IDProfesional,
-                    Fecha
-                  );
-                }}
-              >
-                Burcar Turnos
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                style={{ marginLeft: "20px", marginRight:"20px",width: "70%", textAlign: "center", height:"30px" }}
-                onClick={(event) => {
-                  event.preventDefault();
-                  limpiar();
-             
-                }}
-              >
-                Limpiar
-              </Button>
-              
-            </div>
-         
+              Burcar Turnos
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              style={{
+                marginLeft: "20px",
+                marginRight: "20px",
+                width: "70%",
+                textAlign: "center",
+                height: "30px",
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+                limpiar();
+              }}
+            >
+              Limpiar
+            </Button>
+          </div>
         </div>
-        
-       
-           
+
         <div className="acomodartabla">
           <Table bordered hover>
             <thead>
@@ -695,7 +705,13 @@ function tablapizarradeturnos() {
                   Hora
                 </th>
 
-                <th style={{ backgroundColor: "rgb(136, 161, 184)", textAlign: "left" }} key="2">
+                <th
+                  style={{
+                    backgroundColor: "rgb(136, 161, 184)",
+                    textAlign: "left",
+                  }}
+                  key="2"
+                >
                   Paciente
                 </th>
                 <th
@@ -731,7 +747,7 @@ function tablapizarradeturnos() {
                   let buttonVariant;
                   let buttonText;
                   let isButtonDisabled = false;
-                  
+
                   // Definir variantes y textos según el estado
                   switch (item.sigla) {
                     case "ANU":
@@ -768,20 +784,18 @@ function tablapizarradeturnos() {
                       buttonText = item.estado;
                       break;
                     case "PRE NCOB":
-                    
                       buttonVariant = "primary";
                       isButtonDisabled = true;
                       buttonText = item.estado;
                       break;
 
                     case "LIB":
-                      
                       if (Fecha < fechaActual) {
                         isButtonDisabled = true;
                       }
                       buttonVariant = "success";
                       buttonText = item.estado;
-                     
+
                       break;
                   }
 
@@ -795,7 +809,7 @@ function tablapizarradeturnos() {
                           style={{ width: "70%", textAlign: "center" }}
                           onClick={(event) => {
                             event.preventDefault();
-                           
+
                             setHoraTurno(item.hora); // Actualiza `setHoraTurno` con `item.desde`
 
                             // Obtiene la hora actual y la asigna a `setHoraActual`
@@ -803,7 +817,6 @@ function tablapizarradeturnos() {
                             setHoraActual(horaActual);
 
                             if (item.estado == "PENDIENTE") {
-                            
                               if (Fecha > fechaActual) {
                                 setModalMensaje(
                                   "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."
@@ -811,13 +824,10 @@ function tablapizarradeturnos() {
                                 openMdlMensaje();
                                 return;
                               }
-                            
- 
+
                               definirEstadosdeTurnos(item, "PENDIENTE");
                             } else if (item.estado == "LIBRE") {
-                             
                               if (Fecha >= fechaActual) {
-                            
                                 definirEstadosdeTurnos(item, "LIBRE");
                               } else {
                                 setModalMensaje(
@@ -825,13 +835,10 @@ function tablapizarradeturnos() {
                                 );
                                 openMdlMensaje();
                               }
-                            }
-                            else if (item.estado == "PRESENTE NO COBRADO") {
-                              
-                                setModalMensaje(
-                                  "Fecha expirada. No se puede cambiar el estado del turno."
-                                );
-                                
+                            } else if (item.estado == "PRESENTE NO COBRADO") {
+                              setModalMensaje(
+                                "Fecha expirada. No se puede cambiar el estado del turno."
+                              );
                             }
                           }}
                         >

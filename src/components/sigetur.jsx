@@ -3,10 +3,19 @@ import {
   Drawer,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
+  Divider,
   IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import PeopleIcon from "@mui/icons-material/People";
+import GroupIcon from "@mui/icons-material/Group";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import SearchIcon from "@mui/icons-material/Search";
 
 import "../css/sigetur.css";
 import "../css/menu-hamburguesa.css";
@@ -16,6 +25,8 @@ import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 
 import PizarradeTurnos from "./turnos/pizarradeturnos";
+
+import ConsultaTurnos from "./turnos/consultaturno";
 
 import ObrasSociales from "./obrassociales/obrassociales";
 
@@ -36,6 +47,8 @@ export default function sigetur() {
 
   const [mostrarAgendaSemanal, setMostrarAgendaSemanal] = useState(false);
 
+  const [mostraConsulta, setMostrarConsulta] = useState(false);
+
   const [titulo, setTitulo] = useState("");
 
   const MostrarObraSocial = () => {
@@ -44,6 +57,7 @@ export default function sigetur() {
     setMostrarObraSocial(true);
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
     setTitulo("GESTIÓN DE OBRAS SOCIALES");
     setOpen(false);
   };
@@ -54,6 +68,7 @@ export default function sigetur() {
     setMostrarObraSocial(false);
     setMostrarProfesional(true);
     setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
     setTitulo("GESTIÓN DE PROFESIONALES");
     setOpen(false);
   };
@@ -64,6 +79,7 @@ export default function sigetur() {
     setMostrarObraSocial(false);
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
     setTitulo("GESTIÓN DE PACIENTES");
     setOpen(false);
   };
@@ -74,6 +90,7 @@ export default function sigetur() {
     setMostrarPizarradeTurnos(true);
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
     setTitulo("PIZARRA DE TURNOS");
     setOpen(false);
   };
@@ -84,7 +101,21 @@ export default function sigetur() {
     setMostrarPizarradeTurnos(false);
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(true);
+    setMostrarConsulta(false);
     setTitulo("AGENDA SEMANAL POR PROFESIONAL");
+    setOpen(false);
+  };
+
+
+  const MostrarConsulta = () => {
+    setMostrarPaciente(false);
+    setMostrarObraSocial(false);
+    setMostrarPizarradeTurnos(false);
+    setMostrarProfesional(false);
+    setMostrarAgendaSemanal(false);
+    setMostrarConsulta(true);
+    console.log("pasa por aca")
+    setTitulo("CONSULTA DE TURNOS");
     setOpen(false);
   };
 
@@ -109,11 +140,18 @@ export default function sigetur() {
         >
           <div
             style={{
-              width: "15%",
+              width: "25%",
               backgroundColor: "#2980B9",
-              marginLeft: "25px",
+              marginLeft: "0 px",
             }}
           >
+            <IconButton
+              onClick={() => toggleDrawer(true)}
+              style={{ color: "white", marginLeft: "auto" }}
+            >
+              <MenuIcon fontSize="large" />
+            </IconButton>
+
             <a href="/">
               <img
                 src="./assets/Logo_2022_resolucion.jpg"
@@ -127,6 +165,7 @@ export default function sigetur() {
             style={{
               width: "85%",
               backgroundColor: "#2980B9",
+
               color: "white",
               display: "flex", // Usa flexbox
               alignItems: "center", // Centra verticalmente
@@ -156,122 +195,183 @@ export default function sigetur() {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
+
               alignItems: "right",
-              width: "10%",
+              width: "auto",
               height: "60px",
               backgroundColor: "#2980B9",
+
+              padding: "0 10px",
             }}
           >
-            {/* Botón hamburguesa */}
-            {/*    <button
-              style={{
-                background: "none",
-                border: "none",
-                color: "white",
-                fontSize: "30px",
-                cursor: "pointer",
-                marginLeft: "15px",
-              }}
-              onClick={toggleMenu}
-            >
-              ☰
-            </button>
-            {menuVisible && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "40px",
-                  right: "0",
-                  backgroundColor: "white",
-                  color: "black",
-                  borderRadius: "5px",
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                  padding: "10px",
-                  width: "200px",
-                }}
-              >
-                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  <li style={{ padding: "8px", cursor: "pointer" }}>
-                    <a
-                      href="/pizarra-turnos"
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      📅 Pizarra de turnos
-                    </a>
-                  </li>
-                  <li style={{ padding: "8px", cursor: "pointer" }}>
-                    <a
-                      href="/agenda-semanal"
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      📆 Agenda Semanal
-                    </a>
-                  </li>
-                  <li style={{ padding: "8px", cursor: "pointer" }}>
-                    <a
-                      href="/profesionales"
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      👨‍⚕️ Profesional
-                    </a>
-                  </li>
-                  <li style={{ padding: "8px", cursor: "pointer" }}>
-                    <a
-                      href="/pacientes"
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      🩺 Pacientes
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            )} */}{" "}
             {/* Botón para abrir el menú */}
-            <IconButton
-              onClick={() => toggleDrawer(true)}
-              style={{ position: "fixed", right: 20, top: 20 }}
-            >
-              <MenuIcon fontSize="large" />
-            </IconButton>
-            {/* Drawer (Menú lateral derecho) */}
-            {/* Drawer (Menú lateral derecho) */}
-            <Drawer
-              anchor="right"
-              open={open}
-              onClose={() => toggleDrawer(false)()}
-            >
-              <List style={{ width: 250 }}>
-                <ListItem button onClick={MostrarPizarradeTurnos}>
-                  <ListItemText primary="Pizarra de turnos" />
-                </ListItem>
-                <ListItem button onClick={MostrarAgendaSemanal}>
-                  <ListItemText primary="Agenda Semanal" />
-                </ListItem>
-                <ListItem button onClick={MostrarProfesionales}>
-                  <ListItemText primary="Profesionales" />
-                </ListItem>
-                <ListItem button onClick={MostrarPacientes}>
-                  <ListItemText primary="Pacientes" />
-                </ListItem>
-                <ListItem button onClick={MostrarObraSocial}>
-                  <ListItemText primary="Obras Sociales" />
-                </ListItem>
-              </List>
-            </Drawer>
+
+            {/* Botón de ayuda */}
             <button
               title="Ayuda"
               className="btn btn-sm btn-light btn-outline-primary"
               style={{
-                alignItems: "center",
+                alignItems: "right",
                 height: "30px",
-                marginTop: "15px",
-                marginRight: "15px",
+                marginTop: "auto",
+                marginRight: "auto",
               }}
             >
-              <i class="fa-regular fa-circle-question"></i>
+              <HelpOutlineIcon />
             </button>
           </div>
+
+          {/* Drawer (Menú lateral derecho) */}
+          <Drawer
+            anchor="left"
+            open={open}
+            onClose={() => toggleDrawer(false)()}
+          >
+            <List style={{ width: 280, padding: 0 }}>
+              <ListItem
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#2980B9",
+                  color: "white",
+                  margin: "5px 0px 5px 0px",
+                }}
+              >
+                <img
+                  src="./assets/Logo_2022_resolucion.jpg"
+                  alt="Logo"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "60px",
+                    objectFit: "contain",
+                  }}
+                />
+              </ListItem>
+
+              <Divider
+                sx={{
+                 
+                  marginY: "0.5",
+                  height: "2px",
+                  backgroundColor: "black",
+                }}
+              />
+
+              <ListItem button onClick={MostrarPizarradeTurnos}
+              sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <CalendarTodayIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Pizarra de turnos" />
+              </ListItem>
+
+              <ListItem
+                button
+                onClick={MostrarAgendaSemanal}
+               sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <EventNoteIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Agenda Semanal" />
+              </ListItem>
+
+              <ListItem
+                button
+                onClick={MostrarProfesionales}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <GroupIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Profesionales" />
+              </ListItem>
+
+              <ListItem button onClick={MostrarPacientes}
+              sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <PeopleIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Pacientes" />
+              </ListItem>
+
+              <ListItem button onClick={MostrarObraSocial}
+              sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <LocalHospitalIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Obras Sociales" />
+              </ListItem>
+
+              <Divider
+                sx={{ marginY: "0.5",  backgroundColor: "black" }}
+              />
+
+              <ListItem button onClick={MostrarConsulta}
+              sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <SearchIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Consultas" />
+
+              </ListItem>
+
+              {/* Podés agregar más secciones acá */}
+            </List>
+          </Drawer>
         </div>
 
         <div
@@ -282,6 +382,7 @@ export default function sigetur() {
           {mostrarPizarradeTurnos && <PizarradeTurnos />}
           {mostrarObraSocial && <ObrasSociales />}
           {mostrarAgendaSemanal && <AgendaSemanal />}
+          {mostraConsulta && <ConsultaTurnos />}
         </div>
       </div>
     </>
