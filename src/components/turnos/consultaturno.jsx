@@ -20,6 +20,7 @@ import { turnosService } from "/src/services/turnos.service";
 
 import { profesionesService } from "/src/services/profesiones.Service";
 import { estadosService } from "/src/services/estados.service";
+import MdlTurnoDetalle from "./mdlturnosdetalle_vers1";
 
 function ConsultaTurnos() {
   const [Items, setItems] = useState(null);
@@ -34,15 +35,22 @@ function ConsultaTurnos() {
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
   const [idEstadoSelected, setIDEstadoSelected] = useState("");
   const [estados, setEstados] = useState([]);
+  const [Pagina, setPagina] = useState(1);
+  const [RegistrosTotal, setRegistrosTotal] = useState(0);
+  const [Paginas, setPaginas] = useState([]);
+  const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
+  const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
 
-  const openMdlListarProfesionales = () => {
-    setModalListarProfesionales(true);
+
+
+  const openMdlTurnoDetalle = (fila) => {
+    setItem(fila);
+    console.log(fila)
+    setModalTurnoDetalle(true);
   };
 
-  const closeMdlListarProfesionales = () => {
-    setModalListarProfesionales(false);
-
-    limpiarTabla();
+  const CloseMdlTurnoDetalle = () => {
+    setModalTurnoDetalle(false);
   };
 
   const openMdlMensaje = () => {
@@ -75,12 +83,10 @@ function ConsultaTurnos() {
     fetchInitialData();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     async function fetchInitialData() {
       try {
-        const [estadosData] = await Promise.all([
-          estadosService.Buscar(),
-        ]);
+        const [estadosData] = await Promise.all([estadosService.Buscar()]);
 
         setEstados(estadosData);
       } catch (error) {
@@ -130,24 +136,43 @@ function ConsultaTurnos() {
 
     // limpiarTabla();
   };
-  async function BuscarTurnosConsultasPorFecha(fechadesde, fechahasta, idprofesion, idestado) {
-    console.log(fechadesde);
-    console.log(fechahasta);
-    console.log(idprofesion);
-    console.log(idestado)
+  async function BuscarTurnosConsultasPorFecha(_pagina) {
+    if (_pagina && _pagina !== Pagina) {
+      setPagina(_pagina);
+    }
+
+    // OJO Pagina (y cualquier estado...) se actualiza para el proximo render, para buscar usamos el parametro _pagina
+    else {
+      _pagina = Pagina;
+    }
+    console.log(FechaDesde);
+    console.log(FechaHasta);
+    console.log(idTipoProfesionSelected);
+    console.log(idEstadoSelected);
+    console.log(_pagina);
+    console.log(CantidaddeRegistros);
 
     const data = await turnosService.TurnosConsultaPorFecha(
-      fechadesde,
-      fechahasta,
-      idprofesion,
-      idestado
+      FechaDesde,
+      FechaHasta,
+      idTipoProfesionSelected,
+      idEstadoSelected,
+      _pagina,
+      CantidaddeRegistros
     );
-    console.log(data);
+
     if (data) {
-      setItems(data);
+      setItems(data.registros);
+
+      setRegistrosTotal(data.total);
     } else {
       console.warn("No se encontraron datos o hubo un error");
     }
+    const arrPaginas = [];
+    for (let i = 1; i <= Math.ceil(data.total / CantidaddeRegistros); i++) {
+      arrPaginas.push(i);
+    }
+    setPaginas(arrPaginas);
   }
 
   return (
@@ -170,7 +195,7 @@ function ConsultaTurnos() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "95%",
+            width: "100%",
             backgroundColor: "",
             paddingBottom: "20px",
             paddingTop: "10px",
@@ -201,7 +226,7 @@ function ConsultaTurnos() {
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <InputGroup.Text
               style={{
-                color: "black", 
+                color: "black",
                 backgroundColor: "white",
                 height: "28px",
               }}
@@ -222,7 +247,7 @@ function ConsultaTurnos() {
               style={{
                 backgroundColor: "#679bb9",
                 width: "auto",
-                 color: "black", 
+                color: "black",
                 backgroundColor: "white",
                 height: "28px",
               }}
@@ -234,9 +259,7 @@ function ConsultaTurnos() {
               onChange={(e) => setIdTipoProfesionSelected(e.target.value)}
               value={idTipoProfesionSelected}
             >
-              <option value="">
-                TODAS
-              </option>
+              <option value="">TODAS</option>
               {TipoProfesion.map((profesion) => (
                 <option key={profesion.ID} value={profesion.ID}>
                   {profesion.descripcion}
@@ -252,7 +275,7 @@ function ConsultaTurnos() {
               style={{
                 backgroundColor: "#679bb9",
                 width: "auto",
-                color: "black", 
+                color: "black",
                 backgroundColor: "white",
                 height: "28px",
               }}
@@ -264,9 +287,7 @@ function ConsultaTurnos() {
               onChange={(e) => setIDEstadoSelected(e.target.value)}
               value={idEstadoSelected}
             >
-              <option value="" >
-                TODOS
-              </option>
+              <option value="">TODOS</option>
               {estados.map((estado) => (
                 <option key={estado.IDEstado} value={estado.IDEstado}>
                   {estado.descripcion + " - " + estado.sigla}
@@ -286,7 +307,7 @@ function ConsultaTurnos() {
             }}
             onClick={(event) => {
               event.preventDefault();
-              BuscarTurnosConsultasPorFecha(FechaDesde, FechaHasta, idTipoProfesionSelected, idEstadoSelected );
+              BuscarTurnosConsultasPorFecha(1);
             }}
           >
             BUSCAR
@@ -311,11 +332,18 @@ function ConsultaTurnos() {
             LIMPIAR
           </Button>
         </div>
-        <span style={{ display: "block", height: "4px", backgroundColor: "gray", margin: "10px 0", width: "95%" }}></span>
+        <span
+          style={{
+            display: "block",
+            height: "4px",
+            backgroundColor: "gray",
+            margin: "10px 0",
+            width: "100%",
+          }}
+        ></span>
 
-        
         <div className="">
-          <Table bordered hover style={{ width: "95%" }}>
+          <Table bordered hover style={{ width: "100%" }}>
             <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
               <tr className="personalizarfila h-50">
                 <th
@@ -328,13 +356,17 @@ function ConsultaTurnos() {
                   Fecha
                 </th>
 
-                <th  key="1">
+                <th
+                  style={{
+                    textAlign: "center",
+                  }}
+                  key="1"
+                >
                   Hora
                 </th>
                 <th
                   style={{
-                   
-                    textAlign: "center",
+                    textAlign: "left",
                   }}
                   key="2"
                 >
@@ -342,41 +374,46 @@ function ConsultaTurnos() {
                 </th>
                 <th
                   style={{
-                    
                     textAlign: "center",
                   }}
-                  key="2"
+                  key="3"
                 >
                   Profesional
                 </th>
-                <th  key="1">
+                <th
+                  style={{
+                    textAlign: "center",
+                  }}
+                  key="4"
+                >
                   Profesión
                 </th>
 
                 <th
                   style={{
                     textAlign: "center",
-                   
+
                     width: "200px",
                   }}
+                  key="5"
                 >
                   Estado
                 </th>
                 <th
                   style={{
                     textAlign: "center",
-                    
+
                     width: "200px",
                   }}
+                  key="6"
                 >
                   OO SS/Prepaga
                 </th>
                 <th
                   style={{
                     textAlign: "center",
-                  
                   }}
-                  key="8"
+                  key="7"
                 >
                   Acciones
                 </th>
@@ -448,9 +485,9 @@ function ConsultaTurnos() {
                         {format(new Date(item.fecha), "dd/MM/yyyy")}
                       </td>
                       <td style={{ textAlign: "center", fontSize: "12px" }}>
-                        {format(new Date(item.hora), "HH:mm")}
+                          {item.hora}
                       </td>
-                      <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      <td style={{ textAlign: "left", fontSize: "12px" }}>
                         {item.paciente}
                       </td>
                       {/* Mostrar hora formateada */}
@@ -525,7 +562,73 @@ function ConsultaTurnos() {
             </tbody>
           </Table>
         </div>
+        <div className="paginador">
+          <div className="row">
+            <div className="col">
+              <span className="pyBadge">Registros: {RegistrosTotal}</span>
+            </div>
+            <div className="col text-center">
+              Pagina: &nbsp;
+              <select
+                value={Pagina}
+                onChange={(e) => {
+                  BuscarTurnosConsultasPorFecha(e.target.value);
+                }}
+              >
+                {Paginas?.map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; de {Paginas?.length}
+            </div>
+
+            <div className="col">
+              Mostrar de a: &nbsp;
+              <select
+                value={CantidaddeRegistros}
+                onChange={(e) => {
+                  setCantidaddeRegistros(e.target.value);
+                }}
+              >
+                {[10, 15, 20, 25].map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; registros.
+            </div>
+          </div>
+        </div>
+        <span
+          style={{
+            display: "block",
+            height: "4px",
+            backgroundColor: "gray",
+            margin: "10px 0",
+            width: "100%",
+          }}
+        ></span>
       </div>
+
+      {mdlTurnoDetalle && (
+        <MdlTurnoDetalle
+          show={openMdlTurnoDetalle}
+          handleClose={CloseMdlTurnoDetalle}
+          paciente={Item.paciente}
+          profesional={Item.profesional}
+          profesion={Item.profesion}
+          obrasocial={Item.obrasocial}
+          observaciones={"Falta observaciones"}
+          hora={Item.hora}
+          fecha={Item.fecha}
+          estado={Item.estado}
+          idturno={Item.idturno} 
+          
+        />
+      )}
     </>
   );
 }

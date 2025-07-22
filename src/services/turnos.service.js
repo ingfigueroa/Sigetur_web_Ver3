@@ -2,59 +2,74 @@ import httpService from "./http.service";
 //const urlResource = "https://labsys.frc.utn.edu.ar/dds-express/api/articulos";
 
 // mas adelante podemos usar un archivo de configuracion para el urlResource
- import {config} from "../config.js";
+import {
+  config
+} from "../config.js";
 
- const urlResource = config.urlResourceTurnos;
- const urlResourcePasaraPendiente = config.urlResourceTurnosPasaraPendiente;
- const urlResourceTurnosCrear = config.urlResourceTurnosCrear;
- const urlResourceEstadoPorTurnos = config.urlResourceEstadoPorTurnos;
- const urlResourceTurnosCambiarEstado = config.urlResourceCambiarEstado;
- const urlResourceTurnosConsultasPorFecha = config.urlResourceConsultaTurnos
+const urlResource = config.urlResourceTurnos;
+const urlResourcePasaraPendiente = config.urlResourceTurnosPasaraPendiente;
+const urlResourceTurnosCrear = config.urlResourceTurnosCrear;
+const urlResourceEstadoPorTurnos = config.urlResourceEstadoPorTurnos;
+const urlResourceTurnosCambiarEstado = config.urlResourceCambiarEstado;
+const urlResourceTurnosConsultasPorFecha = config.urlResourceConsultaTurnos
+const urlResourceTurnoID = config.urlResourceTurnoID
 
- const urlResourceTurnosAnularPorPedidoProfesional = config.urlResourceTurnosAnularPorPedidoProfesional;
- const urlResourceTurnosProfesionalDiaCancelados = config.urlResourceTurnosProfesionalDiaCancelados;
- const urlResourceAgeSemTurProfFecha = config.urlResourceAgSeTurProfFecha
- const urlResourceAgeSemTurProfFechaAgrup = config.urlResourceAgeSemTurProfFechaAgrupado
+const urlResourceTurnosAnularPorPedidoProfesional = config.urlResourceTurnosAnularPorPedidoProfesional;
+const urlResourceTurnosProfesionalDiaCancelados = config.urlResourceTurnosProfesionalDiaCancelados;
+const urlResourceAgeSemTurProfFecha = config.urlResourceAgSeTurProfFecha
+const urlResourceAgeSemTurProfFechaAgrup = config.urlResourceAgeSemTurProfFechaAgrupado
+const urlResourceListadeEspera = config.urlResourceTurnosListadeEspera
 
- async function TurnosAnularPorPedidoProfesional( idprofesional, observaciones, fecha, idusuario) {
-  
- try {
+async function TurnosAnularPorPedidoProfesional(idprofesional, observaciones, fecha, idusuario) {
 
-  const resp = await httpService.put(urlResourceTurnosAnularPorPedidoProfesional, {
-     idprofesional,
-     observaciones,
-     fecha,
-     idusuario });
+  try {
 
-} catch (error) {
-  console.error('Error al cambiar el estado a turno:', error.response?.data || error.message);
+    const resp = await httpService.put(urlResourceTurnosAnularPorPedidoProfesional, {
+      idprofesional,
+      observaciones,
+      fecha,
+      idusuario
+    });
+
+  } catch (error) {
+    console.error('Error al cambiar el estado a turno:', error.response?.data || error.message);
+  }
+
 }
-  
-}
 
 
- async function CrearTurnosPorProfesionalPorFecha(idusuario, idprof, fecha) {
+async function CrearTurnosPorProfesionalPorFecha(idusuario, idprof, fecha) {
   const resp = await httpService.get(urlResourceTurnosCrear, {
-    params: { idusuario, idprof, fecha },
+    params: {
+      idusuario,
+      idprof,
+      fecha
+    },
   });
   return resp.data;
 }
 
 
 
-async function Agendasemanal_PorProfesionalPorFecha( idprof, fecha) {
+async function Agendasemanal_PorProfesionalPorFecha(idprof, fecha) {
 
   const resp = await httpService.get(urlResourceAgeSemTurProfFecha, {
-    params: {  idprof, fecha },
+    params: {
+      idprof,
+      fecha
+    },
   });
- 
+
   return resp.data;
 }
 
-async function Agendasemanal_FechasAgrupadas( idprof, fecha) {
+async function Agendasemanal_FechasAgrupadas(idprof, fecha) {
 
   const resp = await httpService.get(urlResourceAgeSemTurProfFechaAgrup, {
-    params: {  idprof, fecha },
+    params: {
+      idprof,
+      fecha
+    },
   });
 
   return resp.data;
@@ -63,29 +78,51 @@ async function Agendasemanal_FechasAgrupadas( idprof, fecha) {
 
 async function TurnosPorProfesionalDiaCancelados(idprof, fecha) {
 
- 
+
   const resp = await httpService.get(urlResourceTurnosProfesionalDiaCancelados, {
-    params: {idprof, fecha },
+    params: {
+      idprof,
+      fecha
+    },
   });
   return resp.data;
 }
 
+
+async function TurnoID(idturno) {
+
+  console.log(idturno)
+
+  const resp = await httpService.get(urlResourceTurnoID, {
+    params: {
+      idturno
+    },
+
+  });
+
+  return resp.data;
+
+
+}
+
 async function EstadosPorTurno(idturno) {
-  
-   
-    const resp = await httpService.get(urlResourceEstadoPorTurnos, {
-     params: { idturno, },
-      
-    });
-    
-    return resp.data;
+
+
+  const resp = await httpService.get(urlResourceEstadoPorTurnos, {
+    params: {
+      idturno,
+    },
+
+  });
+
+  return resp.data;
 
 
 }
 
 async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, vieneDE) {
   try {
-   
+
     const resp = await httpService.put(urlResourceTurnosCambiarEstado, {
       IDTurno,
       idestado,
@@ -103,40 +140,52 @@ async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, 
 
 
 async function BuscarPorProfesionalFecha(IDProf, Fecha) {
- 
-  const resp = await httpService.get(urlResource, {params: { IDProf, Fecha },});
+
+  const resp = await httpService.get(urlResource, {
+    params: {
+      IDProf,
+      Fecha
+    },
+  });
   return resp.data;
 }
 
-async function GrabarTurnoPaciente(IDTurno,IDPac,IDOS, Obs,IDUsuario) {
+async function GrabarTurnoPaciente(IDTurno, IDPac, IDOS, Obs, IDUsuario) {
   try {
 
 
- 
+
     await httpService.put(urlResourcePasaraPendiente, {
-     
+
       IDTurno,
       IDPac,
       IDOS,
       Obs,
-      IDUsuario 
-      
+      IDUsuario
+
     });
-  
+
 
   } catch (error) {
     console.error('Error al registrar el turno:', error.response?.data || error.message);
-      // Capturar el mensaje de error si la solicitud falla
-     
+    // Capturar el mensaje de error si la solicitud falla
+
   }
 }
 
 
-async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idestado) {
+async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idestado, pagina, cantidadPorPagina) {
   try {
-    console.log(fechadesde);
+
     const resp = await httpService.get(urlResourceTurnosConsultasPorFecha, {
-      params: { fechadesde, fechahasta, idprofesion, idestado }
+      params: {
+        fechadesde,
+        fechahasta,
+        idprofesion,
+        idestado,
+        pagina,
+        cantidadPorPagina
+      }
     });
     return resp.data;
   } catch (error) {
@@ -146,6 +195,18 @@ async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idest
 }
 
 
+
+
 export const turnosService = {
-  BuscarPorProfesionalFecha, GrabarTurnoPaciente, CrearTurnosPorProfesionalPorFecha, TurnosCambiarEstado, EstadosPorTurno, TurnosAnularPorPedidoProfesional, TurnosPorProfesionalDiaCancelados, Agendasemanal_PorProfesionalPorFecha, Agendasemanal_FechasAgrupadas, TurnosConsultaPorFecha
-};
+  BuscarPorProfesionalFecha,
+  GrabarTurnoPaciente,
+  CrearTurnosPorProfesionalPorFecha,
+  TurnosCambiarEstado,
+  EstadosPorTurno,
+  TurnosAnularPorPedidoProfesional,
+  TurnosPorProfesionalDiaCancelados,
+  Agendasemanal_PorProfesionalPorFecha,
+  Agendasemanal_FechasAgrupadas,
+  TurnosConsultaPorFecha,
+  TurnoID,
+  };

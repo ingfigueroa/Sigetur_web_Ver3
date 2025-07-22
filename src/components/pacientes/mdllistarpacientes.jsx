@@ -18,6 +18,10 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
   const [Apellido, SetApellido] = useState(null);
   const [VarDNI, SetDNI] = useState(null);
   const [items, setItems] = useState(null);
+  const [RegistrosTotal, setRegistrosTotal] = useState(0);
+    const [Pagina, setPagina] = useState(1);
+    const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
+    const [Paginas, setPaginas] = useState([]);
   
 
 
@@ -26,22 +30,40 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
     handleClose(); // Envía el id al componente padre
   };
   
-  async function Buscar() {
-    
-    const data = await pacientesService.Buscar(
-      Apellido,
-      VarDNI
+    async function Buscar(_pagina) {
      
-    );
-    setItems(data);
-   
-  }
+      if (_pagina && _pagina !== Pagina) {
+        setPagina(_pagina);
+      }
+      
+      // OJO Pagina (y cualquier estado...) se actualiza para el proximo render, para buscar usamos el parametro _pagina
+      else {
+        _pagina = Pagina;
+      }
+     
+      const data = await pacientesService.Buscar(Apellido, VarDNI, _pagina, CantidaddeRegistros);
+       setItems(data.registros);
+      
+      setRegistrosTotal(data.total);
+  
+      //generar array de las páginas para mostrar en select del paginador
+      const arrPaginas = [];
+      for (let i = 1; i <= Math.ceil(data.total / CantidaddeRegistros); i++) {
+        arrPaginas.push(i);
+      }
+      setPaginas(arrPaginas);
+     
+      
+     
+    }
+  
+  
 
   return (
     <Modal show={show} onHide={handleClose} size="xl" style={{ width: "100%" }}>
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#0277bd", color: "white" }}
+        style={{ backgroundColor: "#99a3a4", color: "black" }}
       >
         <Modal.Title>Buscar pacientes</Modal.Title>
       </Modal.Header>
@@ -50,9 +72,10 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
           <InputGroup className="mb-3">
             <InputGroup.Text
               style={{
-                backgroundColor: "#679bb9",
-                color: "white",
+              backgroundColor: "#ccd1d1",
+                color: "black",
                 height: "28px",
+                fontWeight: "bold",
               }}
             >
               Paciente
@@ -85,11 +108,12 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
           </InputGroup>
           <InputGroup className="mb-3">
               <InputGroup.Text
-                style={{
-                  backgroundColor: "#679bb9",
-                  color: "white",
-                  height: "28px",
-                }}
+               style={{
+              backgroundColor: "#ccd1d1",
+                color: "black",
+                height: "28px",
+                fontWeight: "bold",
+              }}
                
               >
                 DNI
@@ -130,7 +154,7 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "left",
-                  backgroundColor: "rgb(136, 161, 184)",
+                backgroundColor: "#ccd1d1",
                   height: "28px"
                 }}
               >
@@ -140,7 +164,7 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "left",
-                  backgroundColor: "rgb(136, 161, 184)",
+                 backgroundColor: "#ccd1d1",
                   height: "28px"
                 }}
                 key="1"
@@ -153,7 +177,7 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "center",
-                  backgroundColor: "rgb(136, 161, 184)",
+                 backgroundColor: "#ccd1d1",
                   height: "28px"
                 }}
                 key="3"
@@ -164,7 +188,7 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "center",
-                  backgroundColor: "rgb(136, 161, 184)",
+                 backgroundColor: "#ccd1d1",
                   height: "28px"
                 }}
                 key="8"
@@ -203,6 +227,46 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
               ))}
           </tbody>
         </Table>
+         <div className="paginador">
+          <div className="row">
+            <div className="col">
+              <span className="pyBadge">Registros: {RegistrosTotal}</span>
+            </div>
+            <div className="col text-center">
+              Pagina: &nbsp;
+              <select
+                value={Pagina}
+                onChange={(e) => {
+                  Buscar(e.target.value);
+                }}
+              >
+                {Paginas?.map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; de {Paginas?.length}
+            </div>
+
+            <div className="col">
+              Mostrar de a: &nbsp;
+              <select
+                value={CantidaddeRegistros}
+                onChange={(e) => {
+                  setCantidaddeRegistros(e.target.value);
+                }}
+              >
+                {[10, 15, 20, 25].map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; registros.
+            </div>
+          </div>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

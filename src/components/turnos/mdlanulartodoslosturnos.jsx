@@ -9,6 +9,7 @@ import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import { turnosService } from "/src/services/turnos.service";
 import modalSINo from "../modales/mdlSiNO";
+import { set } from "date-fns";
 
 const mdlanulartodoslosturnos = ({
   show,
@@ -47,11 +48,11 @@ const mdlanulartodoslosturnos = ({
   }, [fechaForm]);
 
   const openMdlSiNo = () => {
-    setMDLSiNo(true);
+    setMDLEstaSeguro(true);
   };
 
   const closeMdlSiNo = () => {
-    setMDLSiNo(false);
+    setMDLEstaSeguro(false);
   };
 
 

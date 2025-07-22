@@ -38,7 +38,7 @@ function Pacientes() {
   const [Pagina, setPagina] = useState(1);
   const [Paginas, setPaginas] = useState([]);
   const [apeyNom, setapeyNom] = useState(null);
-
+      const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
   const [mdlUltimosTurnos, setModalUltimosTurnos] = useState(false);
 
 useEffect(() => {
@@ -82,27 +82,30 @@ useEffect(() => {
   };
 
   async function Buscar(_pagina) {
+   
     if (_pagina && _pagina !== Pagina) {
       setPagina(_pagina);
     }
+    
     // OJO Pagina (y cualquier estado...) se actualiza para el proximo render, para buscar usamos el parametro _pagina
     else {
       _pagina = Pagina;
     }
     modalDialogService.BloquearPantalla(true);
-    const data = await pacientesService.Buscar(Apellido, VarDNI);
-    modalDialogService.BloquearPantalla(false);
+    const data = await pacientesService.Buscar(Apellido, VarDNI, _pagina, CantidaddeRegistros);
+     setItems(data.registros);
     
-    setItems(data);
-    
-    setRegistrosTotal(data.length);
+    setRegistrosTotal(data.total);
 
     //generar array de las páginas para mostrar en select del paginador
     const arrPaginas = [];
-    for (let i = 1; i <= Math.ceil(data.length / 10); i++) {
+    for (let i = 1; i <= Math.ceil(data.total / CantidaddeRegistros); i++) {
       arrPaginas.push(i);
     }
     setPaginas(arrPaginas);
+    modalDialogService.BloquearPantalla(false);
+    
+   
   }
 
 
@@ -423,7 +426,8 @@ useEffect(() => {
             </tbody>
           </Table>
         </div>
-        <div className="paginador">
+           {/* Paginador*/}
+     <div className="paginador">
         <div className="row">
           <div className="col">
             <span className="pyBadge">Registros: {RegistrosTotal}</span>
@@ -445,7 +449,22 @@ useEffect(() => {
             &nbsp; de {Paginas?.length}
           </div>
 
-          
+          <div className="col">
+             Mostrar de a: &nbsp;
+            <select
+              value={CantidaddeRegistros}
+              onChange={(e) => {
+                setCantidaddeRegistros(e.target.value);
+              }}
+            >
+              {[10, 15, 20, 25].map((x) => (
+                <option value={x} key={x}>
+                  {x}
+                </option>
+              ))}
+            </select>
+            &nbsp; registros.
+          </div>
         </div>
       </div>
     </div>

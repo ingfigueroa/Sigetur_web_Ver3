@@ -16,6 +16,8 @@ import MdlAltaProfesionales from "./registrarprofesional";
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 import Mdlanulartodoslosturnos from "../turnos/mdlanulartodoslosturnos";
 import MdlEditarProfesionales from "./modificarprofesionales";
+import Footer from "../Footer";
+
 
 import modalDialogService from "/src/services/modalDialog.service";
 
@@ -52,11 +54,13 @@ function Profesionales() {
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Pagina, setPagina] = useState(1);
+  const [idProfesion, setIDProfesion] = useState(0);
   const [Paginas, setPaginas] = useState([]);
 
   const [Fecha, SetFecha] = useState(new Date().toLocaleDateString());
 
   const [mdlListaEspera, setModalListaEspera] = useState(false);
+  const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
 
   const closeMdlListaEspera = () => {
     setModalListaEspera(false);
@@ -130,17 +134,19 @@ useEffect(() => {
     else {
       _pagina = Pagina;
     }
+    
     modalDialogService.BloquearPantalla(true);
-    const data = await profesionalesService.Buscar(Apellido, VarDNI);
+    const data = await profesionalesService.Buscar(Apellido, VarDNI, idProfesion,  _pagina, CantidaddeRegistros);
     modalDialogService.BloquearPantalla(false);
 
-    setItems(data);
-
-    setRegistrosTotal(data.length);
+     setItems(data.registros);
+    
+     setRegistrosTotal(data.total);
 
     //generar array de las páginas para mostrar en select del paginador
     const arrPaginas = [];
-    for (let i = 1; i <= Math.ceil(data.length / 10); i++) {
+    
+    for (let i = 1; i <= Math.ceil(data.total / CantidaddeRegistros); i++) {
       arrPaginas.push(i);
     }
     setPaginas(arrPaginas);
@@ -249,6 +255,7 @@ useEffect(() => {
                 id="button-addon1"
                 style={{ height: "38px" }}
                 color="white"
+                
                 onClick={() => Buscar(1)}
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -376,7 +383,7 @@ useEffect(() => {
               {Items &&
                 Items.map((Item) => (
                   <tr key={Item.ID}>
-                    <td style={{ textAlign: "center" }}>{Item.ID}</td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>{Item.ID}</td>
                     <td style={{ textAlign: "left", fontSize: "12px" }}>
                       {Item.Apellido}
                     </td>
@@ -457,28 +464,51 @@ useEffect(() => {
         </div>
         {/* Paginación */}
         <div className="paginador">
-          <div className="row">
-            <div className="col">
-              <span className="pyBadge">Registros: {RegistrosTotal}</span>
-            </div>
-            <div className="col text-center">
-              Pagina: &nbsp;
-              <select
-                value={Pagina}
-                onChange={(e) => {
-                  Buscar(e.target.value);
-                }}
-              >
-                {Paginas?.map((x) => (
-                  <option value={x} key={x}>
-                    {x}
-                  </option>
-                ))}
-              </select>
-              &nbsp; de {Paginas?.length}
-            </div>
+        <div className="row">
+          <div className="col">
+            <span className="pyBadge">Registros: {RegistrosTotal}</span>
+          </div>
+          <div className="col text-center">
+            Pagina: &nbsp;
+            <select
+              value={Pagina}
+              onChange={(e) => {
+                Buscar(e.target.value);
+              }}
+            >
+           
+              {Paginas?.map((x) => 
+             
+              (
+                
+                <option value={x} key={x}>
+                  {x}
+                   
+                </option>
+              ))}
+            </select>
+            &nbsp; de {Paginas?.length}
+          </div>
+
+          <div className="col">
+             Mostrar de a: &nbsp;
+            <select
+              value={CantidaddeRegistros}
+              onChange={(e) => {
+                setCantidaddeRegistros(e.target.value);
+              }}
+            >
+              {[10, 15, 20, 25].map((x) => (
+                <option value={x} key={x}>
+                  {x}
+                </option>
+              ))}
+            </select>
+            &nbsp; registros.
           </div>
         </div>
+      </div>
+      <Footer />
       </div>
 
       {mdlRegistrarProfesional && (

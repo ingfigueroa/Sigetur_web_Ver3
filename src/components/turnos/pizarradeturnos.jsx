@@ -33,10 +33,8 @@ function tablapizarradeturnos() {
   const [mdlcambiarestado, setCambiarEstado] = useState(null);
   const [mdlcambiarestadoMensaje, setCambiarEstadoMensaje] = useState("");
 
-  const [mdlSiNo, setModalSiNo] = useState(null);
   const [mdlAnularTurno, setModalAnularTurno] = useState(false);
-  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] =
-    useState(false);
+  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] = useState(false);
   const [mdlModalMostarMensaje, setModalMostrarMensaje] = useState(false);
   const [mdlMensaje, setModalMensaje] = useState(false);
   const [btnAnular, setBtnAnular] = useState(true);
@@ -52,6 +50,7 @@ function tablapizarradeturnos() {
   const [IDProfesion, SetIDProfesion] = useState(null);
   const [IDEstado, setIdEstado] = useState(null);
   const [anular, setAnular] = useState(false);
+  const [idTurno, setIDTurno] = useState();
 
   const [Fecha, SetFecha] = useState(null);
 
@@ -110,6 +109,8 @@ function tablapizarradeturnos() {
   const openMdlTurnoDetalle = (fila) => {
     setItem(fila);
 
+    setIDTurno(fila.idTurno)
+  
     setModalTurnoDetalle(true);
   };
 
@@ -139,7 +140,7 @@ function tablapizarradeturnos() {
 
   const openMdlMensaje = () => {
     // setModalSiNoMensaje("¿Está seguro de anular el turno?")
-    console.log("entra por aca");
+    
     setModalMostrarMensaje(true);
   };
 
@@ -354,6 +355,7 @@ function tablapizarradeturnos() {
           openMdlMensaje();
         } else {
           setItems(data); // Asignar los datos a `Items`
+      
           setTurnos(data);
         }
         // Asegúrate de que `Apellido` y `Nombres` existen en `data`
@@ -403,9 +405,7 @@ function tablapizarradeturnos() {
     const esFechaMayor = Fecha > fechaActual;
     const esFechaIgual = (Fecha === fechaActual);
     const esHoraValida = HoraTurno > horaActual;
-    console.log("hola");
-    console.log(Fecha);
-    console.log(fechaActual);
+  
     if (esFechaMayor) {
       return;
     } else {
@@ -477,13 +477,13 @@ function tablapizarradeturnos() {
             >
               <i class="fa-solid fa-at"></i>
             </button>
-            <button
+          {/*   <button
               title="Agenda Semanal"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
             >
               <i class="fa-solid fa-calendar-days"></i>
             </button>
-
+ */}
             <button
               title="Horarios del profesional"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -688,26 +688,26 @@ function tablapizarradeturnos() {
         </div>
 
         <div className="acomodartabla">
-          <Table bordered hover>
-            <thead>
+          <Table bordered hover style={{ width: "100%", textAlign: "center" }}>
+            <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
               <tr className="personalizarfila h-50">
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                    
                     width: "200px",
                   }}
                 >
                   Estado
                 </th>
 
-                <th style={{ backgroundColor: "rgb(136, 161, 184)" }} key="1">
+                <th style={{textAlign: "center"}} key="1">
                   Hora
                 </th>
 
                 <th
                   style={{
-                    backgroundColor: "rgb(136, 161, 184)",
+                   
                     textAlign: "left",
                   }}
                   key="2"
@@ -717,21 +717,21 @@ function tablapizarradeturnos() {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                   
                   }}
                   key="3"
                 >
                   DNI
                 </th>
 
-                <th style={{ backgroundColor: "rgb(136, 161, 184)" }} key="4">
+                <th  key="4">
                   Obra social
                 </th>
 
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                
                   }}
                   key="8"
                 >
@@ -930,8 +930,9 @@ function tablapizarradeturnos() {
         <MdlTurnoDetalle
           show={openMdlTurnoDetalle}
           handleClose={CloseMdlTurnoDetalle}
-          fila={Item}
-          profesion={profesion}
+       
+          idturno={idTurno} 
+          
         />
       )}
 

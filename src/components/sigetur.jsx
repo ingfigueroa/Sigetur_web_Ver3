@@ -28,6 +28,8 @@ import PizarradeTurnos from "./turnos/pizarradeturnos";
 
 import ConsultaTurnos from "./turnos/consultaturno";
 
+import ListadeEsperaV1 from "../components/listadeespera/listadeespera_ver1";
+
 import ObrasSociales from "./obrassociales/obrassociales";
 
 import Profesionales from "./profesionales/profesionales";
@@ -36,6 +38,8 @@ import Pacientes from "./pacientes/pacientes";
 
 import AgendaSemanal from "./profesionales/agendasemanal";
 
+
+
 export default function sigetur() {
   const [mostrarProfesional, setMostrarProfesional] = useState(false);
 
@@ -43,17 +47,20 @@ export default function sigetur() {
 
   const [mostrarPaciente, setMostrarPaciente] = useState(false);
 
-  const [mostrarPizarradeTurnos, setMostrarPizarradeTurnos] = useState(false);
+  const [mostrarPizarradeTurnos, setMostrarPizarradeTurnos] = useState(true);
 
   const [mostrarAgendaSemanal, setMostrarAgendaSemanal] = useState(false);
 
   const [mostraConsulta, setMostrarConsulta] = useState(false);
 
-  const [titulo, setTitulo] = useState("");
+  const [mostrarListadeEspera, setMostrarListadeEspera] = useState(false);
+
+  const [titulo, setTitulo] = useState("PIZARRA DE TURNOS");
 
   const MostrarObraSocial = () => {
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(false);
+    setMostrarListadeEspera(false);
     setMostrarObraSocial(true);
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(false);
@@ -62,10 +69,23 @@ export default function sigetur() {
     setOpen(false);
   };
 
+  const MostrarListaDeEspera = () => {
+    setMostrarPizarradeTurnos(false);
+    setMostrarPaciente(false);
+    setMostrarObraSocial(false);
+    setMostrarProfesional(false);
+    setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
+    setMostrarListadeEspera(true);
+    setTitulo("ADMINISTRAR LISTA DE ESPERA - TURNOS");
+    setOpen(false);
+  };
+
   const MostrarProfesionales = () => {
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
+    setMostrarListadeEspera(false);
     setMostrarProfesional(true);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
@@ -78,6 +98,7 @@ export default function sigetur() {
     setMostrarPaciente(true);
     setMostrarObraSocial(false);
     setMostrarProfesional(false);
+    setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
     setTitulo("GESTIÓN DE PACIENTES");
@@ -89,6 +110,7 @@ export default function sigetur() {
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(true);
     setMostrarProfesional(false);
+    setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
     setTitulo("PIZARRA DE TURNOS");
@@ -100,21 +122,22 @@ export default function sigetur() {
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(false);
     setMostrarProfesional(false);
+    setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(true);
     setMostrarConsulta(false);
     setTitulo("AGENDA SEMANAL POR PROFESIONAL");
     setOpen(false);
   };
 
-
   const MostrarConsulta = () => {
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(false);
     setMostrarProfesional(false);
+    setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(true);
-    console.log("pasa por aca")
+    console.log("pasa por aca");
     setTitulo("CONSULTA DE TURNOS");
     setOpen(false);
   };
@@ -251,15 +274,16 @@ export default function sigetur() {
 
               <Divider
                 sx={{
-                 
                   marginY: "0.5",
                   height: "2px",
                   backgroundColor: "black",
                 }}
               />
 
-              <ListItem button onClick={MostrarPizarradeTurnos}
-              sx={{
+              <ListItem
+                button
+                onClick={MostrarPizarradeTurnos}
+                sx={{
                   "&:hover": {
                     backgroundColor: "#2980B9",
                     color: "white", // texto blanco al hacer hover
@@ -278,7 +302,7 @@ export default function sigetur() {
               <ListItem
                 button
                 onClick={MostrarAgendaSemanal}
-               sx={{
+                sx={{
                   "&:hover": {
                     backgroundColor: "#2980B9",
                     color: "white", // texto blanco al hacer hover
@@ -313,8 +337,10 @@ export default function sigetur() {
                 <ListItemText primary="Profesionales" />
               </ListItem>
 
-              <ListItem button onClick={MostrarPacientes}
-              sx={{
+              <ListItem
+                button
+                onClick={MostrarPacientes}
+                sx={{
                   "&:hover": {
                     backgroundColor: "#2980B9",
                     color: "white", // texto blanco al hacer hover
@@ -330,8 +356,10 @@ export default function sigetur() {
                 <ListItemText primary="Pacientes" />
               </ListItem>
 
-              <ListItem button onClick={MostrarObraSocial}
-              sx={{
+              <ListItem
+                button
+                onClick={MostrarObraSocial}
+                sx={{
                   "&:hover": {
                     backgroundColor: "#2980B9",
                     color: "white", // texto blanco al hacer hover
@@ -347,12 +375,12 @@ export default function sigetur() {
                 <ListItemText primary="Obras Sociales" />
               </ListItem>
 
-              <Divider
-                sx={{ marginY: "0.5",  backgroundColor: "black" }}
-              />
+              <Divider sx={{ marginY: "0.5", backgroundColor: "black" }} />
 
-              <ListItem button onClick={MostrarConsulta}
-              sx={{
+              <ListItem
+                button
+                onClick={MostrarConsulta}
+                sx={{
                   "&:hover": {
                     backgroundColor: "#2980B9",
                     color: "white", // texto blanco al hacer hover
@@ -366,7 +394,25 @@ export default function sigetur() {
                   <SearchIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText primary="Consultas" />
-
+              </ListItem>
+              <Divider sx={{ marginY: "0.5", backgroundColor: "black" }} />
+              <ListItem
+                button
+                onClick={MostrarListaDeEspera}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <EventNoteIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Lista de espera" />
               </ListItem>
 
               {/* Podés agregar más secciones acá */}
@@ -383,6 +429,10 @@ export default function sigetur() {
           {mostrarObraSocial && <ObrasSociales />}
           {mostrarAgendaSemanal && <AgendaSemanal />}
           {mostraConsulta && <ConsultaTurnos />}
+           
+          {mostrarListadeEspera && (
+            <ListadeEsperaV1 />
+          )}
         </div>
       </div>
     </>

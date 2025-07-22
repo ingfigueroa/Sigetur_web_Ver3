@@ -21,6 +21,10 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
   const [TipoProfesion, setTipoProfesion] = useState([]);
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
   const [idProfesionEnviar, setIdProfesionEnviar] = useState("");
+  const [RegistrosTotal, setRegistrosTotal] = useState(0);
+  const [Pagina, setPagina] = useState(1);
+  const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
+  const [Paginas, setPaginas] = useState([]);
 
   const seleccionarProfesional = (idProfesional) => {
     enviarAlPadre(idProfesional);
@@ -40,20 +44,40 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
     fetchData(); // Ejecuta la función para obtener los datos
   }, []);
 
-  async function Buscar() {
+  async function Buscar(_pagina) {
+     if (_pagina && _pagina !== Pagina) {
+      setPagina(_pagina);
+    }
+    // OJO Pagina (y cualquier estado...) se actualiza para el proximo render, para buscar usamos el parametro _pagina
+    else {
+      _pagina = Pagina;
+    }
+
     const data = await profesionalesService.Buscar(
       Apellido,
       VarDNI,
-      idTipoProfesionSelected
+      idTipoProfesionSelected,
+      _pagina,
+      CantidaddeRegistros
     );
-    setItems(data);
+    setItems(data.registros);
+    
+     setRegistrosTotal(data.total);
+
+    //generar array de las páginas para mostrar en select del paginador
+    const arrPaginas = [];
+    
+    for (let i = 1; i <= Math.ceil(data.total / CantidaddeRegistros); i++) {
+      arrPaginas.push(i);
+    }
+    setPaginas(arrPaginas);
   }
 
   return (
-    <Modal show={show} onHide={handleClose} size="xl" style={{ width: "100%" }}>
+    <Modal show={show} onHide={handleClose} size="xl" style={{ width: "100%"}}>
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#0277bd", color: "white" }}
+       style={{ backgroundColor: "#99a3a4", color: "black" }}
       >
         <Modal.Title>Buscar profesionales</Modal.Title>
       </Modal.Header>
@@ -62,9 +86,10 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
           <InputGroup className="mb-3">
             <InputGroup.Text
               style={{
-                backgroundColor: "#679bb9",
-                color: "white",
+              backgroundColor: "#ccd1d1",
+                color: "black",
                 height: "28px",
+                fontWeight: "bold",
               }}
             >
               Profesional
@@ -72,7 +97,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
             <Form.Control
               style={{
                 textAlign: "center",
-                
+
                 height: "28px",
               }}
               placeholder="Buscar por apellido"
@@ -84,7 +109,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
             />
 
             <Button
-             size="sm"
+              size="sm"
               title="Buscar por APELLIDO"
               variant="outline-secondary"
               id="button-addon1"
@@ -99,41 +124,41 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
           <InputGroup className="mb-3">
             <InputGroup.Text
               style={{
-                backgroundColor: "#679bb9",
-                color: "white",
+               backgroundColor: "#ccd1d1",
+                color: "black",
                 height: "28px",
+                fontWeight: "bold",
               }}
             >
               DNI
             </InputGroup.Text>
 
             <Form.Control
-          
               placeholder="Buscar por DNI"
               aria-label="Profesión"
               aria-describedby="basic-addon2"
-              style={{ marginght: "20px", height:"28px" }}
+              style={{ marginght: "20px", height: "28px" }}
               onChange={(e) => SetDNI(e.target.value)}
               value={VarDNI}
             />
             <Button
-               size="sm"
-         
+              size="sm"
               title="Buscar por DNI"
               variant="outline-secondary"
               id="button-addon1"
               style={{ height: "28px" }}
               color="white"
-              onClick={() => Buscar()}
+              onClick={() => Buscar(1)}
             >
               <i class="fa-solid fa-magnifying-glass"></i>
             </Button>
           </InputGroup>
           <InputGroup.Text
             style={{
-              backgroundColor: "#679bb9",
-              color: "white",
+            backgroundColor: "#ccd1d1",
+              color: "black",
               height: "28px",
+              fontWeight: "bold",
             }}
           >
             Profesión
@@ -158,9 +183,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
           </select>
 
           <Button
-          size="sm"
-         
-          
+            size="sm"
             title="Buscar por profesión"
             variant="outline-secondary"
             id="button-addon1"
@@ -178,8 +201,8 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "left",
-                  backgroundColor: "rgb(136, 161, 184)",
-                  height: "28px"
+                 backgroundColor: "#ccd1d1",
+                  height: "28px",
                 }}
               >
                 Apellido
@@ -188,8 +211,8 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "left",
-                  backgroundColor: "rgb(136, 161, 184)",
-                  height: "28px"
+                 backgroundColor: "#ccd1d1",
+                  height: "28px",
                 }}
                 key="1"
               >
@@ -199,8 +222,8 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "center",
-                  backgroundColor: "rgb(136, 161, 184)",
-                  height: "28px"
+                 backgroundColor: "#ccd1d1",
+                  height: "28px",
                 }}
                 key="2"
               >
@@ -210,8 +233,8 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "center",
-                  backgroundColor: "rgb(136, 161, 184)",
-                  height: "28px"
+                backgroundColor: "#ccd1d1",
+                  height: "28px",
                 }}
                 key="3"
               >
@@ -221,8 +244,8 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               <th
                 style={{
                   textAlign: "center",
-                  backgroundColor: "rgb(136, 161, 184)",
-                  height: "28px"
+                 backgroundColor: "#ccd1d1",
+                  height: "28px",
                 }}
                 key="8"
               >
@@ -262,6 +285,48 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               ))}
           </tbody>
         </Table>
+        {/* Paginación */}
+        <div><hr /></div>
+        <div className="paginador">
+          <div className="row">
+            <div className="col">
+              <span className="pyBadge">Registros: {RegistrosTotal}</span>
+            </div>
+            <div className="col text-center">
+              Pagina: &nbsp;
+              <select
+                value={Pagina}
+                onChange={(e) => {
+                  Buscar(e.target.value);
+                }}
+              >
+                {Paginas?.map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; de {Paginas?.length}
+            </div>
+
+            <div className="col">
+              Mostrar de a: &nbsp;
+              <select
+                value={CantidaddeRegistros}
+                onChange={(e) => {
+                  setCantidaddeRegistros(e.target.value);
+                }}
+              >
+                {[10, 15, 20, 25].map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; registros.
+            </div>
+          </div>
+        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

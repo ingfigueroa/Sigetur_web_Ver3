@@ -11,37 +11,31 @@ import Table from "react-bootstrap/Table";
 import { turnosService } from "/src/services/turnos.service";
 import "/src/css/personalizar-modales.css";
 
-const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
+const asignarTurnoListadeEspera = ({
+  show,
+  handleClose,
+  enviaralpadre,
+}) => {
   const [FechaLarga, SetFechaLarga] = useState(null);
   const [Items, setItems] = useState(null);
   const [Estados, setEstados] = useState([]);
+  const [idTurno, setIDTurno] = useState("")
+ 
 
-  useEffect(() => {
-    if (!idturno) return;
+ 
 
-    // Limpia Items antes de traer nuevos datos
-    setItems(null);
-
-    async function fetchDataTurno() {
+    async function BuscarTurno() {
       try {
-        const data = await turnosService.TurnoID(idturno);
-       
+        console.log("Pasa por aca con el turno: ")
+        setIDTurno("3679640")
+        const data = await turnosService.TurnoID(idTurno);
+        console.log(data)
         setItems(data);
       } catch (error) {
         console.error("Error al obtener detalles del turno:", error);
       }
     }
 
-    fetchDataTurno();
-  }, [idturno]);
-
-
-  useEffect(() => {
-    if (Items?.fecha) {
-     
-      SetFechaLarga(handleFechaChange(Items.fecha));
-    }
-  }, [Items]);
 
   const handleFechaChange = (fecha) => {
     const fechaISO = fecha;
@@ -65,6 +59,8 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
     return fechaLarga;
   };
 
+  
+
   return (
     <Modal
       show={show}
@@ -82,14 +78,38 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
           borderTopRightRadius: "15px",
         }}
       >
-        <Modal.Title>TURNO - DETALLE</Modal.Title>
+        <Modal.Title>LISTA DE ESPERA - ASIGNAR UN TURNO</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div style={{ width: "100%" }}>
+          <div style={{ width: "100%" }}>
+            <InputGroup className="mb-3">
+              <Button
+                size="sm"
+                title="Buscar turno"
+                variant="outline-secondary"
+                style={{ height: "30px" }}
+                 onClick={() => {BuscarTurno()}}
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </Button>
+              <h3
+                style={{
+                  fontSize: "25px",
+                  color: "#044f82",
+                  textAlign: "center",
+                }}
+              >
+                . Generar Búsqueda.
+              </h3>
+             
+            
+            </InputGroup>
+          </div>
           <h1
             style={{ fontSize: "50px", color: "#044f82", textAlign: "center" }}
           >
-            {Items?.estado || ""}
+            {Items?.estado?.trim() ? Items.estado : "Esperando información"}
           </h1>
         </div>
         <div style={{ display: "flex", width: "100%" }}>
@@ -133,12 +153,10 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
                     fontSize: "15px",
                     resize: "none",
                     height: "50px",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                   value={
-                    Items?.paciente
-                      ? `${Items.paciente}\n${Items.nroDoc}`
-                      : ""
+                    Items?.paciente ? `${Items.paciente}\n${Items.nroDoc}` : ""
                   }
                 />
               </InputGroup>
@@ -161,7 +179,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
                     fontSize: "15px",
                     resize: "none",
                     height: "50px",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                   value={
                     Items?.paciente
@@ -171,7 +189,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
                 />
               </InputGroup>
 
-             {/*  <InputGroup className="mb-3">
+              {/*  <InputGroup className="mb-3">
                 <Button
                   size="sm"
                   title="Servicio"
@@ -198,12 +216,12 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
                 </Button>
                 <Form.Control
                   readOnly
-                 style={{
+                  style={{
                     textAlign: "left",
                     fontSize: "15px",
                     resize: "none",
                     height: "50px",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                   value={Items?.obrasocial || ""}
                 />
@@ -259,4 +277,4 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
   );
 };
 
-export default mdlturnodetalle_Ver1;
+export default asignarTurnoListadeEspera;

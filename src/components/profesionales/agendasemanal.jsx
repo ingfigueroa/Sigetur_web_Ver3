@@ -24,7 +24,7 @@ import Mdlturnoregistrarcobro from "../turnos/mdlturnoregistrarcobro";
 import MdlTurnoDetalle from "../turnos/mdlturnosdetalle_vers1";
 
 const agendasemanal = ({ show, handleClose, idprofesional }) => {
-    const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
+  const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null);
   const [mdlcambiarestadoMensaje, setCambiarEstadoMensaje] = useState("");
@@ -40,6 +40,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   const [FechaLarga, SetFechaLarga] = useState(null);
 
   const [idusuario, setUsuario] = useState("2");
+    const [idTurno, setIDTurno] = useState();
 
   const [apeyNom, setapeyNom] = useState(null);
   const [profesion, setProfesion] = useState(null);
@@ -79,7 +80,11 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   
   const openMdlTurnoDetalle = (fila) => {
     setItem(fila);
+  
+    setIDTurno(fila.idTurno)
+
     setModalTurnoDetalle(true);
+
   };
 
   const CloseMdlTurnoDetalle = () => {
@@ -665,8 +670,8 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         </div>
 
         <div className="acomodartabla">
-          <table border="1" style={{ width: "100%", textAlign: "center" }}>
-            <thead>
+          <table bordered hover border="1" style={{ width: "100%", textAlign: "center" }}>
+            <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
               {/* Encabezado de fechas */}
               <tr style={{ background: "#679bb9", color: "white" }}>
                 {Fechas1.map((fecha, index) => (
@@ -688,7 +693,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
               </tr>
 
               {/* Encabezado de columnas Hora - Paciente */}
-              <tr style={{ backgroundColor: "#cce5ff", color: "#333" }}>
+              <tr style={{ backgroundColor: "white", color: "black" }}>
                 {Fechas1.map((_, index) => (
                   <React.Fragment key={index}>
                     <th
@@ -898,8 +903,8 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
               <MdlTurnoDetalle
                 show={openMdlTurnoDetalle}
                 handleClose={CloseMdlTurnoDetalle}
-                fila={Item}
-                profesion={profesion}
+                idturno={idTurno}
+               
               />
             )}
     </>

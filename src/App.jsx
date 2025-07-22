@@ -9,6 +9,8 @@ import Registrarconsultorio from "./components/Registrarconsultorio";
 import Sigetur from "./components/sigetur";
 
 
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +23,7 @@ function App() {
        
 
       </Routes>
+     
     </BrowserRouter>
   );
 }

@@ -11,9 +11,10 @@ import httpService from "./http.service";
 
 
 
-async function Buscar(Apellido, VarDni, idprofesion) {
+async function Buscar(Apellido, VarDni, idprofesion, pagina, cantidadPorPagina) {
+ 
   const resp = await httpService.get(urlResource, {
-    params: { Apellido, VarDni, idprofesion },
+    params: { Apellido, VarDni, idprofesion, pagina, cantidadPorPagina },
   });
   return resp.data;
 }

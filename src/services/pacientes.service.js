@@ -9,9 +9,9 @@ import httpService from "./http.service";
  const urlResourceID = config.urlResourcePacienteID;
  const urlResourceUltimosTurnos = config.urlResourcePacienteUltimosTurnos;
 
- async function Buscar(Apellido, VarDni) {
+ async function Buscar(Apellido, VarDni, pagina, cantidadPorPagina) {
   const resp = await httpService.get(urlResource, {
-    params: { Apellido, VarDni },
+    params: { Apellido, VarDni, pagina, cantidadPorPagina},
   });
   return resp.data;
 }

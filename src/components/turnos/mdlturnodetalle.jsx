@@ -10,12 +10,38 @@ import Table from "react-bootstrap/Table";
 
 import { turnosService } from "/src/services/turnos.service";
 
-const mdlturnodetalle = ({ show, handleClose, fila }) => {
+const mdlturnodetalle = ({ show, handleClose, idturno }) => {
+  //paciente, profesional, profesion, obrasocial,
+   //observaciones, hora, fecha, estado, idturno
   const [observaciones, setObservaciones] = useState(null);
 
   const [Items, setItems] = useState(null);
 
-  const fechaISO = fila.fecha;
+
+
+  const handleObservacionesChange = (e) => {
+    const nuevaObservacion = e.target.value.toUpperCase();
+    setObservaciones(nuevaObservacion);
+  };
+
+  const handleUpdateEstado = () => {};
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await turnosService.turnoid(idturno); // Llama a la función asíncrona
+        setItems(data); // Establece el estado con los datos obtenidos
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    
+    fetchData();
+    // Ejecuta la función para obtener los datos
+  }, []);
+
+  
+  const fechaISO = fecha;
 
   // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
   const fechaObj = new Date(fechaISO);
@@ -33,27 +59,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
     day: "numeric",
   });
 
-  const handleObservacionesChange = (e) => {
-    const nuevaObservacion = e.target.value.toUpperCase();
-    setObservaciones(nuevaObservacion);
-  };
-
-  const handleUpdateEstado = () => {};
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await turnosService.EstadosPorTurno(fila.idTurno); // Llama a la función asíncrona
-        setItems(data); // Establece el estado con los datos obtenidos
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-    // Ejecuta la función para obtener los datos
-  }, []);
-
+    
   return (
     <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header
@@ -101,7 +107,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
                 style={{ backgroundColor: "#d5dbdb" }}
-                value={fila.estado}
+                value={estado}
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -125,7 +131,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value={fila.desde}
+                value={hora}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
             </InputGroup>
@@ -140,7 +146,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value={fila.apeNom}
+                value={paciente}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
               <InputGroup.Text
@@ -152,7 +158,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value={fila.os}
+                value={obrasocial}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
             </InputGroup>
@@ -167,7 +173,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value={fila.ApeNomProfe}
+                value={profesional}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
               <InputGroup.Text
@@ -179,7 +185,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
               <Form.Control
                 aria-label="Example text with button addon"
                 aria-describedby="basic-addon1"
-                value={fila.servicio}
+                value={servicio}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
             </InputGroup>
@@ -193,7 +199,7 @@ const mdlturnodetalle = ({ show, handleClose, fila }) => {
                 as="textarea"
                 aria-label="With textarea"
                 aria-describedby="basic-addon1"
-                value={fila.obs}
+                value={observaciones}
                 style={{ backgroundColor: "#d5dbdb" }}
               />
             </InputGroup>
