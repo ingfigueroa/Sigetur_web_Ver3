@@ -11,28 +11,20 @@ import { turnosService } from "../../services/turnos.service";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 import MdlValidar from "../modales/mdlvalidar";
 import MdlListarPacientes from "../pacientes/mdllistarpacientes";
+import { FilterAlt } from "@mui/icons-material";
 
-const MdlAltaTurno = ({
-  show,
-  handleClose,
-  fila,
-  ApeyNom,
-  FechaTurno,
-  profesion,
-  hora,
-}) => {
+const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
   const [nombreCompleto, setNombreCompleto] = useState("");
   const [osPorPaciente, setOsPorPaciente] = useState([]);
   const [idPaciente, SetIdPaciente] = useState("");
-  const [idTurno, SetIdTurno] = useState("");
-  const [idUsuario, SetIdUsuario] = useState("1");
+  const [idProfesional, setIDProfesional] = useState("");
+
+  const [idUsuario, SetIdUsuario] = useState("2");
   const [observaciones, SetObservaciones] = useState(null);
 
   const [VarDNI, setDNI] = useState(null);
-  const [Apellido, setApellido] = useState(null);
 
   const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
-  const [mensaje, setMensaje] = useState("");
 
   const [mdlListaPacientes, setModalListarPacientes] = useState(false);
   const [idObraSocialPacienteSelected, setIdObraSocialPacienteSelected] =
@@ -43,6 +35,7 @@ const MdlAltaTurno = ({
   const [modalTituloMessage, setModalTituloMessage] = useState("");
 
   const [fecha, setFecha] = useState(null);
+    const [fechaTurno, setFechaTurno] = useState(null);
 
   const handleFechaChange = (e) => {
     const fechaISO = fila.fecha;
@@ -83,7 +76,7 @@ const MdlAltaTurno = ({
   };
 
   const openAltaExitosa = (mensaje) => {
-    setModalTituloMessage("REGISTRAR UN TURNO");
+    setModalTituloMessage("REGISTRAR UN SOBRETURNO");
     setModalMessage(mensaje);
     setModalAltaExitosa(true);
   };
@@ -149,32 +142,36 @@ const MdlAltaTurno = ({
       return;
     }
     try {
-      SetIdUsuario("1");
-      SetIdTurno(fila.idTurno);
+      
 
-      await turnosService.GrabarTurnoPaciente(
-        fila.idTurno,
+     
+      await turnosService.GrabarSobreturnoPaciente(
+        idProfesional,
         idPaciente,
         idObraSocialPacienteSelected,
+        fechaTurno,
         observaciones,
         idUsuario
       );
 
       openAltaExitosa(
-        "Turno registrado exitosamente al paciente: " + nombreCompleto
+        "Sobreturno registrado con éxito al paciente: " + nombreCompleto
       );
     } catch (error) {
-      openAltaExitosa("Turno no registrado exitosamente");
+      openAltaExitosa("Sobreturno no registrado con éxito");
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
       return;
     }
   }
 
   useEffect(() => {
-    if (fila?.fecha) {
+    if (fila.fecha) {
+      console.log(fila);
+      setIDProfesional(fila.idprofesional)
+      setFechaTurno(fila.fecha)
       handleFechaChange();
     }
-  }, [fila?.fecha]);
+  }, [fila.fecha]);
 
   return (
     <>
@@ -183,7 +180,7 @@ const MdlAltaTurno = ({
           closeButton
           style={{ backgroundColor: "#1e8449", color: "white" }}
         >
-          <Modal.Title>TURNO - REGISTRAR</Modal.Title>
+          <Modal.Title>SOBRETURNO - REGISTRAR</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
@@ -274,7 +271,7 @@ const MdlAltaTurno = ({
               <InputGroup.Text
                 style={{ backgroundColor: "#b0c4de", color: "black" }}
               >
-                <h5>DETALLE DEL TURNO</h5>
+                <h5>DETALLE DEL SOBRETURNO</h5>
               </InputGroup.Text>
               <InputGroup className="mb-3">
                 <InputGroup.Text
@@ -290,18 +287,18 @@ const MdlAltaTurno = ({
                   value={fecha}
                   style={{ backgroundColor: "#d5dbdb" }}
                 />
-                <InputGroup.Text
-                  style={{ backgroundColor: "#679bb9", color: "white" }}
-                >
-                  Hora:
-                </InputGroup.Text>
+                {/* <InputGroup.Text
+                style={{ backgroundColor: "#679bb9", color: "white" }}
+              >
+               Hora:
+              </InputGroup.Text> */}
 
-                <Form.Control
-                  aria-label="Example text with button addon"
-                  aria-describedby="basic-addon1"
-                  value={fila.hora}
-                  style={{ backgroundColor: "#d5dbdb" }}
-                />
+                {/*  <Form.Control
+                aria-label="Example text with button addon"
+                aria-describedby="basic-addon1"
+                value= {fila.hora}
+                style={{ backgroundColor: "#d5dbdb" }}
+              /> */}
               </InputGroup>
               <InputGroup>
                 <InputGroup.Text
@@ -366,4 +363,4 @@ const MdlAltaTurno = ({
   );
 };
 
-export default MdlAltaTurno;
+export default MdlAltaSobreturno;

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 /* import { format, parse } from "date-fns"; */
 import { format, addDays, parse } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { es } from "date-fns/locale";
 
 import "/src/css/pizarradeturnos.css";
+
+import { Row, Table } from "react-bootstrap";
 
 import Button from "react-bootstrap/Button";
 
@@ -11,8 +13,8 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 import "/src/css/tablapizaturnos.css";
-import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
-import { turnosService } from "/src/services/turnos.service";
+
+import { turnosService } from "/src/servicenos.service";
 import { profesionalesService } from "/src/services/profesional.service";
 import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
 import MdlAltaTurno from "../turnos/mdlaltaturno";
@@ -20,9 +22,8 @@ import MdlMensaje from "../modales/MdlMensaje";
 import MdlCambiarEstado from "../modales/mdlCambiarEstado";
 import Mdlturnoregistrarcobro from "../turnos/mdlturnoregistrarcobro";
 import MdlTurnoDetalle from "../turnos/mdlturnosdetalle_vers1";
-import { TuneOutlined } from "@mui/icons-material";
 
-const agendasemanal = ({ show, handleClose, idprofesional }) => {
+const agendasemanal_bck = ({ show, handleClose, idprofesional }) => {
   const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null);
@@ -32,11 +33,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   const [IDEstado, setIdEstado] = useState(null);
   const [mdlcambiarestado, setCambiarEstado] = useState(null);
   const [HoraTurno, setHoraTurno] = useState();
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalTituloMessage, setModalTituloMessage] = useState("");
-  const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
-    const [mdlHoraProfe, setModalHoraProfe] = useState(false);
-      const [descripcion, setDescripcion] = useState("");
+  const [HoraActual, setHoraActual] = useState();
 
   const [filaSeleccionada, setFilaSeleccionada] = useState(null);
 
@@ -60,20 +57,21 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
 
   const [Fecha, SetFecha] = useState(null);
 
-  const [fechaSistema, setFechaSistema] = useState(null);
-
   const horaActual = new Date().toLocaleTimeString();
 
   const [mdlListaProfesionales, setModalListarProfesionales] = useState(false);
   const [fechaComienzoSemana, setFechaComienzoSemana] = useState("");
-
+  const [fechaElegida, setFechaElegida] = useState("");
   const [fechaActual, setFechaActual] = useState("");
-
+  const [fechaLunes, setFechaLunes] = useState("");
+  const [Fechas, setFechas] = useState([]);
   const [diasSemana, setDiasSemana] = useState([]);
 
   const [mdlMensaje, setModalMensaje] = useState(false);
   const [mdlModalMostarMensaje, setModalMostrarMensaje] = useState(false);
   const [mdlturnoregistrarcobro, setModalTurnoRegistrarCobro] = useState(false);
+
+const fechaActualSinParsear = new Date().toLocaleDateString();
 
   const openMdlTurnoRegistrarCobro = (fila) => {
     setItem(fila);
@@ -105,6 +103,24 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     // Aquí agregas la lógica para cambiar el estado del turno
   };
 
+  const formatearFecha = (fecha) => {
+    
+    if (!fecha) return ""; // Maneja valores nulos o indefinidos
+
+    const fechaObj = new Date(fecha);
+    if (isNaN(fechaObj)) return "Fecha inválida"; // Verifica si la fecha es válida
+
+    fechaObj.setDate(fechaObj.getDate() + 1); // Suma un día
+
+    return new Intl.DateTimeFormat("es-ES", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+    })
+      .format(fechaObj)
+      .replace(",", ""); // Elimina la coma que algunos formatos incluyen
+  };
+
   async function TurnosCambiarEstado(fila, vieneDE, obs) {
     try {
       const data = await turnosService.TurnosCambiarEstado(
@@ -117,11 +133,17 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
     } catch (error) {}
   }
+  const generarFechasSemana = (fechaInicio) => {
+    return Array.from({ length: 7 }, (_, i) => {
+      const fecha = addDays(new Date(fechaInicio), i);
 
-  /* 
+      return format(fecha, "EEEE - dd 'de' MMMM", { locale: es });
+    });
+  };
+
   const formatearFecha_yyyy_mm_dd = (fecha) => {
     let fechaActualParseada;
-
+   
     if (fecha instanceof Date) {
       // Si ya es un objeto Date, lo usamos directamente
       fechaActualParseada = fecha;
@@ -144,56 +166,19 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       console.error("Formato de fecha no reconocido:", fecha);
       return "";
     }
-
+    
     return format(fechaActualParseada, "yyyy-MM-dd");
-  }; */
-
-  const formatearFecha_yyyy_mm_dd = (fecha) => {
-    let fechaActualParseada;
-
-    if (fecha instanceof Date) {
-      fechaActualParseada = fecha;
-    } else if (typeof fecha === "string" && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "yyyy-MM-dd", new Date());
-    } else if (
-      typeof fecha === "string" &&
-      /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(fecha)
-    ) {
-      fechaActualParseada = parse(fecha, "d/M/yyyy", new Date());
-    } else if (typeof fecha === "string" && !isNaN(Date.parse(fecha))) {
-      fechaActualParseada = new Date(fecha);
-    } else {
-      console.error("Formato de fecha no reconocido:", fecha);
-      return "";
-    }
-
-    // 👉 Forzar a UTC para que no reste horas
-    return format(
-      new Date(
-        fechaActualParseada.getTime() -
-          fechaActualParseada.getTimezoneOffset() * 60000
-      ),
-      "yyyy-MM-dd"
-    );
   };
 
-  /* const formatearFecha_yyyy_mm_dd = (fecha) => {
-  return formatInTimeZone(fecha, "UTC", "yyyy-MM-dd");
-}; */
-
-  /*   const fechaSemana = generarFechasSemana(new Date()); */
+  const fechaSemana = generarFechasSemana(new Date());
 
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
   };
 
-  const closeMdlHoraProfe = () => {
-    setModalHoraProfe(false);
-  };
-
   const openMdlMensaje = () => {
     // setModalSiNoMensaje("¿Está seguro de anular el turno?")
-    console.log("pasa por open");
+
     setModalMostrarMensaje(true);
   };
 
@@ -227,7 +212,6 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   };
 
   const openMdlListarProfesionales = () => {
-    setTurnos([]);
     setModalListarProfesionales(true);
   };
 
@@ -261,10 +245,10 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   };
 
   // función que devuelve array de lunes a domingo
-
   const getWeekDates = (fechaBase) => {
+   
     const base = new Date(fechaBase);
-
+   
     // si la fecha es inválida, uso hoy
     if (isNaN(base)) {
       console.warn("⚠️ Fecha inválida en getWeekDates, uso hoy");
@@ -272,44 +256,88 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     }
 
     const monday = getMonday(fechaBase);
-
-    setFechaComienzoSemana(formatearFecha_yyyy_mm_dd(monday));
-
+   
+    setFechaComienzoSemana(formatearFecha_yyyy_mm_dd(monday))
     const weekDates = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
 
-      // Nombre legible del día
-      const nombre = d
+      return d
         .toLocaleDateString("es-ES", {
           weekday: "long", // lunes, martes...
           day: "numeric", // 11
           month: "long", // agosto
         })
-        .replace(",", "");
-
-      // Fecha en formato yyyy-mm-dd (local)
-      const fecha = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}-${String(d.getDate()).padStart(2, "0")}`;
-
-      return { nombre, fecha };
+        .replace(",", ""); // saco la coma
     });
-
+   
     return weekDates;
   };
+
+  /*   const handleFechaChange = (input) => {
+    const valor = typeof input === "string" ? input : input.target.value;
+
+    SetFecha(valor);
+    const fechaISO = valor;
+
+    // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
+    const fechaObj = new Date(fechaISO);
+
+    // Ajustar la fecha al UTC manualmente
+    const fechaLocal = new Date(
+      fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
+    );
+
+    // Formatear usando toLocaleString o date-fns como prefieras
+    const fechaLarga = fechaLocal.toLocaleDateString("es-ES", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    SetFechaLarga(fechaLarga);
+    setTurnos([]);
+  }; */
+
+  /*     const handleFechaChange = (e) => {
+    setFechaComienzoSemana(e.target.value);
+    contador.current = contador.current + 1;
+    
+    const fechaISO = e.target.value;
+
+    // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
+    const fechaObj = new Date(fechaISO);
+
+    // Ajustar la fecha al UTC manualmente
+    const fechaLocal = new Date(
+      fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
+    );
+
+    // Formatear usando toLocaleString o date-fns como prefieras
+    const fechaLarga = fechaLocal.toLocaleDateString("es-ES", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    SetFechaLarga(fechaLarga);
+    /* setDiasSemana(generarFechasSemana(Fecha)); 
+    setTurnos([]);
+  }; */
+
 
   const definirEstadosdeTurnos = (fila, VieneDE) => {
     try {
       setItem(fila);
+
       setIdEstado(fila.idestado);
 
       //3676903
       if (fila.estado === "LIBRE" && VieneDE == "LIBRE") {
         openMdlRegistrarTurno(fila);
       } else if (fila.estado == "PENDIENTE" && VieneDE == "PENDIENTE") {
-        console.log("Pasa por aca:" + fila.estado + ". Viene de: " + VieneDE);
         setCambiarEstadoMensaje(
           "¿Esta seguro de cambiar el estado del turno a PRESENTE?"
         );
@@ -323,22 +351,32 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         openMdlAnularTurno();
       }
 
-      BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+      BuscarTurnosProfesionalFecha(IDProfesional, Fecha);
     } catch (error) {}
   };
 
-  async function BuscarTurnosProfesionalFecha(idprofesional, fecha) {
-    if (fecha === null) return;
-
+  async function BuscarTurnosFechasAgrupadas(idprofesional, fecha) {
     if (idprofesional > 0) {
-      // BuscarTurnosFechasAgrupadas(idprofesional, fecha);
-      const data = await turnosService.Agendasemanal_PorProfesionalPorFecha(
+      const data = await turnosService.Agendasemanal_FechasAgrupadas(
         idprofesional,
         fecha
       );
 
-      setCantidadTurnos(data.length);
+      // Organizar turnos por fecha
+      console.log(data)
+      setFechas(data);
+    }
+  }
 
+  async function BuscarTurnosProfesionalFecha(idprofesional, fecha) {
+    if (idprofesional > 0) {
+     // BuscarTurnosFechasAgrupadas(idprofesional, fecha);
+      const data = await turnosService.Agendasemanal_PorProfesionalPorFecha(
+        idprofesional,
+        fecha
+      );
+      setCantidadTurnos(data.length);
+    
       setTurnos(data);
     }
   }
@@ -379,52 +417,65 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       );
     } catch (error) {}
   }
-  // 1. Agrupar turnos por fecha
+
+  const obtenerTurnosSemana = async (idprofesional, fechaInicio) => {
+    const data = await turnosService.Agendasemanal_PorProfesionalPorFecha(
+      idprofesional,
+      fechaInicio
+    );
+
+    // Organizar turnos por fecha
+    const turnosAgrupados = data.reduce((acc, turno) => {
+      const fechaFormateada = format(
+        new Date(turno.fecha),
+        "EEEE - d 'de' MMMM",
+        { locale: es }
+      );
+      if (!acc[fechaFormateada]) acc[fechaFormateada] = [];
+      acc[fechaFormateada].push(turno);
+      return acc;
+    }, {});
+
+    setTurnos(turnosAgrupados);
+  };
+
+  // const Fechas1 = [...new Set(turnos.map((t) => t.fecha))];
+
+  // Obtener todas las horas sin duplicar y ordenadas
+  const Horas1 = [...new Set(turnos.map((t) => t.hora))].sort();
 
   const maxTurnosPorDia = Math.max(
-    ...turnos.map((fecha) => {
-      const cantidad = turnos.filter((t) => t.fecha === fecha.fecha).length;
-
-      return cantidad;
-    }),
+    ...Fechas.map(
+      (fecha) => turnos.filter((t) => t.fecha === fecha.Fecha).length
+    ),
     0
   );
-
-  const getButtonProperties = (estado, fecha, hora, sobreturno, paciente) => {
+  const getButtonProperties = (estado, fecha, hora, paciente) => {
     let buttonVariant = "success"; // Color por defecto
     let buttonText = hora;
     let isButtonDisabled = false;
 
     const ahora = new Date();
     const fechaActual1 = formatearFecha_yyyy_mm_dd(ahora); // Fecha actual YYYY-MM-DD
-    const fecha1 = formatearFecha_yyyy_mm_dd(fecha);
+
     // Obtener la hora actual en formato HH:MM
     const horaActual1 = format(new Date(), "HH:mm"); // Extrae "HH:MM"
-    //const hora1 = format(new hora, "HH:mm"); // Extrae "HH:MM"
+
     // Validar que fecha y hora sean correctas
-    if (!fecha1 || !hora) {
+    if (!fecha || !hora) {
       return { buttonVariant, buttonText, isButtonDisabled };
     }
 
     // Comparar fecha y hora por separado
 
     if (estado === "LIB") {
-      /*       console.log("Fecha del sistema " + fechaActual1)
-      console.log("Fecha del turno " + fecha1) */
-      if (fechaActual1 > fecha1) {
-        isButtonDisabled = true;
-      } else if (fechaActual1 === fecha1) {
-        /*         console.log("Hora del sistema " + horaActual1)
-        console.log("Hora del turno " + hora) */
-
-        if (horaActual1 > hora) {
-          isButtonDisabled = true; // Si la fecha ya pasó, deshabilitar botón
+      if (fecha < fechaActual1) {
+        isButtonDisabled = true; // Si la fecha ya pasó, deshabilitar botón
+      } else if (fecha === fechaActual1) {
+        if (hora < horaActual1) {
+          isButtonDisabled = true; // Si la fecha es hoy pero la hora ya pasó, deshabilitar botón
         }
       }
-    }
-
-    if (estado === "ANU") {
-      isButtonDisabled = true;
     }
 
     switch (estado) {
@@ -432,12 +483,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         buttonVariant = "dark";
         break;
       case "PEN":
-        if (!sobreturno) {
-          buttonVariant = "warning";
-        } else {
-          buttonVariant = "info";
-        }
-
+        buttonVariant = "warning";
         break;
       case "PRE":
         buttonVariant = "primary";
@@ -472,26 +518,35 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     return { buttonVariant, buttonText, isButtonDisabled };
   };
 
-  //const fechaActual = formatearFecha(fechaActualSinParsear);
+
+//const fechaActual = formatearFecha(fechaActualSinParsear);
 
   useEffect(() => {
+    
     document.title = "Si.Ge.Tur. - Agenda Semanal";
     const hoy = new Date();
-
+    
     //formateamos la fecha del dia a yyyy-mm-dd
-    const setFechaActual1 = formatearFecha_yyyy_mm_dd(hoy);
-
+    const setFechaActual1 = (formatearFecha_yyyy_mm_dd(hoy));
+ 
     //pasar la fecha al calendar
     setFechaActual(setFechaActual1);
 
-    //mantiene la fecha de hoy
-    setFechaSistema(setFechaActual1);
-
     //armamos el array con los dias de la semana
     setDiasSemana(getWeekDates(setFechaActual1));
+  
   }, []);
 
-  /*   useEffect(() => {
+
+  const contador = useRef(0);
+/*   useEffect(() => {
+    contador.current = contador.current + 1;
+    const fecha1 = formatearFecha_yyyy_mm_dd(new Date());
+
+    setFechaActual(fecha1); // Actualiza el estado con la fecha formateada
+  }, []); // Se ejecuta solo una vez al montar el componente */
+
+  useEffect(() => {
     const esFechaValida = fechaTurno >= fechaActual;
     const esHoraValida = HoraTurno > horaActual;
 
@@ -504,7 +559,9 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       openMdlMensaje();
       setModalRegistrarTurno(false);
     }
-  }, [HoraTurno]); */
+  }, [HoraTurno]);
+
+  
 
   return (
     <>
@@ -517,6 +574,12 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
           marginLeft: "20px",
         }}
       >
+        {/*  <div style={{ display: "flex", backgroundColor: "white" }}>
+          <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
+            <h2> AGENDA SEMANAL</h2>
+          </div>
+        </div> */}
+
         <div
           style={{
             display: "flex",
@@ -524,34 +587,30 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
             marginBottom: "5px",
           }}
         >
+          {/* <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
+            <h2> Pizarra de turnos</h2>
+          </div> */}
           <div style={{ width: "40%", textAlign: "left", marginTop: "10px" }}>
             <button
-              title="Enviar mail al profesional de los turnos de la semana.."
+              title="Anular todos los turnos del día."
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              disabled="true"
+              //disabled={Items.length == 0}
               /* style={{ display: "none" }} */
-            >
-              <i class="fa-solid fa-envelope"></i>
-            </button>
-            <button
-              title="Dashboard"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              disabled="true"
-              // style={{ display: "none" }}
-            >
-              <i class="fa-solid fa-chart-pie"></i>
-            </button>
-            <button
-              title="Horarios del profesional"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              disabled={turnos.length == 0}
               onClick={(event) => {
                 event.preventDefault();
-                setDescripcion(event.currentTarget.textContent.trim());
-                openMdlHoraProfe();
+                setDescripcion(event.target.buttonText);
+                anularTurno();
               }}
             >
-              <i class="fa-solid fa-clock"></i>
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <button
+              title="Email a todos los turnos a toda la grilla"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              //disabled={Items.length == 0}
+              // style={{ display: "none" }}
+            >
+              <i class="fa-solid fa-at"></i>
             </button>
           </div>
         </div>
@@ -596,10 +655,10 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
                 onChange={(e) => {
                   const nuevaFecha = e.target.value; // yyyy-mm-dd
                   setFechaActual(nuevaFecha); // guardás en tu estado
-
                   setDiasSemana(getWeekDates(nuevaFecha)); // recalculás semana
                 }}
                 value={fechaActual}
+                
               />
               <InputGroup.Text
                 style={{
@@ -743,7 +802,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
             <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
               {/* Encabezado de fechas */}
               <tr style={{ background: "#679bb9", color: "white" }}>
-                {diasSemana.map((dia, index) => (
+                {diasSemana.map((fecha, index) => (
                   <th
                     key={index}
                     colSpan={2}
@@ -756,7 +815,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    {dia.nombre}
+                    {fecha}
                   </th>
                 ))}
               </tr>
@@ -803,150 +862,131 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
                       filaIndex % 2 === 0 ? "#f8f9fa" : "#ffffff", // Alternar colores de fila
                   }}
                 >
-                  {diasSemana.map((dia, colIndex) => {
-                    // Filtrar los turnos de ese día
+                  {diasSemana.map((dia, idx) => {
+                      // filtrar los turnos de ese día
+                      const turno = turnos.filter(
+                        (t) => new Date(t.fecha).toDateString() === new Date(dia.Fecha).toDateString()
+                      );
 
-                    const turnosDelDia = turnos.filter(
-                      (t) => t.fecha.split("T")[0] === dia.fecha // ambos quedan como yyyy-mm-dd
-                    );
+                      {turno.map((fecha, colIndex) => {
+                       
+                        //const turno = turnosDelDia[filaIndex] || null;
+                        const t = fecha;
+                        const { buttonVariant, buttonText, isButtonDisabled } =
+                          getButtonProperties(
+                            t.sigla,
+                            t.fecha,
+                            t.hora
+                          );
 
-                    // Turno que corresponde a esta fila
-                    const turno = turnosDelDia[filaIndex];
-
-                    return (
-                      <React.Fragment key={colIndex}>
-                        {/* Columna de Hora */}
-                        <td
-                          style={{
-                            width: "90px",
-                            textAlign: "center",
-                            fontSize: "13px",
-                            border: "1px solid #ddd",
-                            padding: "8px",
-                            verticalAlign: "top",
-                          }}
-                        >
-                          {turno ? (
-                            <Button
-                              variant={
-                                getButtonProperties(
-                                  turno.sigla,
-                                  turno.fecha,
-                                  turno.hora,
-                                  turno.sobreturno
-                                ).buttonVariant
-                              }
-                              disabled={
-                                getButtonProperties(
-                                  turno.sigla,
-                                  turno.fecha,
-                                  turno.hora,
-                                  turno.sobreturno
-                                ).isButtonDisabled
-                              }
+                        return (
+                          <React.Fragment key={colIndex}>
+                            {/* Columna de Hora */}
+                            <td
                               style={{
-                                width: "100%",
-                                padding: "5px",
-                                fontSize: "12px",
-                                borderRadius: "5px",
-                              }}
-                              onClick={(event) => {
-                                event.preventDefault();
-                                setHoraTurno(turno.hora);
-                                setFechaTurno(
-                                  formatearFecha_yyyy_mm_dd(turno.fecha)
-                                );
-                                setFechaTurnoBD(turno.fecha);
-
-                                if (turno.sigla === "PEN") {
-                                  /* if (turno.fecha !== fechaSistema) {
-                                    setModalMensaje(
-                                      "No se puede dar el PRESENTE en esta fecha. El PRESENTE se otorga al turno el mismo día."
-                                    );
-                                    openMdlMensaje();
-                                    return;
-                                  } */
-                                  definirEstadosdeTurnos(turno, "PENDIENTE");
-                                } else if (turno.sigla === "LIB") {
-                                  if (turno.fecha >= fechaSistema) {
-                                    definirEstadosdeTurnos(turno, "LIBRE");
-                                  } else {
-                                    setModalMensaje(
-                                      "Fecha expirada. No se puede cambiar el estado del turno."
-                                    );
-                                    openMdlMensaje();
-                                  }
-                                } else if (turno.sigla === "PRE NCOB") {
-                                  setModalMensaje(
-                                    "Fecha expirada. No se puede cambiar el estado del turno."
-                                  );
-                                  openMdlTurnoRegistrarCobro(turno);
-                                }
-                              }}
-                            >
-                              {
-                                getButtonProperties(
-                                  turno.sigla,
-                                  turno.fecha,
-                                  turno.hora,
-                                  turno.sobreturno
-                                ).buttonText
-                              }
-                            </Button>
-                          ) : (
-                            ""
-                          )}
-                        </td>
-
-                        {/* Columna Paciente */}
-                        <td
-                          style={{
-                            width: "250px",
-                            textAlign: "center",
-                            fontSize: "13px",
-                            border: "1px solid #ddd",
-                            padding: "8px",
-                            verticalAlign: "top",
-                          }}
-                        >
-                          {turno ? (
-                            <button
-                              type="button"
-                              className="btn btn-light"
-                              style={{
-                                fontSize: "13px",
-                                padding: "4px 8px",
-                                width: "100%",
+                                width: "90px",
                                 textAlign: "center",
+                                fontSize: "13px",
+                                border: "1px solid #ddd",
+                                padding: "8px",
                               }}
-                              onClick={() => openMdlTurnoDetalle(turno)}
                             >
-                              {turno.apenompaciente}
-                            </button>
-                          ) : (
-                            ""
-                          )}
-                        </td>
-                      </React.Fragment>
-                    );
-                  })}
+                              {turno ? (
+                                <Button
+                                  variant={buttonVariant}
+                                  disabled={isButtonDisabled}
+                                  style={{
+                                    width: "100%",
+                                    padding: "5px",
+                                    fontSize: "12px",
+                                    borderRadius: "5px",
+                                    cursor: isButtonDisabled
+                                      ? "not-allowed"
+                                      : "pointer",
+                                    opacity: isButtonDisabled ? 0.5 : 1,
+                                  }}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+
+                                    setHoraTurno(t.hora); // Actualiza `setHoraTurno` con `item.desde`
+
+                                    // Obtiene la hora actual y la asigna a `setHoraActual`
+                                    // O ajusta el formato según lo necesites
+                                    setHoraActual(horaActual);
+                                    setFechaTurno(
+                                      formatearFecha_yyyy_mm_dd(t.fecha)
+                                    );
+                                    setFechaTurnoBD(t.fecha);
+
+                                    if (t.sigla == "PEN") {
+                                      if (fechaTurno > fechaActual) {
+                                        setModalMensaje(
+                                          "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."
+                                        );
+                                        openMdlMensaje();
+                                        return;
+                                      }
+
+                                      definirEstadosdeTurnos(turno, "PENDIENTE");
+                                    } else if (t.sigla === "LIB") {
+                                      if (t.fecha >= fechaActual) {
+                                        definirEstadosdeTurnos(turno, "LIBRE");
+                                      } else {
+                                        setModalMensaje(
+                                          "Fecha expirada. No se puede cambiar el estado del turno."
+                                        );
+                                        openMdlMensaje();
+                                      }
+                                    } else if (t.sigla === "PRE NCOB") {
+                                      setModalMensaje(
+                                        "Fecha expirada. No se puede cambiar el estado del turno."
+                                      );
+
+                                      openMdlTurnoRegistrarCobro(turno);
+                                    }
+                                  }}
+                                >
+                                  {buttonText}
+                                </Button>
+                              ) : (
+                                ""
+                              )}
+                            </td>
+                            <td
+                              style={{
+                                width: "90px",
+                                textAlign: "center",
+                                fontSize: "13px",
+                                border: "1px solid #ddd",
+                                padding: "8px",
+                              }}
+                            >
+                              {turno && turno.apenompaciente ? (
+                                <button
+                                  type="button"
+                                  className="btn btn-light"
+                                  style={{ fontSize: "13px", padding: "4px 8px" }}
+                                  onClick={() => {
+                                    // Acá va la acción que quieras realizar con el botón
+                                    openMdlTurnoDetalle(turno);
+                                  }}
+                                >
+                                  {turno.apenompaciente}
+                                </button>
+                              ) : (
+                                ""
+                              )}
+                            </td>
+                          </React.Fragment>
+                        );
+                      })}
+                    })}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
-      {mdlHoraProfe && (
-        <Mdlhorarioprofesional
-          show={openMdlHoraProfe}
-          handleClose={closeMdlHoraProfe}
-          idprofesional={IDProfesional}
-          fecha={fechaActual}
-          profesional={apeyNom}
-        />
-      )}
-
       {mdlListaProfesionales && (
         <MdlListarProfesionales
           show={openMdlListarProfesionales}
@@ -956,7 +996,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       )}
       {mdlRegistrarTurno && (
         <MdlAltaTurno
-          show={setModalRegistrarTurno}
+          show={openMdlRegistrarTurno}
           handleClose={closeMdlRegistrarTurno}
           fila={filaSeleccionada}
           ApeyNom={apeyNom}
@@ -1002,4 +1042,4 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   );
 };
 
-export default agendasemanal;
+export default agendasemanal_bck;

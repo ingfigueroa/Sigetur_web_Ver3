@@ -9,6 +9,8 @@ import InputGroup from "react-bootstrap/InputGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
 
+import MdlUpdateHorariosProfesional from "../profesionales/mdlupdatehorariosprofesional";
+
 import { tiposexoService } from "/src/services/tiposexo.service.js";
 import { profesionesService } from "/src/services/profesiones.service.js";
 import { profesionalesService } from "/src/services/profesional.service.js";
@@ -28,6 +30,8 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
   const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
 
   const [item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
+
+  const [mdlUpdateHorariosProfesional, setMdlUpdateHorariosProfesional] = useState(false);
 
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
@@ -67,15 +71,17 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
     setShowModal(false);
   };
 
-  const openModalAlta = () => {
-    setModalMessage("ALTA EXITOSA");
-    setMdlAltaExitosa(true);
+  
+  const openMdlUpdateHorariosProfesionales = () => {
+   /*  setIDProfesional(item.ID);
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios */
+    setMdlUpdateHorariosProfesional(true);
   };
 
-  const closeModalAlta = () => {
-    setMdlAltaExitosa(false);
+   const closeMdlUpdateHorariosProfesionales = () => {
+    setMdlUpdateHorariosProfesional(false);
   };
-
 
   const openModalModificacionExitosa = () => {
     setModalMessage("Se modificó el profesional con éxito.")
@@ -88,16 +94,6 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
     
   };
 
-
-  const openModalBajaExitosa = () => {
-    setModalMessage("Se dió de baja el profesional con éxito.")
-    setModalMessageTitulo("DAR DE BAJA EL PROFESIONAL")
-    setMdlAltaExitosa (true);
-  };
-
-  const closeModalBajaExitosa = () => {
-    setMdlAltaExitosa(false);
-  };
 
 
   const validarEmail = (email) => {
@@ -241,12 +237,29 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
           closeButton
           style={{ backgroundColor: "#0277bd", color: "white" }}
         >
-          <Modal.Title>MODIFICAR UN PROFESIONAL</Modal.Title>
+          <Modal.Title>MODIFICAR DATOS DEL PROFESIONAL</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "100%", background: "white" }}>
           <div
             style={{ display: "grid", width: "100%", backgroundColor: "white" }}
           >
+           
+           
+
+            <div style={{ width: "30%", textAlign: "left" }}>
+              <button
+                title="Modificar horarios del profesional"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                 onClick={() => openMdlUpdateHorariosProfesionales()}
+              >
+                <i class="fa-solid fa-clock"></i>
+              </button>
+
+           
+            </div>
+          
+         
+<hr></hr>
             
             <div
               style={{
@@ -503,6 +516,17 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
           varMensajeTitulo={modalMessageTitulo}
         />
       )}
+
+       {mdlUpdateHorariosProfesional && (
+        <MdlUpdateHorariosProfesional
+          show={openMdlUpdateHorariosProfesionales}
+          handleClose={closeMdlUpdateHorariosProfesionales}
+          idprofesional={'19'}
+          fecha={'25/08/2025'}
+          profesional={'FIGUEROA RODOLFO'}
+        />
+      )}
+
     </>
   );
 };

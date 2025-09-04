@@ -145,12 +145,7 @@ function ConsultaTurnos() {
     else {
       _pagina = Pagina;
     }
-    console.log(FechaDesde);
-    console.log(FechaHasta);
-    console.log(idTipoProfesionSelected);
-    console.log(idEstadoSelected);
-    console.log(_pagina);
-    console.log(CantidaddeRegistros);
+
 
     const data = await turnosService.TurnosConsultaPorFecha(
       FechaDesde,

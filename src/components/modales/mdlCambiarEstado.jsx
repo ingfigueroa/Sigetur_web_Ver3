@@ -7,6 +7,9 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
+const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTituloMessage, setModalTituloMessage] = useState('');
 
   const [observaciones, SetObservaciones] = useState(null);
   const fechaLarga = format(new Date(fila.fecha), "EEEE, d 'de' MMMM 'de' yyyy", {locale: es});
@@ -17,7 +20,21 @@ const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
   };
   
  
+
+  const openAltaExitosa = (mensaje) => {
+    setModalTituloMessage("TURNO - REGISTRAR PRESENTE")
+    setModalMessage(mensaje);
+    setModalAltaExitosa(true);
+    
+  };
+
+   const closeAltaExitosa = () => {
+    setModalAltaExitosa(false);
+    handleClose();
+    
+  };
   return (
+    <>
     <Modal show={show} onHide={handleClose} size="lg">
       <Modal.Header
         closeButton
@@ -154,6 +171,13 @@ const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
      </Modal.Footer>
        
       </Modal>
+        {/*   <MdlAltaExitosa
+                    show={modalAltaExitosa}
+                    handleClose={closeAltaExitosa}
+                    varMensaje={modalMessage}
+                    varMensajeTitulo={modalTituloMessage}
+              /> */}
+              </>
   );
 }; 
 

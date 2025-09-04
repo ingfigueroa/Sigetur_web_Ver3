@@ -23,7 +23,7 @@ import AsignarListadeEspera from "./asignarTurnoListadeEspera";
 
 function listadeespera_v1() {
   const [mostrarModal, setMostrarModal] = useState(null);
-   const [mostrarAsignar, setMostrarAsignar] = useState(null);
+   const [mostrarAsignar, setMostrarAsignar] = useState(false);
   
 
   const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
@@ -39,10 +39,10 @@ function listadeespera_v1() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [mdlRegistrarListadeEspera, setModalRegistrarListadeEspera] =
-    useState(false);
+  const [mdlRegistrarListadeEspera, setModalRegistrarListadeEspera] = useState(false);
   const [mdlEditarPaciente, setMdlEditarPaciente] = useState(false);
-  const [idPaciente, setIDPaciente] = useState(false);
+  const [idpaciente, setIDPaciente] = useState(false);
+  const [idprofesional, setIDProfesional] = useState(false);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
@@ -51,6 +51,8 @@ function listadeespera_v1() {
   const [apeyNomPaciente, setapeyNomPaciente] = useState(null);
   const [apeyNomProfesional, setapeyNomProfesional] = useState(null);
   const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
+  
+ 
 
   const mdlSiNo = (respuesta) => {
     if (respuesta) {
@@ -63,14 +65,7 @@ function listadeespera_v1() {
     }
   };
 
-  /*   const openMdlSiNo = () => {
-    setMDLEstaSeguro(true);
-  };
 
-  const closeMdlSiNo = () => {
-    setMDLEstaSeguro(false);
-  };
- */
   function ajustarHoraArgentina(fechaUTC) {
     return new Date(
       new Date(fechaUTC).getTime() + 3 * 60 * 60 * 1000
@@ -83,7 +78,8 @@ function listadeespera_v1() {
   function Limpiar() {
     setapeyNomPaciente("");
     setapeyNomProfesional("");
-    cargarlistadeespera();
+    
+    
   }
 
   async function eliminarFila(id) {
@@ -106,7 +102,7 @@ function listadeespera_v1() {
   };
 
   const closeMdlRegistrarListadeEspera = () => {
-    console.log("Cerrar alta exitosa");
+
     setModalRegistrarListadeEspera(false);
     cargarlistadeespera();
   };
@@ -137,6 +133,26 @@ function listadeespera_v1() {
       console.error("Error fetching data:", error);
     }
   };
+
+   const openAsignarListadeEspera = () => {
+   
+
+    setMostrarAsignar(true);
+  };
+
+  const closeAsignarListadeEspera = () => {
+    setMostrarAsignar(false);
+   
+    Limpiar()
+    
+    
+  };
+
+
+  // Llamás a la función dentro del useEffect
+  useEffect(() => {
+    cargarlistadeespera();
+  }, [apeyNomPaciente]);
 
   // Llamás a la función dentro del useEffect
   useEffect(() => {
@@ -392,7 +408,11 @@ function listadeespera_v1() {
                         title="Asignar un turno a la fila."
                         className="btn btn-sm btn-light btn-danger"
                          onClick={() => {
-                        
+                          setapeyNomPaciente(Item.paciente)
+                          setapeyNomProfesional(Item.profesional)
+                          setIDProfesional(Item.idprofesional)
+                          setIDPaciente(Item.idpaciente)
+                          SetIDFila(Item.IDListaEspera)
                           setMostrarAsignar(true); // Mostrás el modal
                         }}
                       >
@@ -475,12 +495,19 @@ function listadeespera_v1() {
         enviaralpadre={mdlSiNo}
       />
 
+
+       {mostrarAsignar && (
        <AsignarListadeEspera
-        show={mostrarAsignar}
-        handleClose={() => setMostrarAsignar(false)}
-        idturno="0"
-        enviaralpadre={mdlSiNo}
-      />
+        show={openAsignarListadeEspera}
+        handleClose={closeAsignarListadeEspera}
+        idprofesional={idprofesional}
+        idpaciente={idpaciente}
+        apeynomprofesional={apeyNomProfesional}
+        apeynompaciente={apeyNomPaciente}
+       
+        idlistadeespera={idFila}
+        
+      />)}
     </>
   );
 }

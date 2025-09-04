@@ -5,56 +5,52 @@ import Button from "react-bootstrap/Button";
 
 import InputGroup from "react-bootstrap/InputGroup";
 
-const mdlEstaSeguro = ({ show, handleClose, mensajetitulo, mensajecuerpo, enviaralpadre }) => {
+const mdlEstaSeguro = ({
+  show,
+  handleClose,
+  mensajetitulo,
+  mensajecuerpo,
+  enviaralpadre,
+}) => {
+  const [seleccionoSI, setSeleccionoSI] = useState(false);
 
-  const [seleccionoSI, setSeleccionoSI] = useState(false)
   const seleccionarSi = () => {
-    setSeleccionoSI(true)
     enviaralpadre(true);
-    handleClose() // Envía el id al componente padre
+    handleClose(); // Envía el id al componente padre
   };
 
   const seleccionarNO = () => {
-    setSeleccionoSI(false)
-    enviaralpadre(seleccionoSI);
-    handleClose() // Envía el id al componente padre
+    enviaralpadre(false);
+    handleClose(); // Envía el id al componente padre
   };
 
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered>
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#c91010ff ", color: "white" }}
+        style={{ backgroundColor: "#ffc107 ", color: "black" }}
       >
         <Modal.Title>{mensajetitulo}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <div>
-          
           <div>
             <InputGroup className="mb-3">
               <InputGroup.Text
-                style={{ backgroundColor: "#b0c4de", color: "black" }}
+                style={{ backgroundColor: "#6c757d", color: "white" }}
               >
-                {mensajecuerpo}
+                <span dangerouslySetInnerHTML={{ __html: mensajecuerpo }} />
               </InputGroup.Text>
             </InputGroup>
-
-           
-            
           </div>
         </div>
-        
-       
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="danger" onClick={seleccionarSi}
-        
-        >
+        <Button variant="warning" onClick={seleccionarSi}>
           SI
         </Button>
-        <Button variant="success" onClick={seleccionarNO}>
+        <Button variant="secondary" onClick={seleccionarNO}>
           NO
         </Button>
       </Modal.Footer>

@@ -14,7 +14,7 @@ import "/src/css/personalizar-modales.css";
 const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
   const [FechaLarga, SetFechaLarga] = useState(null);
   const [Items, setItems] = useState(null);
-  const [Estados, setEstados] = useState([]);
+  const [sobreTurno, setSobreTurno] = useState(null);
 
   useEffect(() => {
     if (!idturno) return;
@@ -24,9 +24,11 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
 
     async function fetchDataTurno() {
       try {
+        
         const data = await turnosService.TurnoID(idturno);
-       
+     
         setItems(data);
+        
       } catch (error) {
         console.error("Error al obtener detalles del turno:", error);
       }
@@ -85,13 +87,27 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
         <Modal.Title>TURNO - DETALLE</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div style={{ width: "100%" }}>
-          <h1
-            style={{ fontSize: "50px", color: "#044f82", textAlign: "center" }}
-          >
-            {Items?.estado || ""}
-          </h1>
-        </div>
+       <div style={{ width: "100%" }}>
+  <h1
+    style={{ fontSize: "50px", color: "#044f82", textAlign: "center" }}
+  >
+    {Items?.estado || ""}
+  </h1>
+
+  {Items?.sobre && (
+    <p
+      style={{
+        fontSize: "20px",
+        color: "red",
+        textAlign: "center",
+        margin: 0
+      }}
+    >
+      SOBRETURNO
+    </p>
+  )}
+</div>
+
         <div style={{ display: "flex", width: "100%" }}>
           <div
             style={{
@@ -218,7 +234,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
             <Form.Control
               as="textarea"
               readOnly
-              style={{ textAlign: "left", fontSize: "12px", height: "50px" }}
+              style={{ textAlign: "left", fontSize: "12px", height: "60px" }}
               value={Items?.observaciones || ""}
             />
           </InputGroup>

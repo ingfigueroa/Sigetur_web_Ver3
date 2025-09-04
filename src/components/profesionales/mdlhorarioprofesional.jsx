@@ -7,6 +7,8 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
+import { formatearFechaLarga, formatearFechaLargaConelAnio, obtenerMes } from "../../components/utils/fecha";
+
 import { profesionalesService } from "/src/services/profesional.service";
 
 const mdlhorarioprofesional = ({
@@ -45,7 +47,11 @@ const mdlhorarioprofesional = ({
    
   }
 
+  
+  
+
   useEffect(() => {
+    
     Buscar();
   }, []);
 
@@ -59,10 +65,10 @@ const mdlhorarioprofesional = ({
       </Modal.Header>
       <Modal.Body style={{ width: "100%", fontSize: "15px" }}>
         <div>
-          <div>
+                    <div>
             <InputGroup className="mb-3">
               <InputGroup.Text
-                style={{ backgroundColor: "#679bb9", color: "white" }}
+                style={{ backgroundColor: "#679bb9", color: "white", fontSize: "12px" }}
               >
                 PROFESIONAL
               </InputGroup.Text>
@@ -72,33 +78,18 @@ const mdlhorarioprofesional = ({
                 style={{ backgroundColor: "#d5dbdb", color: "black" }}
               />
 
-              <InputGroup.Text
-                style={{
-                  backgroundColor: "#679bb9",
-                  color: "white",
-                  height: "38px",
-                }}
-              >
-                Fecha desde:
-              </InputGroup.Text>
-              <Form.Control
-                placeholder="Buscar profesional"
-                aria-label="Buscar profesional"
-                aria-describedby="basic-addon2"
-                type="date"
-                /*   onChange={handleFechaChange} */
-                /*  value={Fecha} */
-              />
             </InputGroup>
           </div>
+         
 
           <div>
             <InputGroup className="mb-3" size="sm">
               <InputGroup.Text
-                style={{ backgroundColor: "#679bb9", color: "white" }}
+                style={{ backgroundColor: "#679bb9", color: "white", fontSize: "12px" }}
               >
                 HORARIOS ACTUALES
               </InputGroup.Text>
+
             </InputGroup>
 
             <Table
@@ -141,9 +132,7 @@ const mdlhorarioprofesional = ({
                   <th style={{ textAlign: "center" }} key="7">
                     Intervalo
                   </th>
-                  <th style={{ textAlign: "center", width: "10%" }} key="8">
-                    Seleccionar
-                  </th>
+                 
                 </tr>
               </thead>
               <tbody>
@@ -227,30 +216,35 @@ const mdlhorarioprofesional = ({
                       >
                         {item.int_n}
                       </td>
-                      <td
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          name="select-item"
-                          value={item.ID}
-                          checked={selectedId == item.ID}
-                          onChange={handleRadioChange}
-                          style={{
-                            transform: "scale(0.8)",
-                            width: "30%",
-                            height: "12px",
-                          }} // Ajustar tamaño si es necesario
-                        />
-                      </td>
+                    
                     </tr>
                   ))}
               </tbody>
             </Table>
+             <div>
+            <InputGroup className="mb-3">
+             
+                 <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                 // height: "30px",
+                  fontSize: "12px"
+                }}
+              >
+               ESTOS HORARIOS FUERON ASIGNADOS A PARTIR DE LA FECHA:
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Fecha de comienzo de cambio de horarios del profesional"
+                aria-label="Fecha de cambios de horario del profesional"
+                aria-describedby="basic-addon2"
+                //type="date"
+                /*   onChange={handleFechaChange} */
+                  value={formatearFechaLargaConelAnio(fecha)} 
+              />
+           
+            </InputGroup>
+          </div>
           </div>
         </div>
       </Modal.Body>

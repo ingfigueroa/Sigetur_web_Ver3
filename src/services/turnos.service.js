@@ -13,12 +13,15 @@ const urlResourceEstadoPorTurnos = config.urlResourceEstadoPorTurnos;
 const urlResourceTurnosCambiarEstado = config.urlResourceCambiarEstado;
 const urlResourceTurnosConsultasPorFecha = config.urlResourceConsultaTurnos
 const urlResourceTurnoID = config.urlResourceTurnoID
-
+const urlResourceTurnoLibreID = config.urlResourceTurnoLibreID
+const urlResourceSobreturnoCrear = config.urlResourceSobreturnoPasaraPendiente
 const urlResourceTurnosAnularPorPedidoProfesional = config.urlResourceTurnosAnularPorPedidoProfesional;
 const urlResourceTurnosProfesionalDiaCancelados = config.urlResourceTurnosProfesionalDiaCancelados;
 const urlResourceAgeSemTurProfFecha = config.urlResourceAgSeTurProfFecha
 const urlResourceAgeSemTurProfFechaAgrup = config.urlResourceAgeSemTurProfFechaAgrupado
 const urlResourceListadeEspera = config.urlResourceTurnosListadeEspera
+const urlResourceMailTurnosProfesional = config.urlResourceMailTurnosProfesional
+const urlResourceTurnosLibresFechaMes = config.urlResourceturnoslibresfechames
 
 async function TurnosAnularPorPedidoProfesional(idprofesional, observaciones, fecha, idusuario) {
 
@@ -91,7 +94,7 @@ async function TurnosPorProfesionalDiaCancelados(idprof, fecha) {
 
 async function TurnoID(idturno) {
 
-  console.log(idturno)
+  
 
   const resp = await httpService.get(urlResourceTurnoID, {
     params: {
@@ -104,6 +107,24 @@ async function TurnoID(idturno) {
 
 
 }
+
+
+async function TurnoLibreID(idturno) {
+
+  
+
+  const resp = await httpService.get(urlResourceTurnoLibreID, {
+    params: {
+      idturno
+    },
+
+  });
+
+  return resp.data;
+
+
+}
+
 
 async function EstadosPorTurno(idturno) {
 
@@ -122,7 +143,7 @@ async function EstadosPorTurno(idturno) {
 
 async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, vieneDE) {
   try {
-
+   
     const resp = await httpService.put(urlResourceTurnosCambiarEstado, {
       IDTurno,
       idestado,
@@ -141,12 +162,14 @@ async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, 
 
 async function BuscarPorProfesionalFecha(IDProf, Fecha) {
 
+
   const resp = await httpService.get(urlResource, {
     params: {
       IDProf,
       Fecha
     },
   });
+ 
   return resp.data;
 }
 
@@ -176,7 +199,7 @@ async function GrabarTurnoPaciente(IDTurno, IDPac, IDOS, Obs, IDUsuario) {
 
 async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idestado, pagina, cantidadPorPagina) {
   try {
-
+   
     const resp = await httpService.get(urlResourceTurnosConsultasPorFecha, {
       params: {
         fechadesde,
@@ -195,6 +218,63 @@ async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idest
 }
 
 
+async function TurnosLibresDelMes(idprofesional, fechadesde, fechahasta, pagina, cantidadPorPagina) {
+  try {
+
+      
+    const resp = await httpService.get(urlResourceTurnosLibresFechaMes 
+, {
+      params: {
+        idprofesional,
+        fechadesde,
+        fechahasta,
+        pagina,
+        cantidadPorPagina
+      }
+    });
+ 
+    return resp.data;
+  } catch (error) {
+    console.error('Error en TurnosConsultaPorFecha:', error);
+    return null; // o lanzar error si querés que lo maneje el componente
+  }
+}
+
+
+
+async function enviarTurnosProfesionalpoFecha(turnos) {
+  try {
+   
+    await httpService.post(urlResourceMailTurnosProfesional, {
+           turnos
+     
+    });
+   
+  } catch (error) {
+    console.error('Error al enviar el mail al profesional:', error.response?.data || error.message);
+  }
+}
+
+async function GrabarSobreturnoPaciente(idprofesional, idpaciente, idobrasocial, fecha, observaciones, idusuario) {
+ 
+
+  try {
+    const response = await httpService.post(urlResourceSobreturnoCrear,{
+      idprofesional,
+      idpaciente,
+      idobrasocial,
+      fecha,
+      observaciones,
+      idusuario 
+    });
+    console.log('Turno registrado correctamente:', response.data);
+    return response.data; // útil si el llamador necesita saber el resultado
+  } catch (error) {
+    const mensajeError = error.response?.data?.message || error.message || 'Error desconocido';
+    console.error('Error al registrar el turno:', mensajeError);
+    throw new Error(mensajeError); // importante si querés que quien llama pueda reaccionar
+  }
+}
 
 
 export const turnosService = {
@@ -209,4 +289,8 @@ export const turnosService = {
   Agendasemanal_FechasAgrupadas,
   TurnosConsultaPorFecha,
   TurnoID,
+  TurnoLibreID,
+  enviarTurnosProfesionalpoFecha,
+  GrabarSobreturnoPaciente,
+  TurnosLibresDelMes
   };

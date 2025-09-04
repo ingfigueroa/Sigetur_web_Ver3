@@ -5,6 +5,7 @@ const urlResourceProfesional = urlServidor + "/profesionales";
 const urlResourceProfesionalProfesionID = urlServidor + "/profesionalesProfesionid";
 const urlResourceProfesionalHorarios = urlServidor + "/profesionaleshorarios";
 const urlResourceProfesionalID = urlServidor + "/profesionalid"; 
+const urlResourceProfesionalDarBaja = urlServidor + "/profesional/baja";
 
 const urlResourcePacientes = urlServidor + "/pacientes";
 const urlResourcePacientesAdd = urlServidor + "/pacienteadd";
@@ -22,6 +23,7 @@ const urlResourceEstado = urlServidor + "/estados"
 //TURNOS
 const urlResourceTurnos = urlServidor + "/turnos";
 const urlResourceTurnosPasaraPendiente = urlServidor + "/turnos/pasarapendiente"
+const urlResourceSobreturnoPasaraPendiente = urlServidor + "/turnos/sobreturno"
 const urlResourceTurnosCrear = urlServidor + "/turnos/crearturnos"
 const urlResourceCambiarEstado = urlServidor + "/turnos/cambiarestado"
 const urlResourceEstadoPorTurnos = urlServidor + "/turnos/estadosporturno"
@@ -29,10 +31,15 @@ const urlResourceTurnosAnularPorPedidoProfesional = urlServidor + "/turnos/anula
 const urlResourceTurnosProfesionalDiaCancelados = urlServidor +  "/turnos/turnoprofesionaldiacancelado"
 const urlResourceAgSeTurProfFecha = urlServidor +  "/turnos/ageseturproffecha"
 const urlResourceConsultaTurnos = urlServidor + "/turnos/consultasporfecha"
+const urlResourceturnoslibresfechames = urlServidor + "/turnos/turnoslibresfechames"
 const urlResourceTurnoID = urlServidor + "/turnoid"
+const urlResourceTurnoLibreID = urlServidor + "/turnolibreid"
+const urlResourceMailTurnosProfesional = urlServidor + "/turnos/postEnviarTurnosManual"
+
 const urlResourceListadeEsperaAlta = urlServidor + "/listadeesperaalta"
 const urlResourceListadeesperaListar = urlServidor + "/listadeesperalistar"
 const urlResourceListadeEsperaBajaFila = urlServidor + "/listadeesperabajafila"
+const urlResourceListadeEsperaAsignarTurno = urlServidor + "/listadeesperaasignarturno"
 
 const urlResourceAgeSemTurProfFechaAgrupado = urlServidor + "/turnos/AgeSemTurProfFechaAgrupado"
 const urlResourceCapitulos = urlServidor + "/capitulos"
@@ -40,6 +47,13 @@ const urlResourcePrestaciones = urlServidor + "/prestaciones"
 const urlResourcePrestacion = urlServidor + "/prestacion"
 
 const urlResourceHorasListar = urlServidor + "/horaslistar"
+const urlResourceHorasMananaTardeNoche = urlServidor + "/horasmananatardenoche"
+
+const urlResourceMediosdePagos = urlServidor + "/mediosdepagos"
+
+const urlResourceIntervalosListar = urlServidor + "/intervaloslistar"
+
+const urlResourceDiasSemanaListar = urlServidor + "/diassemanalistar"
 
 
 
@@ -78,5 +92,15 @@ export const config = {
     urlResourceHorasListar,
     urlResourceListadeesperaListar,
     urlResourceListadeEsperaAlta,
-    urlResourceListadeEsperaBajaFila
+    urlResourceListadeEsperaBajaFila,
+    urlResourceTurnoLibreID,
+    urlResourceListadeEsperaAsignarTurno,
+    urlResourceMailTurnosProfesional,
+    urlResourceSobreturnoPasaraPendiente,
+    urlResourceMediosdePagos, 
+    urlResourceturnoslibresfechames,
+    urlResourceProfesionalDarBaja,
+    urlResourceHorasMananaTardeNoche,
+    urlResourceIntervalosListar,
+    urlResourceDiasSemanaListar
 }

@@ -13,8 +13,11 @@ import { obrassocialesService } from "/src/services/obrassociales.service";
 import MdlListarPrestaciones from "../prestaciones/mdllistarprestaciones";
 import { prestacionesService } from "../../services/prestaciones.service";
 
+import { mediosdepagosService } from "/src/services/mediosdepagos.service";
+
+
+
 const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
-  
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -25,15 +28,21 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
   const [inputValueCantidad, setInputValueCantidad] = useState("1");
   // Estado para almacenar el valor del porcentaje de entrada
 
+  const [result, setResult] = useState(0);
 
-  const [result, setResult] = useState(0); 
-  
   const [resultAcumulado, setResultAcumulado] = useState(0); // Estado para almacenar el resultado del cálculo
 
   const [selectedValue, setSelectedValue] = useState("");
+
+   const [selectedValueMdePago, setSelectedValueMdePago] = useState("");
+
   const [osPorPaciente, setOsPorPaciente] = useState([]);
 
+  const [mediosdePagos, setMediosdePagos] = useState([]);
+
   const [osElegida, setOSElegida] = useState("");
+
+  const [mdePagoElegido, setMdePagolegido] = useState("");
 
   const [idPrestacion, setIDPrestacion] = useState("");
   const [idprofesion, setIDProfesion] = useState("");
@@ -60,48 +69,36 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
   };
 
   const recibirDatoDelHijo = (datoRecibido) => {
-   
     setIDPrestacion(datoRecibido);
 
     BuscarPrestacion(datoRecibido);
   };
 
-  useEffect(() => {
-    
-    if (fila && fila.IDPaciente) {
-      BuscarosPorPaciente(fila.IDPaciente);
-      setIDProfesion(fila.idestado) 
-     
-    }
-  }, [fila]);
-
-  
-  useEffect(() => {
-   
-    setOSElegida("PARTICULAR")
-  }, [setOSElegida]);
-
-  const handleDropdownChange = (eventKey) => {
+  const handleDropdownChangeObrasSociales = (eventKey) => {
     setSelectedValue(eventKey);
     setOSElegida(eventKey);
   };
 
+  
+  const handleDropdownChangeMediosdePagos = (eventKey) => {
+    setSelectedValueMdePago(eventKey);
+    setMdePagolegido(eventKey);
+  };
+
   const BuscarPrestacion = async (idprestacion) => {
     try {
-      
       const data = await prestacionesService.BuscarPrestacion(idprestacion);
-     
+
       // Verifica la estructura de los datos
       setPrestacion(data); // Establece el estado con los datos obtenidos
       if (data && data.length > 0) {
-        setCodigoCapitulo(data[0].idcapitulo)
+        setCodigoCapitulo(data[0].idcapitulo);
         setNombreCapitulo(data[0].capitulo);
-        
+
         setCodigoPrestacion(data[0].codigo);
-        
+
         setSubCodigoPrestacion(data[0].SubCodigo);
         setNombrePrestacion(data[0].prestacion);
-
       } else {
         console.error("No se encontraron datos en la respuesta");
       }
@@ -118,6 +115,22 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
       console.error("Error fetching data:", error);
     }
   };
+/* 
+  const BuscarMediosdePago = async () => {
+    try {
+      const data = await mediosdepagosService.getBuscar();
+      setMediosdePagos(data); // Establece el estado con los datos obtenidos
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }; */
+
+function BuscarMediosdePago() {
+  mediosdepagosService.getBuscar()
+    .then(data => setMediosdePagos(data))
+    .catch(error => console.error("Error fetching data:", error));
+}
+
 
   // Función para manejar el cambio en el control de entrada
   const handleInputChange = (e) => {
@@ -138,19 +151,14 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
 
   const calculateTotalaPagar = (nuevoValor) => {
     // Convierte el valor del formulario de entrada a número
-    const x  = parseFloat(resultAcumulado)
+    const x = parseFloat(resultAcumulado);
 
-    const y = parseFloat(nuevoValor)
-
+    const y = parseFloat(nuevoValor);
 
     const acumulado = parseFloat(x) + parseFloat(y);
 
-  
     setResultAcumulado(acumulado); // Actualiza el estado con el resultado del cálculo
- 
-
   };
-
 
   // Función para realizar el cálculo
   const calculateResult = () => {
@@ -165,26 +173,23 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
 
   //Función que agrega la prestacion en la tabla
   const limpiarAgregarPrestacion = () => {
-
-      setCodigoCapitulo("")
-     setCodigoPrestacion("")
-     setNombrePrestacion("")
-     setInputValueCantidad(1)
-      setCosto("")
-      setSubCodigoPrestacion("")
-      setNombreCapitulo("")
-     
-  
+    setCodigoCapitulo("");
+    setCodigoPrestacion("");
+    setNombrePrestacion("");
+    setInputValueCantidad(1);
+    setCosto("");
+    setSubCodigoPrestacion("");
+    setNombreCapitulo("");
   };
   const handleEliminarPrestacion = (codigo) => {
     // Filtrar la prestación eliminada
     const nuevasPrestaciones = prestaciones.filter(
       (prestacion) => prestacion.codigo !== codigo
     );
-  
+
     // Actualizar el estado de prestaciones
     setPrestaciones(nuevasPrestaciones);
-  /* 
+    /* 
     // Calcular el nuevo costo total
     const nuevoCostoTotal = nuevasPrestaciones.reduce(
       (total, prestacion) => total + parseFloat(prestacion.subtotal || 0 ), 0
@@ -192,18 +197,17 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
     );
      */
     const nuevoCostoTotal = nuevasPrestaciones.reduce(
-      (total, prestacion) => total + parseFloat(prestacion.subtotal.replace(/\./g, '').replace(',', '.')),
+      (total, prestacion) =>
+        total +
+        parseFloat(prestacion.subtotal.replace(/\./g, "").replace(",", ".")),
       0
     );
-    
+
     // Actualizar el estado del costo total si lo tienes
     setResultAcumulado(nuevoCostoTotal);
   };
-  
-  
 
   const handleAgregarPrestacion = () => {
-    
     if (!codigoCapitulo) {
       alert("El código de capítulo es obligatorio.");
       return;
@@ -236,36 +240,51 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
       alert("El costo debe ser un número válido.");
       return;
     }
-   
-   
-   
 
     const nuevoSubtotal = parseFloat(costo) * inputValueCantidad;
-  
+
     // Formatea el costo y el subtotal con dos decimales
-    const costoFormateado = parseFloat(costo).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const subtotalFormateado = nuevoSubtotal.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  
+    const costoFormateado = parseFloat(costo).toLocaleString("es-AR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    const subtotalFormateado = nuevoSubtotal.toLocaleString("es-AR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
     const nuevaPrestacion = {
       codigo: codigoCapitulo,
       capitulo: nombreCapitulo,
       codigopres: codigoPrestacion,
-      subcodigo:subcodigoPrestacion,
+      subcodigo: subcodigoPrestacion,
       nombre: nombrePrestacion,
       cantidad: inputValueCantidad,
       costo: costoFormateado, // Usamos el costo formateado
       subtotal: subtotalFormateado, // Usamos el subtotal formateado
-
     };
-  
+
     // Actualiza el array de prestaciones
     setPrestaciones([...prestaciones, nuevaPrestacion]);
     calculateTotalaPagar(nuevoSubtotal);
-  
+
     limpiarAgregarPrestacion();
   };
+
   
-  
+  useEffect(() => {
+    if (fila && fila.IDPaciente) {
+      BuscarosPorPaciente(fila.IDPaciente);
+      setIDProfesion(fila.idestado);
+      BuscarMediosdePago();
+    }
+  }, [fila]);
+
+  useEffect(() => {
+    setOSElegida("PARTICULAR");
+  }, [setOSElegida]);
+
+
   return (
     <>
       <Modal show={show} onHide={handleClose} size="lg" style={{ top: "" }}>
@@ -287,7 +306,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                   id="dropdown-basic-button"
                   title="Elija la obra social:"
                   style={{ color: "black" }}
-                  onSelect={handleDropdownChange}
+                  onSelect={handleDropdownChangeObrasSociales}
                 >
                   {osPorPaciente.length > 0 ? (
                     osPorPaciente.map((os) => (
@@ -331,30 +350,27 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
             >
               <div style={{ backgroundColor: "white", padding: "5px 5px" }}>
                 <div style={{ display: "flex", marginBottom: "5px" }}>
-                  <h6 style={{ marginRight: "5px"}}>
-                    Buscar prestación:
-                  </h6>
+                  <h6 style={{ marginRight: "5px" }}>Buscar prestación:</h6>
 
                   <Button
                     title="Buscar por capitulo"
                     variant="outline-secondary"
                     id="button-addon1"
                     size="sm"
-                    style={{ height: "28px", marginTop:"10px" }}
+                    style={{ height: "28px", marginTop: "10px" }}
                     onClick={openMdlListarPrestaciones}
                   >
                     <i class="fa-solid fa-magnifying-glass"></i>
                   </Button>
                 </div>
                 <InputGroup className="mb-3" size="sm">
-                 
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Capítulo:
                   </InputGroup.Text>
                   <Form.Control
-                  style={{ width:"60%" }}
+                    style={{ width: "60%" }}
                     aria-label="Ingresar nombres"
                     aria-describedby="basic-addon2"
                     type="text"
@@ -362,16 +378,15 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                     /*  onChange={(e) =>setPrestacion(e.target.value.toUpperCase())}*/
                     value={nombreCapitulo}
                   />
-                  
                 </InputGroup>
                 <InputGroup className="mb-3" size="sm">
-                <InputGroup.Text
+                  <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Código:
                   </InputGroup.Text>
                   <Form.Control
-                  style={{ width:"10%" }}
+                    style={{ width: "10%" }}
                     placeholder=""
                     aria-label="Ingresar apellido"
                     aria-describedby="basic-addon2"
@@ -386,7 +401,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                     Subcódigo:
                   </InputGroup.Text>
                   <Form.Control
-                   style={{  width:"10%" }}
+                    style={{ width: "10%" }}
                     placeholder=""
                     aria-label="Ingresar apellido"
                     aria-describedby="basic-addon2"
@@ -401,7 +416,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                     Prestación:
                   </InputGroup.Text>
                   <Form.Control
-                   style={{ width:"40%" }}
+                    style={{ width: "40%" }}
                     aria-label="Ingresar nombres"
                     aria-describedby="basic-addon2"
                     type="text"
@@ -438,7 +453,7 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                     aria-label="Ingresar precio"
                     aria-describedby="basic-addon2"
                     type="text"
-                    onChange={(e) =>setCosto(e.target.value)}
+                    onChange={(e) => setCosto(e.target.value)}
                     value={costo}
                   />
                   <Button
@@ -459,8 +474,6 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                 <Table bordered hover size="sm" style={{ fontSize: "12px" }}>
                   <thead>
                     <tr className="personalizarfila h-50">
-                   
-
                       <th
                         style={{ backgroundColor: "rgb(136, 161, 184)" }}
                         key="101"
@@ -468,13 +481,19 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                         Capítulo
                       </th>
                       <th
-                        style={{ backgroundColor: "rgb(136, 161, 184)", textAlign: "center" }}
+                        style={{
+                          backgroundColor: "rgb(136, 161, 184)",
+                          textAlign: "center",
+                        }}
                         key="100"
                       >
                         Código
                       </th>
                       <th
-                        style={{ backgroundColor: "rgb(136, 161, 184)",  textAlign: "center" }}
+                        style={{
+                          backgroundColor: "rgb(136, 161, 184)",
+                          textAlign: "center",
+                        }}
                         key="102"
                       >
                         Subcódigo
@@ -531,12 +550,13 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                   <tbody>
                     {prestaciones.map((prestacion, index) => (
                       <tr key={index}>
-                      
-     
-    
                         <td>{prestacion.capitulo}</td>
-                        <td style={{ textAlign: "center" }}>{prestacion.codigopres}</td>
-                        <td style={{ textAlign: "center" }}>{prestacion.subcodigo}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {prestacion.codigopres}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {prestacion.subcodigo}
+                        </td>
                         <td>{prestacion.nombre}</td>
                         <td style={{ textAlign: "center" }}>
                           {prestacion.cantidad}
@@ -551,8 +571,9 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                           <button
                             title="Anular prestación"
                             className="btn btn-sm btn-light btn-danger"
-                            onClick={() => handleEliminarPrestacion(prestacion.codigo)}
-                            
+                            onClick={() =>
+                              handleEliminarPrestacion(prestacion.codigo)
+                            }
                           >
                             <i className="fa-solid fa-trash"></i>
                           </button>
@@ -564,8 +585,6 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
               </div>
               <div>
                 <InputGroup className="mb-3" size="sm">
-                 
-               
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
@@ -583,8 +602,36 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                 </InputGroup>
               </div>
               <div style={{ backgroundColor: "white", padding: "5px 5px" }}>
-                <div style={{ display: "flex", marginBottom: "5px" }}>
-                  <h6 style={{ marginRight: "10px", marginBottom: "5px" }}>
+                {/* <div style={{ display: "flex", marginBottom: "5px" }}> */}
+                  <InputGroup className="mb-3" size="sm">
+                    <DropdownButton
+                      id="dropdown-basic-button"
+                      title="Elija el medio de pago:"
+                      style={{ color: "black" }}
+                      onSelect={handleDropdownChangeMediosdePagos}
+                    >
+                      {mediosdePagos.length > 0 ? (
+                        mediosdePagos.map((mp) => (
+                          <Dropdown.Item key={mp.id} eventKey={mp.descripcion}>
+                            {mp.descripcion}
+                          </Dropdown.Item>
+                        ))
+                      ) : (
+                        <Dropdown.Item disabled>
+                          No hay medios de pagos disponibles
+                        </Dropdown.Item>
+                      )}
+                    </DropdownButton>
+                    <Form.Control
+                      type="text"
+                      value={mdePagoElegido}
+                      aria-label="Example text with button addon"
+                      aria-describedby="basic-addon1"
+                      style={{ backgroundColor: "#d5dbdb" }}
+                      readonly
+                    />
+                  </InputGroup>
+                  {/*  <h6 style={{ marginRight: "10px", marginBottom: "5px" }}>
                     Definir las opciones de pago:{" "}
                   </h6>
                   <Button
@@ -594,8 +641,8 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
                     height="22px"
                   >
                     <i class="fa-solid fa-plus"></i>
-                  </Button>
-                </div>
+                  </Button> */}
+                {/* </div> */}
                 <div>
                   <Table bordered hover size="sm" style={{ fontSize: "12px" }}>
                     <thead>
@@ -760,7 +807,6 @@ const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
           show={openMdlListarPrestaciones}
           handleClose={closeMdlListarPrestaciones}
           enviarAlPadre={recibirDatoDelHijo}
-          
           idprofesion={fila.idservicio}
         />
       )}

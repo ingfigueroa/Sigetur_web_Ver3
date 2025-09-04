@@ -13,6 +13,7 @@ import "/src/css/tablapizaturnos.css";
 import MdlAltaTurno from "./mdlaltaturno";
 import MdlTurnoDetalle from "./mdlturnosdetalle_vers1";
 import Mdlanularturno from "./mdlanularturno";
+import MdlAltaSobreturno from "./mdlaltasobreturno";
 import Mdlanulartodoslosturnos from "./mdlanulartodoslosturnos";
 import Mdlturnoregistrarcobro from "./mdlturnoregistrarcobro";
 import MdlCambiarEstado from "../modales/mdlCambiarEstado";
@@ -22,19 +23,24 @@ import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
 import Mdllistaespera from "../mdlListaEspera";
 
 import MdlAnular from "../modales/mdlAnular";
-import MdlMensaje from "../modales/mdlMensaje";
+import MdlMensaje from "../modales/MdlMensaje";
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import { turnosService } from "/src/services/turnos.service";
 import { profesionalesService } from "/src/services/profesional.service";
 
 function tablapizarradeturnos() {
+  const [accionConfirmada, setAccionConfirmada] = useState(null);
+
   const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
   const [mdlSiNoMensaje, setModalSiNoMensaje] = useState(null);
   const [mdlcambiarestado, setCambiarEstado] = useState(null);
   const [mdlcambiarestadoMensaje, setCambiarEstadoMensaje] = useState("");
+  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
 
   const [mdlAnularTurno, setModalAnularTurno] = useState(false);
-  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] = useState(false);
+  const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] =
+    useState(false);
   const [mdlModalMostarMensaje, setModalMostrarMensaje] = useState(false);
   const [mdlMensaje, setModalMensaje] = useState(false);
   const [btnAnular, setBtnAnular] = useState(true);
@@ -43,7 +49,7 @@ function tablapizarradeturnos() {
   const [mdlListaEspera, setModalListaEspera] = useState(false);
   const [mdlListaProfesionales, setModalListarProfesionales] = useState(false);
 
-  const [Items, setItems] = useState(null);
+  const [Items, setItems] = useState([]);
   const [Item, setItem] = useState(null);
 
   const [IDProfesional, SetIDProfesional] = useState(null);
@@ -67,8 +73,11 @@ function tablapizarradeturnos() {
 
   const [mdlRegistrarTurno, setModalRegistrarTurno] = useState(false);
 
+  const [mdlRegistrarSobreturno, setModalRegistrarSobreturno] = useState(false);
+
   const [apeyNom, setapeyNom] = useState(null);
   const [profesion, setProfesion] = useState(null);
+  const [mailProfesional, setMailProfesional] = useState(null);
 
   const [turnos, setTurnos] = useState([]);
 
@@ -80,6 +89,18 @@ function tablapizarradeturnos() {
 
   const [descripcion, setDescripcion] = useState("");
 
+  const [modalTitulo, setModalTitulo] = useState();
+  const [modalCuerpo, setModalCuerpo] = useState();
+   const [turnosAnulados, setTurnosAnulados] = useState(false);
+
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+  };
+
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
   };
@@ -89,6 +110,11 @@ function tablapizarradeturnos() {
   };
 
   const openMdlListaEspera = () => {
+      if(turnosAnulados){
+      setModalMensaje("Los turnos del día están anulados. No se puede REGISTRAR en la LISTA DE ESPERA.");
+      openMdlMensaje();
+      return;
+    }
     setModalListaEspera(true);
   };
 
@@ -109,8 +135,8 @@ function tablapizarradeturnos() {
   const openMdlTurnoDetalle = (fila) => {
     setItem(fila);
 
-    setIDTurno(fila.idTurno)
-  
+    setIDTurno(fila.idTurno);
+
     setModalTurnoDetalle(true);
   };
 
@@ -140,7 +166,7 @@ function tablapizarradeturnos() {
 
   const openMdlMensaje = () => {
     // setModalSiNoMensaje("¿Está seguro de anular el turno?")
-    
+
     setModalMostrarMensaje(true);
   };
 
@@ -215,6 +241,25 @@ function tablapizarradeturnos() {
     BuscarTurnosProfesionalFecha(IDProfesional, Fecha);
   };
 
+  const openMdlRegistrarSobreturno = (fila) => {
+
+  if(turnosAnulados){
+      setModalMensaje("Los turnos del día están anulados. No se puede REGISTRAR un SOBRETURNO.");
+      openMdlMensaje();
+      return;
+    }
+
+    setFilaSeleccionada(fila);
+
+    setModalRegistrarSobreturno(true);
+  };
+
+  const closeMdlRegistrarSobreturno = () => {
+    setModalRegistrarSobreturno(false);
+
+    BuscarTurnosProfesionalFecha(IDProfesional, Fecha);
+  };
+
   const recibirDatoDelHijo = (datoRecibido) => {
     SetIDProfesional(datoRecibido);
 
@@ -252,10 +297,11 @@ function tablapizarradeturnos() {
     return format(fechaActualParseada, "yyyy-MM-dd");
   };
 
-  const handleFechaChange = (e) => {
-    SetFecha(e.target.value);
+  const handleFechaChange = (input) => {
+    const valor = typeof input === "string" ? input : input.target.value;
 
-    const fechaISO = e.target.value;
+    SetFecha(valor);
+    const fechaISO = valor;
 
     // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
     const fechaObj = new Date(fechaISO);
@@ -303,27 +349,6 @@ function tablapizarradeturnos() {
     return false; // En caso de que idprofesional no sea válido
   }
 
-  async function BuscarTurnosPorProfesionalPorFecha(
-    idusuario,
-    idprofesional,
-    fecha
-  ) {
-    // Convierte la fecha actual a formato corto
-
-    if (fecha >= fechaActual) {
-      console.log(idprofesional);
-      if (idprofesional > 0) {
-        const data = await turnosService.CrearTurnosPorProfesionalPorFecha(
-          idusuario,
-          idprofesional,
-          fecha
-        );
-        setTurnos(data);
-      }
-    }
-    BuscarTurnosProfesionalFecha(idprofesional, fecha);
-  }
-
   async function BuscarTurnosProfesionalFecha(idprofesional, fecha) {
     if (idprofesional > 0) {
       const data = await turnosService.BuscarPorProfesionalFecha(
@@ -333,11 +358,12 @@ function tablapizarradeturnos() {
 
       if (data) {
         const cantRegistros = data.length;
+        console.log(cantRegistros)
         setCantidadTurnos(cantRegistros);
 
         if (cantRegistros == 0) {
           limpiarTabla();
-
+          console.log("Pasa por dia anulados");
           const hayTurnosAnulados = await TurnosProfesionalDiaAnulados(
             idprofesional,
             fecha
@@ -354,14 +380,24 @@ function tablapizarradeturnos() {
 
           openMdlMensaje();
         } else {
-          setItems(data); // Asignar los datos a `Items`
-      
+          setItems(data);
           setTurnos(data);
         }
-        // Asegúrate de que `Apellido` y `Nombres` existen en `data`
+        //setapeyNom(`${data[0].Apellido}, ${data[0].Nombres}`); // Concatenar apellido y nombres
+
+        setProfesion(data[0].especialidad);
+        // setMailProfesional(data[0].correo);
+
+        return data; // ✅ ← Retornamos data correctamente
+      } else {
+        return []; // ✅ Por si viene null
       }
+    } else {
+      return []; // ✅ Por si IDProfesional no es válido
     }
   }
+
+  // Asegúrate de que `Apellido` y `Nombres` existen en `data`
 
   async function BuscarProfesionalyProfesion(idprofesional) {
     const data = await profesionalesService.BuscarId(idprofesional);
@@ -373,6 +409,35 @@ function tablapizarradeturnos() {
       if (data[0].Apellido && data[0].Nombres) {
         setapeyNom(`${data[0].Apellido}, ${data[0].Nombres}`); // Concatenar apellido y nombres
         setProfesion(data[0].tprofesion);
+      } else {
+        console.error(
+          "Los datos del profesional no contienen Apellido o Nombres."
+        );
+      }
+
+      if (data[0].especialidad) {
+        setProfesion(data[0].especialidad); // Asignar especialidad
+        SetIDProfesion(data[0].idtipoprofesion);
+      }
+    }
+    setItems([]);
+    //generar array de las páginas para mostrar en select del paginador
+  }
+
+  async function mailTurnosProfesionalporFecha() {
+    const data = await turnosService.enviarTurnosProfesionalpoFecha(
+      mailProfesional,
+      apeyNom,
+      profesion,
+      Fecha,
+      Items
+    );
+
+    if (data) {
+      setItems(data); // Asignar los datos a `Items`
+
+      // Asegúrate de que `Apellido` y `Nombres` existen en `data`
+      if (data[0].Apellido && data[0].Nombres) {
       } else {
         console.error(
           "Los datos del profesional no contienen Apellido o Nombres."
@@ -403,13 +468,15 @@ function tablapizarradeturnos() {
 
   useEffect(() => {
     const esFechaMayor = Fecha > fechaActual;
-    const esFechaIgual = (Fecha === fechaActual);
+    const esFechaIgual = Fecha === fechaActual;
     const esHoraValida = HoraTurno > horaActual;
-  
+
     if (esFechaMayor) {
       return;
     } else {
       if (esFechaIgual) {
+        if (Item.estado == "PENDIENTE") return;
+
         if (esHoraValida) return;
 
         setModalMensaje(
@@ -423,7 +490,146 @@ function tablapizarradeturnos() {
 
   useEffect(() => {
     document.title = "Si.Ge.Tur. - Pizarra de turnos";
+    
+    SetFecha(fechaActual);
+    
+    handleFechaChange(fechaActual);
   }, []);
+
+  const mdlSiNo = async (respuesta) => {
+    if (respuesta) {
+      if (accionConfirmada === 0) {
+        if (IDProfesional > 0) {
+          const data = await turnosService.CrearTurnosPorProfesionalPorFecha(
+            idusuario,
+            IDProfesional,
+            Fecha
+          );
+          setTurnos(data);
+        }
+
+        BuscarTurnosProfesionalFecha(IDProfesional, Fecha);
+      } else if (accionConfirmada === 1) {
+        console.log("pasa por accion cofirmada");
+        console.log(Fecha);
+        console.log(Items[0].apenomprof);
+
+        console.log(Items);
+        console.log(Items[0].servicio);
+        const data = await turnosService.enviarTurnosProfesionalpoFecha(Items);
+        console.log("lo Habrá mandado");
+      }
+    }
+  };
+
+  const anularTurno = () => {
+    if(turnosAnulados){
+      setModalMensaje("Los turnos del día ya se anularon. No se puede ANULAR LOS TURNOS.");
+      openMdlMensaje();
+      return;
+    }
+
+    if (Fecha <= fechaActual) {
+      setModalMensaje("Fecha expirada. No se puede ANULAR LOS TURNOS.");
+      openMdlMensaje();
+      return;
+    }
+    if (Items.length > 0) {
+      setBtnAnular(true);
+      openMdlAnularTodosLosTurnos();
+    }
+  };
+
+  const enviarTurnosProfesional = () => {
+  
+    if(turnosAnulados){
+      setModalMensaje("Los turnos del día ya se anularon. No se puede enviar MAIL al PROFESIONAL.");
+      openMdlMensaje();
+      return;
+    }
+
+    setModalTitulo("Enviar turnos por correo electrónico.");
+    setModalCuerpo(
+      "¿Desea enviar la grilla de turnos por correo electrónico al profesional?"
+    );
+    setAccionConfirmada(1);
+    setShowMDLEstaSeguro(true);
+  };
+  /* 
+  console.log("Items:", Items, "Length:", Items?.length);
+
+  console.log("Fecha:", Fecha, "fechaActual:", fechaActual);
+console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
+  const procesar = async () => {
+    limpiarTabla();
+
+    if (IDProfesional > 0) {
+      const turnosencontrados = await turnosService.BuscarPorProfesionalFecha(
+        IDProfesional,
+        Fecha
+      );
+      setCantidadTurnos(turnosencontrados.length)
+      if (turnosencontrados && turnosencontrados.length > 0) {
+       
+        setapeyNom(turnosencontrados[0].apenomprof);
+      
+        setProfesion(turnosencontrados.servicio);
+        setMailProfesional(turnosencontrados.email);
+
+        setItems(turnosencontrados);
+      }
+
+      /*  if (turnosencontrados.length === 0){
+         setModalMensaje(
+            "Sin registros. No hay turnos para ese profesional en la fecha elegida. El profesional puede que no haya atendido este día."
+          );
+          openMdlMensaje();
+          return;
+      } */
+
+      const hayTurnosAnulados = await TurnosProfesionalDiaAnulados(
+        IDProfesional,
+        Fecha
+      );
+      setTurnosAnulados(hayTurnosAnulados)
+      if (Fecha < fechaActual) {
+        if (hayTurnosAnulados) {
+          setModalMensaje(
+            "Por PEDIDO DEL PROFESIONAL, se CANCELARON LOS TURNOS para esta fecha."
+          );
+          turnosencontrados([]);
+          openMdlMensaje();
+        } else if (!turnosencontrados || turnosencontrados.length === 0) {
+          console.log("No Habia turnos");
+          setModalMensaje(
+            "Sin registros. No hay turnos para ese profesional en la fecha elegida. El profesional puede que no haya atendido este día."
+          );
+          openMdlMensaje();
+        }
+      } else {
+        if (hayTurnosAnulados) {
+          setModalMensaje(
+            "Por PEDIDO DEL PROFESIONAL, se CANCELARON LOS TURNOS para esta fecha."
+          );
+          openMdlMensaje();
+
+          return;
+        }
+
+        //console.log("Fecha turno mayor a fecha actual");
+
+        if (turnosencontrados && turnosencontrados.length === 0) {
+          setModalTitulo("Turnos no generados");
+          setModalCuerpo(
+            "¿Desea generar turnos para esta fecha para el profesional elegido?"
+          );
+          setAccionConfirmada(0);
+          setShowMDLEstaSeguro(true);
+        } else {
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -450,47 +656,38 @@ function tablapizarradeturnos() {
             <button
               title="Anular todos los turnos del día."
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              disabled={turnos.length == 0 || Fecha <= fechaActual}
+              disabled={Items.length == 0}
+              /* style={{ display: "none" }} */
               onClick={(event) => {
                 event.preventDefault();
                 setDescripcion(event.target.buttonText);
-                if (Fecha <= fechaActual) {
-                  setModalMensaje(
-                    "Fecha expirada. No se puede ANULAR LOS TURNOS."
-                  );
-                  openMdlMensaje();
-                  return;
-                }
-                if (Items.length == 0) {
-                  return;
-                } else {
-                  setBtnAnular(true);
-                  openMdlAnularTodosLosTurnos();
-                }
+                anularTurno();
               }}
             >
               <i class="fa-solid fa-minus"></i>
             </button>
+          
             <button
-              title="Email a todos los turnos a toda la grilla"
+              title="Email al profesional de los turnos de la grilla"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              disabled={Items.length == 0}
+              onClick={(event) => {
+                event.preventDefault();
+                enviarTurnosProfesional();
+              }}
             >
-              <i class="fa-solid fa-at"></i>
+             <i class="fa-solid fa-envelope"></i>
             </button>
-          {/*   <button
-              title="Agenda Semanal"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-            >
-              <i class="fa-solid fa-calendar-days"></i>
-            </button>
- */}
+          
             <button
               title="Horarios del profesional"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              disabled={Items.length == 0}
+
               onClick={(event) => {
                 event.preventDefault();
                 setDescripcion(event.currentTarget.textContent.trim());
-                openMdlHoraProfe;
+                openMdlHoraProfe();
               }}
             >
               <i class="fa-solid fa-clock"></i>
@@ -498,9 +695,27 @@ function tablapizarradeturnos() {
             <button
               title="Lista de espera"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+               disabled={Items.length == 0}
               onClick={openMdlListaEspera}
             >
               <i class="fa-solid fa-book-open-reader"></i>
+            </button>
+
+            <button
+              title="Registrar un sobreturno"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              disabled={Items.length == 0}
+              onClick={openMdlRegistrarSobreturno}
+            >
+              <i class="fa-solid fa-arrow-turn-down"></i>
+            </button>
+              <button
+              title="Dashboard"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              disabled="true"
+              // style={{ display: "none" }}
+            >
+             <i class="fa-solid fa-chart-pie"></i>
             </button>
             <h5 style={{ color: "black" }}>{descripcion}</h5>
           </div>
@@ -655,14 +870,17 @@ function tablapizarradeturnos() {
                 textAlign: "center",
                 height: "30px",
               }}
-              onClick={(event) => {
+              /* (event) => {
                 event.preventDefault();
 
                 BuscarTurnosPorProfesionalPorFecha(
                   idusuario,
                   IDProfesional,
                   Fecha
-                );
+                ); */
+              onClick={(event) => {
+                event.preventDefault();
+                procesar();
               }}
             >
               Burcar Turnos
@@ -694,20 +912,19 @@ function tablapizarradeturnos() {
                 <th
                   style={{
                     textAlign: "center",
-                    
+
                     width: "200px",
                   }}
                 >
                   Estado
                 </th>
 
-                <th style={{textAlign: "center"}} key="1">
+                <th style={{ textAlign: "center" }} key="1">
                   Hora
                 </th>
 
                 <th
                   style={{
-                   
                     textAlign: "left",
                   }}
                   key="2"
@@ -717,21 +934,17 @@ function tablapizarradeturnos() {
                 <th
                   style={{
                     textAlign: "center",
-                   
                   }}
                   key="3"
                 >
                   DNI
                 </th>
 
-                <th  key="4">
-                  Obra social
-                </th>
+                <th key="4">Obra social</th>
 
                 <th
                   style={{
                     textAlign: "center",
-                
                   }}
                   key="8"
                 >
@@ -743,6 +956,10 @@ function tablapizarradeturnos() {
               {Items &&
                 Items.map((item) => {
                   // Formatear el campo "Descripcion" como hora
+                  const fechaTurnoCompleta = new Date(
+                    `${Fecha}T${item.hora}:00`
+                  );
+                  const ahora = new Date();
 
                   let buttonVariant;
                   let buttonText;
@@ -752,12 +969,19 @@ function tablapizarradeturnos() {
                   switch (item.sigla) {
                     case "ANU":
                       buttonVariant = "dark";
+                      isButtonDisabled = true;
                       buttonText = item.estado;
                       break;
                     case "PEN":
-                      buttonVariant = "warning";
-                      buttonText = item.estado;
-                      break;
+                      if (!item.sobre) {
+                        buttonVariant = "warning";
+                        buttonText = item.estado;
+                        break;
+                      } else {
+                        buttonVariant = "info";
+                        buttonText = "SOBRETURNO";
+                        break;
+                      }
                     case "PRE":
                       buttonVariant = "primary";
                       buttonText = item.estado;
@@ -790,7 +1014,8 @@ function tablapizarradeturnos() {
                       break;
 
                     case "LIB":
-                      if (Fecha < fechaActual) {
+                 
+                      if (ahora >= fechaTurnoCompleta) {
                         isButtonDisabled = true;
                       }
                       buttonVariant = "success";
@@ -806,7 +1031,7 @@ function tablapizarradeturnos() {
                           variant={buttonVariant}
                           disabled={isButtonDisabled}
                           size="sm"
-                          style={{ width: "70%", textAlign: "center" }}
+                          style={{ width: "60%", textAlign: "center", fontSize: "10px"  }}
                           onClick={(event) => {
                             event.preventDefault();
 
@@ -865,6 +1090,7 @@ function tablapizarradeturnos() {
                         {item.os}
                       </td>
                       <td style={{ textAlign: "center", fontSize: "10px" }}>
+                       
                         {item.estado == "PENDIENTE" && (
                           <button
                             title="Anular turno"
@@ -877,20 +1103,68 @@ function tablapizarradeturnos() {
                           >
                             <i className="fa-solid fa-trash"></i>
                           </button>
+                          
+                          
                         )}
-                        {item.estado !== "LIBRE" && (
+
+                          {item.estado == "PENDIENTE" && (
                           <button
-                            title="Detalle del turno"
+                            title="Registrar cobro"
                             className="btn btn-sm btn-light btn-success"
+                            variant="outline-secondary"
                             onClick={(event) => {
                               event.preventDefault();
 
-                              openMdlTurnoDetalle(item);
+                              openMdlTurnoRegistrarCobro(item);
                             }}
                           >
-                            <i className="fa-solid fa-file-invoice-dollar"></i>
+                            <i className="fa-solid fa-dollar-sign"></i>
                           </button>
+                          
+                          
                         )}
+
+                        {item.estado !== "LIBRE" &&
+                          item.estado !== "ANULADO" && (
+                            <button
+                              title="Detalle del turno"
+                              className="btn btn-sm btn-light btn-success"
+                              onClick={(event) => {
+                                event.preventDefault();
+
+                                openMdlTurnoDetalle(item);
+                              }}
+                            >
+                              <i className="fa-solid fa-file-invoice-dollar"></i>
+                            </button>
+                          )}
+                        {item.estado === "LIBRE" &&
+                          fechaTurnoCompleta >= ahora && (
+                            <button
+                              title="Copiar ID del turno"
+                              className="btn btn-sm btn-light btn-success"
+                              onClick={(event) => {
+                                event.preventDefault();
+
+                                // Copia el id al portapapeles
+                                navigator.clipboard
+                                  .writeText(item.idTurno)
+                                  .then(() => {
+                                    console.log("ID copiado:", item.idTurno);
+                                    // Opcional: mostrar feedback visual
+                                    alert(
+                                      "ID del turno copiado al portapapeles"
+                                    );
+                                  })
+                                  .catch((err) => {
+                                    console.error("Error al copiar:", err);
+                                  });
+                              }}
+                            >
+                              <i class="fa-solid fa-copy"></i>
+                            </button>
+                          )}
+
                         {item.estado == "PRESENTE NO COBRADO" && (
                           <button
                             title="Registrar cobro"
@@ -918,11 +1192,15 @@ function tablapizarradeturnos() {
         <MdlAltaTurno
           show={openMdlRegistrarTurno}
           handleClose={closeMdlRegistrarTurno}
-          fila={filaSeleccionada}
-          ApeyNom={apeyNom}
-          FechaTurno={Fecha}
-          profesion={profesion}
-          hora={HoraTurno}
+          fila={Item}
+        />
+      )}
+
+      {mdlRegistrarSobreturno && Items.length > 0 && (
+        <MdlAltaSobreturno
+          show={openMdlRegistrarSobreturno}
+          handleClose={closeMdlRegistrarSobreturno}
+          fila={Items[Items.length - 1]}
         />
       )}
 
@@ -930,9 +1208,7 @@ function tablapizarradeturnos() {
         <MdlTurnoDetalle
           show={openMdlTurnoDetalle}
           handleClose={CloseMdlTurnoDetalle}
-       
-          idturno={idTurno} 
-          
+          idturno={idTurno}
         />
       )}
 
@@ -945,7 +1221,7 @@ function tablapizarradeturnos() {
       )}
       {mdlHoraProfe && (
         <Mdlhorarioprofesional
-          show={openMdlHoraProfe}
+          show={setModalHoraProfe}
           handleClose={closeMdlHoraProfe}
           idprofesional={IDProfesional}
           fecha={fechaActual}
@@ -993,7 +1269,7 @@ function tablapizarradeturnos() {
           fecha={Fecha}
           idprofesional={IDProfesional}
           idusuario={idusuario}
-          apeynom={apeyNom}
+          apeynom={Items[0].apenomprof}
           vienede="pizarraturnos"
           observaciones="POR PEDIDO DEL PROFESIONAL, SE CANCELAN LOS TURNOS DE ESTE DÍA."
         />
@@ -1001,9 +1277,19 @@ function tablapizarradeturnos() {
 
       {mdlModalMostarMensaje && (
         <MdlMensaje
-          show={openMdlMensaje}
+          show={setModalMostrarMensaje}
           handleClose={closeMdlMensaje}
           modalMessage={mdlMensaje}
+        />
+      )}
+
+      {showMDLEstaSeguro && (
+        <MDLEstaSeguro
+          show={openMdlEstaSeguro}
+          handleClose={closeMdlEstaSeguro}
+          mensajetitulo={modalTitulo}
+          mensajecuerpo={modalCuerpo}
+          enviaralpadre={mdlSiNo}
         />
       )}
     </>

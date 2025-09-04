@@ -235,41 +235,7 @@ const registrarprofesional = ({ show, handleClose }) => {
           <div
             style={{ display: "grid", width: "100%", backgroundColor: "white" }}
           >
-            {/* <div
-              className="acomodarencabezadoprofesional"
-              style={{ background: "#D6EAF8" }}
-            >
-              <div
-                style={{ width: "70%", textAlign: "left", color: "black" }}
-              ></div>
-              <div style={{ width: "30%", textAlign: "right" }}>
-                <button
-                  title="Listar profesionales"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-calendar-days"></i>
-                </button>
-                <button
-                  title="Agenda Semanal"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-calendar-days"></i>
-                </button>
-
-                <button
-                  title="Horarios del profesional"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-clock"></i>
-                </button>
-                <button
-                  title="Lista de espera"
-                  className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                >
-                  <i class="fa-solid fa-book-open-reader"></i>
-                </button>
-              </div>
-            </div> */}
+         
             <div
               style={{
                 display: "flex",

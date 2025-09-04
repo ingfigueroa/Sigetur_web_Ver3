@@ -8,6 +8,7 @@ import httpService from "./http.service";
  const urlResource = config.urlResourceProfesional;
  const urlResourceID = config.urlResourceProfesionalID;
  const urlResourceProsefionalHorarios = config.urlResourceProfesionalHorarios;
+ const urlResourceProfesionalDarBaja = config.urlResourceProfesionalDarBaja
 
 
 
@@ -60,6 +61,24 @@ async function GrabarAlta(idProfesional, Nombres, Apellido, TipoDocumento, NroDo
 }
 
 
+async function GrabarBaja(idprofesional, observaciones, idusuario) {
+  try {
+   console.log(idprofesional)
+   console.log(observaciones)
+   console.log(idusuario)
+    await httpService.put(urlResourceProfesionalDarBaja, {
+      idprofesional,
+      observaciones,
+      idusuario
+    });
+   
+  } catch (error) {
+    console.error('Error al registrar el profesional:', error.response?.data || error.message);
+  }
+}
+
+
+
 async function BuscarId(idprofesional) {
   const resp = await httpService.get(urlResourceID, {
     params: {idprofesional},
@@ -69,5 +88,5 @@ async function BuscarId(idprofesional) {
 }
 
 export const profesionalesService = {
-  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios
+  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja
 };

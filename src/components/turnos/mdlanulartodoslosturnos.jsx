@@ -22,7 +22,7 @@ const mdlanulartodoslosturnos = ({
   observaciones,
 }) => {
   /* const [observaciones, SetObservaciones] = useState(null); */
-
+  console.log(apeynom)
   const [fechaForm, setFechaForm] = useState(fecha);
 
   const [mdlEstaSeguro, setMDLEstaSeguro] = useState(null);
@@ -96,12 +96,12 @@ const mdlanulartodoslosturnos = ({
             </div>
             <div>
               <InputGroup className="mb-3">
-                <InputGroup.Text style={{ color: "black", width: "10%" }}>
+                <InputGroup.Text style={{ color: "black", width: "20%" }}>
                   Profesional:
                 </InputGroup.Text>
                 <InputGroup.Text
                   style={{
-                    width: "90%",
+                    width: "80%",
                     color: "black",
                     textAlign: "center",
                   }}
@@ -110,7 +110,7 @@ const mdlanulartodoslosturnos = ({
                 </InputGroup.Text>
               </InputGroup>
               <InputGroup className="mb-3">
-                <InputGroup.Text style={{ color: "black", width: "10%" }}>
+                <InputGroup.Text style={{ color: "black", width: "20%" }}>
                   Fecha:
                 </InputGroup.Text>
                 <Form.Control

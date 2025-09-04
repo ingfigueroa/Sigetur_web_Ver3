@@ -16,20 +16,19 @@ import MdlAltaProfesionales from "./registrarprofesional";
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 import Mdlanulartodoslosturnos from "../turnos/mdlanulartodoslosturnos";
 import MdlEditarProfesionales from "./modificarprofesionales";
-import Footer from "../Footer";
+import MdlTurnosLibresDelMes from "../turnos/mdlturnoslibresdelmes";
+
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+
+
 
 
 import modalDialogService from "/src/services/modalDialog.service";
 
 function Profesionales() {
-  const TituloAccionABMC = {
-    A: "(Agregar)",
-    B: "(Eliminar)",
-    M: "(Modificar)",
-    C: "(Consultar)",
-    L: "(Listado)",
-  };
-  const [AccionABMC, setAccionABMC] = useState("L");
+  
+  
+   const [accionConfirmada, setAccionConfirmada] = useState(null);
 
   const [Apellido, SetApellido] = useState("");
 
@@ -45,6 +44,7 @@ function Profesionales() {
 
     const [mdlEditarProfesional, setMdlEditarProfesional] = useState(false);
 
+  const [observacionesBaja, setObservacionesBaja] = useState("")
 
   const [mdlHoraProfe, setModalHoraProfe] = useState(false);
 
@@ -55,11 +55,22 @@ function Profesionales() {
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Pagina, setPagina] = useState(1);
   const [idProfesion, setIDProfesion] = useState(0);
+
+    const [profesion, setProfesion] = useState("");
   const [Paginas, setPaginas] = useState([]);
 
   const [Fecha, SetFecha] = useState(new Date().toLocaleDateString());
 
+   const [fechaFinal, setFechaFinal] = useState("");
+
+   const [fechaSistema, setFechaSistema] = useState("");
+
+  const [modalTitulo, setModalTitulo] = useState();
+  const [modalCuerpo, setModalCuerpo] = useState();
+    const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
+
   const [mdlListaEspera, setModalListaEspera] = useState(false);
+  const [mdlTurnosLIbresDelMes, setModalTurnosLIbresDelMes] = useState(false)
   const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
 
   const closeMdlListaEspera = () => {
@@ -70,6 +81,28 @@ function Profesionales() {
     setModalListaEspera(true);
   };
 
+  
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+  };
+  
+  const closeModalTurnosLIbresDelMes = () => {
+    setModalTurnosLIbresDelMes(false);
+  };
+
+  const openMdlTurnosLIbresDelMes = (item) => {
+
+     setIDProfesional(item.ID);
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim()); 
+    setProfesion(item.especialidad)
+    setModalTurnosLIbresDelMes(true);
+  };
+
   const openMdlHoraProfe = (item) => {
     setIDProfesional(item.ID);
     const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
@@ -77,14 +110,27 @@ function Profesionales() {
     setModalHoraProfe(true);
   };
 
-useEffect(() => {
-  document.title = "Si.Ge.Tur. - Profesionales";
-}, []);
 
-  useEffect(() => {
-    // Esto se ejecutará cuando idProfesional cambie
-    
-  }, [idProfesional]);
+  const mdlSiNo = async (respuesta) => {
+    if (respuesta) {
+        console.log(idProfesional)
+        if (idProfesional > 0) {
+          const data = await profesionalesService.GrabarBaja(
+            idProfesional,
+            observacionesBaja,
+
+            idusuario
+          );
+          
+        }
+
+        
+      } 
+       Buscar(1)
+    };
+  
+
+
 
   const closeMdlHoraProfe = () => {
     setModalHoraProfe(false);
@@ -110,21 +156,6 @@ useEffect(() => {
     
   };
 
-  const openMdlAnularTodosLosTurnos = (item) => {
-    // setModalSiNoMensaje("¿Está seguro de anular el turno?")
-    setIDProfesional(item.ID);
-    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
-    setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
-    SetFecha(formatearFecha(Fecha));
-
-    setModalAnularTodosLosTurnos(true);
-  };
-
-  const closeMdlAnularTodosLosTurnos = () => {
-    setModalAnularTodosLosTurnos(false);
-  };
-
-  const fechaActualSinParsear = new Date().toLocaleDateString();
 
   async function Buscar(_pagina) {
     if (_pagina && _pagina !== Pagina) {
@@ -141,7 +172,9 @@ useEffect(() => {
 
      setItems(data.registros);
     
+   
      setRegistrosTotal(data.total);
+    
 
     //generar array de las páginas para mostrar en select del paginador
     const arrPaginas = [];
@@ -152,11 +185,6 @@ useEffect(() => {
     setPaginas(arrPaginas);
   }
 
-  async function BuscarPorId(item, accionABMC) {
-    const data = await profesionalesService.BuscarPorId(item);
-    setItem(data);
-    setAccionABMC(accionABMC);
-  }
 
   async function Limpiar(params) {
       SetApellido("")
@@ -189,7 +217,47 @@ useEffect(() => {
     return format(fechaActualParseada, "yyyy-MM-dd");
   };
 
-  const fechaActual = formatearFecha(fechaActualSinParsear);
+  const transitarapasivoprofesional = (id) =>{
+    setIDProfesional(id)
+    setModalTitulo("Dar de baja el profesional");
+    setModalCuerpo(
+      "¿Desea dar de baja al profesional?<br/>Se anularán todos los turnos a partir de mañana.<br/>Los turnos que se anulan son los que tienen estado PENDIENTE y LIBRE."
+    );
+      setAccionConfirmada(1);
+    setShowMDLEstaSeguro(true);
+  }
+
+// const fechaActual = formatearFecha(new Date());
+
+useEffect(() => {
+  document.title = "Si.Ge.Tur. - Profesionales";
+  setObservacionesBaja("SE DEFINE LA BAJA DEL PROFESIONAL.")
+}, []);
+
+  useEffect(() => {
+    const hoy = new Date();
+   
+    // Crear una fecha con el mes siguiente y día 0
+    const ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+
+    const dia = String(hoy.getDate()).padStart(2, '0');        // "01" a "31"
+const mes = String(hoy.getMonth() + 1).padStart(2, '0');   // "01" a "12"
+const anio = hoy.getFullYear();
+
+// Concatenar en formato YYYY-MM-DD
+const fechaSistemaFormateada = `${anio}-${mes}-${dia}`;
+    
+     setFechaSistema(fechaSistemaFormateada)
+
+      const dia1 = String(ultimoDiaMes.getDate()).padStart(2, '0');        // "01" a "31"
+const mes1 = String(ultimoDiaMes.getMonth() + 1).padStart(2, '0');   // "01" a "12"
+const anio1 = ultimoDiaMes.getFullYear();
+    // Formatear la fecha (ej: dd/mm/yyyy)
+    const fechaFormateada = `${anio1}-${mes1}-${dia1}`;
+   
+    setFechaFinal(fechaFormateada);
+  }, []); 
+
 
   return (
     <>
@@ -227,7 +295,7 @@ useEffect(() => {
             </div>
           </div>
          
-
+<hr></hr>
           <div className="acomodarencabezadopizaturnos">
             <InputGroup className="mb-3">
               <InputGroup.Text
@@ -405,6 +473,7 @@ useEffect(() => {
                           variant="success"
                           size="sm"
                           style={{ width: "70%" }}
+                          onClick={() => transitarapasivoprofesional(Item.ID)}   // 👈 acá el onClick
                         >
                           activo
                         </Button>
@@ -435,17 +504,17 @@ useEffect(() => {
                         <i class="fa-solid fa-clock"></i>
                       </button>
                       <button
-                        title="Lista de espera"
+                        title="Próximos turnos libres del mes."
                         className="btn btn-sm btn-light btn-danger"
-                        onClick={openMdlListaEspera}
+                         onClick={() => openMdlTurnosLIbresDelMes(Item)}
                       >
-                        <i class="fa-solid fa-book-open-reader"></i>
+                       <i class="fas fa-calendar-day"></i>
                       </button>
                       <button
-                        title="Agenda Semanal"
+                        title="Dashboard"
                         className="btn btn-sm btn-light btn-danger"
                       >
-                        <i class="fa-solid fa-calendar-days"></i>
+                         <i class="fa-solid fa-chart-pie"></i>
                       </button>
                     {/*   <button
                         title="Cancelar turnos por fecha"
@@ -508,7 +577,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      <Footer />
+      
       </div>
 
       {mdlRegistrarProfesional && (
@@ -531,8 +600,21 @@ useEffect(() => {
           show={openMdlHoraProfe}
           handleClose={closeMdlHoraProfe}
           idprofesional={idProfesional}
-          fecha={fechaActual}
+          fecha={fechaSistema}
           profesional={apeyNom}
+        />
+      )}
+
+        {mdlTurnosLIbresDelMes && (
+        <MdlTurnosLibresDelMes
+          show={openMdlTurnosLIbresDelMes}
+          handleClose={closeModalTurnosLIbresDelMes}
+          profesional={apeyNom}
+          profesion={profesion}
+          idprofesional={idProfesional}
+          fechainicio={fechaSistema}
+          fechafinal={fechaFinal}
+         
         />
       )}
 
@@ -546,6 +628,16 @@ useEffect(() => {
           apeynom={apeyNom}
           vienede="profesionales"
           observaciones="POR PEDIDO DEL PROFESIONAL, SE CANCELAN LOS TURNOS DE ESTE DÍA."
+        />
+      )}
+      
+      {showMDLEstaSeguro && (
+        <MDLEstaSeguro
+          show={openMdlEstaSeguro}
+          handleClose={closeMdlEstaSeguro}
+          mensajetitulo={modalTitulo}
+          mensajecuerpo={modalCuerpo}
+          enviaralpadre={mdlSiNo}
         />
       )}
     </>
