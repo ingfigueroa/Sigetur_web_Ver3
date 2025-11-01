@@ -38,6 +38,8 @@ import Pacientes from "./pacientes/pacientes";
 
 import AgendaSemanal from "./profesionales/agendasemanal";
 
+import DashboardTurnos from "./dashboard/dashboard_general";
+
 
 
 export default function sigetur() {
@@ -52,6 +54,8 @@ export default function sigetur() {
   const [mostrarAgendaSemanal, setMostrarAgendaSemanal] = useState(false);
 
   const [mostraConsulta, setMostrarConsulta] = useState(false);
+
+   const [mostraDashBoard, setMostrarDashboard] = useState(false);
 
   const [mostrarListadeEspera, setMostrarListadeEspera] = useState(false);
 
@@ -76,6 +80,7 @@ export default function sigetur() {
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
+    setMostrarDashboard(false);
     setMostrarListadeEspera(true);
     setTitulo("ADMINISTRAR LISTA DE ESPERA - TURNOS");
     setOpen(false);
@@ -89,6 +94,7 @@ export default function sigetur() {
     setMostrarProfesional(true);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
+    setMostrarDashboard(false);
     setTitulo("GESTIÓN DE PROFESIONALES");
     setOpen(false);
   };
@@ -101,6 +107,7 @@ export default function sigetur() {
     setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
+    setMostrarDashboard(false);
     setTitulo("GESTIÓN DE PACIENTES");
     setOpen(false);
   };
@@ -113,6 +120,7 @@ export default function sigetur() {
     setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
+    setMostrarDashboard(false);
     setTitulo("PIZARRA DE TURNOS");
     setOpen(false);
   };
@@ -125,6 +133,7 @@ export default function sigetur() {
     setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(true);
     setMostrarConsulta(false);
+    setMostrarDashboard(false);
     setTitulo("AGENDA SEMANAL POR PROFESIONAL");
     setOpen(false);
   };
@@ -137,8 +146,22 @@ export default function sigetur() {
     setMostrarListadeEspera(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(true);
-    console.log("pasa por aca");
+   setMostrarDashboard(false);
     setTitulo("CONSULTA DE TURNOS");
+    setOpen(false);
+  };
+
+  
+  const MostrarDashboard = () => {
+    setMostrarPaciente(false);
+    setMostrarObraSocial(false);
+    setMostrarPizarradeTurnos(false);
+    setMostrarProfesional(false);
+    setMostrarListadeEspera(false);
+    setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
+    setMostrarDashboard(true);
+    setTitulo("DASHBOARD");
     setOpen(false);
   };
 
@@ -414,6 +437,24 @@ export default function sigetur() {
                 </ListItemIcon>
                 <ListItemText primary="Lista de espera" />
               </ListItem>
+              <ListItem
+                button
+                onClick={MostrarDashboard}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <EventNoteIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="DashBoard" />
+              </ListItem>
 
               {/* Podés agregar más secciones acá */}
             </List>
@@ -433,6 +474,9 @@ export default function sigetur() {
           {mostrarListadeEspera && (
             <ListadeEsperaV1 />
           )}
+
+          {mostraDashBoard && <DashboardTurnos />}
+
         </div>
       </div>
     </>

@@ -9,7 +9,12 @@ import InputGroup from "react-bootstrap/InputGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 
-import { diasSemana } from "../../components/utils/fecha";
+import {
+  getFechaActualISO,
+  formatearFechaLarga,
+  validarHorasDesdeHastaIntervalo,
+  getFechaISO,
+} from "../../components/utils/fecha";
 
 import { profesionalesService } from "/src/services/profesional.service";
 
@@ -21,12 +26,25 @@ const mdlupdatehorariosprofesional = ({
   show,
   handleClose,
   idprofesional,
-  fecha,
+  profesion,
   profesional,
 }) => {
   const [horas, setHoras] = useState({ noche: [], manana: [], tarde: [] });
   const [intervalos, setIntervalos] = useState([]);
   const [diasSemana, setDiasSemana] = useState([]);
+  const [fechaCambioHorario, setFechaCambioHorario] = useState(
+    getFechaActualISO(new Date())
+  );
+  const [itemsFechaCambioHorario, setItemsFechaCambioHorario] = useState([]);
+  const [fechaLargarMostrar, setFechaLargaMostrar] = useState("");
+
+  const [errorFecha, setErrorFecha] = useState(true);
+  const [validarBotonAgregarHorario, setValidarBotonAgregarHorario] =
+    useState(false);
+
+  const [fechaDesdeCambioHorario, setFechaDesdeCambioHorario] = useState("");
+
+  const [mensaje, setMensaje] = useState("");
 
   async function Buscar() {
     /*  const fechaActual = formatearFecha(fechaActualSinParsear); */
@@ -48,46 +66,231 @@ const mdlupdatehorariosprofesional = ({
     const data = await diassemanaService.getBuscar();
     setDiasSemana(data);
   }
-  const [horarios, setHorarios] = useState([]); // tabla secundaria
 
-  /* 
-  const handleChangeIntervalos = (index, campo, valor) => {
-    const nuevoValor = parseInt(valor, 10); // 👈 lo convertís a número
-    // tu lógica para actualizar estado
-  }; */
+  async function validarFechaCambioHorario(fechaSeleccionada) {
+    // Llamás al servicio con el idprofesional (que deberías tenerlo en un estado o prop)
+   
+    const data = await profesionalesService.getBuscarFechaCambioHorario(
+      idprofesional
+    );
+
+    const fechaultimoTurno_1 = getFechaISO(data[0].fechaultimoturno);
+
+    setFechaDesdeCambioHorario(fechaultimoTurno_1);
+
+    if (new Date(fechaultimoTurno_1) >= new Date(fechaSeleccionada)) {
+      const mensaje = `Hay turnos definidos después de la fecha elegida: ${fechaSeleccionada}. No se puede elegir esta fecha.`;
+      setFechaLargaMostrar(
+        "NO SE PUEDE EN ESTA FECHA CREAR UN CAMBIO DE HORARIOS."
+      );
+      setFechaCambioHorario(fechaSeleccionada);
+      setErrorFecha(true); // 👈 marcamos error
+      setValidarBotonAgregarHorario(false);
+    
+      return;
+    }
+
+    // Actualizar el estado si la fecha es válida
+    setFechaCambioHorario(fechaSeleccionada);
+    setFechaLargaMostrar(formatearFechaLarga(fechaSeleccionada, true));
+    setValidarBotonAgregarHorario(true);
+    setErrorFecha(false); // 👈 quitamos error
+  }
+const updateHorarios = async (idprofesional, fechadesde) => {
+  try {
+    console.log(horarios)
+    const payload = horarios.map(item => ({
+      idprofesional,
+      iddia: item.iddia,
+      mananatrabaja: item.trabajaManana,
+      idmananadesde: item.idMananaDesde || null,
+      idmananahasta: item.idMananaHasta || null,
+      idmananaintervalo: item.idIntervaloManana || null,
+      tardetrabaja: item.trabajaTarde,
+      idtardedesde: item.idTardeDesde || null,
+      idtardehasta: item.idTardeHasta || null,
+      idtardeintervalo: item.idIntervaloTarde || null,
+      nochetrabaja: item.trabajaNoche,
+      idnochedesde: item.idNocheDesde || null,
+      idnochehasta: item.idNocheHasta || null,
+      idnocheintervalo: item.idIntervaloNoche || null,
+      fechadesde,
+    }));
+    console.log(payload)
+    await profesionalesService.putCambioHorarioMultiple(payload);
+    console.log("Horarios enviados correctamente");
+  } catch (error) {
+    console.error("Error al enviar horarios:", error);
+  }
+};
+
+
+/* 
+  async function UpdateHorario() {
+    try {
+      const idprofesional = 0;
+      const iddia = 0;
+      const mañanatrabaja = 0;
+      const idmañanadesde = 0;
+      const idmañanahasta = 0;
+      const idmañanaintervalo = 0;
+      const tardetrabaja = 0;
+      const idtardedesde = 0;
+      const idtardehasta = 0;
+      const idtardeintervalo = 0;
+      const nochetrabaja = 0;
+      const idnochedesde = 0;
+      const idnochehasta = 0;
+      const idnocheintervalo = 0;
+
+      // Suponemos que tenés un estado/constante con los horarios a actualizar
+      // Ejemplo: const horarios = [{ id: 1, desde: '08:00', hasta: '12:00' }, ...]
+       
+    for (const horarios of horario) {
+        mañanatrabaja = horarios.mañanatrabaja
+      const data = await profesionalesService.putCambioHorario(
+        idprofesional,
+        iddia,
+        mañanatrabaja,
+        idmañanadesde,
+        idmañanahasta,
+        idmañanaintervalo,
+        tardetrabaja,
+        idtardedesde,
+        idtardehasta,
+        idtardeintervalo,
+        nochetrabaja,
+        idnochedesde,
+        idnochehasta,
+        idnocheintervalo,
+        fechadesde);
+
+      console.log("Resultado update:", data);
+    } 
+      console.log(horarios);
+
+      setMensaje("Todos los horarios fueron actualizados correctamente");
+    } catch (error) {
+      console.error("Error al actualizar horarios:", error);
+      setMensaje("Error al actualizar horarios");
+    }
+  }
+ */
+  const [horarios, setHorarios] = useState([]); // tabla secundaria
 
   // Estado con lo que se va seleccionando
   const [seleccion, setSeleccion] = useState({
+ 
     iddia: "",
     dia: "",
-    mananaDesde: "",
-    mananaHasta: "",
-    intervaloManana: "",
-    tardeDesde: "",
-    tardeHasta: "",
-    intervaloTarde: "",
-    nocheDesde: "",
-    nocheHasta: "",
-    intervaloNoche: "",
-  });
 
+    trabajaManana: parseInt("0"),
+    idMananaDesde: "",
+    descripcionMananaDesde: "",
+    idMananaHasta: "",
+    descripcionMananaHasta: "",
+    idIntervaloManana: "",
+    descripcionIntervaloManana: "",
+
+    trabajaTarde: parseInt("0"),
+    idTardeDesde: "",
+    descripcionTardeDesde: "",
+    idTardeHasta: "",
+    descripcionTardeHasta: "",
+    idIntervaloTarde: "",
+    descripcionIntervaloTarde: "",
+
+    trabajaNoche: parseInt("0"),
+    idNocheDesde: "",
+    descripcionNocheDesde: "",
+    idNocheHasta: "",
+    descripcionNocheHasta: "",
+    idIntervaloNoche: "",
+    descripcionIntervaloNoche: "",
+  });
+/* 
   const handleChange = (campo, valor) => {
     setSeleccion({
       ...seleccion,
       [campo]: valor,
     });
-    console.log(seleccion);
   };
-
-  // Función para agregar un horario
+ */
+  function limpiar() {
+    setHorarios([]);
+    const hoyISO = getFechaActualISO(); // YYYY-MM-DD
+    setFechaCambioHorario(hoyISO);
+    setFechaLargaMostrar(formatearFechaLarga(hoyISO, true));
+  }
 
   // Función para agregar un horario
   const agregarHorario = () => {
+    let resultadoManana = false;
+    let resultadoTarde = false;
+    let resultadoNoche = false;
+    let mensaje = "No se ha seleccionado ningún horario.";
+
     // 1) Validar que haya un día seleccionado
     if (!seleccion.dia) {
-      alert("Debe seleccionar un día antes de agregar.");
+      mensaje = "Debe seleccionar un día antes de agregar.";
+      alert(mensaje);
       return;
     }
+
+    if (
+      seleccion.trabajaManana === 0 &&
+      seleccion.trabajaTarde === 0 &&
+      seleccion.trabajaNoche === 0
+    ) {
+      mensaje = "Debe seleccionar algún horario.";
+      alert(mensaje);
+
+      return;
+    }
+
+    if (seleccion.trabajaManana === 1) {
+      resultadoManana = validarHorasDesdeHastaIntervalo(
+        seleccion.ordenarPorMananaDesde,
+        seleccion.ordenarPorMananaHasta,
+        seleccion.idIntervaloManana,
+        "TURNO MAÑANA: "
+      );
+      mensaje = resultadoManana.mensaje;
+      if (!resultadoManana.valido) {
+        alert(mensaje); // o mostrarlo en un modal/mensaje de error
+        return;
+      }
+    }
+
+    if (seleccion.trabajaTarde === 1) {
+      resultadoTarde = validarHorasDesdeHastaIntervalo(
+        seleccion.ordenarPorTardeDesde,
+        seleccion.ordenarPorTardeHasta,
+        seleccion.idIntervaloTarde,
+        "TURNO TARDE: "
+      );
+      mensaje = resultadoTarde.mensaje;
+      if (!resultadoTarde.valido) {
+        alert(mensaje); // o mostrarlo en un modal/mensaje de error
+        return;
+      }
+    }
+
+    if (seleccion.trabajaNoche === 1) {
+      resultadoNoche = validarHorasDesdeHastaIntervalo(
+        seleccion.ordenarPorNocheDesde,
+        seleccion.ordenarPorNocheHasta,
+        seleccion.idIntervaloNoche,
+        "TURNO NOCHE: "
+      );
+      mensaje = resultadoNoche.mensaje;
+      if (!resultadoNoche.valido) {
+        alert(mensaje); // o mostrarlo en un modal/mensaje de error
+        return;
+      }
+    }
+
+    //validar horario mañana
 
     // 2) Validar que el día no esté repetido
     const yaExiste = horarios.some((h) => h.iddia === seleccion.iddia);
@@ -102,85 +305,104 @@ const mdlupdatehorariosprofesional = ({
     setSeleccion({
       iddia: "",
       dia: "",
-      mananaDesde: "",
-      mananaHasta: "",
-      intervaloManana: "",
-      tardeDesde: "",
-      tardeHasta: "",
-      intervaloTarde: "",
-      nocheDesde: "",
-      nocheHasta: "",
-      intervaloNoche: "",
+
+      trabajaManana: parseInt("0"),
+      idMananaDesde: "",
+      descripcionMananaDesde: "",
+      ordenarPorMananaDesde: "",
+      idMananaHasta: "",
+      descripcionMananaHasta: "",
+      ordenarPorMananaHasta: "",
+      idIntervaloManana: "",
+      descripcionIntervaloManana: "",
+
+      trabajaTarde: parseInt("0"),
+      idTardeDesde: "",
+      descripcionTardeDesde: "",
+      ordenarPorTardeDesde: "",
+      idTardeHasta: "",
+      descripcionTardeHasta: "",
+      ordenarPorTardeHasta: "",
+      idIntervaloTarde: "",
+      descripcionIntervaloTarde: "",
+
+      trabajaNoche: parseInt("0"),
+      idNocheDesde: "",
+      descripcionNocheDesde: "",
+      ordenarPorNocheDesde: "",
+      idNocheHasta: "",
+      descripcionNocheHasta: "",
+      ordenarPorNocheHasta: "",
+      idIntervaloNoche: "",
+      descripcionIntervaloNoche: "",
     });
-    console.log(horarios);
+  };
+
+  const handleFechaChange = (e) => {
+    const nuevaFecha = e.target.value;
+    //VALIDAR Q UE NO HAYA TURNOS
+    setFechaCambioHorario(nuevaFecha);
+    setFechaLargaMostrar(formatearFechaLarga(nuevaFecha, true));
   };
 
   const getCellStyle = (valor) => ({
-  backgroundColor: valor ? "#d4edda" : "#f8d7da", // verde si tiene valor, rojo si está vacío
-});
+    backgroundColor: valor ? "#05df72" : "#fb2c36", // verde si tiene valor, rojo si está vacío
+    textAlign: "center",
+  });
 
-  /* 
-  // agregar fila a la tabla secundaria
-  const agregarHorario = () => {
-    console.log("pasa por aca?");
-    setHorarios((prev) => [...prev, seleccion]);
-    setSeleccion({
-      dia: "",
-      mananaDesde: "",
-      mananaHasta: "",
-      intervaloManana: "",
-      tardeDesde: "",
-      tardeHasta: "",
-      intervaloTarde: "",
-      nocheDesde: "",
-      nocheHasta: "",
-      intervaloNoche: "",
-    });
-    console.log(horarios);
-  };
- */
   useEffect(() => {
     Buscar();
     BuscarIntervalos();
     BuscarDiasSemana();
+
+    const hoyISO = getFechaActualISO(); // YYYY-MM-DD
+    setFechaCambioHorario(hoyISO);
+    setFechaLargaMostrar(formatearFechaLarga(hoyISO, true));
+  
+  validarFechaCambioHorario(fechaCambioHorario)
+
+    // BuscarFechaCambioHorario();
+    // setFechaCambioHorario(getFechaISO(itemsFechaCambioHorario.proximolunes))
   }, []);
-
-  useEffect(() => {
-    console.log("Horarios actualizados:", horarios);
-  }, [horarios]);
-
+  
+  
   return (
-    <Modal show={show} onHide={handleClose} size="xl">
-      <Modal.Header
-        closeButton
-        style={{ backgroundColor: "#198754", color: "black" }}
-      >
-        <Modal.Title>PROFESIONAL - NUEVOS HORARIOS</Modal.Title>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="xl"
+      backdrop="static" // evita que se cierre al hacer clic fuera
+      keyboard={false} // evita que se cierre con la tecla ESC
+    >
+      <Modal.Header style={{ backgroundColor: "#71717B", color: "white" }}>
+        <Modal.Title>
+          PROFESIONAL - PLANIFICACIÓN DE NUEVOS HORARIOS
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ width: "100%", fontSize: "15px" }}>
         <div>
           <div>
             <InputGroup className="mb-3">
               <InputGroup.Text
-                style={{ backgroundColor: "#a3cfbb", color: "black" }}
+                style={{ backgroundColor: "#E2E8F0", color: "black" }}
               >
                 PROFESIONAL
               </InputGroup.Text>
               <Form.Control
                 value={profesional}
                 aria-label="First name"
-                style={{ backgroundColor: "#d5dbdb", color: "black" }}
+                style={{ backgroundColor: "white", color: "black" }}
               />
 
               <InputGroup.Text
-                style={{ backgroundColor: "#a3cfbb", color: "black" }}
+                style={{ backgroundColor: "#E2E8F0", color: "black" }}
               >
                 PROFESION:
               </InputGroup.Text>
               <Form.Control
-                //value={profesion}
+                value={profesion}
                 aria-label="First name"
-                style={{ backgroundColor: "#d5dbdb", color: "black" }}
+                style={{ backgroundColor: "white", color: "black" }}
               />
             </InputGroup>
           </div>
@@ -188,30 +410,28 @@ const mdlupdatehorariosprofesional = ({
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#a3cfbb",
+                  backgroundColor: "#E2E8F0",
                   color: "black",
                   height: "38px",
                   width: "20%",
                 }}
               >
-                NUEVO HORARIO DESDE:
+                NUEVOS HORARIOS DESDE:
               </InputGroup.Text>
               <Form.Control
                 placeholder="Fecha de comienzo de cambio de horarios del profesional"
-                aria-label="Fecha de cambios de horario del profesional"
-                aria-describedby="basic-addon2"
                 type="date"
                 style={{ width: "20%" }}
-                // onChange={handleFechaChange}
-                // value={formatearFechaLargaConelAnio(fecha)}
+                onChange={(e) => validarFechaCambioHorario(e.target.value)}
+                value={fechaCambioHorario}
               />
 
               <Form.Control
-                //value={profesion}
+                value={fechaLargarMostrar}
                 aria-label="First name"
                 style={{
-                  backgroundColor: "#d5dbdb",
-                  color: "black",
+                  backgroundColor: errorFecha ? "red" : "#157347", // 👈 rojo si error
+                  color: "white", // 👈 texto visible en rojo
                   width: "60%",
                 }}
               />
@@ -226,35 +446,40 @@ const mdlupdatehorariosprofesional = ({
                   backgroundColor: "#679bb9",
                   color: "white",
                   fontSize: "12px",
+                  textAlign: "center",
                 }}
               >
                 <tr>
                   <th rowSpan="1" style={{ backgroundColor: "white" }}></th>
                   <th
                     colSpan="3"
-                    style={{ backgroundColor: "#198754", textAlign: "center" }}
+                    style={{ backgroundColor: "#CAD5E2", textAlign: "center" }}
                   >
                     Mañana
                   </th>
                   <th
                     colSpan="3"
-                    style={{ backgroundColor: "#198754", textAlign: "center" }}
+                    style={{ backgroundColor: "#90A1B9", textAlign: "center" }}
                   >
                     Tarde
                   </th>
                   <th
                     colSpan="3"
-                    style={{ backgroundColor: "#198754", textAlign: "center" }}
+                    style={{ backgroundColor: "#62748E", textAlign: "center" }}
                   >
                     Noche
                   </th>
                   <th rowSpan="1" style={{ backgroundColor: "white" }}></th>
                 </tr>
 
-                <tr>
+                <tr
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
                   <th
                     style={{
-                      backgroundColor: "#a3cfbb",
+                      backgroundColor: "#E2E8F0",
                     }}
                   >
                     Día
@@ -324,7 +549,7 @@ const mdlupdatehorariosprofesional = ({
                   </th>
                   <th
                     style={{
-                      backgroundColor: "#a3cfbb",
+                      backgroundColor: "#E2E8F0",
                     }}
                   >
                     Acciones
@@ -334,7 +559,6 @@ const mdlupdatehorariosprofesional = ({
               <tbody>
                 <tr>
                   {/* Día */}
-
                   <td>
                     <Form.Select
                       size="sm"
@@ -347,6 +571,7 @@ const mdlupdatehorariosprofesional = ({
                           ...prev,
                           dia: selectedOption.descripcion,
                           iddia: selectedOption.ID,
+                          
                         }));
                       }}
                     >
@@ -358,175 +583,352 @@ const mdlupdatehorariosprofesional = ({
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Mañana Desde */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.mananaDesde}
-                      onChange={(e) =>
-                        handleChange("mananaDesde", e.target.value)
-                      }
+                      value={seleccion.idMananaDesde || ""} // el value debe ser el ID
+                      onChange={(e) => {
+                        const selectedOption = horas.manana.find(
+                          (h) => h.ID === parseInt(e.target.value)
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idMananaDesde: selectedOption.ID, // guardás el ID
+                            descripcionMananaDesde: selectedOption.Descripcion, // guardás la descripción
+                            trabajaManana: parseInt("1"),
+                            ordenarPorMananaDesde:
+                              selectedOption.ordenarporesto,
+                          }));
+                        } else {
+                          // Si se elige "Seleccionar" (value=""), limpiamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idMananaDesde: "",
+                            descripcionMananaDesde: "",
+                            trabajaManana: parseInt("0"),
+                            ordenarPorMananaDesde: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {horas.manana.map((h) => (
-                        <option key={h.ID} value={h.Descripcion}>
+                        <option key={h.ID} value={h.ID}>
                           {h.Descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Mañana Hasta */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.mananaHasta}
-                      onChange={(e) =>
-                        handleChange("mananaHasta", e.target.value)
-                      }
+                      value={seleccion.idMananaHasta || ""} // el value debe ser el ID
+                      onChange={(e) => {
+                        // Ejemplo dentro del onChange de alguno de los selects:
+
+                        const selectedOption = horas.manana.find(
+                          (h) => h.ID === parseInt(e.target.value)
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idMananaHasta: selectedOption.ID, // guardás el ID
+                            descripcionMananaHasta: selectedOption.Descripcion, // guardás la descripción
+                            trabajaManana: parseInt("1"),
+                            ordenarPorMananaHasta:
+                              selectedOption.ordenarporesto,
+                          }));
+                        } else {
+                          // Si se elige "Seleccionar" (value=""), limpiamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idMananaHasta: "",
+                            descripcionMananaHasta: "",
+                            trabajaManana: parseInt("0"),
+                            ordenarPorMananaHasta: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {horas.manana.map((h) => (
-                        <option key={h.ID} value={h.Descripcion}>
+                        <option key={h.ID} value={h.ID}>
                           {h.Descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
-                  {/* Intervalo Mañana */}
+                  {/* Intervalo Mañana */} {/* Intervalo Mañana*/}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.intervaloManana}
-                      onChange={(e) =>
-                        handleChange("intervaloManana", e.target.value)
-                      }
+                      value={seleccion.idIntervaloManana || ""} // el value tiene que ser el ID
+                      onChange={(e) => {
+                        const selectedOption = intervalos.find(
+                          (h) => h.id === parseInt(e.target.value) // aseguramos comparar números
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idIntervaloManana: selectedOption.id, // guardás el ID
+                            descripcionIntervaloManana:
+                              selectedOption.descripcion, // guardás la descripción
+                          }));
+                        } else {
+                          // si elige "Seleccionar", reseteamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idIntervaloManana: "",
+                            descripcionIntervaloManana: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {intervalos.map((int) => (
-                        <option key={int.id} value={int.descripcion}>
+                        <option key={int.id} value={int.id}>
                           {int.descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Tarde Desde */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.tardeDesde}
-                      onChange={(e) =>
-                        handleChange("tardeDesde", e.target.value)
-                      }
+                      value={seleccion.idTardeDesde || ""} // el value debe ser el ID
+                      onChange={(e) => {
+                        const selectedOption = horas.tarde.find(
+                          (h) => h.ID === parseInt(e.target.value)
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idTardeDesde: selectedOption.ID, // guardás el ID
+                            descripcionTardeDesde: selectedOption.Descripcion, // guardás la descripción
+                            trabajaTarde: parseInt("1"),
+                            ordenarPorTardeDesde: selectedOption.ordenarporesto,
+                          }));
+                        } else {
+                          // Si se elige "Seleccionar" (value=""), limpiamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idTardeDesde: "",
+                            descripcionTardeDesde: "",
+                            trabajaTarde: parseInt("0"),
+                            ordenarPorTardeDesde: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {horas.tarde.map((h) => (
-                        <option key={h.ID} value={h.Descripcion}>
+                        <option key={h.ID} value={h.ID}>
                           {h.Descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
-                  {/* Tarde Hasta */}
+                  {/* tarde Hasta */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.tardeHasta}
-                      onChange={(e) =>
-                        handleChange("tardeHasta", e.target.value)
-                      }
+                      value={seleccion.idTardeHasta || ""} // el value debe ser el ID
+                      onChange={(e) => {
+                        const selectedOption = horas.tarde.find(
+                          (h) => h.ID === parseInt(e.target.value)
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idTardeHasta: selectedOption.ID, // guardás el ID
+                            descripcionTardeHasta: selectedOption.Descripcion, // guardás la descripción
+                            trabajaTarde: parseInt("1"),
+                            ordenarPorTardeHasta: selectedOption.ordenarporesto,
+                          }));
+                        } else {
+                          // Si se elige "Seleccionar" (value=""), limpiamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idTardeHasta: "",
+                            descripcionTardeHasta: "",
+                            trabajaTarde: parseInt("0"),
+                            ordenarPorTardeHasta: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {horas.tarde.map((h) => (
-                        <option key={h.ID} value={h.Descripcion}>
+                        <option key={h.ID} value={h.ID}>
                           {h.Descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Intervalo Tarde */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.intervaloTarde}
-                      onChange={(e) =>
-                        handleChange("intervaloTarde", e.target.value)
-                      }
+                      value={seleccion.idIntervaloTarde || ""} // el value tiene que ser el ID
+                      onChange={(e) => {
+                        const selectedOption = intervalos.find(
+                          (h) => h.id === parseInt(e.target.value) // aseguramos comparar números
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idIntervaloTarde: selectedOption.id, // guardás el ID
+                            descripcionIntervaloTarde:
+                              selectedOption.descripcion, // guardás la descripción
+                          }));
+                        } else {
+                          // si elige "Seleccionar", reseteamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idIntervaloTarde: "",
+                            descripcionIntervaloTarde: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {intervalos.map((int) => (
-                        <option key={int.id} value={int.descripcion}>
+                        <option key={int.id} value={int.id}>
                           {int.descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Noche Desde */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.nocheDesde}
-                      onChange={(e) =>
-                        handleChange("nocheDesde", e.target.value)
-                      }
+                      value={seleccion.idNocheDesde}
+                      onChange={(e) => {
+                        const selectedOption = horas.noche.find(
+                          (h) => h.ID === parseInt(e.target.value)
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idNocheDesde: selectedOption.ID, // guardás el ID
+                            descripcionNocheDesde: selectedOption.Descripcion, // guardás la descripción
+                            trabajaNoche: parseInt("1"),
+                            ordenarPorNocheDesde: selectedOption.ordenarporesto,
+                          }));
+                        } else {
+                          // Si se elige "Seleccionar" (value=""), limpiamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idNocheDesde: "",
+                            descripcionNocheDesde: "",
+                            trabajaNoche: parseInt("0"),
+                            ordenarPorNocheDesde: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {horas.noche.map((h) => (
-                        <option key={h.ID} value={h.Descripcion}>
+                        <option key={h.ID} value={h.ID}>
                           {h.Descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Noche Hasta */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.nocheHasta}
-                      onChange={(e) =>
-                        handleChange("nocheHasta", e.target.value)
-                      }
+                      value={seleccion.idNocheHasta}
+                      onChange={(e) => {
+                        const selectedOption = horas.noche.find(
+                          (h) => h.ID === parseInt(e.target.value)
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idNocheHasta: selectedOption.ID, // guardás el ID
+                            descripcionNocheHasta: selectedOption.Descripcion, // guardás la descripción
+                            trabajaNoche: parseInt("1"),
+                            ordenarPorNocheHasta: selectedOption.ordenarporesto,
+                          }));
+                        } else {
+                          // Si se elige "Seleccionar" (value=""), limpiamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idNocheHasta: "",
+                            descripcionNocheHasta: "",
+                            trabajaNoche: parseInt("0"),
+                            ordenarPorNocheHasta: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {horas.noche.map((h) => (
-                        <option key={h.ID} value={h.Descripcion}>
+                        <option key={h.ID} value={h.ID}>
                           {h.Descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Intervalo Noche */}
                   <td>
                     <Form.Select
                       size="sm"
-                      value={seleccion.intervaloNoche}
-                      onChange={(e) =>
-                        handleChange("intervaloNoche", e.target.value)
-                      }
+                      value={seleccion.idIntervaloNoche}
+                      onChange={(e) => {
+                        const selectedOption = intervalos.find(
+                          (h) => h.id === parseInt(e.target.value) // aseguramos comparar números
+                        );
+
+                        if (selectedOption) {
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idIntervaloNoche: selectedOption.id, // guardás el ID
+                            descripcionIntervaloNoche:
+                              selectedOption.descripcion, // guardás la descripción
+                          }));
+                        } else {
+                          // si elige "Seleccionar", reseteamos
+                          setSeleccion((prev) => ({
+                            ...prev,
+                            idIntervaloNoche: "",
+                            descripcionIntervaloNoche: "",
+                          }));
+                        }
+                      }}
                     >
                       <option value="">Seleccionar</option>
                       {intervalos.map((int) => (
-                        <option key={int.id} value={int.descripcion}>
+                        <option key={int.id} value={int.id}>
                           {int.descripcion}
                         </option>
                       ))}
                     </Form.Select>
                   </td>
-
                   {/* Botón */}
-                  <td>
+                  <td className="text-center">
                     <button
                       title="Agregar horarios a la tabla"
-                      className="btn btn-sm btn-light "
+                      //className="btn btn-sm btn-light "
+                      className={`btn btn-sm ${validarBotonAgregarHorario ? "btn-success" : "btn-danger"}`}
                       onClick={() => agregarHorario()}
+                      disabled={!validarBotonAgregarHorario}
+                      
                     >
                       <i className="fa-solid fa-plus"></i>
                     </button>
@@ -537,7 +939,7 @@ const mdlupdatehorariosprofesional = ({
 
             <h5>Horarios nuevos</h5>
             {/* TABLA FINAL */}
-           <Table bordered striped hover responsive size="sm" responsive>
+            <Table bordered striped hover responsive size="sm" responsive>
               <thead
                 style={{
                   backgroundColor: "#083149ff",
@@ -568,42 +970,44 @@ const mdlupdatehorariosprofesional = ({
                         <td>{h.dia}</td>
 
                         {/* Mañana */}
-                        <td style={getCellStyle(h.mananaDesde)}>
-                          {h.mananaDesde || "-"}
+                        <td style={getCellStyle(h.idMananaDesde)}>
+                          {h.descripcionMananaDesde || "-"}
                         </td>
-                        <td style={getCellStyle(h.mananaHasta)}>
-                          {h.mananaHasta || "-"}
+                        <td style={getCellStyle(h.idMananaHasta)}>
+                          {h.descripcionMananaHasta || "-"}
                         </td>
-                        <td style={getCellStyle(h.intervaloManana)}>
-                          {h.intervaloManana || "-"}
+                        <td style={getCellStyle(h.idIntervaloManana)}>
+                          {h.descripcionIntervaloManana || "-"}
                         </td>
 
                         {/* Tarde */}
-                        <td style={getCellStyle(h.tardeDesde)}>
-                          {h.tardeDesde || "-"}
+                        <td style={getCellStyle(h.idTardeDesde)}>
+                          {h.descripcionTardeDesde || "-"}
                         </td>
-                        <td style={getCellStyle(h.tardeHasta)}>
-                          {h.tardeHasta || "-"}
+                        <td style={getCellStyle(h.idTardeHasta)}>
+                          {h.descripcionTardeHasta || "-"}
                         </td>
-                        <td style={getCellStyle(h.intervaloTarde)}>
-                          {h.intervaloTarde || "-"}
+                        <td style={getCellStyle(h.idIntervaloTarde)}>
+                          {h.descripcionIntervaloTarde || "-"}
                         </td>
 
                         {/* Noche */}
-                        <td style={getCellStyle(h.nocheDesde)}>
-                          {h.nocheDesde || "-"}
+                        <td style={getCellStyle(h.idNocheDesde)}>
+                          {h.descripcionNocheDesde || "-"}
                         </td>
-                        <td style={getCellStyle(h.nocheHasta)}>
-                          {h.nocheHasta || "-"}
+                        <td style={getCellStyle(h.idNocheHasta)}>
+                          {h.descripcionNocheHasta || "-"}
                         </td>
-                        <td style={getCellStyle(h.intervaloNoche)}>
-                          {h.intervaloNoche || "-"}
+                        <td style={getCellStyle(h.idIntervaloNoche)}>
+                          {h.descripcionIntervaloNoche || "-"}
                         </td>
 
                         {/* Acciones */}
                         <td>
                           <Button
+                            title="Eliminar la fila de la tabla"
                             variant="danger"
+                            textAlign="center"
                             size="sm"
                             onClick={() =>
                               setHorarios((prev) =>
@@ -611,7 +1015,7 @@ const mdlupdatehorariosprofesional = ({
                               )
                             }
                           >
-                            Eliminar
+                            <i class="fa-solid fa-trash"></i>
                           </Button>
                         </td>
                       </tr>
@@ -638,9 +1042,15 @@ const mdlupdatehorariosprofesional = ({
               }}
             >
               <ButtonGroup className="mb-2">
-                <Button variant="success">Grabar nuevos horarios</Button>
-                <Button variant="warning">Limpiar</Button>
-                <Button variant="primary">Cerrar</Button>
+                <Button variant="success" onClick={() => updateHorarios(idprofesional, fechaCambioHorario)}>
+                  Grabar nuevos horarios
+                </Button>
+                <Button variant="warning" onClick={limpiar}>
+                  Limpiar
+                </Button>
+                <Button variant="primary" onClick={handleClose}>
+                  Cerrar
+                </Button>
               </ButtonGroup>
             </div>
 

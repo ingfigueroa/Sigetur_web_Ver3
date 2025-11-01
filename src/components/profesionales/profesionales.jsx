@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { format, parse } from "date-fns";
+//import { format, parse } from "date-fns";
 
 import Table from "react-bootstrap/Table";
 
@@ -200,23 +200,6 @@ function Profesionales() {
   function Volver() {
     setAccionABMC("L");
   }
-
-  const formatearFecha = (fecha) => {
-    let fechaActualParseada;
-
-    // Caso 1: formato yyyy-MM-dd
-    if (/\d{4}-\d{2}-\d{2}/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "yyyy-MM-dd", new Date());
-    }
-    // Caso 2: formato d/M/yyyy
-    else if (/\d{1,2}\/\d{1,2}\/\d{4}/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "d/M/yyyy", new Date());
-    }
-
-    // Formatear la fecha en dd/MM/yyyy
-    return format(fechaActualParseada, "yyyy-MM-dd");
-  };
-
   const transitarapasivoprofesional = (id) =>{
     setIDProfesional(id)
     setModalTitulo("Dar de baja el profesional");
@@ -241,11 +224,11 @@ useEffect(() => {
     const ultimoDiaMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
 
     const dia = String(hoy.getDate()).padStart(2, '0');        // "01" a "31"
-const mes = String(hoy.getMonth() + 1).padStart(2, '0');   // "01" a "12"
-const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');   // "01" a "12"
+    const anio = hoy.getFullYear();
 
-// Concatenar en formato YYYY-MM-DD
-const fechaSistemaFormateada = `${anio}-${mes}-${dia}`;
+    // Concatenar en formato YYYY-MM-DD
+    const fechaSistemaFormateada = `${anio}-${mes}-${dia}`;
     
      setFechaSistema(fechaSistemaFormateada)
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+import "/src/css/registrarprofesional.css";
 import Button from "react-bootstrap/Button";
 
 import Form from "react-bootstrap/Form";
@@ -16,7 +17,9 @@ import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 
-import "/src/css/registrarprofesional.css";
+
+
+import { calcularEdad, getFechaISO } from "../../components/utils/fecha";
 
 
 const modificarpaciente = ({ show, handleClose, idpaciente }) => {
@@ -24,23 +27,22 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
 
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
+
   const [TipoDocumento, setTipoDocumento] = useState([]);
   const [idTipoDocumento, setIDTipoDocumento] = useState("");
   const [NroDocumento, setNroDocumento] = useState([]);
   const [EMail, setEMail] = useState("");
 
-  const [FechaNacimiento, setFechaNacimiento] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
+  const [edad, setEdad] = useState("")
   const [TECelular, setTECelular] = useState("");
   const [CuitCuil, setCuitCuil] = useState("");
   const [TipoSexo, setTipoSexo] = useState([]);
-  const [idTipoSexo, setIDTipoSexo] = useState("");
-  const [MatriculaNro, setMatriculaNro] = useState("");
-  const [TipoProfesion, setTipoProfesion] = useState([]);
+
 
   const [items, setItems] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
-  const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
-  const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
+
   const [idusuario, setIDusuario] = useState(2);
   const [idPaciente, setIDPaciente] = useState("");
 
@@ -49,6 +51,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
   const [modalMessageTitulo, setModalMessageTitulo] = useState("");
   const [nuevo, setNuevo] = useState("");
   const [mdlAltaExitosa, setMdlAltaExitosa] = useState(null);
+
 
   const showModalMessage = (message) => {
     setModalMessage(message);
@@ -77,6 +80,8 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     setMdlAltaExitosa(false);
   };
 
+  
+
   const validarEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -104,13 +109,14 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
         
         setIDTipoSexoSelected(data[0].idsexo);
 
-        //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
+
+      /*   //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
         const formattedDate = new Date(data[0].FechaNacimiento)
           .toISOString()
-          .split("T")[0]; // Solo la parte de la fecha
+          .split("T")[0]; // Solo la parte de la fecha */
 
         
-        setFechaNacimiento(formattedDate);
+        setFechaNacimiento(getFechaISO(data[0].FechaNacimiento));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -139,6 +145,13 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     }
     fetchInitialData();
   }, []);
+
+  useEffect(() => {
+    
+    if (fechaNacimiento) {
+      setEdad(calcularEdad(fechaNacimiento));
+    }
+  }, [fechaNacimiento]);
 
   async function Grabar() {
     // agregar o modificar
@@ -196,7 +209,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} size="xl">
+      <Modal show={show} onHide={handleClose} size="xl"  backdrop="static">
         <Modal.Header
           closeButton
           style={{ backgroundColor: "#0277bd", color: "white" }}
@@ -204,6 +217,29 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
           <Modal.Title>MODIFICAR UN PACIENTE</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "100%", background: "white" }}>
+           <div style={{ width: "30%", textAlign: "left" }}>
+              <button
+                title="Activar OBRAS SOCIALES"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={(event) => {
+                  event.preventDefault();
+                  openModalAsignarObraSocial();
+                }}
+              >
+               <i class="fa-regular fa-hospital"></i>
+              </button>
+
+            {/*   <button
+                title="Imprimir listado de PACIENTES"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={() => Imprimir()}
+              >
+                <i class="fa fa-print"></i>
+              </button> */}
+            </div>
+          
+         
+          <hr></hr>
           <div
             style={{ display: "grid", width: "100%", backgroundColor: "white" }}
           >
@@ -322,9 +358,22 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
                     aria-describedby="basic-addon2"
                     type="date"
                     onChange={(e) => setFechaNacimiento(e.target.value)}
-                    value={FechaNacimiento}
+                    value={fechaNacimiento}
+                  />
+                   <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white" }}
+                  >
+                    Edad:
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Edad"
+                    aria-label="Edad"
+                    aria-describedby="basic-addon2"
+                    type="text"
+                    value={edad + " años"}
                   />
                 </InputGroup>
+                
 
                 <InputGroup className="mb-3">
                   <InputGroup.Text
@@ -405,6 +454,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
           varMensajeTitulo={modalMessageTitulo}
         />
       )}
+
     </>
   );
 };

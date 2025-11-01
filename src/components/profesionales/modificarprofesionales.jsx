@@ -33,6 +33,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
 
   const [mdlUpdateHorariosProfesional, setMdlUpdateHorariosProfesional] = useState(false);
 
+    const [apeynom, setApeyNom] = useState("");
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
   const [TipoDocumento, setTipoDocumento] = useState([]);
@@ -40,7 +41,6 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
   const [NroDocumento, setNroDocumento] = useState([]);
   const [EMail, setEMail] = useState("");
 
-  const [mdlModificarExitosa, setMdlModificarExitosa] = useState(null);
 
   const [FechaNacimiento, setFechaNacimiento] = useState("");
   const [TECelular, setTECelular] = useState("");
@@ -49,14 +49,14 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
   const [idTipoSexo, setIDTipoSexo] = useState("");
   const [MatriculaNro, setMatriculaNro] = useState("");
   const [TipoProfesion, setTipoProfesion] = useState([]);
-  const [Profesion, setProfesion] = useState("");
+  const [profesion, setProfesion] = useState("");
   const [items, setItems] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
   const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
   const [idusuario, setIDusuario] = useState(2);
   const [idProfesional, setIDProfesional] = useState("");
-  
+   
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalMessageTitulo, setModalMessageTitulo] = useState("");
@@ -110,6 +110,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
         setIDProfesional(idprofesional)
         setApellido(data[0].Apellido)
         setNombres(data[0].Nombres)
+        setApeyNom(data[0].Apellido + ", " + data[0].Nombres )
         setIDTipoDocumento(data[0].TipoDocumento)
         setNroDocumento(data[0].NroDocumento)
         setEMail(data[0].email)
@@ -119,6 +120,8 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
         setMatriculaNro(data[0].matriculanro)
         setIdTipoProfesionSelected(data[0].idtipoprofesion)
         setIDTipoSexoSelected(data[0].idsexo)
+      
+        setProfesion(data[0].tprofesion)
 
         //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
         const formattedDate = new Date(data[0].FechaNacimiento).toISOString().split('T')[0]; // Solo la parte de la fecha
@@ -162,7 +165,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
   }, []);
 
 
-  async function Grabar() {
+  async function GrabarModificacion() {
     // agregar o modificar
     //validaciones
     // Validaciones
@@ -232,9 +235,12 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} size="xl">
+      <Modal show={show} onHide={handleClose} size="xl" 
+      backdrop="static"   // evita que se cierre al hacer clic fuera
+        keyboard={false}    // evita que se cierre con la tecla ESC
+    >
         <Modal.Header
-          closeButton
+          
           style={{ backgroundColor: "#0277bd", color: "white" }}
         >
           <Modal.Title>MODIFICAR DATOS DEL PROFESIONAL</Modal.Title>
@@ -490,10 +496,10 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
               }}
             >
               <ButtonGroup className="mb-2">
-                <Button variant="success" onClick={() => Grabar()}>
-                  Grabar
+                <Button variant="success" onClick={() => GrabarModificacion()}>
+                  Grabar datos
                 </Button>
-                <Button variant="primary">Limpiar</Button>
+                <Button variant="warning">Limpiar</Button>
                 <Button variant="primary" onClick={handleClose}>
                   Cerrar
                 </Button>
@@ -521,9 +527,9 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
         <MdlUpdateHorariosProfesional
           show={openMdlUpdateHorariosProfesionales}
           handleClose={closeMdlUpdateHorariosProfesionales}
-          idprofesional={'19'}
-          fecha={'25/08/2025'}
-          profesional={'FIGUEROA RODOLFO'}
+          idprofesional={idProfesional}
+          profesion={profesion}
+          profesional={apeynom}
         />
       )}
 

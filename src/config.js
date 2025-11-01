@@ -6,13 +6,21 @@ const urlResourceProfesionalProfesionID = urlServidor + "/profesionalesProfesion
 const urlResourceProfesionalHorarios = urlServidor + "/profesionaleshorarios";
 const urlResourceProfesionalID = urlServidor + "/profesionalid"; 
 const urlResourceProfesionalDarBaja = urlServidor + "/profesional/baja";
+const urlResourceProfesionalFechaCambioHorario = urlServidor + "/profesional/fechacambiohorario";
+const urlResourceProfesionalCambioHorario = urlServidor + "/profesional/cambiohorariomultiple"
 
 const urlResourcePacientes = urlServidor + "/pacientes";
-const urlResourcePacientesAdd = urlServidor + "/pacienteadd";
+const urlResourcePacientesAdd = urlServidor + "/pacienteadd"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
 const urlResourcePacienteUltimosTurnos = urlServidor + "/pacientesultimosturnos";
+
+
 const urlResourceObrasSociales = urlServidor + "/obrassociales";
-const urlResourceObrasSocialesPorPaciente = urlServidor + "/obrassociales/pacienteos";
+const urlResourceObrasSocialesPorPaciente = urlServidor + "/obrassociales/paciente";
+const urlResourceObrasSocialesAsignarPaciente = urlServidor + "/obrassociales/asignarapaciente";
+const urlResourceObrasSocialesDesafectarPaciente = urlServidor + "/obrassociales/desafectarapaciente";
+const urlResourceObrasSocialesActivar = urlServidor + "/obrassociales/activar";
+
 const urlResourceProfesiones = urlServidor + "/profesiones";
 
 const urlResourceTipoSexo = urlServidor + "/tiposexo";
@@ -102,5 +110,10 @@ export const config = {
     urlResourceProfesionalDarBaja,
     urlResourceHorasMananaTardeNoche,
     urlResourceIntervalosListar,
-    urlResourceDiasSemanaListar
+    urlResourceDiasSemanaListar,
+    urlResourceProfesionalFechaCambioHorario,
+    urlResourceProfesionalCambioHorario,
+    urlResourceObrasSocialesAsignarPaciente,
+    urlResourceObrasSocialesDesafectarPaciente,
+    urlResourceObrasSocialesActivar
 }

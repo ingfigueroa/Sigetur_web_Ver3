@@ -12,7 +12,7 @@ import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
 
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
-
+import { calcularEdad } from "../../components/utils/fecha";
 
 
 import "/src/css/registrarpaciente.css";
@@ -29,6 +29,7 @@ const registrarpaciente = ({ show, handleClose }) => {
   const [EMail, setEMail] = useState('');
   
   const [FechaNacimiento, setFechaNacimiento] = useState('');
+   const [edad, setEdad] = useState('');
   const [TECelular, setTECelular] = useState('');
 
   const [TipoSexo, setTipoSexo] = useState([]);
@@ -69,8 +70,6 @@ const registrarpaciente = ({ show, handleClose }) => {
 
   const [selectedValue1, setSelectedValue1] = useState("");
 
- 
-
   const [abrirComponente, setabrirComponente] = useState(true);
 
  
@@ -102,6 +101,12 @@ async function fetchData() {
 
 fetchData(); // Ejecuta la función para obtener los datos
 }, []); 
+
+/*Carga Tipo de documento*/
+useEffect(() => {
+
+  setEdad(calcularEdad(FechaNacimiento))
+}, [FechaNacimiento]); 
 
 
 async function Grabar() {
@@ -171,7 +176,7 @@ async function Grabar() {
          
            
           </div>
-          <div style={{ width: "30%", textAlign: "right" }}>
+         {/*  <div style={{ width: "30%", textAlign: "right" }}>
           <button
               title="Listar pacientes"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -183,7 +188,7 @@ async function Grabar() {
 
            
            
-          </div>
+          </div> */}
         </div>
         <div style={{ display: "flex", width: "100%", backgroundColor:"white", paddingLeft: '5px', paddingRight:'5px' }}>
          
@@ -225,43 +230,7 @@ async function Grabar() {
                 }}
                 value={NroDocumento}
               />
-               <Button
-                variant="outline-secondary"
-                id="button-addon1"
-
-                color="white"
-                disabled={isDisabled}
-              >
-                <i class="fa-solid fa-magnifying-glass"></i>
-                
-                </Button>
-                <InputGroup.Text
-                style={{ backgroundColor: "#679bb9", color: "white" }}
-              >
-                Sexo
-              </InputGroup.Text>
-              <select
-              
-                   onChange={(e) =>setIDTipoSexoSelected(e.target.value)}
-                   value={idTipoSexoSelected}
-                   
-                  
-              >
-                <option value="" disabled>Seleccionar</option>
-              {TipoSexo.map(sexo => (
-                
-                <option key={sexo.id} value={sexo.id}>
-                    {sexo.descripcion}
-                </option>
-              ))}
-              </select>
-              
-             
-            </InputGroup>
-          <InputGroup className="mb-3">
-             
-             
-                <InputGroup.Text
+               <InputGroup.Text
                 style={{ backgroundColor: "#679bb9", color: "white" }}
               >
                 Apellido
@@ -289,6 +258,34 @@ async function Grabar() {
                 onChange={(e) =>setNombres(e.target.value.toUpperCase())}
                 value={Nombres}
               />
+          
+              
+             
+            </InputGroup>
+          <InputGroup className="mb-3">
+             
+              <InputGroup.Text
+                style={{ backgroundColor: "#679bb9", color: "white" }}
+              >
+                Sexo
+              </InputGroup.Text>
+              <select
+              
+                   onChange={(e) =>setIDTipoSexoSelected(e.target.value)}
+                   value={idTipoSexoSelected}
+                    style={{ width: "15%"}}
+                   
+                  
+              >
+                <option value="" disabled>Seleccionar</option>
+              {TipoSexo.map(sexo => (
+                
+                <option key={sexo.id} value={sexo.id}>
+                    {sexo.descripcion}
+                </option>
+              ))}
+              </select>
+              
                 <InputGroup.Text
                 style={{ backgroundColor: "#679bb9", color: "white" }}
                 
@@ -302,6 +299,21 @@ async function Grabar() {
                 type="date"
                 onChange={(e) =>setFechaNacimiento(e.target.value)}
                 value={FechaNacimiento}
+                
+              />
+                 <InputGroup.Text
+                style={{ backgroundColor: "#679bb9", color: "white" }}
+                
+              >
+                Edad
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Edad"
+                aria-label="Edad"
+                aria-describedby="basic-addon2"
+                type="text"
+                
+                value={edad}
                 
               />
             </InputGroup>

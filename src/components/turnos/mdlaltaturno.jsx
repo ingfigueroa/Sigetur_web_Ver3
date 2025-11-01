@@ -12,6 +12,8 @@ import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 import MdlValidar from "../modales/mdlvalidar";
 import MdlListarPacientes from "../pacientes/mdllistarpacientes";
 
+import MdlAltaPaciente from "../pacientes/registrarpaciente";
+
 const MdlAltaTurno = ({
   show,
   handleClose,
@@ -27,6 +29,7 @@ const MdlAltaTurno = ({
   const [idTurno, SetIdTurno] = useState("");
   const [idUsuario, SetIdUsuario] = useState("1");
   const [observaciones, SetObservaciones] = useState(null);
+    const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false);
 
   const [VarDNI, setDNI] = useState(null);
   const [Apellido, setApellido] = useState(null);
@@ -64,6 +67,15 @@ const MdlAltaTurno = ({
     });
 
     setFecha(fechaLarga);
+  };
+
+  
+  const openMdlRegistrarPaciente = () => {
+    setModalRegistrarPaciente(true);
+  };
+
+  const closeMdlRegistrarPaciente = () => {
+    setModalRegistrarPaciente(false);
   };
 
   const openMdlListarPacientes = () => {
@@ -209,12 +221,23 @@ const MdlAltaTurno = ({
                   value={nombreCompleto}
                 />
                 <Button
+                title="Buscar paciente por APELLIDO o DNI"
                   variant="outline-secondary"
                   id="button-addon1"
                   onClick={openMdlListarPacientes}
                 >
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </Button>
+                 <button
+                title="Registrar nuevo paciente"
+                className="btn btn-sm btn-light btn-outline-success acomodarbotonespt"
+                onClick={(event) => {
+                  event.preventDefault();
+                 openMdlRegistrarPaciente();
+                }}
+              >
+                <i class="fa-solid fa-plus"></i>
+              </button>
               </InputGroup>
 
               <InputGroup className="mb-3">
@@ -362,6 +385,13 @@ const MdlAltaTurno = ({
         handleClose={closeModalMessage}
         modalMessage={modalMessage}
       />
+
+       {mdlRegistrarPaciente && (
+              <MdlAltaPaciente
+                show={openMdlRegistrarPaciente}
+                handleClose={closeMdlRegistrarPaciente}
+              />
+            )}
     </>
   );
 };

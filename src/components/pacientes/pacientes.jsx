@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 import Table from "react-bootstrap/Table";
 
 import Button from "react-bootstrap/Button";
@@ -21,80 +20,114 @@ import MdlultimosTurnos from "../pacientes/mdlpacienteultimosturnos";
 
 import modalDialogService from "/src/services/modalDialog.service";
 
+import MdlHistoriaClinica from "../historiasclinicas/hc_odontologia";
+
+import MdlAsignarObraSocial from "../obrassociales/asignarobrasocial";
 
 function Pacientes() {
-  const [Apellido, SetApellido]  = useState(null);
 
-  const [VarDNI, SetDNI]  = useState(null);
+  const [Apellido, SetApellido] = useState(null);
+
+  const [VarDNI, SetDNI] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  
- const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false)
- const [mdlEditarPaciente, setMdlEditarPaciente] = useState(false);
- const [idPaciente, setIDPaciente] = useState(false);
+
+ 
+ const [mdlHistoriaClinica, setModalHistoriaClinica] = useState(false);
+  const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false);
+  const [mdlEditarPaciente, setMdlEditarPaciente] = useState(false);
+  const [idPaciente, setIDPaciente] = useState(false);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Pagina, setPagina] = useState(1);
   const [Paginas, setPaginas] = useState([]);
   const [apeyNom, setapeyNom] = useState(null);
-      const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
+  const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
   const [mdlUltimosTurnos, setModalUltimosTurnos] = useState(false);
 
-useEffect(() => {
-  document.title = "Si.Ge.Tur. - Pacientes";
-}, []);
 
+
+    const [mdlAsignarObraSocial, setMDLAsignarObraSocial] = useState(null);
+
+  useEffect(() => {
+    document.title = "Si.Ge.Tur. - Pacientes";
+  }, []);
 
   const openMdlUltimosTurnos = (item) => {
-    
     setIDPaciente(item.ID);
     const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
     setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
     setModalUltimosTurnos(true);
   };
 
+  
+    const openModalAsignarObraSocial = (item) => {
+     // setApeNom( Apellido + ", " + Nombres);
+     console.log(item)
+     setIDPaciente(item.ID);
+      const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+      setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
+     
+      setMDLAsignarObraSocial(true);
+    };
+  
+    const CloseModalAsignarObraSocial = () => {
+      setMDLAsignarObraSocial(false);
+    };
 
   const closeMdlUltimosTurnos = () => {
     setModalUltimosTurnos(false);
+  };
+
+
+
+  const openMdlHistoriaClinica = () => {
+    setModalHistoriaClinica(true);
+  };
+
+  const closeMdlHistoriaClinica = () => {
+    setModalHistoriaClinica(false);
   };
 
   const openMdlRegistrarPaciente = () => {
     setModalRegistrarPaciente(true);
   };
 
-  
   const closeMdlRegistrarPaciente = () => {
     setModalRegistrarPaciente(false);
   };
 
-
-  
   const openMdlEditarPaciente = (item) => {
-    setIDPaciente(item.ID)
+    setIDPaciente(item.ID);
     setMdlEditarPaciente(true);
   };
 
   const closeMdlEditarPaciente = () => {
     setMdlEditarPaciente(false);
-    Buscar(1)
-    
+    Buscar(1);
   };
 
+  
+
   async function Buscar(_pagina) {
-   
     if (_pagina && _pagina !== Pagina) {
       setPagina(_pagina);
     }
-    
+
     // OJO Pagina (y cualquier estado...) se actualiza para el proximo render, para buscar usamos el parametro _pagina
     else {
       _pagina = Pagina;
     }
     modalDialogService.BloquearPantalla(true);
-    const data = await pacientesService.Buscar(Apellido, VarDNI, _pagina, CantidaddeRegistros);
-     setItems(data.registros);
-    
+    const data = await pacientesService.Buscar(
+      Apellido,
+      VarDNI,
+      _pagina,
+      CantidaddeRegistros
+    );
+    setItems(data.registros);
+
     setRegistrosTotal(data.total);
 
     //generar array de las páginas para mostrar en select del paginador
@@ -104,17 +137,13 @@ useEffect(() => {
     }
     setPaginas(arrPaginas);
     modalDialogService.BloquearPantalla(false);
-    
-   
   }
-
 
   async function BuscarPorId(item, accionABMC) {
     const data = await pacientesService.BuscarPorId(item);
     setItem(data);
-    setAccionABMC(accionABMC);
+    //setAccionABMC(accionABMC);
   }
-  
 
   function Consultar(item) {
     BuscarPorId(item, "C"); // paso la accionABMC pq es asincrono la busqueda y luego de ejecutarse quiero cambiar el estado accionABMC
@@ -131,15 +160,15 @@ useEffect(() => {
   async function Agregar() {
     setAccionABMC("A");
     setItem({
-        IdArticulo: 0,
-        Nombre: '',
-        Precio: '',
-        Stock: '',
-        CodigoDeBarra: '',
-        IdArticuloFamilia: '',
-        FechaAlta: moment(new Date()).format("YYYY-MM-DD"),
-        Activo: true,
-      });
+      IdArticulo: 0,
+      Nombre: "",
+      Precio: "",
+      Stock: "",
+      CodigoDeBarra: "",
+      IdArticuloFamilia: "",
+      FechaAlta: moment(new Date()).format("YYYY-MM-DD"),
+      Activo: true,
+    });
     //modalDialogService.Alert("preparando el Alta...");
   }
 
@@ -160,16 +189,17 @@ useEffect(() => {
         await Buscar();
       }
     );
-
   }
-  
-  
-  async function Limpiar(params) {
-    SetApellido("")
-    SetDNI("")
-    setItems([])
-}
 
+  
+    
+
+  async function Limpiar(params) {
+    SetApellido("");
+    SetDNI("");
+    setItems([]);
+  }
+  /* 
   async function Grabar(item) {
     // agregar o modificar
     try
@@ -191,139 +221,120 @@ useEffect(() => {
           " correctamente."
       );
     //}, 0);
-  }
-  
+  } */
 
   // Volver/Cancelar desde Agregar/Modificar/Consultar
   function Volver() {
     setAccionABMC("L");
   }
 
+  
   return (
     <>
-        <div
-    style={{
-      display: "grid",
-      width: "100%",
-      margin: "15px 15px",
-      backgroundColor: "white",
-    }}
-    >
-      <form>
-       <div className="acomodarencabezadopizaturnos">
-          
-      
-          <div style={{ width: "30%", textAlign: "left" }}>
-          <button
-              title="Registrar nuevo paciente"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={(event) => {
-                event.preventDefault();
-                openMdlRegistrarPaciente();
-              }}
-            >
-              <i class="fa-solid fa-plus"></i>
-            </button>
-            <button 
-               title="Imprimir"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              onClick={() => Imprimir()}>
-              <i class="fa fa-print"></i>
-            </button>
-            
-           
-
-            
+      <div
+        style={{
+          display: "grid",
+          width: "100%",
+          margin: "15px 15px",
+          backgroundColor: "white",
+        }}
+      >
+        <form>
+          <div className="acomodarencabezadopizaturnos">
+            <div style={{ width: "30%", textAlign: "left" }}>
+              <button
+                title="Registrar nuevo paciente"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={(event) => {
+                  event.preventDefault();
+                  openMdlRegistrarPaciente();
+                }}
+              >
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              <button
+                title="Imprimir"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                onClick={() => Imprimir()}
+              >
+                <i class="fa fa-print"></i>
+              </button>
+            </div>
           </div>
-          
-        </div>
-     
 
-      
-        <div className="acomodarencabezadopizaturnos">
-          
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              Paciente
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar por apellido de paciente"
-              aria-label="Buscar paciente"
-              aria-describedby="basic-addon2"
-              onChange={(e) => SetApellido(e.target.value.toUpperCase())}
-              value={Apellido}
-              autoFocus
-            />
-            <Button
-              title="Buscar por paciente"
-             
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "38px" }}
-              color="white"
-             
-              onClick={() => Buscar(1) }
-            >
-               
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-          </InputGroup>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              style={{
-                backgroundColor: "#679bb9",
-                color: "white",
-                height: "38px",
-              }}
-            >
-              DNI
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Buscar por DNI"
-              aria-label="Profesión"
-              aria-describedby="basic-addon2"
-              style={{ marginght: "20px" }}
-              onChange={(e) => SetDNI(e.target.value)}
-              value={VarDNI}
-            />
-            <Button
-             title="Buscar por DNI"
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "38px" }}
-              color="white"
-              onClick={() => Buscar(1) }
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-              <Button variant="success" onClick={() => Limpiar()}>
-                  Limpiar
+          <div className="acomodarencabezadopizaturnos">
+            <InputGroup className="mb-3">
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "38px",
+                }}
+              >
+                Paciente
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Buscar por apellido de paciente"
+                aria-label="Buscar paciente"
+                aria-describedby="basic-addon2"
+                onChange={(e) => SetApellido(e.target.value.toUpperCase())}
+                value={Apellido}
+                autoFocus
+              />
+              <Button
+                title="Buscar por paciente"
+                variant="outline-secondary"
+                id="button-addon1"
+                style={{ height: "38px" }}
+                color="white"
+                onClick={() => Buscar(1)}
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
               </Button>
-          </InputGroup>
-        </div>
-        
-        
-    </form>
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "38px",
+                }}
+              >
+                DNI
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Buscar por DNI"
+                aria-label="Profesión"
+                aria-describedby="basic-addon2"
+                style={{ marginght: "20px" }}
+                onChange={(e) => SetDNI(e.target.value)}
+                value={VarDNI}
+              />
+              <Button
+                title="Buscar por DNI"
+                variant="outline-secondary"
+                id="button-addon1"
+                style={{ height: "38px" }}
+                color="white"
+                onClick={() => Buscar(1)}
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </Button>
+              <Button variant="success" onClick={() => Limpiar()}>
+                Limpiar
+              </Button>
+            </InputGroup>
+          </div>
+        </form>
 
-      
-     
-       
-      <div className="">
+        <div className="">
           <Table bordered hover>
             <thead>
               <tr className="personalizarfila h-50">
-              <th
+                <th
                   style={{
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
-                    
-                  
                   }}
                 >
                   ID
@@ -332,13 +343,17 @@ useEffect(() => {
                   style={{
                     textAlign: "left",
                     backgroundColor: "rgb(136, 161, 184)",
-                  
                   }}
                 >
                   Apellido
                 </th>
 
-                <th style={{ textAlign: "left",backgroundColor: "rgb(136, 161, 184)" }} >
+                <th
+                  style={{
+                    textAlign: "left",
+                    backgroundColor: "rgb(136, 161, 184)",
+                  }}
+                >
                   Nombres
                 </th>
 
@@ -347,19 +362,35 @@ useEffect(() => {
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
                   }}
-                  
                 >
                   DNI
                 </th>
 
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)", width:"15%"}} >
-                 EMail
+                <th
+                  style={{
+                    textAlign: "center",
+                    backgroundColor: "rgb(136, 161, 184)",
+                    width: "15%",
+                  }}
+                >
+                  EMail
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)", width:"15%"}} >
-                 Celular
+                <th
+                  style={{
+                    textAlign: "center",
+                    backgroundColor: "rgb(136, 161, 184)",
+                    width: "15%",
+                  }}
+                >
+                  Celular
                 </th>
-                <th style={{ textAlign: "center",backgroundColor: "rgb(136, 161, 184)" }}>
-                 Estado
+                <th
+                  style={{
+                    textAlign: "center",
+                    backgroundColor: "rgb(136, 161, 184)",
+                  }}
+                >
+                  Estado
                 </th>
 
                 <th
@@ -367,119 +398,142 @@ useEffect(() => {
                     textAlign: "center",
                     backgroundColor: "rgb(136, 161, 184)",
                   }}
-                  
                 >
                   Acciones
                 </th>
               </tr>
             </thead>
             <tbody>
-            {Items &&
-            Items.map((Item) => (
-              <tr key={Item.ID}>
-               
-                <td style={{ textAlign: "center" }}>
-                {Item.ID}
-               </td>
-               <td style={{ textAlign: "left", fontSize:"12px" }}>
-                {Item.Apellido}
-               </td>
-               <td style={{ textAlign: "left", fontSize:"12px" }}>{Item.Nombres}</td>
-              
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.NroDocumento}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.EMail}</td>
-               <td style={{ textAlign: "center", fontSize:"12px" }}>{Item.TECelular}</td>
-               <td style={{ textAlign: "center", fontSize:"12px"}}>
-                  {Item.IDEstado === 1 ? (
-                      <Button variant="success" size="sm" style={{width:"70%"}}>
-                        activo
-                      </Button>
-                    ) : (
-                      <Button variant="danger" size="sm" style={{width:"70%"}}>
-                        pasivo
-                      </Button>
-                      
-                    )
-                     }
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                  <button
-                      title="Editar paciente"
-                      className="btn btn-sm btn-light btn-danger"
-                      onClick={() => openMdlEditarPaciente(Item)}
-                    >
-                      
-                      <i class="fa-solid fa-user-pen"></i>
-                    </button>
-                  
-                    <button
-                       title="Listar turnos pedidos"
+              {Items &&
+                Items.map((Item) => (
+                  <tr key={Item.ID}>
+                    <td style={{ textAlign: "center" }}>{Item.ID}</td>
+                    <td style={{ textAlign: "left", fontSize: "12px" }}>
+                      {Item.Apellido}
+                    </td>
+                    <td style={{ textAlign: "left", fontSize: "12px" }}>
+                      {Item.Nombres}
+                    </td>
+
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.NroDocumento}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.EMail}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.TECelular}
+                    </td>
+                    <td style={{ textAlign: "center", fontSize: "12px" }}>
+                      {Item.IDEstado === 1 ? (
+                        <Button
+                          variant="success"
+                          size="sm"
+                          style={{ width: "70%" }}
+                        >
+                          activo
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          style={{ width: "70%" }}
+                        >
+                          pasivo
+                        </Button>
+                      )}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <button
+                        title="Editar paciente"
+                        className="btn btn-sm btn-light btn-danger"
+                        onClick={() => openMdlEditarPaciente(Item)}
+                      >
+                        <i class="fa-solid fa-user-pen"></i>
+                      </button>
+
+                      <button
+                        title="Listar turnos pedidos"
+                        className="btn btn-sm btn-light btn-danger"
+                        onClick={() => openMdlUltimosTurnos(Item)}
+                      >
+                        <i class="fa-solid fa-calendar-days"></i>
+                      </button>
+
+                      <button
+                        title="Activar OBRAS SOCIALES"
                        className="btn btn-sm btn-light btn-danger"
-                       onClick={() => openMdlUltimosTurnos(Item)}
-                    >
-                    <i class="fa-solid fa-calendar-days"></i>
-            </button>
-                  </td>
-                </tr>
-                //<TableRow item={item} />
-              ))}
+                        onClick={() => openModalAsignarObraSocial(Item)}
+                      >
+                        <i class="fa-solid fa-hospital"></i>
+                      </button>
+                      <button
+                        title="Historia Clínica"
+                        className="btn btn-sm btn-light btn-danger"
+                        onClick={() => openMdlHistoriaClinica()}
+                      >
+                       {/* <i class="fa-solid fa-notes-medical"></i> */}
+                        <i class="fa-solid fa-book-medical"></i>
+
+                      </button>
+                    </td>
+                  </tr>
+                  //<TableRow item={item} />
+                ))}
             </tbody>
           </Table>
         </div>
-           {/* Paginador*/}
-     <div className="paginador">
-        <div className="row">
-          <div className="col">
-            <span className="pyBadge">Registros: {RegistrosTotal}</span>
-          </div>
-          <div className="col text-center">
-            Pagina: &nbsp;
-            <select
-              value={Pagina}
-              onChange={(e) => {
-                Buscar(e.target.value);
-              }}
-            >
-              {Paginas?.map((x) => (
-                <option value={x} key={x}>
-                  {x}
-                </option>
-              ))}
-            </select>
-            &nbsp; de {Paginas?.length}
-          </div>
+        {/* Paginador*/}
+        <div className="paginador">
+          <div className="row">
+            <div className="col">
+              <span className="pyBadge">Registros: {RegistrosTotal}</span>
+            </div>
+            <div className="col text-center">
+              Pagina: &nbsp;
+              <select
+                value={Pagina}
+                onChange={(e) => {
+                  Buscar(e.target.value);
+                }}
+              >
+                {Paginas?.map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; de {Paginas?.length}
+            </div>
 
-          <div className="col">
-             Mostrar de a: &nbsp;
-            <select
-              value={CantidaddeRegistros}
-              onChange={(e) => {
-                setCantidaddeRegistros(e.target.value);
-              }}
-            >
-              {[10, 15, 20, 25].map((x) => (
-                <option value={x} key={x}>
-                  {x}
-                </option>
-              ))}
-            </select>
-            &nbsp; registros.
+            <div className="col">
+              Mostrar de a: &nbsp;
+              <select
+                value={CantidaddeRegistros}
+                onChange={(e) => {
+                  setCantidaddeRegistros(e.target.value);
+                }}
+              >
+                {[10, 15, 20, 25].map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </select>
+              &nbsp; registros.
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    { mdlRegistrarPaciente && (
-        <MdlAltaPaciente
 
+      {mdlRegistrarPaciente && (
+        <MdlAltaPaciente
           show={openMdlRegistrarPaciente}
           handleClose={closeMdlRegistrarPaciente}
         />
-      
       )}
-    
 
-    {mdlEditarPaciente && (
+      {mdlEditarPaciente && (
         <MdlEditarPacientes
           show={openMdlEditarPaciente}
           handleClose={closeMdlEditarPaciente}
@@ -495,12 +549,28 @@ useEffect(() => {
           paciente={apeyNom}
         />
       )}
+
+        {mdlHistoriaClinica && (
+        <MdlHistoriaClinica
+          show={openMdlHistoriaClinica}
+          handleClose={closeMdlHistoriaClinica}
+         
+        />
+      )}
+
       
+       {mdlAsignarObraSocial && (
+        <MdlAsignarObraSocial
+          show={openModalAsignarObraSocial}
+          handleClose={CloseModalAsignarObraSocial}
+          apellidoynombres={apeyNom}
+          id={idPaciente}
+          vienede="PACIENTE" //paciente
+          idvienede="0"
+        />
+      )}
     </>
-
-  ); 
-
+  );
 }
-
 
 export default Pacientes;

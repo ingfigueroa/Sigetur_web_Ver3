@@ -6,20 +6,38 @@ import httpService from "./http.service";
  import {config} from "../config.js";
  const urlResource = config.urlResourceObrasSociales;
  const urlResource1 = config.urlResourceObrasSocialesPorPaciente;
+ const urlResourceAsignarPaciente = config.urlResourceObrasSocialesAsignarPaciente;
+  const urlResourceDesafectarPaciente = config.urlResourceObrasSocialesDesafectarPaciente;
+
+  const urlResourceActivarObraSocial = config.urlResourceObrasSocialesActivar;
 
 
-async function Buscar(Nombre, Pagina) {
+async function Buscar(Nombre,sigla, bandera, pagina, cantidadPorPagina) {
+  
   const resp = await httpService.get(urlResource, {
-    params: { Nombre, Pagina },
+    params: { Nombre, sigla, bandera, pagina, cantidadPorPagina },
   });
+ 
   return resp.data;
 }
 
-async function BuscarPorPaciente(idPaciente) {
+async function BuscarPorPaciente(idpaciente) {
+ console.log(idpaciente)
+  const resp = await httpService.get(urlResource1, {
+   
+    params: { idpaciente }
+  });
+
+ 
+  return resp.data;
+}
+
+
+async function BuscarPorProfesional(idprofesional) {
  
   const resp = await httpService.get(urlResource1, {
     
-    params: { idPaciente }
+    params: { idprofesional }
   });
 
   
@@ -33,20 +51,53 @@ async function BuscarPorId(item) {
 }
 
 
-async function ActivarDesactivar(item) {
-  await httpService.delete(urlResource + "/" + item.Id);
-}
 
 
-async function Grabar(item) {
-  if (item.Id === 0) {
-    await httpService.post(urlResource, item);
-  } else {
-    await httpService.put(urlResource + "/" + item.Id, item);
+
+
+async function putAsignarObraSocialPaciente(idpaciente,idobrasocial, idusuario) {
+  try {
+ console.log("Por aca pasa post")
+    await httpService.put(urlResourceAsignarPaciente, {
+      idpaciente,
+      idobrasocial,
+      idusuario
+    });
+   
+  } catch (error) {
+    console.error('Error al registrar el profesional:', error.response?.data || error.message);
   }
 }
 
 
+async function putDesafectarObraSocialPaciente(idpaciente,idobrasocial, idusuario) {
+  try {
+ 
+    await httpService.put(urlResourceDesafectarPaciente, {
+      idpaciente,
+      idobrasocial,
+      idusuario
+    });
+   
+  } catch (error) {
+    console.error('Error al registrar el profesional:', error.response?.data || error.message);
+  }
+}
+
+
+async function putActivarObraSocial(idobrasocial) {
+  try {
+
+    await httpService.put(urlResourceActivarObraSocial, {
+      
+      idobrasocial
+    });
+   
+  } catch (error) {
+    console.error('Error al registrar el profesional:', error.response?.data || error.message);
+  }
+}
+
 export const obrassocialesService = {
-  Buscar, BuscarPorPaciente
+  Buscar, BuscarPorPaciente, BuscarPorProfesional, putAsignarObraSocialPaciente, putDesafectarObraSocialPaciente, putActivarObraSocial
 };

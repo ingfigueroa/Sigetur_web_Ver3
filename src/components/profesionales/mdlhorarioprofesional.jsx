@@ -21,19 +21,10 @@ const mdlhorarioprofesional = ({
   const [selectedId, setSelectedId] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [Items, setItems] = useState(null);
+  const [fechaDesde, setFechaDesde] = useState("");
+  const [fechaHasta, setFechaHasta] = useState("");
 
-  const handleRadioChange = (event) => {
-    const selectedValue = parseInt(event.target.value);
-    const selectedItem = Items.find((item) => item.ID == selectedValue);
 
-    if (
-      selectedItem &&
-      !selectedItems.some((item) => item.ID == selectedValue)
-    ) {
-      setSelectedId(selectedValue);
-      setSelectedItems([...selectedItems, selectedItem]);
-    }
-  };
 
   async function Buscar() {
     /*  const fechaActual = formatearFecha(fechaActualSinParsear); */
@@ -44,6 +35,8 @@ const mdlhorarioprofesional = ({
     );
 
     setItems(data);
+    setFechaDesde(formatearFechaLargaConelAnio(data[0].FechaDesde));
+    setFechaHasta(formatearFechaLargaConelAnio(data[0].FechaHasta));
    
   }
 
@@ -56,7 +49,10 @@ const mdlhorarioprofesional = ({
   }, []);
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg">
+    <Modal show={show} onHide={handleClose} size="lg"
+        backdrop="static"   // evita que se cierre al hacer clic fuera
+        keyboard={false}    // evita que se cierre con la tecla ESC
+    >
       <Modal.Header
         closeButton
         style={{ backgroundColor: "#0277bd", color: "white" }}
@@ -240,7 +236,29 @@ const mdlhorarioprofesional = ({
                 aria-describedby="basic-addon2"
                 //type="date"
                 /*   onChange={handleFechaChange} */
-                  value={formatearFechaLargaConelAnio(fecha)} 
+                  value={fechaDesde} 
+              />
+           
+            </InputGroup>
+             <InputGroup className="mb-3">
+             
+                 <InputGroup.Text
+                style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                 // height: "30px",
+                  fontSize: "12px"
+                }}
+              >
+               ESTOS HORARIOS SON HASTA LA FECHA:
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Sin definción de fecha hasta."
+                aria-label="Sin definción de fecha hasta. "
+                aria-describedby="basic-addon2"
+                //type="date"
+                /*   onChange={handleFechaChange} */
+                  value={fechaHasta} 
               />
            
             </InputGroup>
