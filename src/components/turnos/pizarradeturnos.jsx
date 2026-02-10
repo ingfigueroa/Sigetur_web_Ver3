@@ -29,6 +29,8 @@ import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 import { turnosService } from "/src/services/turnos.service";
 import { profesionalesService } from "/src/services/profesional.service";
 
+import CalendarTurnos from "../calendarios/calendar_ver1";
+
 function tablapizarradeturnos() {
   const [accionConfirmada, setAccionConfirmada] = useState(null);
 
@@ -91,7 +93,14 @@ function tablapizarradeturnos() {
 
   const [modalTitulo, setModalTitulo] = useState();
   const [modalCuerpo, setModalCuerpo] = useState();
-   const [turnosAnulados, setTurnosAnulados] = useState(false);
+  const [turnosAnulados, setTurnosAnulados] = useState(false);
+
+  const stickyTh = {
+    position: "sticky",
+    top: 0,
+    backgroundColor: "white",
+    zIndex: 3,
+  };
 
   const openMdlEstaSeguro = () => {
     setShowMDLEstaSeguro(true);
@@ -110,8 +119,10 @@ function tablapizarradeturnos() {
   };
 
   const openMdlListaEspera = () => {
-      if(turnosAnulados){
-      setModalMensaje("Los turnos del día están anulados. No se puede REGISTRAR en la LISTA DE ESPERA.");
+    if (turnosAnulados) {
+      setModalMensaje(
+        "Los turnos del día están anulados. No se puede REGISTRAR en la LISTA DE ESPERA."
+      );
       openMdlMensaje();
       return;
     }
@@ -242,9 +253,10 @@ function tablapizarradeturnos() {
   };
 
   const openMdlRegistrarSobreturno = (fila) => {
-
-  if(turnosAnulados){
-      setModalMensaje("Los turnos del día están anulados. No se puede REGISTRAR un SOBRETURNO.");
+    if (turnosAnulados) {
+      setModalMensaje(
+        "Los turnos del día están anulados. No se puede REGISTRAR un SOBRETURNO."
+      );
       openMdlMensaje();
       return;
     }
@@ -274,7 +286,8 @@ function tablapizarradeturnos() {
 
   const limpiar = () => {
     setItems([]);
-    SetFecha("");
+    const hoy = new Date().toISOString().split("T")[0];
+    SetFecha(handleFechaChange(hoy));
     setapeyNom("");
     setProfesion("");
     setCantidadTurnos("");
@@ -358,7 +371,7 @@ function tablapizarradeturnos() {
 
       if (data) {
         const cantRegistros = data.length;
-        console.log(cantRegistros)
+        console.log(cantRegistros);
         setCantidadTurnos(cantRegistros);
 
         if (cantRegistros == 0) {
@@ -490,9 +503,9 @@ function tablapizarradeturnos() {
 
   useEffect(() => {
     document.title = "Si.Ge.Tur. - Pizarra de turnos";
-    
+
     SetFecha(fechaActual);
-    
+
     handleFechaChange(fechaActual);
   }, []);
 
@@ -523,8 +536,10 @@ function tablapizarradeturnos() {
   };
 
   const anularTurno = () => {
-    if(turnosAnulados){
-      setModalMensaje("Los turnos del día ya se anularon. No se puede ANULAR LOS TURNOS.");
+    if (turnosAnulados) {
+      setModalMensaje(
+        "Los turnos del día ya se anularon. No se puede ANULAR LOS TURNOS."
+      );
       openMdlMensaje();
       return;
     }
@@ -541,9 +556,10 @@ function tablapizarradeturnos() {
   };
 
   const enviarTurnosProfesional = () => {
-  
-    if(turnosAnulados){
-      setModalMensaje("Los turnos del día ya se anularon. No se puede enviar MAIL al PROFESIONAL.");
+    if (turnosAnulados) {
+      setModalMensaje(
+        "Los turnos del día ya se anularon. No se puede enviar MAIL al PROFESIONAL."
+      );
       openMdlMensaje();
       return;
     }
@@ -555,11 +571,7 @@ function tablapizarradeturnos() {
     setAccionConfirmada(1);
     setShowMDLEstaSeguro(true);
   };
-  /* 
-  console.log("Items:", Items, "Length:", Items?.length);
 
-  console.log("Fecha:", Fecha, "fechaActual:", fechaActual);
-console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
   const procesar = async () => {
     limpiarTabla();
 
@@ -568,11 +580,10 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
         IDProfesional,
         Fecha
       );
-      setCantidadTurnos(turnosencontrados.length)
+      setCantidadTurnos(turnosencontrados.length);
       if (turnosencontrados && turnosencontrados.length > 0) {
-       
         setapeyNom(turnosencontrados[0].apenomprof);
-      
+
         setProfesion(turnosencontrados.servicio);
         setMailProfesional(turnosencontrados.email);
 
@@ -591,7 +602,7 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
         IDProfesional,
         Fecha
       );
-      setTurnosAnulados(hayTurnosAnulados)
+      setTurnosAnulados(hayTurnosAnulados);
       if (Fecha < fechaActual) {
         if (hayTurnosAnulados) {
           setModalMensaje(
@@ -635,24 +646,68 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
     <>
       <div
         style={{
+          display: "grid",
+          gridTemplateColumns: "270px 1fr",
+          gap: "15px",
           width: "100%",
-
-          marginTop: "0",
-          marginBottom: "0",
           marginLeft: "15px",
         }}
       >
+        {/* COLUMNA IZQUIERDA - CALENDARIO */}
+
+        <div
+          style={{
+            backgroundColor: "white",
+            border: "1px solid #ddd",
+            padding: "5px",
+            height: "fit-content",
+          }}
+        >
+          {/* ACA VA TU COMPONENTE CALENDAR */}
+          <CalendarTurnos
+            fecha={new Date(Fecha)}
+            onChange={(date) => {
+              // Convertir a yyyy-mm-dd
+
+              const yyyy = date.getFullYear();
+              const mm = String(date.getMonth() + 1).padStart(2, "0");
+              const dd = String(date.getDate()).padStart(2, "0");
+
+              const fechaFormateada = `${yyyy}-${mm}-${dd}`;
+
+              //onChange={handleFechaChange}
+
+              handleFechaChange(fechaFormateada);
+
+              procesar();
+              // setFecha(fechaFormateada);
+
+              // Si querés disparar búsqueda automática
+              // procesar();
+            }}
+          />
+          <hr />
+         
+        </div>
+
         <div
           style={{
             display: "flex",
-            backgroundColor: "white",
-            marginBottom: "5px",
+            flexDirection: "column",
+            width: "100%",
           }}
         >
-          {/* <div style={{ width: "60%", textAlign: "center", display: "grid" }}>
-            <h2> Pizarra de turnos</h2>
-          </div> */}
-          <div style={{ width: "40%", textAlign: "left", marginTop: "10px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}
+          >
             <button
               title="Anular todos los turnos del día."
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -664,9 +719,9 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
                 anularTurno();
               }}
             >
-              <i class="fa-solid fa-minus"></i>
+              <i className="fa-solid fa-minus"></i>
             </button>
-          
+
             <button
               title="Email al profesional de los turnos de la grilla"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -676,29 +731,28 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
                 enviarTurnosProfesional();
               }}
             >
-             <i class="fa-solid fa-envelope"></i>
+              <i className="fa-solid fa-envelope"></i>
             </button>
-          
+
             <button
               title="Horarios del profesional"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
               disabled={Items.length == 0}
-
               onClick={(event) => {
                 event.preventDefault();
                 setDescripcion(event.currentTarget.textContent.trim());
                 openMdlHoraProfe();
               }}
             >
-              <i class="fa-solid fa-clock"></i>
+              <i className="fa-solid fa-clock"></i>
             </button>
             <button
               title="Lista de espera"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-               disabled={Items.length == 0}
+              disabled={Items.length == 0}
               onClick={openMdlListaEspera}
             >
-              <i class="fa-solid fa-book-open-reader"></i>
+              <i className="fa-solid fa-book-open-reader"></i>
             </button>
 
             <button
@@ -707,63 +761,53 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
               disabled={Items.length == 0}
               onClick={openMdlRegistrarSobreturno}
             >
-              <i class="fa-solid fa-arrow-turn-down"></i>
+              <i className="fa-solid fa-arrow-turn-down"></i>
             </button>
-              <button
+            <button
               title="Dashboard"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              disabled="true"
+              disabled={true}
               // style={{ display: "none" }}
             >
-             <i class="fa-solid fa-chart-pie"></i>
+              <i className="fa-solid fa-chart-pie"></i>
             </button>
-            <h5 style={{ color: "black" }}>{descripcion}</h5>
-          </div>
-        </div>
+            <button
+              title="Limpiar"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              style={{ marginLeft: "auto" }}
+              onClick={(event) => {
+                event.preventDefault();
+                limpiar();
+              }}
+            >
+              <i className="fa-solid fa-broom"></i>
+            </button>
+                        <button
+              title="Limpiar"
+              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              
+              onClick={(event) => {
+                event.preventDefault();
+                limpiar();
+              }}
+            >
+              <i className="fa-solid fa-broom"></i>
+            </button>
 
-        <hr></hr>
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            backgroundColor: "",
-          }}
-        >
-          <div
-            style={{
-              width: "95%",
-              backgroundColor: "",
-            }}
-          >
+            {/* <h5 style={{ color: "black" }}>{descripcion}</h5> */}
+          </div>
+          <div style={{ flex: 1 }}>
             <InputGroup className="mb-3">
-              <InputGroup.Text
-                style={{
-                  backgroundColor: "#679bb9",
-                  width: "15%",
-                  color: "white",
-                  height: "28px",
-                }}
-              >
-                Elegir fecha:
-              </InputGroup.Text>
-              <Form.Control
-                style={{
-                  height: "28px",
-                }}
-                placeholder="Buscar profesional"
-                aria-label="Buscar profesional"
-                aria-describedby="basic-addon2"
-                type="date"
-                onChange={handleFechaChange}
-                value={Fecha}
-              />
               <Form.Control
                 style={{
                   backgroundColor: "#679bb9",
+                  //backgroundColor: "blue",
                   color: "white",
                   height: "28px",
-                  marginLeft: "15px",
-                  width: "20%",
+
+                  width: "80%",
+                  textAlign: "center",
+                  fontSize: "25px",
                 }}
                 aria-describedby="basic-addon2"
                 readOnly
@@ -846,345 +890,338 @@ console.log("Comparación:", new Date(Fecha) <= new Date(fechaActual)); */
                 readOnly
                 value={cantidadTurnos}
               />
+              {/*   <Button
+                variant="primary"
+                size="sm"
+                style={{
+                  marginLeft: "10px",
+                  marginRight: "10px",
+                  width: "10%",
+                  textAlign: "center",
+                  height: "30px",
+                }}
+                onClick={(event) => {
+                  event.preventDefault();
+                  limpiar();
+                }}
+              >
+                Limpiar
+              </Button> */}
             </InputGroup>
 
-            <InputGroup
-              style={{ display: "flex", alignItems: "center", gap: "10px" }}
-            ></InputGroup>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              width: "15%",
-
-              backgroundColor: "",
-            }}
-          >
-            <Button
-              variant="success"
-              size="sm"
+            <div
               style={{
-                marginLeft: "20px",
-                marginRight: "20px",
-                width: "70%",
-                textAlign: "center",
-                height: "30px",
-              }}
-              /* (event) => {
-                event.preventDefault();
-
-                BuscarTurnosPorProfesionalPorFecha(
-                  idusuario,
-                  IDProfesional,
-                  Fecha
-                ); */
-              onClick={(event) => {
-                event.preventDefault();
-                procesar();
+                maxHeight: "60vh",
               }}
             >
-              Burcar Turnos
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              style={{
-                marginLeft: "20px",
-                marginRight: "20px",
-                width: "70%",
-                textAlign: "center",
-                height: "30px",
-              }}
-              onClick={(event) => {
-                event.preventDefault();
-                limpiar();
-              }}
-            >
-              Limpiar
-            </Button>
+              <Table bordered hover className="tabla-turnos">
+                <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
+                  <tr className="personalizarfila h-50">
+                    <th
+                      style={{
+                        textAlign: "center",
+                      }}
+                    >
+                      Estado
+                    </th>
+
+                    <th style={{ textAlign: "center" }} key="1">
+                      Hora
+                    </th>
+
+                    <th
+                      style={{
+                        textAlign: "left",
+                      }}
+                      key="2"
+                    >
+                      Paciente
+                    </th>
+                    <th
+                      style={{
+                        textAlign: "center",
+                      }}
+                      key="3"
+                    >
+                      DNI
+                    </th>
+
+                    <th
+                      style={{
+                        textAlign: "center",
+                      }}
+                      key="4"
+                    >
+                      Obra social
+                    </th>
+
+                    <th
+                      style={{
+                        textAlign: "center",
+                      }}
+                      key="8"
+                    >
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Items &&
+                    Items.map((item) => {
+                      // Formatear el campo "Descripcion" como hora
+                      const fechaTurnoCompleta = new Date(
+                        `${Fecha}T${item.hora}:00`
+                      );
+                      const ahora = new Date();
+
+                      let buttonVariant;
+                      let buttonText;
+                      let isButtonDisabled = false;
+
+                      // Definir variantes y textos según el estado
+                      switch (item.sigla) {
+                        case "ANU":
+                          buttonVariant = "dark";
+                          isButtonDisabled = true;
+                          buttonText = item.estado;
+                          break;
+                        case "PEN":
+                          if (!item.sobre) {
+                            buttonVariant = "warning";
+                            buttonText = item.estado;
+                            break;
+                          } else {
+                            buttonVariant = "info";
+                            buttonText = "SOBRETURNO";
+                            break;
+                          }
+                        case "PRE":
+                          buttonVariant = "primary";
+                          buttonText = item.estado;
+                          break;
+
+                        case "ACA":
+                          buttonVariant = "info";
+                          buttonText = item.estado;
+                          break;
+                        case "ASA":
+                          buttonVariant = "danger";
+                          buttonText = item.estado;
+                          break;
+                        case "PEN COB":
+                          buttonVariant = "warning";
+                          buttonText = item.estado;
+                          break;
+                        case "PRE COB":
+                          buttonVariant = "primary";
+                          buttonText = item.estado;
+                          break;
+                        case "NCI":
+                          buttonVariant = "secondary";
+                          buttonText = item.estado;
+                          break;
+                        case "PRE NCOB":
+                          buttonVariant = "primary";
+                          isButtonDisabled = true;
+                          buttonText = item.estado;
+                          break;
+
+                        case "LIB":
+                          if (ahora >= fechaTurnoCompleta) {
+                            isButtonDisabled = true;
+                          }
+                          buttonVariant = "success";
+                          buttonText = item.estado;
+
+                          break;
+                      }
+
+                      return (
+                        <tr key={item.idTurno}>
+                          <td style={{ textAlign: "center", fontSize: "10px" }}>
+                            <Button
+                              variant={buttonVariant}
+                              disabled={isButtonDisabled}
+                              size="sm"
+                              style={{
+                                width: "60%",
+                                textAlign: "center",
+                                fontSize: "10px",
+                              }}
+                              onClick={(event) => {
+                                event.preventDefault();
+
+                                setHoraTurno(item.hora); // Actualiza `setHoraTurno` con `item.desde`
+
+                                // Obtiene la hora actual y la asigna a `setHoraActual`
+                                // O ajusta el formato según lo necesites
+                                setHoraActual(horaActual);
+
+                                if (item.estado == "PENDIENTE") {
+                                  if (Fecha > fechaActual) {
+                                    setModalMensaje(
+                                      "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."
+                                    );
+                                    openMdlMensaje();
+                                    return;
+                                  }
+
+                                  definirEstadosdeTurnos(item, "PENDIENTE");
+                                } else if (item.estado == "LIBRE") {
+                                  if (Fecha >= fechaActual) {
+                                    definirEstadosdeTurnos(item, "LIBRE");
+                                  } else {
+                                    setModalMensaje(
+                                      "Fecha expirada. No se puede cambiar el estado del turno."
+                                    );
+                                    openMdlMensaje();
+                                  }
+                                } else if (
+                                  item.estado == "PRESENTE NO COBRADO"
+                                ) {
+                                  setModalMensaje(
+                                    "Fecha expirada. No se puede cambiar el estado del turno."
+                                  );
+                                }
+                              }}
+                            >
+                              {buttonText}
+                            </Button>
+                          </td>
+                          <td style={{ textAlign: "center", fontSize: "12px" }}>
+                            {item.hora}
+                          </td>{" "}
+                          {/* Mostrar hora formateada */}
+                          <td style={{ textAlign: "center", fontSize: "10px" }}>
+                            <Button
+                              variant=""
+                              size="sm"
+                              style={{ width: "70%", textAlign: "left" }}
+                            >
+                              {item.apenompaciente}
+                            </Button>
+                          </td>
+                          <td style={{ textAlign: "center", fontSize: "12px" }}>
+                            {item.nroDoc > 0 ? item.nroDoc : null}
+                          </td>
+                          <td style={{ textAlign: "center", fontSize: "12px" }}>
+                            {item.os}
+                          </td>
+                          <td style={{ textAlign: "center", fontSize: "10px" }}>
+                            {item.estado == "PENDIENTE" && (
+                              <button
+                                title="Anular turno"
+                                className="btn btn-sm btn-light btn-danger"
+                                onClick={(event) => {
+                                  event.preventDefault();
+
+                                  definirEstadosdeTurnos(item, "ANULAR");
+                                }}
+                              >
+                                <i className="fa-solid fa-trash"></i>
+                              </button>
+                            )}
+
+                            {item.estado == "PENDIENTE" && (
+                              <button
+                                title="Registrar cobro"
+                                className="btn btn-sm btn-light btn-success"
+                                variant="outline-secondary"
+                                onClick={(event) => {
+                                  event.preventDefault();
+
+                                  openMdlTurnoRegistrarCobro(item);
+                                }}
+                              >
+                                <i className="fa-solid fa-dollar-sign"></i>
+                              </button>
+                            )}
+
+                            {item.estado !== "LIBRE" &&
+                              item.estado !== "ANULADO" && (
+                                <button
+                                  title="Detalle del turno"
+                                  className="btn btn-sm btn-light btn-success"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+
+                                    openMdlTurnoDetalle(item);
+                                  }}
+                                >
+                                  <i className="fa-solid fa-file-invoice-dollar"></i>
+                                </button>
+                              )}
+                            {item.estado === "LIBRE" &&
+                              fechaTurnoCompleta >= ahora && (
+                                <button
+                                  title="Copiar ID del turno"
+                                  className="btn btn-sm btn-light btn-success"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+
+                                    // Copia el id al portapapeles
+                                    navigator.clipboard
+                                      .writeText(item.idTurno)
+                                      .then(() => {
+                                        console.log(
+                                          "ID copiado:",
+                                          item.idTurno
+                                        );
+                                        // Opcional: mostrar feedback visual
+                                        alert(
+                                          "ID del turno copiado al portapapeles"
+                                        );
+                                      })
+                                      .catch((err) => {
+                                        console.error("Error al copiar:", err);
+                                      });
+                                  }}
+                                >
+                                  <i class="fa-solid fa-copy"></i>
+                                </button>
+                              )}
+
+                            {item.estado == "PRESENTE NO COBRADO" && (
+                              <button
+                                title="Registrar cobro"
+                                className="btn btn-sm btn-light btn-success"
+                                variant="outline-secondary"
+                                onClick={(event) => {
+                                  event.preventDefault();
+
+                                  openMdlTurnoRegistrarCobro(item);
+                                }}
+                              >
+                                <i className="fa-solid fa-dollar-sign"></i>
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </Table>
+            </div>
           </div>
         </div>
 
-        <div className="acomodartabla">
-          <Table bordered hover style={{ width: "100%", textAlign: "center" }}>
-            <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
-              <tr className="personalizarfila h-50">
-                <th
-                  style={{
-                    textAlign: "center",
+        <hr />
 
-                    width: "200px",
-                  }}
-                >
-                  Estado
-                </th>
-
-                <th style={{ textAlign: "center" }} key="1">
-                  Hora
-                </th>
-
-                <th
-                  style={{
-                    textAlign: "left",
-                  }}
-                  key="2"
-                >
-                  Paciente
-                </th>
-                <th
-                  style={{
-                    textAlign: "center",
-                  }}
-                  key="3"
-                >
-                  DNI
-                </th>
-
-                <th key="4">Obra social</th>
-
-                <th
-                  style={{
-                    textAlign: "center",
-                  }}
-                  key="8"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {Items &&
-                Items.map((item) => {
-                  // Formatear el campo "Descripcion" como hora
-                  const fechaTurnoCompleta = new Date(
-                    `${Fecha}T${item.hora}:00`
-                  );
-                  const ahora = new Date();
-
-                  let buttonVariant;
-                  let buttonText;
-                  let isButtonDisabled = false;
-
-                  // Definir variantes y textos según el estado
-                  switch (item.sigla) {
-                    case "ANU":
-                      buttonVariant = "dark";
-                      isButtonDisabled = true;
-                      buttonText = item.estado;
-                      break;
-                    case "PEN":
-                      if (!item.sobre) {
-                        buttonVariant = "warning";
-                        buttonText = item.estado;
-                        break;
-                      } else {
-                        buttonVariant = "info";
-                        buttonText = "SOBRETURNO";
-                        break;
-                      }
-                    case "PRE":
-                      buttonVariant = "primary";
-                      buttonText = item.estado;
-                      break;
-
-                    case "ACA":
-                      buttonVariant = "info";
-                      buttonText = item.estado;
-                      break;
-                    case "ASA":
-                      buttonVariant = "danger";
-                      buttonText = item.estado;
-                      break;
-                    case "PEN COB":
-                      buttonVariant = "warning";
-                      buttonText = item.estado;
-                      break;
-                    case "PRE COB":
-                      buttonVariant = "primary";
-                      buttonText = item.estado;
-                      break;
-                    case "NCI":
-                      buttonVariant = "secondary";
-                      buttonText = item.estado;
-                      break;
-                    case "PRE NCOB":
-                      buttonVariant = "primary";
-                      isButtonDisabled = true;
-                      buttonText = item.estado;
-                      break;
-
-                    case "LIB":
-                 
-                      if (ahora >= fechaTurnoCompleta) {
-                        isButtonDisabled = true;
-                      }
-                      buttonVariant = "success";
-                      buttonText = item.estado;
-
-                      break;
-                  }
-
-                  return (
-                    <tr key={item.idTurno}>
-                      <td style={{ textAlign: "center", fontSize: "10px" }}>
-                        <Button
-                          variant={buttonVariant}
-                          disabled={isButtonDisabled}
-                          size="sm"
-                          style={{ width: "60%", textAlign: "center", fontSize: "10px"  }}
-                          onClick={(event) => {
-                            event.preventDefault();
-
-                            setHoraTurno(item.hora); // Actualiza `setHoraTurno` con `item.desde`
-
-                            // Obtiene la hora actual y la asigna a `setHoraActual`
-                            // O ajusta el formato según lo necesites
-                            setHoraActual(horaActual);
-
-                            if (item.estado == "PENDIENTE") {
-                              if (Fecha > fechaActual) {
-                                setModalMensaje(
-                                  "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."
-                                );
-                                openMdlMensaje();
-                                return;
-                              }
-
-                              definirEstadosdeTurnos(item, "PENDIENTE");
-                            } else if (item.estado == "LIBRE") {
-                              if (Fecha >= fechaActual) {
-                                definirEstadosdeTurnos(item, "LIBRE");
-                              } else {
-                                setModalMensaje(
-                                  "Fecha expirada. No se puede cambiar el estado del turno."
-                                );
-                                openMdlMensaje();
-                              }
-                            } else if (item.estado == "PRESENTE NO COBRADO") {
-                              setModalMensaje(
-                                "Fecha expirada. No se puede cambiar el estado del turno."
-                              );
-                            }
-                          }}
-                        >
-                          {buttonText}
-                        </Button>
-                      </td>
-                      <td style={{ textAlign: "center", fontSize: "12px" }}>
-                        {item.hora}
-                      </td>{" "}
-                      {/* Mostrar hora formateada */}
-                      <td style={{ textAlign: "center", fontSize: "10px" }}>
-                        <Button
-                          variant=""
-                          size="sm"
-                          style={{ width: "70%", textAlign: "left" }}
-                        >
-                          {item.apenompaciente}
-                        </Button>
-                      </td>
-                      <td style={{ textAlign: "center", fontSize: "12px" }}>
-                        {item.nroDoc > 0 ? item.nroDoc : null}
-                      </td>
-                      <td style={{ textAlign: "center", fontSize: "12px" }}>
-                        {item.os}
-                      </td>
-                      <td style={{ textAlign: "center", fontSize: "10px" }}>
-                       
-                        {item.estado == "PENDIENTE" && (
-                          <button
-                            title="Anular turno"
-                            className="btn btn-sm btn-light btn-danger"
-                            onClick={(event) => {
-                              event.preventDefault();
-
-                              definirEstadosdeTurnos(item, "ANULAR");
-                            }}
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
-                          
-                          
-                        )}
-
-                          {item.estado == "PENDIENTE" && (
-                          <button
-                            title="Registrar cobro"
-                            className="btn btn-sm btn-light btn-success"
-                            variant="outline-secondary"
-                            onClick={(event) => {
-                              event.preventDefault();
-
-                              openMdlTurnoRegistrarCobro(item);
-                            }}
-                          >
-                            <i className="fa-solid fa-dollar-sign"></i>
-                          </button>
-                          
-                          
-                        )}
-
-                        {item.estado !== "LIBRE" &&
-                          item.estado !== "ANULADO" && (
-                            <button
-                              title="Detalle del turno"
-                              className="btn btn-sm btn-light btn-success"
-                              onClick={(event) => {
-                                event.preventDefault();
-
-                                openMdlTurnoDetalle(item);
-                              }}
-                            >
-                              <i className="fa-solid fa-file-invoice-dollar"></i>
-                            </button>
-                          )}
-                        {item.estado === "LIBRE" &&
-                          fechaTurnoCompleta >= ahora && (
-                            <button
-                              title="Copiar ID del turno"
-                              className="btn btn-sm btn-light btn-success"
-                              onClick={(event) => {
-                                event.preventDefault();
-
-                                // Copia el id al portapapeles
-                                navigator.clipboard
-                                  .writeText(item.idTurno)
-                                  .then(() => {
-                                    console.log("ID copiado:", item.idTurno);
-                                    // Opcional: mostrar feedback visual
-                                    alert(
-                                      "ID del turno copiado al portapapeles"
-                                    );
-                                  })
-                                  .catch((err) => {
-                                    console.error("Error al copiar:", err);
-                                  });
-                              }}
-                            >
-                              <i class="fa-solid fa-copy"></i>
-                            </button>
-                          )}
-
-                        {item.estado == "PRESENTE NO COBRADO" && (
-                          <button
-                            title="Registrar cobro"
-                            className="btn btn-sm btn-light btn-success"
-                            variant="outline-secondary"
-                            onClick={(event) => {
-                              event.preventDefault();
-
-                              openMdlTurnoRegistrarCobro(item);
-                            }}
-                          >
-                            <i className="fa-solid fa-dollar-sign"></i>
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </Table>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column", // 👈 CLAVE
+            width: "100%",
+          }}
+        >
+          {/*  <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              minWidth: "140px",
+            }}
+          > */}
         </div>
       </div>
 

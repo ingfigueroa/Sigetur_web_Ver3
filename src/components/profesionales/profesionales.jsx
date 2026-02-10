@@ -113,7 +113,7 @@ function Profesionales() {
 
   const mdlSiNo = async (respuesta) => {
     if (respuesta) {
-        console.log(idProfesional)
+      
         if (idProfesional > 0) {
           const data = await profesionalesService.GrabarBaja(
             idProfesional,
@@ -196,10 +196,6 @@ function Profesionales() {
     modalDialogService.Alert("En desarrollo...");
   }
 
-  // Volver/Cancelar desde Agregar/Modificar/Consultar
-  function Volver() {
-    setAccionABMC("L");
-  }
   const transitarapasivoprofesional = (id) =>{
     setIDProfesional(id)
     setModalTitulo("Dar de baja el profesional");

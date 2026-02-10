@@ -63,6 +63,13 @@ const urlResourceIntervalosListar = urlServidor + "/intervaloslistar"
 
 const urlResourceDiasSemanaListar = urlServidor + "/diassemanalistar"
 
+/*----HISTORIA CLINICA---*/
+const urlHCAnamnesisMedica = urlServidor + "/hcanamnesismedicaadd"
+
+const urlHCAnamnesisOdontologica = urlServidor + "/hcanamnesisodontologicaadd"
+
+const urlHCAnamnesisMedicaBuscar = urlServidor + "/hcanamnesismedicabuscar"
+
 
 
 export const config = {
@@ -115,5 +122,8 @@ export const config = {
     urlResourceProfesionalCambioHorario,
     urlResourceObrasSocialesAsignarPaciente,
     urlResourceObrasSocialesDesafectarPaciente,
-    urlResourceObrasSocialesActivar
+    urlResourceObrasSocialesActivar,
+    urlHCAnamnesisMedica,
+    urlHCAnamnesisOdontologica,
+    urlHCAnamnesisMedicaBuscar
 }

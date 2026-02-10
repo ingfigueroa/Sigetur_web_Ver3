@@ -20,7 +20,7 @@ import MdlultimosTurnos from "../pacientes/mdlpacienteultimosturnos";
 
 import modalDialogService from "/src/services/modalDialog.service";
 
-import MdlHistoriaClinica from "../historiasclinicas/hc_odontologia";
+import MdlHistoriaClinica from "../historiasclinicas/hc_historia_clinica";
 
 import MdlAsignarObraSocial from "../obrassociales/asignarobrasocial";
 
@@ -30,13 +30,11 @@ function Pacientes() {
 
   const [VarDNI, SetDNI] = useState(null);
 
-  const [currentPage, setCurrentPage] = useState(1);
 
- 
  const [mdlHistoriaClinica, setModalHistoriaClinica] = useState(false);
   const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false);
   const [mdlEditarPaciente, setMdlEditarPaciente] = useState(false);
-  const [idPaciente, setIDPaciente] = useState(false);
+  const [idPaciente, setIDPaciente] = useState(0);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
@@ -45,6 +43,7 @@ function Pacientes() {
   const [apeyNom, setapeyNom] = useState(null);
   const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
   const [mdlUltimosTurnos, setModalUltimosTurnos] = useState(false);
+
 
 
 
@@ -199,30 +198,7 @@ function Pacientes() {
     SetDNI("");
     setItems([]);
   }
-  /* 
-  async function Grabar(item) {
-    // agregar o modificar
-    try
-    {
-      await pacientesService.Grabar(item);
-    }
-    catch (error)
-    {
-      modalDialogService.Alert(error?.response?.data?.message ?? error.toString())
-      return;
-    }
-    await Buscar();
-    Volver();
   
-    //setTimeout(() => {
-      modalDialogService.Alert(
-        "Registro " +
-          (AccionABMC === "A" ? "agregado" : "modificado") +
-          " correctamente."
-      );
-    //}, 0);
-  } */
-
   // Volver/Cancelar desde Agregar/Modificar/Consultar
   function Volver() {
     setAccionABMC("L");
@@ -554,6 +530,7 @@ function Pacientes() {
         <MdlHistoriaClinica
           show={openMdlHistoriaClinica}
           handleClose={closeMdlHistoriaClinica}
+          idPaciente={idPaciente}
          
         />
       )}

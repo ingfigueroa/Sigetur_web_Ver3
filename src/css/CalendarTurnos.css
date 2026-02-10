@@ -1,0 +1,87 @@
+.calendar-container {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px;
+  width: 250px;          /* 👈 controla el tamaño */
+}
+
+.calendar-title {
+  text-align: center;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Calendario general */
+.react-calendar {
+  width: 100%;
+  font-size: 11px;       /* 👈 clave para achicar */
+  border: none;
+}
+
+/* Cabecera (mes / año) */
+.react-calendar__navigation button {
+  min-width: 30px;
+  padding: 4px;
+  font-size: 11px;
+}
+
+/* Días */
+.react-calendar__tile {
+  padding: 4px 2px;      /* 👈 más compacto */
+}
+
+/* Día seleccionado */
+.react-calendar__tile--active {
+  background: #0d6efd;
+  color: white;
+  border-radius: 6px;
+}
+
+/* Hover */
+.react-calendar__tile:hover {
+  background: #e9ecef;
+  border-radius: 6px;
+}
+
+/* Hoy */
+.dia-hoy {
+  background-color:green !important;
+  color: white !important;
+  border-radius: 6px;
+}
+
+/* Día seleccionado */
+.dia-seleccionado {
+  background-color: white !important; */
+  color: white !important;
+  border-radius: 6px;
+}
+
+.tabla-turnos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-turnos thead th {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+}
+
+.tabla-turnos tbody {
+  display: block;
+  max-height: 60vh;   /* altura del scroll */
+  overflow-y: auto;
+}
+
+.tabla-turnos thead,
+.tabla-turnos tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+

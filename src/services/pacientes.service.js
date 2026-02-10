@@ -4,6 +4,7 @@ import httpService from "./http.service";
 
 // mas adelante podemos usar un archivo de configuracion para el urlResource
  import {config} from "../config.js";
+import { Email } from "@mui/icons-material";
  const urlResource = config.urlResourcePacientes;
  const urlResourceAdd = config.urlResourcePacientesAdd;
  const urlResourceID = config.urlResourcePacienteID;
@@ -43,12 +44,13 @@ async function ActivarDesactivar(item) {
 }
 
 
-async function GrabarAlta(idpaciente, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, idusuario, nuevo) {
+async function GrabarAlta( Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, idusuario) {
   try {
    
 
+
     await httpService.post(urlResourceAdd, {
-      idpaciente,
+     
       Nombres, 
       Apellido, 
       TipoDocumento,
@@ -57,8 +59,7 @@ async function GrabarAlta(idpaciente, Nombres, Apellido, TipoDocumento, NroDocum
       FechaNacimiento, 
       TECelular, 
       Sexo,
-      idusuario,
-      nuevo
+      idusuario
       
     });
    

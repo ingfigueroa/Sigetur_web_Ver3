@@ -40,12 +40,16 @@ import AgendaSemanal from "./profesionales/agendasemanal";
 
 import DashboardTurnos from "./dashboard/dashboard_general";
 
+import HistoriaClinica from "./historiasclinicas/hc_historia_clinica";
+
 
 
 export default function sigetur() {
   const [mostrarProfesional, setMostrarProfesional] = useState(false);
 
   const [mostrarObraSocial, setMostrarObraSocial] = useState(false);
+
+   const [mostrarHistoriaClinica, setMostrarHistoriaClinica] = useState(false);
 
   const [mostrarPaciente, setMostrarPaciente] = useState(false);
 
@@ -61,11 +65,13 @@ export default function sigetur() {
 
   const [titulo, setTitulo] = useState("PIZARRA DE TURNOS");
 
+
   const MostrarObraSocial = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(false);
     setMostrarListadeEspera(false);
-    setMostrarObraSocial(true);
+    setMostrarObraSocial(false);
     setMostrarProfesional(false);
     setMostrarAgendaSemanal(false);
     setMostrarConsulta(false);
@@ -73,7 +79,23 @@ export default function sigetur() {
     setOpen(false);
   };
 
+
+  const MostrarHistoriaClinica = () => {
+    setMostrarHistoriaClinica(true)
+    setMostrarPizarradeTurnos(false);
+    setMostrarPaciente(false);
+    setMostrarListadeEspera(false);
+    setMostrarObraSocial(false);
+    setMostrarProfesional(false);
+    setMostrarAgendaSemanal(false);
+    setMostrarConsulta(false);
+   
+     setTitulo("GESTIÓN DE HISTORIA CLINICA");
+    setOpen(false);
+  };
+
   const MostrarListaDeEspera = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
@@ -87,6 +109,7 @@ export default function sigetur() {
   };
 
   const MostrarProfesionales = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
@@ -100,6 +123,7 @@ export default function sigetur() {
   };
 
   const MostrarPacientes = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPizarradeTurnos(false);
     setMostrarPaciente(true);
     setMostrarObraSocial(false);
@@ -113,6 +137,7 @@ export default function sigetur() {
   };
 
   const MostrarPizarradeTurnos = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(true);
@@ -126,6 +151,7 @@ export default function sigetur() {
   };
 
   const MostrarAgendaSemanal = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(false);
@@ -139,6 +165,7 @@ export default function sigetur() {
   };
 
   const MostrarConsulta = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(false);
@@ -153,6 +180,7 @@ export default function sigetur() {
 
   
   const MostrarDashboard = () => {
+    setMostrarHistoriaClinica(false)
     setMostrarPaciente(false);
     setMostrarObraSocial(false);
     setMostrarPizarradeTurnos(false);
@@ -398,6 +426,25 @@ export default function sigetur() {
                 <ListItemText primary="Obras Sociales" />
               </ListItem>
 
+                <ListItem
+                button
+                onClick={MostrarHistoriaClinica}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#2980B9",
+                    color: "white", // texto blanco al hacer hover
+                    "& .MuiListItemIcon-root": {
+                      color: "white", // ícono blanco también
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <LocalHospitalIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText primary="Historia Clínica" />
+              </ListItem>
+
               <Divider sx={{ marginY: "0.5", backgroundColor: "black" }} />
 
               <ListItem
@@ -470,6 +517,8 @@ export default function sigetur() {
           {mostrarObraSocial && <ObrasSociales />}
           {mostrarAgendaSemanal && <AgendaSemanal />}
           {mostraConsulta && <ConsultaTurnos />}
+
+          {mostrarHistoriaClinica && <HistoriaClinica />}
            
           {mostrarListadeEspera && (
             <ListadeEsperaV1 />

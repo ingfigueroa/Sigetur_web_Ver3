@@ -19,7 +19,7 @@ import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 
 
 
-import { calcularEdad, getFechaISO } from "../../components/utils/fecha";
+import { calcularEdadDiaMesAnio, getFechaISO } from "../../components/utils/fecha";
 
 
 const modificarpaciente = ({ show, handleClose, idpaciente }) => {
@@ -149,7 +149,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
   useEffect(() => {
     
     if (fechaNacimiento) {
-      setEdad(calcularEdad(fechaNacimiento));
+      setEdad(calcularEdadDiaMesAnio(fechaNacimiento));
     }
   }, [fechaNacimiento]);
 

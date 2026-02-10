@@ -101,7 +101,7 @@ async function getBuscarFechaCambioHorario(idprofesional) {
 async function putCambioHorarioMultiple(payload){
   try{
   
-    console.log(payload)
+   
   await httpService.post(urlResourceProfesionalCambioHorario, payload );
   
   //return httpService.post("/profesional/cambiohorariomultiple", payload);

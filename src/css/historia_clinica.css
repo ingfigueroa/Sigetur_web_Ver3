@@ -1,0 +1,52 @@
+
+
+
+
+
+.hc-tabs {
+  width: 100%;
+  border-collapse: collapse;
+ 
+}
+
+.hc-tabs .nav-tabs {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+  
+}
+
+
+
+.hc-tabs tbody {
+  display: block;
+  max-height: 60vh;   /* altura del scroll */
+  overflow-y: auto;
+   
+}
+/* 
+.hc-tabs .nav-tabs,
+.hc-tabs tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+ */
+
+/* TAB ACTIVO */
+.hc-tabs ul.nav-tabs > li > .nav-link.active {
+  background-color: #0a58ca;
+  font-weight: 700;
+  color: white;
+}
+
+.hc-tabs .nav-tabs .nav-link:not(.active):hover {
+  background-color: #f1f8ff;
+}
+
+
+/* Tabs NO activos (opcional) */
+.hc-tabs .nav-link {
+  color: #495057;
+}

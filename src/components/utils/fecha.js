@@ -118,7 +118,8 @@ export function validarHorasDesdeHastaIntervalo(horaDesdeId, horaHastaId, interv
 }
 
 // src/utils/fecha.js
-export function calcularEdad(fechaNacimiento) {
+export function calcularEdadAnioMesDia(fechaNacimiento) {
+  //funciona si la fecha viene con formato AÑO-MES-DIA
  
   if (!fechaNacimiento) return null;
 
@@ -131,5 +132,54 @@ export function calcularEdad(fechaNacimiento) {
     edad--;
   }
   return edad;
+}
+
+
+// src/utils/fecha.js
+export function calcularEdadDiaMesAnio(fechaNacimiento) {
+  //funciona si la fecha viene con formato DIA-MES-AÑO
+  if (!fechaNacimiento) return null;
+
+  let nacimiento;
+
+  // Si viene en formato DD-MM-YYYY
+  if (typeof fechaNacimiento === "string" && fechaNacimiento.includes("-")) {
+    const [dia, mes, anio] = fechaNacimiento.split("-");
+    nacimiento = new Date(anio, mes - 1, dia);
+  } else {
+    nacimiento = new Date(fechaNacimiento);
+  }
+
+  if (isNaN(nacimiento)) return null;
+
+  const hoy = new Date();
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const m = hoy.getMonth() - nacimiento.getMonth();
+
+  if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+    edad--;
+  }
+
+  return edad;
+}
+
+
+//convierte la fecha para usarla en Calendar
+export function toLocalDate(date) {
+  if (!date) return null;
+  const d = new Date(date);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+}
+
+export function getFechaDMY(fecha) {
+  if (!fecha) return "";
+
+  const fechaObj = new Date(fecha);
+
+  const dia = String(fechaObj.getUTCDate()).padStart(2, "0");
+  const mes = String(fechaObj.getUTCMonth() + 1).padStart(2, "0");
+  const anio = fechaObj.getUTCFullYear();
+
+  return `${dia}-${mes}-${anio}`;
 }
 

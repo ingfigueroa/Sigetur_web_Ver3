@@ -267,7 +267,7 @@ async function GrabarSobreturnoPaciente(idprofesional, idpaciente, idobrasocial,
       observaciones,
       idusuario 
     });
-    console.log('Turno registrado correctamente:', response.data);
+    
     return response.data; // útil si el llamador necesita saber el resultado
   } catch (error) {
     const mensajeError = error.response?.data?.message || error.message || 'Error desconocido';

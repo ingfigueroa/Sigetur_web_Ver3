@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { format, parse } from "date-fns";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faBroom } from "@fortawesome/free-solid-svg-icons";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+
 
 import "/src/css/pizarradeturnos.css";
 
@@ -109,21 +107,6 @@ function ConsultaTurnos() {
     setCantidadTurnos("");
   };
 
-  const formatearFecha = (fecha) => {
-    let fechaActualParseada;
-
-    // Caso 1: formato yyyy-MM-dd
-    if (/\d{4}-\d{2}-\d{2}/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "yyyy-MM-dd", new Date());
-    }
-    // Caso 2: formato d/M/yyyy
-    else if (/\d{1,2}\/\d{1,2}\/\d{4}/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "d/M/yyyy", new Date());
-    }
-
-    // Formatear la fecha en dd/MM/yyyy
-    return format(fechaActualParseada, "yyyy-MM-dd");
-  };
 
   const handleFechaChangeDesde = (e) => {
     SetFechaDesde(e.target.value);
