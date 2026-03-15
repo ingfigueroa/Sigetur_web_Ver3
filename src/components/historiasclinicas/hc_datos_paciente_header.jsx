@@ -22,9 +22,9 @@ const emptyPaciente = {
   TECelular: "",
 };
 
-const DatosPacienteHeader = ({ data }) => {
+const DatosPacienteHeader = ({ data, apellidonombres }) => {
 
-  const [edad, setEdad] = useState("");
+  const [edad, setEdad] = useState(0);
   const [tipoSexo, setTipoSexo] = useState("");
 
   const [tipoDocumento, setTipoDocumento] = useState("");
@@ -45,10 +45,7 @@ const DatosPacienteHeader = ({ data }) => {
 
 
 
-  const openMdlBuscarPacientes = () => {
-    setModalBuscarPacientes(true);
-  };
-
+ 
   const limpiarCamposPaciente = () => {
   setApellido("");
   setNombres("");
@@ -76,24 +73,19 @@ const asignarCampos = (data) => {
 
   setEMail(data[0].EMail);
   setEdad(calcularEdadDiaMesAnio(fecha));
+  apellidonombres(data[0].Apellido, data[0].Nombres, data[0].NroDocumento);
+
 };
 
 
-/* 
   useEffect(() => {
-    Promise.all([tiposexoService.Buscar(), tipodocumentoService.Buscar()]).then(
-      ([sexo, documento]) => {
-        setTipoSexo(sexo);
-        setTipoDocumento(documento);
-      }
-    );
-  }, []); */
-
-  useEffect(() => {
+   
     if (fechaNacimiento) {
-      setEdad(calcularEdadDiaMesAnio(data[0].FechaNacimiento));
+      setEdad(calcularEdadDiaMesAnio(fechaNacimiento));
+     
     } else {
-      setEdad("");
+     
+      setEdad(0);
     }
   }, [fechaNacimiento]);
 

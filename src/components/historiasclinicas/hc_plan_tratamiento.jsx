@@ -2,18 +2,32 @@ import React from "react";
 import { Table, Button, Form, Card } from "react-bootstrap";
 
 function PlanTratamiento({ data, setData }) {
-  const handleChange = (index, field, value) => {
-    const nuevoPlan = [...data];
-    nuevoPlan[index][field] = value;
-    setData(nuevoPlan);
-  };
 
-  const agregarFila = () => {
-    setData([
-      ...data,
-      { codigo: "", prestacion: "", pieza: "", observaciones: "" }
-    ]);
-  };
+const handleChange = (index, field, value) => {
+  setData((prevData) =>
+    prevData.map((fila, i) =>
+      i === index
+        ? { ...fila, [field]: value }
+        : fila
+    )
+  );
+};
+
+console.log(data)
+
+const agregarFila = () => {
+  setData([
+    ...data,
+    {
+      id: crypto.randomUUID(),
+      codigo: "",
+      prestacion: "",
+      pieza: "",
+      observaciones: ""
+    }
+  ]);
+};
+
 
   const eliminarFila = (index) => {
     const nuevoPlan = data.filter((_, i) => i !== index);
@@ -37,8 +51,10 @@ function PlanTratamiento({ data, setData }) {
           </thead>
 
           <tbody>
+           
             {data.map((fila, index) => (
-              <tr key={index}>
+              
+              <tr key="0">
                 <td>
                   <Form.Control
                     size="sm"
@@ -47,6 +63,7 @@ function PlanTratamiento({ data, setData }) {
                       handleChange(index, "codigo", e.target.value)
                     }
                   />
+                  
                 </td>
 
                 <td>

@@ -1,16 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Card, Button } from "react-bootstrap";
 
 import { historiaclinicaService } from "../../services/historiaclinica.service";
 
 function AnamnesisMedica({ data, setData, idpaciente }) {
-  /*const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setData({
-      ...data,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  }; */
+
+
+   const [showMDLMensaje, setShowMDLMensaje] = useState("");
+      const [mensaje, setMensaje] = useState("");
+
+      
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+  
+const closeMdlMensaje = () => {
+  setShowMDLMensaje(false);
+  handleClose();
+  setTimeout(() => Buscar(1), 300); // espera 300 ms
+};
+ 
 
   const handleNestedChange = (group, name, value) => {
     setData({
@@ -209,7 +218,7 @@ const limpiarFormulario = () => {
       //console.log(idhc)
      await historiaclinicaService.GrabarAnamnesisMedica(payload);
 
-      setModalMessage("ALTA EXITOSA");
+      setMensaje("Se grabarón los datos con éxito.");
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
       return;
@@ -226,6 +235,7 @@ useEffect(() => {
 
 
   return (
+    <>
     <Card className="mb-3">
       <Card.Body style={{ backgroundColor: "#e1f5fe" }}>
         <Form>
@@ -1465,6 +1475,16 @@ useEffect(() => {
         </Row>
       </Card.Body>
     </Card>
+
+    {showMDLMensaje && (
+        <AbrirMDLMensaje
+          show={openMdlMensaje}
+          handleClose={closeMdlMensaje}
+          modalMessage={mensaje}
+        />
+      )}
+      </>
   );
+  
 }
 export default AnamnesisMedica;

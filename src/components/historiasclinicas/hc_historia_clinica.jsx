@@ -10,24 +10,31 @@ import ExploracionClinica from "./hc_exploracion_clinica";
 import DiagnosticoPresuntivo from "./hc_diagnostico_presuntivo";
 import PlanTratamiento from "./hc_plan_tratamiento";
 import Evolucion from "./hc_evolucion";
+import Odontograma from "./hc_odontograma";
 import { pacientesService } from "/src/services/pacientes.service";
 
 import "../../css/historia_clinica.css";
 
 import MdlBuscarPacientes from "../pacientes/buscarpaciente";
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 function HC_HistoriaClinica() {
   const [mdlBuscarPacientes, setModalBuscarPacientes] = useState(false);
+  const [titulo, setTitulo] = useState("PACIENTE - HC:");
+   const [showMDLMensaje, setShowMDLMensaje] = useState("");
+    const [mensaje, setMensaje] = useState("");
+
+  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
 
   const [idPaciente, setIDPaciente] = useState(null);
 
+  const [idProfesional, setIDProfesional] = useState("89");
+
   const [diagnosticoPresuntivo, setDiagnosticoPresuntivo] = useState("");
 
-   const [apellidoNombresPaciente, setApellidoNombresPaciente] = useState("");
+  const [apellidoNombresPaciente, setApellidoNombresPaciente] = useState("");
 
-      const [nroHC, setNroHC] = useState(0);
-
-
+  const [nroHC, setNroHC] = useState(0);
 
   const [evolucion, setEvolucion] = useState([]);
 
@@ -36,14 +43,59 @@ function HC_HistoriaClinica() {
   const [tabActivo, setTabActivo] = useState(null);
 
   const [anamnesis, setAnamnesis] = useState(null);
+  const [anamnesisOdontologica, setAnamnesisOdontologica] = useState(null);
+  const [odUltimaFoto, setODUltimaFoto] = useState(null);
+
   const [antecedentesFamiliares, setAntecedentesFamiliares] = useState([]);
   const [alergias, setAlergias] = useState([]);
   const [patologiasClinicas, setPatologiasClinicas] = useState([]);
 
-  const [resetKey, setResetKey] = useState(0);
+  const [anormalidades, setAnormalidades] = useState([]);
+  const [dificultades, setDificultades] = useState([]);
+  const [dolores, setDolores] = useState([]);
+  const [lesiones, setlesiones] = useState([]);
 
+  const [resetKey, setResetKey] = useState(0);
+  const [idUsuario, setIDUsuario] = useState("2");
 
   const [items, setItems] = useState([]);
+
+  const [paciente, setPaciente] = useState({
+    apellido: "",
+    nombre: "",
+    hc: "",
+  });
+
+  
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+  
+const closeMdlMensaje = () => {
+  setShowMDLMensaje(false);
+  handleClose();
+  setTimeout(() => Buscar(1), 300); // espera 300 ms
+};
+
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+    //setShowMDLMensaje(true)
+  };
+  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
+    "El paciente no tiene historia clinica. ¿Quiere crearla?",
+  );
+
+  const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
+    "HISTORIA CLINICA - CREAR POR PRIMERA VEZ",
+  );
+
+  const recibirPaciente = (apellido, nombre, hc) => {
+    setPaciente({ apellido, nombre, hc });
+  };
 
   const openMdlBuscarPacientes = () => {
     setModalBuscarPacientes(true);
@@ -53,142 +105,140 @@ function HC_HistoriaClinica() {
     setModalBuscarPacientes(false);
   };
 
-const initialAnamnesisMedica = {
-  general: {
-    tieneEnfermedad: false,
-    detalleEnfermedad: "",
+  const initialAnamnesisMedica = {
+    general: {
+      tieneEnfermedad: false,
+      detalleEnfermedad: "",
 
-    recomendacionMedico: false,
-    detalleRecomendacionMedico: "",
+      recomendacionMedico: false,
+      detalleRecomendacionMedico: "",
 
-    tratamientoMedico: false,
-    detalleTratamiento: "",
+      tratamientoMedico: false,
+      detalleTratamiento: "",
 
-    realizaDeporte: false,
-    detalleRealizaDeporte: "",
+      realizaDeporte: false,
+      detalleRealizaDeporte: "",
 
-    tieneMalestarDeporte: false,
-    detalleMalestarDeporte: "",
+      tieneMalestarDeporte: false,
+      detalleMalestarDeporte: "",
 
-    medicacionHabitual: "",
-    medicacionUltimosAnios: "",
+      medicacionHabitual: "",
+      medicacionUltimosAnios: "",
 
-    embarazo: false,
-    mesesEmbarazo: "",
+      embarazo: false,
+      mesesEmbarazo: "",
 
-    enfermedadInfectocontagiosa: false,
-    detalleEnfermedadInfectocontagiosa: "",
+      enfermedadInfectocontagiosa: false,
+      detalleEnfermedadInfectocontagiosa: "",
 
-    otraEnfermedad: false,
-    detalleOtraEnfermedad: "",
+      otraEnfermedad: false,
+      detalleOtraEnfermedad: "",
 
-    medicoRecomendacion: false,
-    detalleMedicoRecomendacion: "",
+      medicoRecomendacion: false,
+      detalleMedicoRecomendacion: "",
 
-    medicacionultimoscincoaniosdetalle: "",
+      medicacionultimoscincoaniosdetalle: "",
 
-    tratamientoHomeopaticoAcupuntura: false,
-    detalleTratamientoHomeopatico: "",
+      tratamientoHomeopaticoAcupuntura: false,
+      detalleTratamientoHomeopatico: "",
 
-    esalergico: false,
+      esalergico: false,
 
-    medicoClinico: "",
-    clinicaDerivacion: "",
+      medicoClinico: "",
+      clinicaDerivacion: "",
 
-    observaciones: "",
-  },
+      observaciones: "",
+    },
 
-  familia: {
-    padreVive: true,
-    padreEnfermedad: "",
+    familia: {
+      padreVive: true,
+      padreEnfermedad: "",
 
-    madreVive: true,
-    madreEnfermedad: "",
+      madreVive: true,
+      madreEnfermedad: "",
 
-    hermanos: true,
-    hermanosDetalle: "",
-  },
+      hermanos: true,
+      hermanosDetalle: "",
+    },
 
-  alergias: {
-    anestesiasi: false,
-    anestesia: "",
+    alergias: {
+      anestesiasi: false,
+      anestesia: "",
 
-    penicilinasi: false,
-    penicilina: "",
+      penicilinasi: false,
+      penicilina: "",
 
-    otras: "",
-    detalle: "",
-  },
+      otras: "",
+      detalle: "",
+    },
 
-  patologias: {
-    cicatrizaBien: false,
-    sangraMucho: "",
+    patologias: {
+      cicatrizaBien: false,
+      sangraMucho: "",
 
-    colageno: false,
-    detalleColageno: "",
+      colageno: false,
+      detalleColageno: "",
 
-    fiebreReumatica: false,
-    detalleFiebreReumatica: "",
+      fiebreReumatica: false,
+      detalleFiebreReumatica: "",
 
-    diabetes: false,
-    diabetesControlado: false,
-    diabetesDetalle: "",
-    diabetesControladoMedicacion: "",
+      diabetes: false,
+      diabetesControlado: false,
+      diabetesDetalle: "",
+      diabetesControladoMedicacion: "",
 
-    cardiaco: false,
-    detalleCardiaco: "",
+      cardiaco: false,
+      detalleCardiaco: "",
 
-    anticoagulante: false,
-    detalleAnticoagulante: "",
+      anticoagulante: false,
+      detalleAnticoagulante: "",
 
-    chagas: false,
-    detalleChagas: "",
+      chagas: false,
+      detalleChagas: "",
 
-    hepatitis: false,
-    detalleHepatitis: "",
+      hepatitis: false,
+      detalleHepatitis: "",
 
-    hepatico: false,
-    detalleHepatico: "",
+      hepatico: false,
+      detalleHepatico: "",
 
-    epileptico: false,
-    detalleEpileptico: "",
+      epileptico: false,
+      detalleEpileptico: "",
 
-    cirugias: false,
-    detalleCirugias: "",
-    cirugiasHacecuantoTiempo: "",
+      cirugias: false,
+      detalleCirugias: "",
+      cirugiasHacecuantoTiempo: "",
 
-    respiratorio: false,
-    detalleRespiratorio: "",
+      respiratorio: false,
+      detalleRespiratorio: "",
 
-    embarazada: false,
-    embarazadacuantosmeses: "",
+      embarazada: false,
+      embarazadacuantosmeses: "",
 
-    presionAlta: false,
+      presionAlta: false,
 
-    sifilis: false,
-    gonorrea: false,
+      sifilis: false,
+      gonorrea: false,
 
-    transfusiones: false,
-    ulcera: false,
+      transfusiones: false,
+      ulcera: false,
 
-    fuma: false,
+      fuma: false,
 
-    renal: false,
-    respiratorios: false,
-    convulsiones: false,
-  }
-};
+      renal: false,
+      respiratorios: false,
+      convulsiones: false,
+    },
+  };
 
-
-const initialAnamnesisOdontologica = {
-    
-    general:{
+  const initialAnamnesisOdontologica = {
+    general: {
       porqueasistioconsulta: "",
       momentosazucardiarios: "",
       indicedeplacas: "",
       tipolesionesdescriba: "",
       higienebucalestado: "",
-     
+
       carahinchada: false,
       carahinchadapusohielo: false,
       carahinchadapusocalor: false,
@@ -196,6 +246,9 @@ const initialAnamnesisOdontologica = {
       momentosazucardiarios: "",
       indicedeplacas: "",
       observaciones: "",
+      localizadodolor: "",
+      irradiadodolor: "",
+      calmoalgodolor: "",
     },
 
     consultasPrevias: {
@@ -206,9 +259,8 @@ const initialAnamnesisOdontologica = {
       desdecuandomedicamento: "",
       obtuvoresultadomedicamento: false,
     },
- 
-    dolor: {
 
+    dolor: {
       hatenidodolor: false,
       suave: false,
       moderado: false,
@@ -220,10 +272,6 @@ const initialAnamnesisOdontologica = {
       provocado: false,
       alfrio: false,
       alcalor: false,
-
-      localizadodolor: "",
-      irradiadodolor: "",
-      calmoalgodolor: "",
     },
 
     golpe: {
@@ -247,39 +295,38 @@ const initialAnamnesisOdontologica = {
 
     anormalBoca: {
       loslabios: false,
-			carrillo: false,
-			lengua: false,
-			rebordes: false,
-			paladar: false,
-			trigono: false,
-			pisoboca: false,
-			pisoretromolar: false,
+      carrillo: false,
+      lengua: false,
+      rebordes: false,
+      paladar: false,
+      trigono: false,
+      pisoboca: false,
+      pisoretromolar: false,
     },
 
     lesiones: {
-
-	    manchas: false,
-			abultamientotejidos: false,
-			ulceras: false,
-			ampollas: false,
-			sangranencias: false,
-			sangranenciasdetalle: "",
-			pus: false,
-			pusdetalle: "",
-			movilidaddientes: false,
-			movilidaddientesdetalle: "",
-			altodientes: false,
-			altodientesdetalle: "",
-
+      manchas: false,
+      abultamientotejidos: false,
+      ulceras: false,
+      ampollas: false,
+      sangranencias: false,
+      sangranenciasdetalle: "",
+      pus: false,
+      pusdetalle: "",
+      movilidaddientes: false,
+      movilidaddientesdetalle: "",
+      altodientes: false,
+      altodientesdetalle: "",
     },
- 
-};
+  };
 
+  const [anamnesisMedica, setAnamnesisMedica] = useState(
+    initialAnamnesisMedica,
+  );
 
-const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
-
-
-  const [anamnesisOdonto, setAnamnesisOdonto] = useState(initialAnamnesisOdontologica);
+  const [anamnesisOdonto, setAnamnesisOdonto] = useState(
+    initialAnamnesisOdontologica,
+  );
 
   const [exploracionClinica, setExploracionClinica] = useState({
     labios: "",
@@ -320,35 +367,130 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
 
   const [planTratamiento, setPlanTratamiento] = useState([
     {
-      codigo: "",
-      prestacion: "",
-      pieza: "",
-      observaciones: "",
+      codigo: "0005",
+      prestacion: "ENDODONCIA",
+      pieza: "PREMOLAR",
+      observaciones: "NINGUNA",
+    },
+    {
+      codigo: "0005",
+      prestacion: "ENDODONCIA",
+      pieza: "PREMOLAR",
+      observaciones: "NINGUNA",
     },
   ]);
+  const crearEstructuraOdontograma = () => {
+    const piezas = [
+      18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28, 48, 47,
+      46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38, 55, 54, 53, 52,
+      51, 61, 62, 63, 64, 65, 85, 84, 83, 82, 81, 71, 72, 73, 74, 75,
+    ];
 
-  const recibirDatoDelHijo = (datoRecibido) => {
+    const estructura = {};
+
+    piezas.forEach((pieza) => {
+      estructura[pieza] = {
+        caras: {
+          oclusal: {},
+          vestibular: {},
+          lingual: {},
+          mesial: {},
+          distal: {},
+        },
+      };
+    });
+
+    return estructura;
+  };
+
+  const [odontograma, setOdontograma] = useState(crearEstructuraOdontograma);
+
+  const mdlSiNo = (respuesta) => {
+    if (respuesta) {
+      // Lógica si confirmó que quiere eliminar
+      CreateHC(idPaciente, idProfesional, idUsuario);
+      mostrarHC(idPaciente);
+      closeMdlEstaSeguro();
+      setMensaje("Se creó la historia clínica del paciente.")
+      openMdlMensaje();
+    } else {
+      setMensaje("Se canceló la operación.");
+      openMdlMensaje();
+    }
+  };
+  function CreateHC(idpaciente, idprofesional, idusuario) {
+    try {
+      historiaclinicaService.CreateHC(idpaciente, idprofesional, idusuario);
+    } catch (error) {}
+  }
+
+  function mostrarHC(idpaciente) {
+    BuscarPaciente(idpaciente);
+    cargarAnamnesis(idpaciente);
+    cargarAnamnesisOdontologica(idpaciente);
+    cargarOdontogramaUltimaFoto(idpaciente);
+  }
+
+  const recibirDatoDelHijo = async (datoRecibido) => {
     if (datoRecibido > 0) {
       setIDPaciente(datoRecibido);
-      BuscarPaciente(datoRecibido);
+      const hcnro = await BuscarHCNro(datoRecibido);
+      console.log(hcnro);
+      if (hcnro > 0) {
+        setIDPaciente(datoRecibido);
+        mostrarHC(datoRecibido);
 
-      cargarAnamnesis(datoRecibido);
-      cargarAnamnesisOdontologica(datoRecibido);
-
-      setMostrarTabs(true);
-      setTabActivo("anamnesisMedica");
+        setMostrarTabs(true);
+        setTabActivo("anamnesisMedica");
+      } else {
+        openMdlEstaSeguro();
+        // alert("El paciente no tiene generada una historia clinica");
+      }
     }
   };
 
+  async function BuscarHCNro(idpaciente) {
+    try {
+      const data = await historiaclinicaService.getHCNro(idpaciente);
+
+      const hcnro = data?.[0]?.hcnro || 0;
+
+      setNroHC(hcnro);
+
+      return hcnro; // 👈 devolverlo
+    } catch (error) {
+      console.error("Error al buscar paciente:", error);
+      return 0;
+    }
+  }
+  /* 
+async function BuscarHCNro(idpaciente) {
+  try {
+  
+
+    const data = await historiaclinicaService.getHCNro(idpaciente);
+
+    const hcnro = data?.[0]?.hcnro || 0;
+
+    setNroHC(hcnro);
+
+  } catch (error) {
+    console.error("Error al buscar paciente:", error);
+  }
+}
+ */
   async function BuscarPaciente(idpaciente) {
     try {
       const data = await pacientesService.BuscarPorId(idpaciente);
-      // Asignar los valores recibidos a los estados del formulario
-      setApellidoNombresPaciente(data[0].Apellido + ', ' + data[0].Nombres)
-      setNroHC(data[0].NroDocumento)
-      setItems(data); // Asignar los datos a `Items`
 
+      const nombreCompleto = data[0].Apellido + ", " + data[0].Nombres;
+      const documento = data[0].NroDocumento;
 
+      setApellidoNombresPaciente(nombreCompleto);
+      setNroHC(documento);
+      setTitulo("PACIENTE: " + nombreCompleto + " - HC: " + documento);
+
+      setItems(data);
     } catch (error) {
       console.error("Error al buscar paciente:", error);
     }
@@ -357,8 +499,6 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
   }
 
   const cargarAnamnesis = async (idpaciente) => {
-   
-
     const data = await historiaclinicaService.getHCAnamnesisMedicas(idpaciente);
 
     const noHayDatos =
@@ -368,7 +508,7 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
       data.patologiasClinicas.length === 0;
 
     if (noHayDatos) {
-     
+      
       return;
     } else {
       asignarAnamnesis(anamnesisMedica, data.anamnesis);
@@ -383,52 +523,145 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
       setAntecedentesFamiliares(data.antecedentesFamiliares);
       setAlergias(data.alergias);
       setPatologiasClinicas(data.patologiasClinicas);
-
-
     }
   };
 
-  
   const cargarAnamnesisOdontologica = async (idpaciente) => {
-   
-
-    const data = await historiaclinicaService.getHCAnamnesisOdontologica(idpaciente);
+    const data =
+      await historiaclinicaService.getHCAnamnesisOdontologica(idpaciente);
 
     const noHayDatos =
-      !data.anamnesis &&
-      data.general.length === 0 &&
-      data.consultasPrevias.length === 0 &&
-      data.dolor.length === 0 &&
-      data.golpe.length === 0 &&
-      data.fractura.length === 0 &&
-      data.dificultad.length === 0 &&
-      data.anormalBoca.length === 0 &&
+      !data.anamnesisodontologica &&
+      data.anormalidades.length === 0 &&
+      data.dificultades.length === 0 &&
+      data.dolores.length === 0 &&
       data.lesiones.length === 0;
 
     if (noHayDatos) {
-     
       return;
     } else {
-      asignarAnamnesisOdontologica(anamnesisOdonto, data.anamnesis);
-      asignarAMAntecedentesFamiliares(
-        anamnesisOdonto,
-        data.antecedentesFamiliares,
-      );
-      asignarAMAlergias(anamnesisMedica, data.alergias);
-      asignarAMPatologiasClinicas(anamnesisMedica, data.patologiasClinicas);
+      asignarAnamnesisOdontologica(anamnesisOdonto, data.anamnesisodontologica);
+      asignarAOConsultasPrevias(anamnesisOdonto, data.anamnesisodontologica);
+      asignarAOAnormalidades(anamnesisOdonto, data.anormalidades);
+      asignarAODificultades(anamnesisOdonto, data.dificultades);
+      asignarAODolores(anamnesisOdonto, data.dolores);
+      asignarAOLesiones(anamnesisOdonto.lesiones, data.lesiones);
 
-      setAnamnesis(data.anamnesis);
-      setAntecedentesFamiliares(data.antecedentesFamiliares);
-      setAlergias(data.alergias);
-      setPatologiasClinicas(data.patologiasClinicas);
-
-
+      setAnamnesisOdontologica(data.anamnesisodontologica);
+      setAnormalidades(data.anormalidades);
+      setDificultades(data.dificultades);
+      setDolores(data.dolores);
+      setlesiones(data.lesiones);
     }
   };
 
+  const cargarOdontogramaUltimaFoto = async (idpaciente) => {
+    const data = await historiaclinicaService.getHCUltimaFoto(idpaciente);
+
+    const datosTransformados = transformarUltimaFoto(data);
+    console.log(datosTransformados);
+    setODUltimaFoto(datosTransformados);
+
+    setOdontograma(datosTransformados);
+  };
+
+  const obtenerColorPorEstado = (idEstado) => {
+    switch (idEstado) {
+      case 9:
+        return "#ffffff"; // Diente sano
+      case 1:
+        return "#b6787e"; // Caries
+      case 2:
+        return "#b6787e"; // Caries recurrentes
+      case 10:
+        return "#9fa7ad"; //diente ausente
+      case 16:
+        return "#7FB3FF"; // Obturación
+      case 19:
+        return "#66A3FF"; //SELLADOR
+      case 27:
+        return "#FFF9C4"; //extrusion
+      case 33:
+        return "#FF9F43";
+        fractura;
+
+      default:
+        return "#ffffff";
+      /*     Caries activa	Rojo clínico	#DC3545	Lesión activa
+🔵 Obturación	Azul clínico	#0D6EFD	Restauración existente
+🟢 Tratamiento realizado	Verde oscuro	#198754	Procedimiento completado
+🟡 Tratamiento requerido	Amarillo	#FFC107	Pendiente
+🟠 Endodoncia	Naranja	#FD7E14	Conducto tratado
+⚫ Diente ausente	Gris oscuro	#6C757D	Pieza faltante
+⚪ Prótesis	Gris claro	#CED4DA	Prótesis fija/removible
+🟣 Corona	Violeta	#6F42C1	Corona protésica
+🔲 Implante	Negro	#000000	Implante */
+    }
+  };
+
+  /* 
+const transformarUltimaFoto = (arrayBD) => {
+  const resultado = {};
+
+  const datos = arrayBD[0]; // 🔥 aquí está el verdadero array
+
+  datos.forEach((item) => {
+    const pieza = item.nropieza;
+    const cara = item.Cara_Diente.toLowerCase();
+    const estado = Number(item.idsituaciondentaria);
+
+    const color = obtenerColorPorEstado(estado);
+
+    if (!resultado[pieza]) {
+      resultado[pieza] = { caras: {} };
+    }
+
+    resultado[pieza].caras[cara] = {
+      color: color
+    };
+  });
+
+  return resultado;
+}; */
+
+  const transformarUltimaFoto = (arrayBD) => {
+    const resultado = {};
+
+    const datos = arrayBD[0];
+
+    datos.forEach((item) => {
+      const pieza = item.nropieza;
+      const cara = item.Cara_Diente.toLowerCase();
+      const estado = Number(item.idsituaciondentaria);
+
+      const color = obtenerColorPorEstado(estado);
+
+      if (!resultado[pieza]) {
+        resultado[pieza] = {
+          idhc: item.idhc,
+          esfotoinicial: item.esfotoinicial,
+
+          caras: {},
+        };
+      }
+
+      resultado[pieza].caras[cara] = {
+        color: color,
+        idcara: item.idcara,
+        idsituaciondentaria: item.idsituaciondentaria,
+        situacion: item.Situacion_Dentaria,
+        idprofesional: item.idprofesional,
+        idpieza: item.idpieza,
+      };
+    });
+
+    return resultado;
+  };
+
   const asignarAnamnesis = (am, data) => {
-    
-    if (am === null) {return}
+    if (am === null) {
+      return;
+    }
     ((am.general.tieneEnfermedad = data.sufrealgunaenfermedad),
       (am.general.detalleEnfermedad = data.sufrealgunaenfermedaddetalle),
       (am.general.recomendacionMedico = data.recomendacionmedicoquieredejar),
@@ -450,8 +683,9 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
         data.enfermedadinfectocontagiosadescriba),
       (am.general.otraEnfermedad = data.enfermedadalgunaotra),
       (am.general.detalleOtraEnfermedad = data.enfermedadalgunaotradetalle),
-      am.general.medicoRecomendacion = data.recomendacionmedicoquieredejar,
-      am.general.detalleMedicoRecomendacion = data.recomendacionmedicoquieredejardetalle, 
+      (am.general.medicoRecomendacion = data.recomendacionmedicoquieredejar),
+      (am.general.detalleMedicoRecomendacion =
+        data.recomendacionmedicoquieredejardetalle),
       (am.general.medicacionultimoscincoaniosdetalle =
         data.medicacionultimoscincoaniosdetalle),
       (am.general.tratamientoHomeopaticoAcupuntura =
@@ -467,7 +701,9 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
   };
 
   const asignarAMAntecedentesFamiliares = (am, data) => {
-    if (am === null) {return}
+    if (am === null) {
+      return;
+    }
     ((am.familia.padreVive = data[0].vive),
       (am.familia.padreEnfermedad = data[0].descripcion),
       (am.familia.madreVive = data[1].vive),
@@ -477,7 +713,6 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
   };
 
   const asignarAMAlergias = (am, data) => {
-
     if (!am.alergias) {
       am.alergias = {};
     }
@@ -494,7 +729,9 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
   };
 
   const asignarAMPatologiasClinicas = (am, data) => {
-    if (am === null) {return}
+    if (am === null) {
+      return;
+    }
     data.forEach((item, index) => {
       if (data[index].patologia === "CICATRIZA BIEN") {
         am.patologias.cicatrizaBien = true;
@@ -599,83 +836,226 @@ const [anamnesisMedica, setAnamnesisMedica] = useState(initialAnamnesisMedica);
     });
   };
 
-   const asignarAnamnesisOdontologica = (am, data) => {
-    
-    if (am === null) {return}
-    ((am.general.tieneEnfermedad = data.sufrealgunaenfermedad),
-      (am.general.detalleEnfermedad = data.sufrealgunaenfermedaddetalle),
-      (am.general.recomendacionMedico = data.recomendacionmedicoquieredejar),
-      (am.general.detalleRecomendacionMedico =
-        data.recomendacionmedicoquieredejardetalle),
-      (am.general.tratamientoMedico = data.tratamientomedico),
-      (am.general.detalleTratamiento = data.tratamientomedicodetalle),
-      (am.general.realizaDeporte = data.realizaalgundeporte),
-      (am.general.detalleRealizaDeporte = data.realizaalgundeportedetalle),
-      (am.general.tieneMalestarDeporte = data.deportemalestaralrealizarlo),
-      (am.general.detalleMalestarDeporte =
-        data.deportemalestaralrealizarlodetalle),
-      (am.general.medicacionHabitual = data.medicamentosconsumedetalle),
-      (am.general.medicacionUltimosAnios =
-        data.medicacionultimoscincoaniosdetalle),
-      (am.general.enfermedadInfectocontagiosa =
-        data.enfermedadinfectocontagiosa),
-      (am.general.detalleEnfermedadInfectocontagiosa =
-        data.enfermedadinfectocontagiosadescriba),
-      (am.general.otraEnfermedad = data.enfermedadalgunaotra),
-      (am.general.detalleOtraEnfermedad = data.enfermedadalgunaotradetalle),
-      am.general.medicoRecomendacion = data.recomendacionmedicoquieredejar,
-      am.general.detalleMedicoRecomendacion = data.recomendacionmedicoquieredejardetalle, 
-      (am.general.medicacionultimoscincoaniosdetalle =
-        data.medicacionultimoscincoaniosdetalle),
-      (am.general.tratamientoHomeopaticoAcupuntura =
-        data.tratamientohomeopaticoacupuntura),
-      (am.general.detalleTratamientoHomeopatico =
-        data.tratamientohomeopaticoacupunturadescriba),
-      (am.general.medicoClinico = data.medicoclinico),
-      (am.general.clinicaDerivacion = data.clinicahostpitalderivacion),
-      (am.general.observaciones = data.observaciones),
-      (am.alergias.otras = data.otrasalergias),
-      (am.alergias.detalle = data.detallealergias),
-      (am.general.esalergico = data.esalergico));
+  const asignarAnamnesisOdontologica = (ao, data) => {
+    if (ao === null) {
+      return;
+    }
+
+    ((ao.general.porqueasistioconsulta = data.porqueasistioconsulta),
+      (ao.general.momentosazucardiarios = data.momentosazucardiarios),
+      (ao.general.indicedeplacas = data.indicedeplacas),
+      (ao.general.tipolesionesdescriba = data.tipolesionesdescriba),
+      (ao.general.higienebucalestado = data.higienebucalestado),
+      (ao.general.carahinchada = data.carahinchada),
+      (ao.general.carahinchadapusohielo = data.carahinchadapusohielo),
+      (ao.general.carahinchadapusocalor = data.carahinchadapusocalor),
+      (ao.general.carahinchadapusootros = data.carahinchadapusootros),
+      (ao.general.momentosazucardiarios = data.momentosazucardiarios),
+      (ao.general.indicedeplacas = data.indicedeplacas),
+      (ao.general.observaciones = data.observaciones),
+      (ao.dolor.hatenidodolor = data.hatenidodolor),
+      (ao.general.localizadodolor = data.localizadodolor),
+      (ao.general.irradiadodolor = data.irradiadodolor),
+      (ao.general.calmoalgodolor = data.calmoalgodolor),
+      (ao.general.observaciones = data.observaciones),
+      (ao.golpe.golpedientes = data.golpedientes),
+      (ao.golpe.cuandogolpedientes = data.cuandogolpedientes),
+      (ao.golpe.comoprodujogolpedientes = data.comoprodujogolpedientes),
+      (ao.fractura.fracturodiente = data.fracturodiente),
+      (ao.fractura.cualdientefracturo = data.cualdientefracturo),
+      (ao.fractura.tratamientofracturadiente = data.tratamientofracturadiente));
   };
 
+  const asignarAOConsultasPrevias = (ao, data) => {
+    if (ao === null) {
+      return;
+    }
 
-const limpiarAnamnesisMedica = () => {
-  setAnamnesisMedica(initialAnamnesisMedica);
-};
+    ((ao.consultasPrevias.consultootroprofesional =
+      data.consultootroprofesional),
+      (ao.consultasPrevias.consultootroprofesionaldetalle =
+        data.consultootroprofesionaldetalle),
+      (ao.consultasPrevias.tomomedicamento = data.tomomedicamento),
+      (ao.consultasPrevias.describamedicamento = data.describamedicamento),
+      (ao.consultasPrevias.desdecuandomedicamento =
+        data.desdecuandomedicamento),
+      (ao.consultasPrevias.obtuvoresultadomedicamento =
+        data.obtuvoresultadomedicamento));
+  };
 
+  const asignarAOAnormalidades = (ao, data) => {
+    if (ao === null) {
+      return;
+    }
+    data.forEach((item, index) => {
+      if (data[index].anormalidad === "LOS LABIOS") {
+        ao.anormalBoca.loslabios = true;
+      }
 
-const limpiarAnamnesisOdontologica = () => {
-  setAnamnesisOdonto(initialAnamnesisOdontologica);
-};
+      if (data[index].anormalidad === "CARRILLO") {
+        ao.anormalBoca.carrillo = true;
+      }
 
+      if (data[index].anormalidad === "PALADAR") {
+        ao.anormalBoca.paladar = true;
+      }
 
-const resetearHC = () => {
-  setTabActivo(null)
-  setResetKey((prev) => prev + 1);
+      if (data[index].anormalidad === "REBORDES") {
+        ao.anormalBoca.rebordes = true;
+      }
 
-  // opcional pero recomendable:
-  setItems(null);
-  setIDPaciente(null);
-  setNroHC("");
-  setApellidoNombresPaciente("");
-  setTabActivo("motivo");
-  limpiarAnamnesisMedica();
-  limpiarAnamnesisOdontologica();
+      if (data[index].anormalidad === "LENGUA") {
+        ao.anormalBoca.lengua = true;
+      }
 
-  
+      if (data[index].anormalidad === "TRIGONO") {
+        ao.anormalBoca.trigono = true;
+      }
 
-/*   setAnamnesisMedica(null);
-  setAnamnesisOdonto(null);
-  setDiagnosticoPresuntivo(null);
-  setPlanTratamiento(null);
-  setEvolucion(null); */
-};
+      if (data[index].anormalidad === "PISO BOCA") {
+        ao.anormalBoca.pisoboca = true;
+      }
 
+      if (data[index].anormalidad === "PISO RETROMOLAR") {
+        ao.anormalBoca.pisoretromolar = true;
+      }
+    });
+  };
 
+  const asignarAODificultades = (ao, data) => {
+    if (ao === null) {
+      return;
+    }
+    data.forEach((item, index) => {
+      if (data[index].dificultad === "HABLAR") {
+        ao.dificultad.hablar = true;
+      }
 
+      if (data[index].dificultad === "MASTICAR") {
+        ao.dificultad.masticar = true;
+      }
 
+      if (data[index].dificultad === "ABRIR LA BOCA") {
+        ao.dificultad.abrirlaboca = true;
+      }
 
+      if (data[index].dificultad === "TRAGAR ALIMENTOS") {
+        ao.dificultad.tragaralimentos = true;
+      }
+    });
+  };
+
+  const asignarAODolores = (ao, data) => {
+    if (ao === null) {
+      return;
+    }
+
+    data.forEach((item, index) => {
+      if (data[index].dolor === "SUAVE") {
+        ao.dolor.suave = true;
+      }
+
+      if (data[index].dolor === "MODERADO") {
+        ao.dolor.moderado = true;
+      }
+      if (data[index].dolor === "INTENSO") {
+        ao.dolor.intenso = true;
+      }
+      if (data[index].dolor === "TEMPORARIO") {
+        ao.dolor.temporario = true;
+      }
+      if (data[index].dolor === "INTERMITENTE") {
+        ao.dolor.intermitente = true;
+      }
+      if (data[index].dolor === "CONTINUO") {
+        ao.dolor.continuo = true;
+      }
+      if (data[index].dolor === "ESPONTANEO") {
+        ao.dolor.espontaneo = true;
+      }
+      if (data[index].dolor === "PROVOCADO") {
+        ao.dolor.provocado = true;
+      }
+      if (data[index].dolor === "AL FRIO") {
+        ao.dolor.alfrio = true;
+      }
+
+      if (data[index].dolor === "AL CALOR") {
+        ao.dolor.alcalor = true;
+      }
+    });
+  };
+
+  const asignarAOLesiones = (ao, data) => {
+    if (ao === null) {
+      return;
+    }
+
+    data.forEach((item, index) => {
+      if (data[index].lesion === "MANCHAS") {
+        ao.manchas = true;
+      }
+
+      if (data[index].lesion === "ABULTAMIENTO TEJIDOS") {
+        ao.abultamientotejidos = true;
+      }
+      if (data[index].lesion === "ULCERACIONES") {
+        ao.ulceras = true;
+      }
+
+      if (data[index].lesion === "AMPOLLAS") {
+        ao.ampollas = true;
+      }
+      if (data[index].lesion === "SANGRAN ENCIAS") {
+        ao.sangranencias = true;
+
+        ao.sangranenciasdetalle = data[index].descripcion;
+      }
+
+      if (data[index].lesion === "PUS") {
+        ao.pus = true;
+        ao.pusdetalle = data[index].descripcion;
+      }
+      if (data[index].lesion === "MOVILIDAD DIENTES") {
+        ao.movilidaddientes = true;
+        ao.movilidaddientesdetalle = data[index].descripcion;
+      }
+
+      if (data[index].lesion === "ALTO DIENTES") {
+        ao.altodientes = true;
+        ao.altodientesdetalle = data[index].descripcion;
+      }
+    });
+  };
+
+  const limpiarAnamnesisMedica = () => {
+    setAnamnesisMedica(initialAnamnesisMedica);
+  };
+
+  const limpiarAnamnesisOdontologica = () => {
+    setAnamnesisOdonto(initialAnamnesisOdontologica);
+  };
+
+  const limpiarOdontograma = () => {
+    setOdontograma(crearEstructuraOdontograma);
+  };
+
+  const resetearHC = () => {
+    setTabActivo(null);
+    setResetKey((prev) => prev + 1);
+    setMostrarTabs(false);
+
+    // opcional pero recomendable:
+    setItems(null);
+    setIDPaciente(null);
+    setNroHC("");
+    setApellidoNombresPaciente("");
+    setTabActivo("motivo");
+    limpiarAnamnesisMedica();
+    limpiarAnamnesisOdontologica();
+    limpiarOdontograma();
+    setTitulo("PACIENTE - HC:");
+  };
 
   return (
     <>
@@ -727,23 +1107,25 @@ const resetearHC = () => {
                       position: "absolute",
                       left: "50%",
                       transform: "translateX(-50%)",
-                      
+                      width: "50%",
                       backgroundColor: "#0a58ca",
                       color: "white",
                       padding: "4px 4px",
                       borderRadius: "4px",
-                      fontSize: "20 px",
+                      fontSize: "20px",
+                      textAlign: "center",
                       pointerEvents: "none", // para que no tape clicks
                     }}
                   >
-                    HISTORIA CLINICA NRO: {nroHC} - PACIENTE:  {apellidoNombresPaciente}
+                    {titulo}
                   </div>
-                  
+
                   {/* SEPARADOR FLEX */}
                   <div style={{ marginLeft: "auto" }} />
 
                   {/* DERECHA */}
                   <button
+                    title="Buscar HISTORIA CLINICA por paciente"
                     className="btn btn-sm btn-outline-secondary"
                     onClick={openMdlBuscarPacientes}
                   >
@@ -760,7 +1142,10 @@ const resetearHC = () => {
               </Col>
             </Row>
 
-            <DatosPacienteHeader data = {items} />
+            <DatosPacienteHeader
+              data={items}
+              apellidonombres={recibirPaciente}
+            />
           </Row>
 
           {mostrarTabs && (
@@ -792,14 +1177,16 @@ const resetearHC = () => {
                   idpaciente={idPaciente}
                 />
               </Tab>
+              <Tab eventKey="odontograma" title="Odontograma">
+                <Odontograma
+                  data={odontograma}
+                  setData={setOdontograma}
+                  modo="realizado"
+                  idhc={nroHC}
+                  idprofesional={idProfesional}
+                />
+              </Tab>
 
-              {/*     <Tab eventKey="exploracion" title="Exploración Clínica">
-              <ExploracionClinica
-                data={exploracionClinica}
-                setData={setExploracionClinica}
-              />
-            </Tab>
- */}
               <Tab eventKey="diagnostico" title="Diagnóstico">
                 <DiagnosticoPresuntivo
                   data={diagnosticoPresuntivo}
@@ -829,6 +1216,23 @@ const resetearHC = () => {
           show={openMdlBuscarPacientes}
           handleClose={closeMdlBuscarPacientes}
           enviarAlPadre={recibirDatoDelHijo}
+        />
+      )}
+      {showMDLEstaSeguro && (
+        <MDLEstaSeguro
+          show={openMdlEstaSeguro}
+          handleClose={closeMdlEstaSeguro}
+          mensajetitulo={mdlMensajeTitulo}
+          mensajecuerpo={mdlMensajeCuerpo}
+          enviaralpadre={mdlSiNo}
+        />
+      )}
+
+      {showMDLMensaje && (
+        <AbrirMDLMensaje
+          show={openMdlMensaje}
+          handleClose={closeMdlMensaje}
+          modalMessage={mensaje}
         />
       )}
     </>

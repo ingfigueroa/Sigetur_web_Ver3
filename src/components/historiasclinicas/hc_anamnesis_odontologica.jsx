@@ -5,7 +5,7 @@ import { historiaclinicaService } from "../../services/historiaclinica.service";
 
 function AnamnesisOdontologica({ data, setData, idpaciente }) {
  
-
+  
   const handleNestedChange = (group, field, value) => {
     setData((prev) => ({
       ...prev,
@@ -65,9 +65,9 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
       alfrio: data.dolor.alfrio,
       alcalor: data.dolor.alcalor,
 
-      localizadodolor: data.dolor.localizadodolor,
-      irradiadodolor: data.dolor.irradiadodolor,
-      calmoalgodolor: data.dolor.calmoalgodolor,
+      localizadodolor: data.general.localizadodolor,
+      irradiadodolor: data.general.irradiadodolor,
+      calmoalgodolor: data.general.calmoalgodolor,
     
 
     // ================= GOLPE =================
@@ -127,7 +127,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
         /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
         return;
       }
-    }
+    };
 
 
   return (
@@ -209,7 +209,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 }
               />
             </Col>
-             <Col md={9}>
+             <Col md={3}>
               {data.consultasPrevias.consultootroprofesional && (
                 <Form.Control
                   placeholder="Describa lo comentado por el profesional"
@@ -275,7 +275,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
               )}
             </Col>
             <Col md={3}>
-              {data.consultasPrevias.tomoMedicacion && (
+              {data.consultasPrevias.tomomedicamento && (
                 <Form.Check
                   label="¿Obtuvo resultados?"
                   checked={data.consultasPrevias.obtuvoresultadomedicamento}
@@ -426,9 +426,9 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                   <Form.Control
                     className="mt-2"
                     placeholder="Localizado ¿dónde?"
-                    value={data.dolor.localizadodolor}
+                    value={data.general.localizadodolor}
                     onChange={(e) =>
-                      handleNestedChange("dolor", "localizadodolor", e.target.value.toUpperCase())
+                      handleNestedChange("general", "localizadodolor", e.target.value.toUpperCase())
                     }
                   />
                 </Col>
@@ -436,9 +436,9 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                   <Form.Control
                     className="mt-2"
                     placeholder="Irradiado ¿hacia dónde?"
-                    value={data.dolor.irradiadodolor}
+                    value={data.general.irradiadodolor}
                    onChange={(e) =>
-                      handleNestedChange("dolor", "irradiadodolor", e.target.value.toUpperCase())
+                      handleNestedChange("general", "irradiadodolor", e.target.value.toUpperCase())
                     }
                   />
                 </Col>
@@ -446,9 +446,9 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                   <Form.Control
                     className="mt-2"
                     placeholder="¿Puede calmarlo con algo?"
-                    value={data.dolor.calmoalgodolor}
+                    value={data.general.calmoalgodolor}
                     onChange={(e) =>
-                      handleNestedChange("dolor", "calmoalgodolor", e.target.value.toUpperCase())
+                      handleNestedChange("general", "calmoalgodolor", e.target.value.toUpperCase())
                     }
                   />
                 </Col>

@@ -64,11 +64,21 @@ const urlResourceIntervalosListar = urlServidor + "/intervaloslistar"
 const urlResourceDiasSemanaListar = urlServidor + "/diassemanalistar"
 
 /*----HISTORIA CLINICA---*/
-const urlHCAnamnesisMedica = urlServidor + "/hcanamnesismedicaadd"
+const urlHCCreate = urlServidor + "/hccreate"
+const urlHCAnamnesisMedica = urlServidor + "/hcamadd"
+const urlHCAnamnesisOdontologica = urlServidor + "/hcaoadd"
 
-const urlHCAnamnesisOdontologica = urlServidor + "/hcanamnesisodontologicaadd"
+const urlHCFotoOdontograma = urlServidor + "/hcodontogramaadd"
 
-const urlHCAnamnesisMedicaBuscar = urlServidor + "/hcanamnesismedicabuscar"
+const urlHCAnamnesisMedicaBuscar = urlServidor + "/hcambuscar"
+const urlHCAnamnesisOdontologicaBuscar = urlServidor + "/hcaobuscar"
+const urlHCNro = urlServidor + "/hcnrobuscar"
+
+const urlHCODSituaciondentaria = urlServidor + "/hcodsituaciondentaria"
+const urlHCODUltimaFoto = urlServidor + "/hcodultimafoto"
+
+
+
 
 
 
@@ -125,5 +135,11 @@ export const config = {
     urlResourceObrasSocialesActivar,
     urlHCAnamnesisMedica,
     urlHCAnamnesisOdontologica,
-    urlHCAnamnesisMedicaBuscar
+    urlHCAnamnesisMedicaBuscar,
+    urlHCAnamnesisOdontologicaBuscar,
+    urlHCODSituaciondentaria,
+    urlHCFotoOdontograma,
+    urlHCODUltimaFoto,
+    urlHCNro,
+    urlHCCreate,
 }

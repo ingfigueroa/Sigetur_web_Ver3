@@ -1,6 +1,9 @@
 import React from "react";
 import { Form, Card } from "react-bootstrap";
 
+
+
+
 function DiagnosticoPresuntivo({ data, setData }) {
   return (
     <Card>
@@ -21,7 +24,26 @@ function DiagnosticoPresuntivo({ data, setData }) {
           />
         </Form.Group>
       </Card.Body>
+      <div style={{ border: "1px solid gray", padding: "20px" }}>
+
+      <svg width="120" height="120">
+
+        {/* 🔹 Importante usar transform para posicionar */}
+        <g transform="translate(20,20)">
+          <diente
+            pieza={16}
+            data={odontograma[16]}
+            modo={modo}
+            tipoSeleccionado={tipoSeleccionado}
+            onActualizar={actualizarCara}
+          />
+        </g>
+
+      </svg>
+
+    </div>
     </Card>
+    
   );
 }
 
