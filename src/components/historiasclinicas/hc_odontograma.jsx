@@ -6,7 +6,64 @@ import Diente from "./hc_diente_cuadrado";
 
 import { historiaclinicaService } from "../../services/historiaclinica.service";
 
+
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
+
+  
+
 const Odontograma = ({ data, setData, modo, idhc, idprofesional }) => {
+
+  
+  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
+    "¿Desea grabar los cambios del odontograma?",
+  );
+
+  const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
+    "HISTORIA CLINICA - ODONTOGRAMA",
+  );
+
+  const [showMDLMensaje, setShowMDLMensaje] = useState("");
+  const [mensaje, setMensaje] = useState("");
+    
+  
+    const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
+
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+
+  const closeMdlMensaje = () => {
+    setShowMDLMensaje(false);
+    
+    setTimeout(() => Buscar(1), 300); // espera 300 ms
+  };
+
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+    //setShowMDLMensaje(true)
+  };
+
+  
+    const mdlSiNo = (respuesta) => {
+      if (respuesta) {
+        // Lógica si confirmó que quiere eliminar
+        
+        closeMdlEstaSeguro();
+        grabarfotoodontograma();
+        setMensaje("Se grabó los cambios del odontograma del paciente.")
+        openMdlMensaje();
+      } else {
+        setMensaje("Se canceló la grabación de los cambios del paciente.");
+        openMdlMensaje();
+      }
+    };
+
+
   const [cantidadExistentes, setCantidadExistentes] = useState(0);
 
   const [situacionDentaria, setSituacionDentaria] = useState([]);
@@ -63,18 +120,7 @@ function getIdPieza(prev, piezaBuscada) {
       const idpieza = getIdPieza(prev, pieza);
      
       
-      /* Object.values(prev).some((piezaData) => {
-        const caraEncontrada = Object.entries(piezaData.caras || {}).find(
-          ([nombreCara]) => nombreCara === caraNormalizada,
-        );
-
-        if (caraEncontrada) {
-          idcara = caraEncontrada[1].idcara;
-          return true; // corta la búsqueda
-        }
-
-        return false;
-      }); */
+      
 
       const nuevoEstado = {
         ...prev,
@@ -191,18 +237,19 @@ function getIdPieza(prev, piezaBuscada) {
 
    
       if (!payload.length) {
-        alert("No hay cambios para guardar");
+        setMensaje("No hay cambios para guardar");
+        openMdlMensaje();
         return;
       }
 
   
       await historiaclinicaService.GrabarFotoOdontograma(payload);
 
-      setModalMessage("ALTA EXITOSA");
+     
 
     } catch (error) {
-      console.error("Error al guardar odontograma:", error);
-      alert("Error al guardar odontograma");
+      setMensaje("Error al guardar odontograma:", error);
+      openMdlMensaje();
     }
   }
 
@@ -211,6 +258,7 @@ function getIdPieza(prev, piezaBuscada) {
   }, []);
 
   return (
+    <>
     <div
       style={{
         display: "grid",
@@ -238,7 +286,7 @@ function getIdPieza(prev, piezaBuscada) {
                 whiteSpace: "nowrap",
               }}
               onClick={(event) => {
-                grabarfotoodontograma();
+                openMdlEstaSeguro();
                 event.preventDefault();
               }}
             >
@@ -283,37 +331,7 @@ function getIdPieza(prev, piezaBuscada) {
           </Col>
         </Row>
 
-        {/*   <h4>REFERENCIAS</h4>
-
-        <p style= {{fontSize:"12px"}} >
-          <span style={cuadro("#dc3545")} /> COLOR ROJO Prestaciones existentes
-        </p>
-        <p style= {{fontSize:"12px"}}>
-          <span style={cuadro("#0d6efd")} /> COLOR AZUL Prestaciones requeridas
-        </p>
-        <p style= {{fontSize:"12px"}}>
-          <span style={cuadro("#198754")} /> COLOR VERDE Prestaciones realizadas
-        </p>
-        <p style= {{fontSize:"12px"}} >X Diente ausente o se tiene que extraer</p>
-        <p style= {{fontSize:"12px"}}>▭ Protesis fija</p>
-        <p style= {{fontSize:"12px"}}>▭ Protesis removible</p>
-        <p style= {{fontSize:"12px"}}>◯ Coronas</p>
-
-        <div style={{ marginTop: "40px" }}>
-          <Form.Group>
-            <Form.Label>CANTIDAD DE DIENTES EXISTENTES</Form.Label>
-
-            <Form.Control
-              type="number"
-              value={cantidadExistentes}
-              onChange={(e) => setCantidadExistentes(e.target.value)}
-              style={{
-                border: "1px solid black",
-                borderRadius: "0px",
-              }}
-            />
-          </Form.Group>
-        </div> */}
+       
       </div>
 
       {/* ODONTOGRAMA */}
@@ -397,12 +415,63 @@ function getIdPieza(prev, piezaBuscada) {
               strokeWidth="2.5"
             />
           </svg>
-          <h6>TEMPORALES</h6>
-        </div>
+           
+           <hr />
+         <div
+        style={{
+          width: "100%",
+
+          height: "fit-content",
+          
+        }}>
+                     <Row>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="success"
+              style={{
+                height: "24px", // más alto
+                fontSize: "8px", // texto más grande
+                padding: "0px 20px", // más espacio interno
+                whiteSpace: "nowrap",
+              }}
+              onClick={(event) => {
+                openMdlEstaSeguro();
+                event.preventDefault();
+              }}
+            >
+              GRABAR - ODONTOGRAMA
+            </Button>
+          </div>
+        </Row>
+      </div>
+        
       </div>
 
       {/* REFERENCIAS */}
     </div>
+
+   
+    
+
+         </div>
+          {showMDLEstaSeguro && (
+            <MDLEstaSeguro
+              show={openMdlEstaSeguro}
+              handleClose={closeMdlEstaSeguro}
+              mensajetitulo={mdlMensajeTitulo}
+              mensajecuerpo={mdlMensajeCuerpo}
+              enviaralpadre={mdlSiNo}
+            />
+          )}
+    
+          {showMDLMensaje && (
+            <AbrirMDLMensaje
+              show={openMdlMensaje}
+              handleClose={closeMdlMensaje}
+              modalMessage={mensaje}
+            />
+          )}
+        </>
   );
 };
 

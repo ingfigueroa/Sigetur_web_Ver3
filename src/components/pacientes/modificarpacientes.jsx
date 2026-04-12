@@ -17,26 +17,40 @@ import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+
 
 
 import { calcularEdadDiaMesAnio, getFechaISO } from "../../components/utils/fecha";
 
 
 const modificarpaciente = ({ show, handleClose, idpaciente }) => {
+
+  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
+    "¿Desea grabar la actualización de datos.?",
+  );
+
+  const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
+    "PACIENTES - MODIFICAR DATOS",
+  );
+
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
 
-  const [TipoDocumento, setTipoDocumento] = useState([]);
-  const [idTipoDocumento, setIDTipoDocumento] = useState("");
+  const [TiposDocumento, setTiposDocumento] = useState([]);
+  const [TipoDocumento, setTipoDocumento] = useState("");
   const [NroDocumento, setNroDocumento] = useState([]);
   const [EMail, setEMail] = useState("");
+
+   const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
+    
 
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [edad, setEdad] = useState("")
   const [TECelular, setTECelular] = useState("");
-  const [CuitCuil, setCuitCuil] = useState("");
+ 
   const [TipoSexo, setTipoSexo] = useState([]);
 
 
@@ -47,8 +61,8 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
   const [idPaciente, setIDPaciente] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalMessageTitulo, setModalMessageTitulo] = useState("");
+  const [modalMessage, setModalMessage] = useState("Se modificaron los datos del PACIENTE con éxito.");
+  const [modalMessageTitulo, setModalMessageTitulo] = useState("MODIFICAR PACIENTE");
   const [nuevo, setNuevo] = useState("");
   const [mdlAltaExitosa, setMdlAltaExitosa] = useState(null);
 
@@ -61,18 +75,20 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     setShowModal(false);
   };
 
-  const openModalAlta = () => {
-    setModalMessage("ALTA EXITOSA");
-    setMdlAltaExitosa(true);
+  
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
   };
 
-  const closeModalAlta = () => {
-    setMdlAltaExitosa(false);
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+    //setShowMDLMensaje(true)
   };
+
+
 
   const openModalModificacionExitosa = () => {
-    setModalMessage("Se modificaron los datos del PACIENTE con éxito.");
-    setModalMessageTitulo("MODIFICAR PACIENTE");
+   
     setMdlAltaExitosa(true);
   };
 
@@ -87,6 +103,21 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     return re.test(email);
   };
 
+  
+    const mdlSiNo = (respuesta) => {
+      if (respuesta) {
+        // Lógica si confirmó que quiere eliminar
+        
+        closeMdlEstaSeguro();
+        Grabar();
+        setMensaje("Se modificaron los datos del  paciente.")
+        openMdlMensaje();
+      } else {
+        setMensaje("Se canceló la grabación de datos del paciente.");
+        openMdlMensaje();
+      }
+    };
+
   useEffect(() => {
     
     async function fetchData() {
@@ -98,24 +129,11 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
         setIDPaciente(idpaciente);
         setApellido(data[0].Apellido);
         setNombres(data[0].Nombres);
-        setIDTipoDocumento(data[0].TipoDocumento);
-       
+        setTipoDocumento(data[0].TipoDocumento);
         setNroDocumento(data[0].NroDocumento);
         setEMail(data[0].EMail);
-        
-        // setFechaNacimiento(data[0].FechaNacimiento)
         setTECelular(data[0].TECelular);
-        
-        
-        setIDTipoSexoSelected(data[0].idsexo);
-
-
-      /*   //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
-        const formattedDate = new Date(data[0].FechaNacimiento)
-          .toISOString()
-          .split("T")[0]; // Solo la parte de la fecha */
-
-        
+        setIDTipoSexoSelected(data[0].idsexo);       
         setFechaNacimiento(getFechaISO(data[0].FechaNacimiento));
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -136,7 +154,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
             //profesionalesService.BuscarPorID(idprofesional),
           ]);
         setTipoSexo(sexoData);
-        setTipoDocumento(documentoData);
+        setTiposDocumento(documentoData);
 
         setNuevo(1);
       } catch (error) {
@@ -149,6 +167,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
   useEffect(() => {
     
     if (fechaNacimiento) {
+      console.log(fechaNacimiento)
       setEdad(calcularEdadDiaMesAnio(fechaNacimiento));
     }
   }, [fechaNacimiento]);
@@ -158,7 +177,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     //validaciones
     // Validaciones
 
-    if (!idTipoDocumento) {
+    if (!TipoDocumento) {
       showModalMessage("Debe seleccionar un tipo de documento");
       return;
     } else if (!NroDocumento) {
@@ -173,36 +192,36 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     } else if (!Nombres.trim()) {
       showModalMessage("El campo Nombres es obligatorio");
       return;
-    } else if (!FechaNacimiento) {
+    } else if (!fechaNacimiento) {
       showModalMessage("El campo 'Fecha de Nacimiento' es obligatorio");
       return;
-    } else if (!validarEmail(EMail)) {
+    }/*  else if (!validarEmail(EMail)) {
  
       showModalMessage("El correo electrónico no es válido");
-      return;
-    } else if (!TECelular) {
+      return; */
+     else if (!TECelular) {
       showModalMessage("El campo 'Teléfono Celular' es obligatorio");
       return;
     }
     
+  
     try {
-      await pacientesService.GrabarAlta(
+      await pacientesService.GrabarModificar({
         idpaciente,
         Nombres,
         Apellido,
-        idTipoDocumento,
+        TipoDocumento,
         NroDocumento,
         EMail,
-        FechaNacimiento,
+        fechaNacimiento,
         TECelular,
-        idTipoSexoSelected,
-        idusuario,
-        nuevo
-      );
+        idTipoSexoSelected
+    });
 
       openModalModificacionExitosa();
     } catch (error) {
-      /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
+      setModalMessage(error?.response?.data?.message ?? error.toString()) 
+      openModalModificacionExitosa()
       return;
     }
   }
@@ -217,7 +236,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
           <Modal.Title>MODIFICAR UN PACIENTE</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "100%", background: "white" }}>
-           <div style={{ width: "30%", textAlign: "left" }}>
+          {/*  <div style={{ width: "30%", textAlign: "left" }}>
               <button
                 title="Activar OBRAS SOCIALES"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -225,21 +244,15 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
                   event.preventDefault();
                   openModalAsignarObraSocial();
                 }}
+                
               >
                <i class="fa-regular fa-hospital"></i>
               </button>
 
-            {/*   <button
-                title="Imprimir listado de PACIENTES"
-                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-                onClick={() => Imprimir()}
-              >
-                <i class="fa fa-print"></i>
-              </button> */}
-            </div>
+            </div> */}
           
          
-          <hr></hr>
+         
           <div
             style={{ display: "grid", width: "100%", backgroundColor: "white" }}
           >
@@ -260,13 +273,13 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
                     Tipo documento
                   </InputGroup.Text>
                   <select
-                    onChange={(e) => setIDTipoDocumento(e.target.value)}
-                    value={idTipoDocumento}
+                    onChange={(e) => setTipoDocumento(e.target.value)}
+                    value={TipoDocumento}
                   >
                     <option value="" disabled>
                       Seleccionar
                     </option>
-                    {TipoDocumento.map((documento) => (
+                    {TiposDocumento.map((documento) => (
                       <option key={documento.id} value={documento.id}>
                         {documento.descripcion}
                       </option>
@@ -408,17 +421,17 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
                     type="text"
                     onChange={(e) => {
                       const value = e.target.value;
-                      if (/^\d*$/.test(value)) {
+                    
                         // Verifica que solo contenga números
                         setTECelular(value);
-                      }
+                    
                     }}
                     value={TECelular}
                   />
                 </InputGroup>
               </div>
             </div>
-
+ <hr></hr>
             <div
               style={{
                 width: "100%",
@@ -428,10 +441,13 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
               }}
             >
               <ButtonGroup className="mb-2">
-                <Button variant="success" onClick={() => Grabar()}>
+                <Button variant="success"  onClick={(event) => {
+                    openMdlEstaSeguro();
+                    event.preventDefault();
+                  }}>
                   Grabar
                 </Button>
-                <Button variant="primary">Limpiar</Button>
+                
                 <Button variant="primary" onClick={handleClose}>
                   Cerrar
                 </Button>
@@ -454,6 +470,16 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
           varMensajeTitulo={modalMessageTitulo}
         />
       )}
+
+       {showMDLEstaSeguro && (
+              <MDLEstaSeguro
+                show={openMdlEstaSeguro}
+                handleClose={closeMdlEstaSeguro}
+                mensajetitulo={mdlMensajeTitulo}
+                mensajecuerpo={mdlMensajeCuerpo}
+                enviaralpadre={mdlSiNo}
+              />
+            )}
 
     </>
   );

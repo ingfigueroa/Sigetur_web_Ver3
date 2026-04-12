@@ -4,26 +4,27 @@
   display: grid;
   place-items: center;
   width:  1350px;
+  
 
  
   background-color: white;
 
-  text-align: left;
+  
   
 }
 
-
-.acomodarimagen{
- 
-  width:  1350px;
+.acomodarimagen {
+  width: 1350px;
   height: 65px;
-  background-color: #0277bd;
-
+  background-color: #ffffff;
  
-  
+  justify-content: left;
+  align-items: center;
+}
 
-  text-align: left;
-  
+.acomodarimagen img {
+  height: 100%;   /* ocupa toda la altura del div */
+  width: auto;    /* mantiene proporción */
 }
 
 img{
@@ -126,6 +127,7 @@ img{
   
   width: 50%;
   margin-top: 65px;
+  text-align: center;
 }
 
 .volverallogin2{

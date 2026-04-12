@@ -33,7 +33,7 @@ function cuerpo() {
           </h6>
         
           <h6>
-            <a href="/Registrarconsultorio"> Registrar consultorio</a>
+            <a href="/crearcuentapasouno"> Registrar consultorio</a>
           </h6>
         
       </div>

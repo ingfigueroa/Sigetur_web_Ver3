@@ -23,7 +23,7 @@ function NavBar() {
          
         </a>
      
-        <a href="/Registrarconsultorio">
+        <a href="/crearcuentapasouno">
         <Button variant="outline-primary">Registarse</Button>
         </a>
       </div>

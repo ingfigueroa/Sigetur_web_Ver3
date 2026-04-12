@@ -1,11 +1,60 @@
-import React from "react";
+import React, {useState} from "react";
 import { Form, Row, Col, Card, Button } from "react-bootstrap";
 
 import { historiaclinicaService } from "../../services/historiaclinica.service";
 
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
+
 function AnamnesisOdontologica({ data, setData, idpaciente }) {
- 
+  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
+    "¿Desea grabar la anamnesis odontológica?",
+  );
+
+  const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
+    "HISTORIA CLINICA - ANAMNESIS ODONTOLOGICA",
+  );
+
+  const [showMDLMensaje, setShowMDLMensaje] = useState("");
+  const [mensaje, setMensaje] = useState("");
+
+  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
+
   
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+
+  const closeMdlMensaje = () => {
+    setShowMDLMensaje(false);
+    
+    
+  };
+
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+    //setShowMDLMensaje(true)
+  };
+
+  const mdlSiNo = (respuesta) => {
+    if (respuesta) {
+      // Lógica si confirmó que quiere eliminar
+
+      closeMdlEstaSeguro();
+      grabarAnamnesis();
+      setMensaje("Se grabó la anamnesis odontológica del paciente.");
+      openMdlMensaje();
+    } else {
+      setMensaje(
+        "Se canceló la grabación de la anamnesis odontológica del paciente.",
+      );
+      openMdlMensaje();
+    }
+  };
   const handleNestedChange = (group, field, value) => {
     setData((prev) => ({
       ...prev,
@@ -16,42 +65,39 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
     }));
   };
 
-    async function grabarAnamnesis() {
-       
-      console.log(idpaciente)
-      
-        const payload = {
+  async function grabarAnamnesis() {
+  
 
+    const payload = {
+      idpaciente: idpaciente,
 
-          idpaciente: idpaciente,
+      // ================= GENERAL =================
 
-           // ================= GENERAL =================
+      porqueasistioconsulta: data.general.porqueasistioconsulta,
+      momentosazucardiarios: data.general.momentosazucardiarios,
+      indicedeplacas: data.general.indicedeplacas,
+      tipolesionesdescriba: data.general.tipolesionesdescriba,
+      higienebucalestado: data.general.higienebucalestado,
 
-          porqueasistioconsulta: data.general.porqueasistioconsulta,
-          momentosazucardiarios: data.general.momentosazucardiarios,
-          indicedeplacas: data.general.indicedeplacas,
-          tipolesionesdescriba: data.general.tipolesionesdescriba,
-          higienebucalestado: data.general.higienebucalestado,
-         
-          carahinchada: data.general.carahinchada,
-          carahinchadapusohielo: data.general.carahinchadapusohielo,
-          carahinchadapusocalor: data.general.carahinchadapusocalor,
-          carahinchadapusootros: data.general.carahinchadapusootros,
-          momentosazucardiarios: data.general.momentosazucardiarios,
-          indicedeplacas: data.general.indicedeplacas,
-          observaciones: data.general.observaciones,
-    
+      carahinchada: data.general.carahinchada,
+      carahinchadapusohielo: data.general.carahinchadapusohielo,
+      carahinchadapusocalor: data.general.carahinchadapusocalor,
+      carahinchadapusootros: data.general.carahinchadapusootros,
+      momentosazucardiarios: data.general.momentosazucardiarios,
+      indicedeplacas: data.general.indicedeplacas,
+      observaciones: data.general.observaciones,
 
-        // ================= CONSULTAS PREVIAS =================
-          consultootroprofesional: data.consultasPrevias.consultootroprofesional,
-          consultootroprofesionaldetalle: data.consultasPrevias.consultootroprofesionaldetalle,
-          tomomedicamento: data.consultasPrevias.tomomedicamento,
-          describamedicamento: data.consultasPrevias.describamedicamento,
-          desdecuandomedicamento: data.consultasPrevias.desdecuandomedicamento,
-          obtuvoresultadomedicamento: data.consultasPrevias.obtuvoresultadomedicamento,
-    
- // ================= DOLOR =================
-    
+      // ================= CONSULTAS PREVIAS =================
+      consultootroprofesional: data.consultasPrevias.consultootroprofesional,
+      consultootroprofesionaldetalle:
+        data.consultasPrevias.consultootroprofesionaldetalle,
+      tomomedicamento: data.consultasPrevias.tomomedicamento,
+      describamedicamento: data.consultasPrevias.describamedicamento,
+      desdecuandomedicamento: data.consultasPrevias.desdecuandomedicamento,
+      obtuvoresultadomedicamento:
+        data.consultasPrevias.obtuvoresultadomedicamento,
+
+      // ================= DOLOR =================
 
       hatenidodolor: data.dolor.hatenidodolor,
       suave: data.dolor.suave,
@@ -68,69 +114,65 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
       localizadodolor: data.general.localizadodolor,
       irradiadodolor: data.general.irradiadodolor,
       calmoalgodolor: data.general.calmoalgodolor,
-    
 
-    // ================= GOLPE =================
+      // ================= GOLPE =================
       golpedientes: data.golpe.golpedientes,
       cuandogolpedientes: data.golpe.cuandogolpedientes,
       comoprodujogolpedientes: data.golpe.comoprodujogolpedientes,
 
       // ================= FRACTURA =================
-    
-    
+
       fracturodiente: data.fractura.fracturodiente,
       cualdientefracturo: data.fractura.cualdientefracturo,
       tratamientofracturadiente: data.fractura.tratamientofracturadiente,
 
       // ================= DIFICULTAD =================
-  
+
       hablar: data.dificultad.hablar,
       masticar: data.dificultad.masticar,
       abrirlaboca: data.dificultad.abrirlaboca,
       tragaralimentos: data.dificultad.tragaralimentos,
-  
+
       // ================= ANORMAL BOCA =================
 
       loslabios: data.anormalBoca.loslabios,
-			carrillo: data.anormalBoca.carrillo,
-			lengua: data.anormalBoca.lengua,
-			rebordes: data.anormalBoca.rebordes,
-			paladar: data.anormalBoca.paladar,
-			trigono: data.anormalBoca.trigono,
-			pisoboca: data.anormalBoca.pisoboca,
-			pisoretromolar: data.anormalBoca.pisoretromolar,
+      carrillo: data.anormalBoca.carrillo,
+      lengua: data.anormalBoca.lengua,
+      rebordes: data.anormalBoca.rebordes,
+      paladar: data.anormalBoca.paladar,
+      trigono: data.anormalBoca.trigono,
+      pisoboca: data.anormalBoca.pisoboca,
+      pisoretromolar: data.anormalBoca.pisoretromolar,
 
       // ================= LESIONES=================
-    
-	    manchas: data.lesiones.manchas,
-			abultamientotejidos: data.lesiones.abultamientotejidos,
-			ulceras: data.lesiones.ulceras,
-			ampollas: data.lesiones.ampollas,
-			sangranencias: data.lesiones.sangranencias,
-			sangranenciasdetalle: data.lesiones.sangranenciasdetalle,
-			pus: data.lesiones.pus,
-			pusdetalle: data.lesiones.pusdetalle,
-			movilidaddientes: data.lesiones.movilidaddientes,
-			movilidaddientesdetalle: data.lesiones.movilidaddientesdetalle,
-			altodientes: data.lesiones.altodientes,
-			altodientesdetalle: data.lesiones.altodientesdetalle,
-  
-      };
-  
-      try {
-       
-       console.log(payload)
-      await historiaclinicaService.GrabarAnamnesisOdontologica(payload);
-  
-        setModalMessage("ALTA EXITOSA");
-      } catch (error) {
-        /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
-        return;
-      }
+
+      manchas: data.lesiones.manchas,
+      abultamientotejidos: data.lesiones.abultamientotejidos,
+      ulceras: data.lesiones.ulceras,
+      ampollas: data.lesiones.ampollas,
+      sangranencias: data.lesiones.sangranencias,
+      sangranenciasdetalle: data.lesiones.sangranenciasdetalle,
+      pus: data.lesiones.pus,
+      pusdetalle: data.lesiones.pusdetalle,
+      movilidaddientes: data.lesiones.movilidaddientes,
+      movilidaddientesdetalle: data.lesiones.movilidaddientesdetalle,
+      altodientes: data.lesiones.altodientes,
+      altodientesdetalle: data.lesiones.altodientesdetalle,
     };
 
+    try {
+      
+      await historiaclinicaService.GrabarAnamnesisOdontologica(payload);
+
+      setMensaje("Se grabó la anamnesis odontológica del paciente.")
+    } catch (error) {
+      /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
+      return;
+    }
+  }
 
   return (
+    <>
     <Card className="mb-3">
       <Card.Body style={{ backgroundColor: "#e1f5fe" }}>
         <Row>
@@ -144,9 +186,9 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 whiteSpace: "nowrap",
               }}
               onClick={(event) => {
-                  grabarAnamnesis();
-                  event.preventDefault();
-                }}
+                openMdlEstaSeguro();
+                event.preventDefault();
+              }}
             >
               GRABAR - ANAMNESIS ODONTOLOGICA
             </Button>
@@ -209,7 +251,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 }
               />
             </Col>
-             <Col md={3}>
+            <Col md={3}>
               {data.consultasPrevias.consultootroprofesional && (
                 <Form.Control
                   placeholder="Describa lo comentado por el profesional"
@@ -428,7 +470,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                     placeholder="Localizado ¿dónde?"
                     value={data.general.localizadodolor}
                     onChange={(e) =>
-                      handleNestedChange("general", "localizadodolor", e.target.value.toUpperCase())
+                      handleNestedChange(
+                        "general",
+                        "localizadodolor",
+                        e.target.value.toUpperCase(),
+                      )
                     }
                   />
                 </Col>
@@ -437,8 +483,12 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                     className="mt-2"
                     placeholder="Irradiado ¿hacia dónde?"
                     value={data.general.irradiadodolor}
-                   onChange={(e) =>
-                      handleNestedChange("general", "irradiadodolor", e.target.value.toUpperCase())
+                    onChange={(e) =>
+                      handleNestedChange(
+                        "general",
+                        "irradiadodolor",
+                        e.target.value.toUpperCase(),
+                      )
                     }
                   />
                 </Col>
@@ -448,7 +498,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                     placeholder="¿Puede calmarlo con algo?"
                     value={data.general.calmoalgodolor}
                     onChange={(e) =>
-                      handleNestedChange("general", "calmoalgodolor", e.target.value.toUpperCase())
+                      handleNestedChange(
+                        "general",
+                        "calmoalgodolor",
+                        e.target.value.toUpperCase(),
+                      )
                     }
                   />
                 </Col>
@@ -482,7 +536,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                     placeholder="¿Cuándo?"
                     value={data.golpe.cuandogolpedientes}
                     onChange={(e) =>
-                      handleNestedChange("golpe", "cuandogolpedientes", e.target.value.toUpperCase())
+                      handleNestedChange(
+                        "golpe",
+                        "cuandogolpedientes",
+                        e.target.value.toUpperCase(),
+                      )
                     }
                   />
                 </Col>
@@ -492,7 +550,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                     placeholder="¿Cómo se produjo?"
                     value={data.golpe.comoprodujogolpedientes}
                     onChange={(e) =>
-                      handleNestedChange("golpe", "comoprodujogolpedientes", e.target.value.toUpperCase())
+                      handleNestedChange(
+                        "golpe",
+                        "comoprodujogolpedientes",
+                        e.target.value.toUpperCase(),
+                      )
                     }
                   />
                 </Col>
@@ -507,7 +569,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                   label="¿Se le fracturó algún diente?"
                   checked={data.fractura.fracturodiente}
                   onChange={(e) =>
-                    handleNestedChange("fractura", "fracturodiente", e.target.checked)
+                    handleNestedChange(
+                      "fractura",
+                      "fracturodiente",
+                      e.target.checked,
+                    )
                   }
                 />
               </Col>
@@ -522,7 +588,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                     placeholder="¿Cuál?"
                     value={data.fractura.cualdientefracturo}
                     onChange={(e) =>
-                      handleNestedChange("fractura", "cualdientefracturo", e.target.value.toUpperCase())
+                      handleNestedChange(
+                        "fractura",
+                        "cualdientefracturo",
+                        e.target.value.toUpperCase(),
+                      )
                     }
                   />
                 </Col>
@@ -601,7 +671,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 label="¿Los labios?"
                 checked={data.anormalBoca.loslabios}
                 onChange={(e) =>
-                  handleNestedChange("anormalBoca", "loslabios", e.target.checked)
+                  handleNestedChange(
+                    "anormalBoca",
+                    "loslabios",
+                    e.target.checked,
+                  )
                 }
               />
             </Col>
@@ -719,11 +793,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 label="¿Ulceraciones?"
                 checked={data.lesiones.ulceras}
                 onChange={(e) =>
-                  handleNestedChange(
-                    "lesiones",
-                    "ulceras",
-                    e.target.checked,
-                  )
+                  handleNestedChange("lesiones", "ulceras", e.target.checked)
                 }
               />
             </Col>
@@ -745,7 +815,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 placeholder="Otras..."
                 value={data.general.tipolesionesdescriba}
                 onChange={(e) =>
-                  handleNestedChange("general", "tipolesionesdescriba", e.target.value.toUpperCase())
+                  handleNestedChange(
+                    "general",
+                    "tipolesionesdescriba",
+                    e.target.value.toUpperCase(),
+                  )
                 }
               />
             </Col>
@@ -791,11 +865,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 label="¿Sale pus de algún lugar de su boca?"
                 checked={data.lesiones.pus}
                 onChange={(e) =>
-                  handleNestedChange(
-                    "lesiones",
-                    "pus",
-                    e.target.checked,
-                  )
+                  handleNestedChange("lesiones", "pus", e.target.checked)
                 }
               />
             </Col>
@@ -846,7 +916,6 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 />
               )}
             </Col>
-            
           </Row>
           <Row className="mt-2" align-items-center>
             <Col md={3}>
@@ -973,7 +1042,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 placeholder="Indique el indíce"
                 value={data.general.indicedeplacas}
                 onChange={(e) =>
-                  handleNestedChange("general", "indicedeplacas", e.target.value)
+                  handleNestedChange(
+                    "general",
+                    "indicedeplacas",
+                    e.target.value,
+                  )
                 }
               />
             </Col>
@@ -985,7 +1058,11 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
               <Form.Select
                 value={data.general.higienebucalestado || ""}
                 onChange={(e) =>
-                  handleNestedChange("general", "higienebucalestado", e.target.value)
+                  handleNestedChange(
+                    "general",
+                    "higienebucalestado",
+                    e.target.value,
+                  )
                 }
               >
                 <option value="">Seleccione...</option>
@@ -1006,8 +1083,12 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
               name="motivoConsulta"
               value={data.general.observaciones}
               onChange={(e) =>
-                  handleNestedChange("general", "observaciones", e.target.value.toUpperCase())
-                }
+                handleNestedChange(
+                  "general",
+                  "observaciones",
+                  e.target.value.toUpperCase(),
+                )
+              }
             />
           </Form.Group>
         </Form>
@@ -1022,10 +1103,10 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 padding: "0px 20px", // más espacio interno
                 whiteSpace: "nowrap",
               }}
-             onClick={(event) => {
-                  grabarAnamnesis();
-                  event.preventDefault();
-                }}
+              onClick={(event) => {
+                grabarAnamnesis();
+                event.preventDefault();
+              }}
             >
               GRABAR - ANAMNESIS ODONTOLOGICA
             </Button>
@@ -1052,6 +1133,24 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
         </Row>
       </Card.Body>
     </Card>
+     {showMDLEstaSeguro && (
+            <MDLEstaSeguro
+              show={openMdlEstaSeguro}
+              handleClose={closeMdlEstaSeguro}
+              mensajetitulo={mdlMensajeTitulo}
+              mensajecuerpo={mdlMensajeCuerpo}
+              enviaralpadre={mdlSiNo}
+            />
+          )}
+    
+          {showMDLMensaje && (
+            <AbrirMDLMensaje
+              show={openMdlMensaje}
+              handleClose={closeMdlMensaje}
+              modalMessage={mensaje}
+            />
+          )}
+    </>
   );
 }
 

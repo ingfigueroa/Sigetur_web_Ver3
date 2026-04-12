@@ -134,18 +134,22 @@ export function calcularEdadAnioMesDia(fechaNacimiento) {
   return edad;
 }
 
-
-// src/utils/fecha.js
 export function calcularEdadDiaMesAnio(fechaNacimiento) {
-  //funciona si la fecha viene con formato DIA-MES-AÑO
   if (!fechaNacimiento) return null;
 
   let nacimiento;
 
-  // Si viene en formato DD-MM-YYYY
-  if (typeof fechaNacimiento === "string" && fechaNacimiento.includes("-")) {
-    const [dia, mes, anio] = fechaNacimiento.split("-");
-    nacimiento = new Date(anio, mes - 1, dia);
+  if (typeof fechaNacimiento === "string") {
+    const partes = fechaNacimiento.split("-");
+
+    if (partes[0].length === 4) {
+      // formato YYYY-MM-DD
+      nacimiento = new Date(fechaNacimiento);
+    } else {
+      // formato DD-MM-YYYY
+      const [dia, mes, anio] = partes;
+      nacimiento = new Date(anio, mes - 1, dia);
+    }
   } else {
     nacimiento = new Date(fechaNacimiento);
   }
@@ -162,7 +166,6 @@ export function calcularEdadDiaMesAnio(fechaNacimiento) {
 
   return edad;
 }
-
 
 //convierte la fecha para usarla en Calendar
 export function toLocalDate(date) {

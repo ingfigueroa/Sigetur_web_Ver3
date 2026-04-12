@@ -51,7 +51,7 @@ function Login1() {
 
           <h4>¿NO TIENES UNA CUENTA?</h4>
           <h6>
-            <a href="/Registrarconsultorio">
+            <a href="/crearcuentapasouno">
               <strong> Registrá tu consultorio o clínica</strong>
             </a>
           </h6>

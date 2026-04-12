@@ -11,7 +11,11 @@ import { calcularEdadDiaMesAnio, getFechaDMY } from "../../components/utils/fech
 
 
 
-const emptyPaciente = {
+
+
+const DatosPacienteHeader = ({ data, apellidonombres }) => {
+/* 
+  const emptyPaciente = {
   Apellido: "",
   Nombres: "",
   TipoDocumento: "",
@@ -21,8 +25,21 @@ const emptyPaciente = {
   EMail: "",
   TECelular: "",
 };
+ */
+const getInputStyleControl = () => ({
+  backgroundColor: "#e1f5fe",
+  fontWeight: "bold",
+  textAlign: "center",
+  fontSize: "14px",
+});
 
-const DatosPacienteHeader = ({ data, apellidonombres }) => {
+const getInputStyleText = () => ({
+  backgroundColor: "#ffffff",
+  
+  textAlign: "center",
+  fontSize: "14px",
+});
+
 
   const [edad, setEdad] = useState(0);
   const [tipoSexo, setTipoSexo] = useState("");
@@ -109,95 +126,118 @@ useEffect(() => {
       <div style={{ width: "100%" }}>
        
         <InputGroup className="mb-3">
-          <InputGroup.Text>Tipo doc</InputGroup.Text>
+          <InputGroup.Text
+          style={{...getInputStyleText()}}
+          >Tipo doc</InputGroup.Text>
           <Form.Control
             className="w-100 justify-content-center fw-bold"
-            style={{ flex: "0 0 80px", backgroundColor: "#e1f5fe" }}
+            style={{...getInputStyleControl(), flex: "0 0 80px"}}
             value={ tipoDocumento || ""}
             readOnly
           />
 
-          <InputGroup.Text>Nro</InputGroup.Text>
+          <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Nro</InputGroup.Text>
           <Form.Control
             className="w-100 justify-content-center fw-bold"
             value={NroDocumento || ""}
-            style={{ flex: "0 0 120px", backgroundColor: "#e1f5fe" }} // 👈 ancho fijo
+            style={{...getInputStyleControl(), flex: "0 0 120px"}}
+            readOnly // 👈 ancho fijo
           />
 
-          <InputGroup.Text>Apellido</InputGroup.Text>
+            <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Apellido</InputGroup.Text>
           <Form.Control
             className="justify-content-center fw-bold"
             value={Apellido || ""}
-            style={{ textAlign: "center", backgroundColor: "#e1f5fe" }}
+            style={{...getInputStyleControl(),
+              flex: "0 0 260px",
+            }}
+            readOnly
           />
 
-          <InputGroup.Text>Nombres</InputGroup.Text>
+            <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Nombres</InputGroup.Text>
 
           <Form.Control
             className="justify-content-center fw-bold"
             value={Nombres || ""}
-            style={{ textAlign: "center", backgroundColor: "#e1f5fe" }}
+             style={{...getInputStyleControl(), 
+              flex: "0 0 260px",
+             }}
+             readOnly
           />
 
-         
-        </InputGroup>
-
-        <InputGroup className="mb-3">
-          <InputGroup.Text>Sexo</InputGroup.Text>
+             <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Sexo</InputGroup.Text>
           <Form.Control
             className="justify-content-center fw-bold"
             value={tipoSexo || ""}
-            style={{
+            style={{...getInputStyleControl(),
               flex: "0 0 120px",
-              textAlign: "center",
-              backgroundColor: "#e1f5fe",
+              
             }} // 👈 ancho fijo
             readOnly
           />
+        </InputGroup>
 
-          <InputGroup.Text>Fecha nacimiento:</InputGroup.Text>
+        <InputGroup className="mb-3">
+        
+
+            <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Fecha nacimiento:</InputGroup.Text>
           <Form.Control
             className="justify-content-center fw-bold"
             value={fechaNacimiento || ""}
-            style={{
+             style={{...getInputStyleControl(),
               flex: "0 0 120px",
-              textAlign: "center",
-              backgroundColor: "#e1f5fe",
-            }} // 👈 ancho fijo
+              
+            }}
+            readOnly // 👈 ancho fijo
           />
 
-          <InputGroup.Text>Edad</InputGroup.Text>
+           <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Edad</InputGroup.Text>
           <Form.Control
             className="justify-content-center fw-bold"
-            style={{
+             style={{...getInputStyleControl(),
               flex: "0 0 100px",
-              textAlign: "center",
-              backgroundColor: "#e1f5fe",
+              
             }} // 👈 ancho fijo
             value={edad ? `${edad} años` : ""}
-            disabled
+            readOnly
           />
 
-          <InputGroup.Text>Email</InputGroup.Text>
+            <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Correo Electrónico</InputGroup.Text>
           <Form.Control
             className="justify-content-center fw-bold"
             value={EMail || ""}
-            style={{
+              style={{...getInputStyleControl(),
               flex: "0 0 320px",
-              textAlign: "center",
-              backgroundColor: "#e1f5fe",
-            }} // 👈 ancho fijo
+              
+            }}
+            readOnly // 👈 ancho fijo
           />
 
-          <InputGroup.Text>Celular</InputGroup.Text>
+            <InputGroup.Text 
+          style={{...getInputStyleText()}}
+          >Celular</InputGroup.Text>
           <Form.Control
             className="justify-content-center fw-bold"
             value={TECelular || ""}
-            style={{
+              style={{...getInputStyleControl(),
               flex: "0 0 180px",
-              textAlign: "center",
-              backgroundColor: "#e1f5fe",
+              
             }}
+            readOnly 
           />
         </InputGroup>
         <hr

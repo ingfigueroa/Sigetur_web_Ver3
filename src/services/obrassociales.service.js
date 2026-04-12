@@ -57,7 +57,7 @@ async function BuscarPorId(item) {
 
 async function putAsignarObraSocialPaciente(idpaciente,idobrasocial, idusuario) {
   try {
- console.log("Por aca pasa post")
+
     await httpService.put(urlResourceAsignarPaciente, {
       idpaciente,
       idobrasocial,

@@ -11,6 +11,7 @@ const urlResourceProfesionalCambioHorario = urlServidor + "/profesional/cambioho
 
 const urlResourcePacientes = urlServidor + "/pacientes";
 const urlResourcePacientesAdd = urlServidor + "/pacienteadd"; 
+const urlResourcePacientesUpdate = urlServidor + "/pacienteupdate"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
 const urlResourcePacienteUltimosTurnos = urlServidor + "/pacientesultimosturnos";
 
@@ -70,14 +71,21 @@ const urlHCAnamnesisOdontologica = urlServidor + "/hcaoadd"
 
 const urlHCFotoOdontograma = urlServidor + "/hcodontogramaadd"
 
+const urlHCCreateDiagnostico = urlServidor + "/hcdiagnosticoadd"
+
 const urlHCAnamnesisMedicaBuscar = urlServidor + "/hcambuscar"
 const urlHCAnamnesisOdontologicaBuscar = urlServidor + "/hcaobuscar"
 const urlHCNro = urlServidor + "/hcnrobuscar"
 
 const urlHCODSituaciondentaria = urlServidor + "/hcodsituaciondentaria"
 const urlHCODUltimaFoto = urlServidor + "/hcodultimafoto"
+const urlHCDiagnosticoBuscar = urlServidor + "/hcdiagnosticobuscar"
 
-
+//CLIENTES
+const urlCrearCliente = urlServidor + "/crearcliente"
+const urlCorreoCrearCuenta = urlServidor + "/crearcuenta"
+const urlCodigoCrearCuentaCreate = urlServidor + "/crearcodigoadd"
+const urlvalidarcodigoemail = urlServidor + "/validarcodigoemail"
 
 
 
@@ -142,4 +150,11 @@ export const config = {
     urlHCODUltimaFoto,
     urlHCNro,
     urlHCCreate,
+    urlHCCreateDiagnostico,
+    urlHCDiagnosticoBuscar,
+    urlResourcePacientesUpdate, 
+    urlCorreoCrearCuenta,
+    urlCodigoCrearCuentaCreate,
+    urlvalidarcodigoemail,
+    urlCrearCliente
 }

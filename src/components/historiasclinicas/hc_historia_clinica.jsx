@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Container, Row, Col, InputGroup } from "react-bootstrap";
+import { Tabs, Tab, Container, Row, Col, InputGroup, Form, Button } from "react-bootstrap";
 
 import { historiaclinicaService } from "../../services/historiaclinica.service";
 
 import DatosPacienteHeader from "./hc_datos_paciente_header";
 import AnamnesisMedica from "./hc_anamnesis_medica";
 import AnamnesisOdontologica from "./hc_anamnesis_odontologica";
-import ExploracionClinica from "./hc_exploracion_clinica";
+
 import DiagnosticoPresuntivo from "./hc_diagnostico_presuntivo";
 import PlanTratamiento from "./hc_plan_tratamiento";
 import Evolucion from "./hc_evolucion";
@@ -22,11 +22,17 @@ function HC_HistoriaClinica() {
   const [mdlBuscarPacientes, setModalBuscarPacientes] = useState(false);
   const [titulo, setTitulo] = useState("PACIENTE - HC:");
    const [showMDLMensaje, setShowMDLMensaje] = useState("");
+
+
     const [mensaje, setMensaje] = useState("");
 
   const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
 
   const [idPaciente, setIDPaciente] = useState(null);
+
+    const [Apellido, SetApellido] = useState("");
+  
+    const [VarDNI, SetDNI] = useState(null);
 
   const [idProfesional, setIDProfesional] = useState("89");
 
@@ -328,7 +334,7 @@ const closeMdlMensaje = () => {
     initialAnamnesisOdontologica,
   );
 
-  const [exploracionClinica, setExploracionClinica] = useState({
+  /* const [exploracionClinica, setExploracionClinica] = useState({
     labios: "",
     lengua: "",
     paladar: "",
@@ -363,7 +369,7 @@ const closeMdlMensaje = () => {
 
     sarro: false,
     enfermedadPeriodontal: false,
-  });
+  }); */
 
   const [planTratamiento, setPlanTratamiento] = useState([
     {
@@ -429,13 +435,14 @@ const closeMdlMensaje = () => {
     cargarAnamnesis(idpaciente);
     cargarAnamnesisOdontologica(idpaciente);
     cargarOdontogramaUltimaFoto(idpaciente);
+    cargarDiagnostico(idpaciente)
   }
 
   const recibirDatoDelHijo = async (datoRecibido) => {
     if (datoRecibido > 0) {
       setIDPaciente(datoRecibido);
       const hcnro = await BuscarHCNro(datoRecibido);
-      console.log(hcnro);
+      
       if (hcnro > 0) {
         setIDPaciente(datoRecibido);
         mostrarHC(datoRecibido);
@@ -463,22 +470,7 @@ const closeMdlMensaje = () => {
       return 0;
     }
   }
-  /* 
-async function BuscarHCNro(idpaciente) {
-  try {
   
-
-    const data = await historiaclinicaService.getHCNro(idpaciente);
-
-    const hcnro = data?.[0]?.hcnro || 0;
-
-    setNroHC(hcnro);
-
-  } catch (error) {
-    console.error("Error al buscar paciente:", error);
-  }
-}
- */
   async function BuscarPaciente(idpaciente) {
     try {
       const data = await pacientesService.BuscarPorId(idpaciente);
@@ -559,10 +551,20 @@ async function BuscarHCNro(idpaciente) {
     const data = await historiaclinicaService.getHCUltimaFoto(idpaciente);
 
     const datosTransformados = transformarUltimaFoto(data);
-    console.log(datosTransformados);
+    
     setODUltimaFoto(datosTransformados);
 
     setOdontograma(datosTransformados);
+  };
+
+   const cargarDiagnostico = async (idpaciente) => {
+
+    
+    const data = await historiaclinicaService.getHCDiagnosticoBuscar(idpaciente);
+
+       setDiagnosticoPresuntivo(data)
+     
+    
   };
 
   const obtenerColorPorEstado = (idEstado) => {
@@ -599,31 +601,7 @@ async function BuscarHCNro(idpaciente) {
     }
   };
 
-  /* 
-const transformarUltimaFoto = (arrayBD) => {
-  const resultado = {};
-
-  const datos = arrayBD[0]; // 🔥 aquí está el verdadero array
-
-  datos.forEach((item) => {
-    const pieza = item.nropieza;
-    const cara = item.Cara_Diente.toLowerCase();
-    const estado = Number(item.idsituaciondentaria);
-
-    const color = obtenerColorPorEstado(estado);
-
-    if (!resultado[pieza]) {
-      resultado[pieza] = { caras: {} };
-    }
-
-    resultado[pieza].caras[cara] = {
-      color: color
-    };
-  });
-
-  return resultado;
-}; */
-
+  
   const transformarUltimaFoto = (arrayBD) => {
     const resultado = {};
 
@@ -690,7 +668,7 @@ const transformarUltimaFoto = (arrayBD) => {
         data.medicacionultimoscincoaniosdetalle),
       (am.general.tratamientoHomeopaticoAcupuntura =
         data.tratamientohomeopaticoacupuntura),
-      (am.general.detalleTratamientoHomeopatico =
+      (am.general.tratamientohomeopaticoacupunturadescriba =
         data.tratamientohomeopaticoacupunturadescriba),
       (am.general.medicoClinico = data.medicoclinico),
       (am.general.clinicaDerivacion = data.clinicahostpitalderivacion),
@@ -840,7 +818,7 @@ const transformarUltimaFoto = (arrayBD) => {
     if (ao === null) {
       return;
     }
-
+    
     ((ao.general.porqueasistioconsulta = data.porqueasistioconsulta),
       (ao.general.momentosazucardiarios = data.momentosazucardiarios),
       (ao.general.indicedeplacas = data.indicedeplacas),
@@ -1146,6 +1124,90 @@ const transformarUltimaFoto = (arrayBD) => {
               data={items}
               apellidonombres={recibirPaciente}
             />
+           
+            
+          </Row>
+         {/*  <Row>
+             <div className="acomodarencabezadopizaturnos">
+                        <InputGroup className="mb-3">
+                          <InputGroup.Text
+                            style={{
+                              backgroundColor: "#679bb9",
+                              color: "white",
+                              height: "28px",
+                            }}
+                          >
+                            Profesional
+                          </InputGroup.Text>
+                          <Form.Control
+                            placeholder="Buscar por apellido de profesional"
+                            aria-label="Buscar profesional"
+                            aria-describedby="basic-addon2"
+                            type="text"
+                            style={{height: "28px", marginght: "20px" }}
+                            onChange={(e) => SetApellido(e.target.value.toUpperCase())}
+                            value={Apellido}
+                            autoFocus
+                          />
+            
+                          <Button
+                            className="btn btn-sm btn-outline-secondary"
+                            title="Buscar por profesional"
+                            variant="outline-secondary"
+                            id="button-addon1"
+                            style={{ height: "28px" }}
+                            color="white"
+                            sm
+                            onClick={() => Buscar(1)}
+                          >
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                          </Button>
+                        </InputGroup>
+                        <InputGroup className="mb-3">
+                          <InputGroup.Text
+                            style={{
+                              backgroundColor: "#679bb9",
+                              color: "white",
+                              height: "28px",
+                            }}
+                          >
+                            DNI
+                          </InputGroup.Text>
+                          <Form.Control
+                            placeholder="Buscar por DNI"
+                            aria-label="Profesión"
+                            aria-describedby="basic-addon2"
+                            style={{height: "28px", marginght: "20px" }}
+                            onChange={(e) => SetDNI(e.target.value)}
+                            value={VarDNI}
+                          />
+                          <Button
+                           className="btn btn-sm btn-outline-secondary"
+                            title="Buscar por DNI"
+                            variant="outline-secondary"
+                            id="button-addon1"
+                            style={{ height: "28px" }}
+                            color="white"
+                            onClick={() => Buscar(1)}
+                          >
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                          </Button>
+                          
+                            <Button 
+                             className="btn btn-sm btn-outline-secondary"
+                             style={{ height: "28px" }}
+                            onClick={() => Limpiar()}>
+                              <i className="fa-solid fa-broom"></i>
+                            </Button>
+                            
+                         
+                        </InputGroup>
+                        
+                      </div>
+                      <hr />
+          </Row> */}
+          <Row>
+            
           </Row>
 
           {mostrarTabs && (
@@ -1190,18 +1252,20 @@ const transformarUltimaFoto = (arrayBD) => {
               <Tab eventKey="diagnostico" title="Diagnóstico">
                 <DiagnosticoPresuntivo
                   data={diagnosticoPresuntivo}
-                  setData={setDiagnosticoPresuntivo}
+                  idpaciente={idPaciente}
+                  idprofesional={idProfesional}
+                  idusuario={idUsuario}
                 />
               </Tab>
 
-              <Tab eventKey="plan" title="Plan de Tratamiento">
+              <Tab eventKey="plan" title="Plan de Tratamiento"  tabClassName="d-none">
                 <PlanTratamiento
                   data={planTratamiento}
                   setData={setPlanTratamiento}
                 />
               </Tab>
 
-              <Tab eventKey="evolucion" title="Evolución">
+              <Tab eventKey="evolucion" title="Evolución"  tabClassName="d-none">
                 <Evolucion data={evolucion} setData={setEvolucion} />
               </Tab>
             </Tabs>
@@ -1228,13 +1292,6 @@ const transformarUltimaFoto = (arrayBD) => {
         />
       )}
 
-      {showMDLMensaje && (
-        <AbrirMDLMensaje
-          show={openMdlMensaje}
-          handleClose={closeMdlMensaje}
-          modalMessage={mensaje}
-        />
-      )}
     </>
   );
 }

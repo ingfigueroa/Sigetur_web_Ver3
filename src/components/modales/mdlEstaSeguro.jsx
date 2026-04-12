@@ -28,7 +28,7 @@ const mdlEstaSeguro = ({
     <Modal show={show} onHide={handleClose} size="lg" centered>
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#ffc107 ", color: "black" }}
+        style={{ backgroundColor: "#FFE8A3 ", color: "black" }}
       >
         <Modal.Title>{mensajetitulo}</Modal.Title>
       </Modal.Header>
@@ -47,7 +47,7 @@ const mdlEstaSeguro = ({
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="warning" onClick={seleccionarSi}>
+        <Button style={{ backgroundColor: "#FFE8A3 ", color: "black" }} onClick={seleccionarSi}>
           SI
         </Button>
         <Button variant="secondary" onClick={seleccionarNO}>

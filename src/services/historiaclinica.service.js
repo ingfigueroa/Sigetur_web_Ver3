@@ -15,6 +15,8 @@ const HCFotoOdontograma = config.urlHCFotoOdontograma;
 const HCUltimaFotoOdontograma = config.urlHCODUltimaFoto;
 const HCNro = config.urlHCNro;
 const HCCreate = config.urlHCCreate;
+const HCCreateDiagnostico = config.urlHCCreateDiagnostico;
+const HCDiagsnosticoBuscar = config.urlHCDiagnosticoBuscar;
 
 
 
@@ -58,14 +60,14 @@ export const historiaclinicaService = {
   GrabarAnamnesisOdontologica: async (payload) => {
     try {
 
-      console.log("Llega hasta aca")
-      console.log(payload)
-      const response = await httpService.post(HCAnamnesisOdontologica, payload);
-      return response.data;
+
+      const res = await httpService.post(HCAnamnesisOdontologica, payload);
+     
+      return res.data;
     } catch (error) {
       console.error(
         "Error al registrar anamnesis:",
-        error.response?.data || error.message
+        error.res?.data || error.message
       );
       throw error; // importante para que el componente lo capture
     }
@@ -94,6 +96,25 @@ GrabarFotoOdontograma: async (payload) => {
   }
 },
 
+  CreateHCDiagnostico: async (idpaciente, idprofesional, idusuario, diagnostico) => {
+    try {
+     
+      const response = await httpService.post(HCCreateDiagnostico, {
+        idpaciente,
+        idprofesional,
+        idusuario,
+        diagnostico
+      });
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Error al registrar anamnesis:",
+        error.response?.data || error.message
+      );
+      throw error; // importante para que el componente lo capture
+    }
+  },
+
 
   getHCAnamnesisMedicas: async (idpaciente) => {
     try {
@@ -103,8 +124,9 @@ GrabarFotoOdontograma: async (payload) => {
           idpaciente
         },
       });
-     
+    
       return resp.data;
+      
     } catch (error) {
       console.error(
         "Error al registrar anamnesis:",
@@ -184,6 +206,26 @@ GrabarFotoOdontograma: async (payload) => {
         },
       });
      
+      return resp.data;
+    } catch (error) {
+      console.error(
+        "Error al registrar anamnesis:",
+        error.response?.data || error.message
+      );
+      throw error; // importante para que el componente lo capture
+    }
+
+  },
+
+  getHCDiagnosticoBuscar: async (idpaciente) => {
+    try {
+      
+      const resp = await httpService.get(HCDiagsnosticoBuscar, {
+        params: {
+          idpaciente
+        },
+      });
+      /* const resp = await httpService.get(HCAnamnesisMedicaBuscar, idpaciente); */
       return resp.data;
     } catch (error) {
       console.error(

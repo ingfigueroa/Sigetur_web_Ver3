@@ -24,7 +24,13 @@ import MdlHistoriaClinica from "../historiasclinicas/hc_historia_clinica";
 
 import MdlAsignarObraSocial from "../obrassociales/asignarobrasocial";
 
+
+import AbrirMDLMensaje from "../modales/mdlMensaje";
+
 function Pacientes() {
+
+     const [showMDLMensaje, setShowMDLMensaje] = useState("");
+       const [mensaje, setMensaje] = useState("");
 
   const [Apellido, SetApellido] = useState(null);
 
@@ -48,6 +54,17 @@ function Pacientes() {
 
 
     const [mdlAsignarObraSocial, setMDLAsignarObraSocial] = useState(null);
+
+    
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+  
+const closeMdlMensaje = () => {
+  setShowMDLMensaje(false);
+  
+  //setTimeout(() => Buscar(1), 300); // espera 300 ms
+};
 
   useEffect(() => {
     document.title = "Si.Ge.Tur. - Pacientes";
@@ -108,35 +125,43 @@ function Pacientes() {
   };
 
   
-
-  async function Buscar(_pagina) {
+ async function Buscar(_pagina) {
+  try {
+    setItems([])
     if (_pagina && _pagina !== Pagina) {
       setPagina(_pagina);
-    }
-
-    // OJO Pagina (y cualquier estado...) se actualiza para el proximo render, para buscar usamos el parametro _pagina
-    else {
+    } else {
       _pagina = Pagina;
     }
+
     modalDialogService.BloquearPantalla(true);
+
     const data = await pacientesService.Buscar(
       Apellido,
       VarDNI,
       _pagina,
       CantidaddeRegistros
     );
-    setItems(data.registros);
 
-    setRegistrosTotal(data.total);
+    setItems(data?.registros || []);
+    setRegistrosTotal(data?.total || 0);
 
-    //generar array de las páginas para mostrar en select del paginador
-    const arrPaginas = [];
-    for (let i = 1; i <= Math.ceil(data.total / CantidaddeRegistros); i++) {
-      arrPaginas.push(i);
-    }
+    // generar array de páginas
+    const totalPaginas = Math.ceil((data?.total || 0) / CantidaddeRegistros);
+    const arrPaginas = Array.from({ length: totalPaginas }, (_, i) => i + 1);
+
     setPaginas(arrPaginas);
+
+  } catch (error) {
+    Limpiar()
+    setMensaje("No se tiene conexión con la base de datos.");
+    openMdlMensaje();
+    // opcional: mostrar mensaje al usuario
+    // modalDialogService.MostrarError("Ocurrió un error al buscar");
+  } finally {
     modalDialogService.BloquearPantalla(false);
   }
+}
 
   async function BuscarPorId(item, accionABMC) {
     const data = await pacientesService.BuscarPorId(item);
@@ -544,6 +569,14 @@ function Pacientes() {
           id={idPaciente}
           vienede="PACIENTE" //paciente
           idvienede="0"
+        />
+      )}
+
+        {showMDLMensaje && (
+        <AbrirMDLMensaje
+          show={openMdlMensaje}
+          handleClose={closeMdlMensaje}
+          modalMessage={mensaje}
         />
       )}
     </>

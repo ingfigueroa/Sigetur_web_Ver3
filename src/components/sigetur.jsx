@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Drawer,
   List,
@@ -41,6 +41,9 @@ import AgendaSemanal from "./profesionales/agendasemanal";
 import DashboardTurnos from "./dashboard/dashboard_general";
 
 import HistoriaClinica from "./historiasclinicas/hc_historia_clinica";
+
+
+import { AuthContext } from "../context/AuthContext"; // 👈 IMPORTANTE
 
 
 
@@ -193,7 +196,11 @@ export default function sigetur() {
     setOpen(false);
   };
 
-  const varpaciente = "FIGUEROA, RODOLFO";
+  const { clientId, userId } = useContext(AuthContext);
+
+console.log(clientId, userId);
+  const varusuario = userId;
+  const varcliente = clientId;
 
   const [open, setOpen] = useState(false);
 
@@ -233,8 +240,10 @@ export default function sigetur() {
                 style={{ margin: "20px 20px" }}
               />
             </a>
+            
+            
           </div>
-
+           
           <div
             style={{
               width: "85%",
@@ -247,11 +256,20 @@ export default function sigetur() {
               padding: "0 15px", // Espaciado lateral
             }}
           >
+             
+
+          
+
+            
             {/* Título alineado a la izquierda */}
             <h3 style={{ textAlign: "left", margin: 0 }}>{titulo}</h3>
 
             {/* Contenedor derecho con usuario e imagen */}
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <h6 style={{ margin: 0 }}>
+                
+                CONSULTORIO: <br />{clientId}
+              </h6>
               <Image
                 style={{
                   width: "30px",
@@ -260,40 +278,15 @@ export default function sigetur() {
                 src="assets/sinfoto.png"
                 roundedCircle
               />
+
               <h6 style={{ margin: 0 }}>
-                Usuario: <br /> {varpaciente}
+                
+                Usuario: <br /> {varusuario}
               </h6>
             </div>
           </div>
           {/*  */}
-          <div
-            style={{
-              display: "flex",
 
-              alignItems: "right",
-              width: "auto",
-              height: "60px",
-              backgroundColor: "#2980B9",
-
-              padding: "0 10px",
-            }}
-          >
-            {/* Botón para abrir el menú */}
-
-            {/* Botón de ayuda */}
-            <button
-              title="Ayuda"
-              className="btn btn-sm btn-light btn-outline-primary"
-              style={{
-                alignItems: "right",
-                height: "30px",
-                marginTop: "auto",
-                marginRight: "auto",
-              }}
-            >
-              <HelpOutlineIcon />
-            </button>
-          </div>
 
           {/* Drawer (Menú lateral derecho) */}
           <Drawer

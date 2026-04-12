@@ -277,6 +277,7 @@ function tablapizarradeturnos() {
 
     BuscarProfesionalyProfesion(datoRecibido);
     limpiarTabla();
+    procesar(datoRecibido)
   };
 
   const limpiarTabla = () => {
@@ -572,12 +573,12 @@ function tablapizarradeturnos() {
     setShowMDLEstaSeguro(true);
   };
 
-  const procesar = async () => {
+  const procesar = async (idprofesional) => {
     limpiarTabla();
 
-    if (IDProfesional > 0) {
+    if (idprofesional > 0) {
       const turnosencontrados = await turnosService.BuscarPorProfesionalFecha(
-        IDProfesional,
+        idprofesional,
         Fecha
       );
       setCantidadTurnos(turnosencontrados.length);
@@ -644,23 +645,26 @@ function tablapizarradeturnos() {
 
   return (
     <>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "270px 1fr",
-          gap: "15px",
-          width: "100%",
-          marginLeft: "15px",
-        }}
-      >
+   <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "220px 1fr", // 👈 sidebar fijo
+    gap: "0px",
+    width: "100%",
+    marginLeft: "10px",
+ 
+  }}
+>
         {/* COLUMNA IZQUIERDA - CALENDARIO */}
 
         <div
           style={{
             backgroundColor: "white",
             border: "1px solid #ddd",
-            padding: "5px",
-            height: "fit-content",
+            transform: "scale(0.8)",
+            transformOrigin: "top left",
+            width: "fit-content",
+              
           }}
         >
           {/* ACA VA TU COMPONENTE CALENDAR */}
@@ -679,7 +683,7 @@ function tablapizarradeturnos() {
 
               handleFechaChange(fechaFormateada);
 
-              procesar();
+              procesar(IDProfesional);
               // setFecha(fechaFormateada);
 
               // Si querés disparar búsqueda automática
@@ -695,6 +699,7 @@ function tablapizarradeturnos() {
             display: "flex",
             flexDirection: "column",
             width: "100%",
+
           }}
         >
           <div
@@ -771,6 +776,7 @@ function tablapizarradeturnos() {
             >
               <i className="fa-solid fa-chart-pie"></i>
             </button>
+            
             <button
               title="Limpiar"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -1205,24 +1211,9 @@ function tablapizarradeturnos() {
           </div>
         </div>
 
-        <hr />
+        
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column", // 👈 CLAVE
-            width: "100%",
-          }}
-        >
-          {/*  <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-              minWidth: "140px",
-            }}
-          > */}
-        </div>
+       
       </div>
 
       {mdlRegistrarTurno && (
