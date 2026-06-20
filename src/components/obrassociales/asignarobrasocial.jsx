@@ -18,23 +18,27 @@ import AbrirMDLMensaje from "../modales/MdlMensaje";
 
 import { obrassocialesService } from "/src/services/obrassociales.service";
 
+
+
 const mdlasignarobrassociales = ({
   show,
   handleClose,
   apellidoynombres,
-  id,
+  idpaciente,
   vienede,
   idvienede,
+  idcliente,
+  idusuario
 }) => {
   const [Items, setItems] = useState(null);
-    const [idusuario, setIDusuario] = useState(2);
+ 
   const [Item, setItem] = useState(null);
   const [Pagina, setPagina] = useState(1);
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Paginas, setPaginas] = useState([]);
   const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
   const [altaBaja, setAltaBaja] = useState(1);
-    const [bandera, setBandera] = useState(1);
+  const [bandera, setBandera] = useState(1);
 
  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
 
@@ -80,7 +84,7 @@ const mdlasignarobrassociales = ({
   
   const verificarGrabar = (idobrasocial, par_altabaja) =>{
    
-    console.log(idobrasocial)
+    
     if (par_altabaja===0){
 
       
@@ -99,9 +103,11 @@ const mdlasignarobrassociales = ({
   }
 
   const mdlSiNo = (respuesta) => {
+    console.log(respuesta)
+    console.log("pasa por si o no")
     if (respuesta) {
       
-      
+      console.log(altaBaja)
       if (altaBaja === 0){
           setMensaje("Se desafecto la obra social al paciente.")
           DesafectarObraSocialaPaciente()
@@ -120,7 +126,8 @@ const mdlasignarobrassociales = ({
    
    
     await obrassocialesService.putAsignarObraSocialPaciente(
-      id,
+      idcliente,
+      idpaciente,
       idObraSocial,
       idusuario
     );
@@ -133,12 +140,11 @@ const mdlasignarobrassociales = ({
   
   async function DesafectarObraSocialaPaciente() {
    
-    console.log(id)
-
-    console.log(idObraSocial)
+    console.log(idcliente)
 
     await obrassocialesService.putDesafectarObraSocialPaciente(
-      id,
+      idcliente,
+      idpaciente,
       idObraSocial,
       idusuario
     );
@@ -178,17 +184,19 @@ const mdlasignarobrassociales = ({
     setPaginas(arrPaginas);
   }
 
-  async function BuscarObraSocial(id) {
+  async function BuscarObraSocial() {
     try {
+      
+    
       let data;
-      if (idvienede === "0") {
-        
-        data = await obrassocialesService.BuscarPorPaciente(id);
-
-        
+      
+      if (idvienede == 0){  
+     
+       data = await obrassocialesService.BuscarOSPorPaciente(idcliente, idpaciente);
+        setObraSocial(data);
       }
-
-      setObraSocial(data);
+   
+     
       // Establece el estado con los datos obtenidos
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -202,7 +210,7 @@ const mdlasignarobrassociales = ({
 
   useEffect(() => {
     
-    BuscarObraSocial(id);
+    BuscarObraSocial();
   }, []);
 
   useEffect(() => {

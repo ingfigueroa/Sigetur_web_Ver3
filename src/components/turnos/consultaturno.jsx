@@ -20,6 +20,8 @@ import { profesionesService } from "/src/services/profesiones.Service";
 import { estadosService } from "/src/services/estados.service";
 import MdlTurnoDetalle from "./mdlturnosdetalle_vers1";
 
+import { formatearFecha} from "../utils/fecha";
+
 function ConsultaTurnos() {
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null);
@@ -161,8 +163,8 @@ function ConsultaTurnos() {
 
           marginTop: "0",
           marginBottom: "0",
-          marginLeft: "10px",
-          marginRight: "10px",
+          marginLeft: "5px",
+          marginRight: "5px",
           marginTop: "10px",
           backgroundColor: "white",
         }}
@@ -273,8 +275,7 @@ function ConsultaTurnos() {
               ))}
             </select>
           </div>
-        </div>
-        <div>
+           <div>
           <Button
             variant="success"
             style={{
@@ -288,7 +289,7 @@ function ConsultaTurnos() {
               BuscarTurnosConsultasPorFecha(1);
             }}
           >
-            BUSCAR
+            Buscar
           </Button>
 
           {/* Botón */}
@@ -299,7 +300,7 @@ function ConsultaTurnos() {
               height: "30px", // más alto
               fontSize: "16px", // texto más grande
               padding: "0px 20px", // más espacio interno
-              marginLeft: "30px",
+              
               whiteSpace: "nowrap",
             }}
             onClick={(event) => {
@@ -307,9 +308,11 @@ function ConsultaTurnos() {
               limpiar();
             }}
           >
-            LIMPIAR
+            Limpiar
           </Button>
         </div>
+        </div>
+       
         <span
           style={{
             display: "block",
@@ -460,7 +463,7 @@ function ConsultaTurnos() {
                   return (
                     <tr key={item.idTurno}>
                       <td style={{ textAlign: "center", fontSize: "12px" }}>
-                        {format(new Date(item.fecha), "dd/MM/yyyy")}
+                        {formatearFecha(item.fecha)}
                       </td>
                       <td style={{ textAlign: "center", fontSize: "12px" }}>
                           {item.hora}

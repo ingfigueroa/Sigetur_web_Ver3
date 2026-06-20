@@ -2,14 +2,16 @@
 const urlServidor = "http://localhost:3000"
 
 const urlResourceProfesional = urlServidor + "/profesionales";
+const urlResourceProfesionalAdd = urlServidor + "/profesionalesadd";
 const urlResourceProfesionalProfesionID = urlServidor + "/profesionalesProfesionid";
 const urlResourceProfesionalHorarios = urlServidor + "/profesionaleshorarios";
 const urlResourceProfesionalID = urlServidor + "/profesionalid"; 
 const urlResourceProfesionalDarBaja = urlServidor + "/profesional/baja";
 const urlResourceProfesionalFechaCambioHorario = urlServidor + "/profesional/fechacambiohorario";
 const urlResourceProfesionalCambioHorario = urlServidor + "/profesional/cambiohorariomultiple"
+const urlResourceIDProfesionalEmail = urlServidor + "/idprofesionalemail";
 
-const urlResourcePacientes = urlServidor + "/pacientes";
+const urlResourcePacientes = urlServidor + "/pacientesget";
 const urlResourcePacientesAdd = urlServidor + "/pacienteadd"; 
 const urlResourcePacientesUpdate = urlServidor + "/pacienteupdate"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
@@ -44,6 +46,9 @@ const urlResourceturnoslibresfechames = urlServidor + "/turnos/turnoslibresfecha
 const urlResourceTurnoID = urlServidor + "/turnoid"
 const urlResourceTurnoLibreID = urlServidor + "/turnolibreid"
 const urlResourceMailTurnosProfesional = urlServidor + "/turnos/postEnviarTurnosManual"
+const urlenviarrecordatorioxmailtodalagrilla = urlServidor + "/correos/urlenviarrecordatorioxmailtodalagrilla"
+
+const urlenviarrecordatorioxmailpacienteseleccionado = urlServidor + "/correos/urlenviarrecordatorioxmailpacienteseleccionado"
 
 const urlResourceListadeEsperaAlta = urlServidor + "/listadeesperaalta"
 const urlResourceListadeesperaListar = urlServidor + "/listadeesperalistar"
@@ -87,12 +92,22 @@ const urlCorreoCrearCuenta = urlServidor + "/crearcuenta"
 const urlCodigoCrearCuentaCreate = urlServidor + "/crearcodigoadd"
 const urlvalidarcodigoemail = urlServidor + "/validarcodigoemail"
 
+//LOGIN
+const urlLoginUsuario = urlServidor + "/loginusuario"
+const urlValidarTokenEmailResetPassword = urlServidor + "/validartoken"
+const urlUpdatePassword = urlServidor + "/updatepassword"
+const urlTokenEmailProfesional = urlServidor + "/enviartokenemailprofesional"
+
+//SIGETUR CONFIGURACION O PANTALLA DE INICIO
+const urlValoresPantallaInicio = urlServidor + "/valorespantallainicio"
+
 
 
 
 export const config = {
     urlServidor,
     urlResourceProfesional,
+    urlResourceProfesionalAdd,
     urlResourcePacientes,
     urlResourcePacientesAdd,
     urlResourceObrasSociales,
@@ -156,5 +171,13 @@ export const config = {
     urlCorreoCrearCuenta,
     urlCodigoCrearCuentaCreate,
     urlvalidarcodigoemail,
-    urlCrearCliente
+    urlCrearCliente,
+    urlValoresPantallaInicio,
+    urlLoginUsuario,
+    urlValidarTokenEmailResetPassword,
+    urlUpdatePassword,
+    urlTokenEmailProfesional,
+    urlResourceIDProfesionalEmail,
+    urlenviarrecordatorioxmailtodalagrilla,
+    urlenviarrecordatorioxmailpacienteseleccionado
 }

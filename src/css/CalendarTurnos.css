@@ -54,7 +54,7 @@
 
 /* Día seleccionado */
 .dia-seleccionado {
-  background-color: white !important; */
+  background-color: rgb(41, 162, 233) !important; 
   color: white !important;
   border-radius: 6px;
 }

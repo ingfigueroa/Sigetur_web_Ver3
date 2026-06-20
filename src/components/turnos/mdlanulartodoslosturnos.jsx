@@ -11,6 +11,8 @@ import { turnosService } from "/src/services/turnos.service";
 import modalSINo from "../modales/mdlSiNO";
 import { set } from "date-fns";
 
+import { formatearFechaLargaConelAnio, formatearFechaentradd_mm_yyy_sale_yyyy_mm_dd } from "../utils/fecha";
+
 const mdlanulartodoslosturnos = ({
   show,
   handleClose,
@@ -20,10 +22,11 @@ const mdlanulartodoslosturnos = ({
   apeynom,
   vienede,
   observaciones,
+  idcliente
 }) => {
   /* const [observaciones, SetObservaciones] = useState(null); */
-  console.log(apeynom)
-  const [fechaForm, setFechaForm] = useState(fecha);
+
+  const [fechaForm, setFechaForm] = useState(formatearFechaLargaConelAnio(fecha));
 
   const [mdlEstaSeguro, setMDLEstaSeguro] = useState(null);
 
@@ -45,6 +48,7 @@ const mdlanulartodoslosturnos = ({
 
   useEffect(() => {
      // Esto se ejecuta cuando `fechaForm` se actualiza
+     console.log(fechaForm)
   }, [fechaForm]);
 
   const openMdlSiNo = () => {
@@ -59,13 +63,18 @@ const mdlanulartodoslosturnos = ({
 
   async function anularTurnos(sino) {
 
+    const fechayyyymmdd = formatearFechaentradd_mm_yyy_sale_yyyy_mm_dd(fecha)
+    console.log(fechayyyymmdd)
+    
+
     if (sino) {
 
 
       const data = await turnosService.TurnosAnularPorPedidoProfesional(
+        idcliente,
         idprofesional,
         observaciones,
-        fechaForm,
+        fechayyyymmdd,
         idusuario
       );
 
@@ -114,13 +123,13 @@ const mdlanulartodoslosturnos = ({
                   Fecha:
                 </InputGroup.Text>
                 <Form.Control
-                  placeholder="Buscar profesional"
-                  aria-label="Buscar profesional"
+                  placeholder="Fecha de los turnos"
+                  aria-label="Fecha de los turnos"
                   aria-describedby="basic-addon2"
-                  type="date"
-                  onChange={handleFechaChange}
-                  value={fechaForm}
-                  disabled={desactivarOpciones.includes(vienede)} // Desactivado si `vieneDe` está en `desactivarOpciones`
+                  
+                  
+                  value={formatearFechaLargaConelAnio(fecha)}
+                  isdisabled
                 />
               </InputGroup>
               <InputGroup className="mb-3">

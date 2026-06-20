@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "react-bootstrap/Button";
 
 import Form from "react-bootstrap/Form";
@@ -15,11 +15,26 @@ import { localidadesService } from "/src/services/localidades.service.js";
 
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
 
 import "/src/css/registrarprofesional.css";
-import axios from "axios";
+import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
+import { getClienteId, getUsuarioId } from "../utils/auth";
 
 const registrarprofesional = ({ show, handleClose }) => {
+
+   const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
+      "HISTORIA CLINICA - DIAGNOSTICO- IMPRESION CLINICA",
+    );
+  
+    const [showMDLMensaje, setShowMDLMensaje] = useState("");
+    const [mensaje, setMensaje] = useState("");
+
+    const { clientId, userId } = useContext(AuthContext); 
+    const ClienteID = getClienteId();
+    const UserID = getUsuarioId();
+  
+
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
@@ -43,7 +58,7 @@ const registrarprofesional = ({ show, handleClose }) => {
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
   const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
-  const [idusuario, setIDusuario] = useState(2);
+  const [idusuario, setIDusuario] = useState(UserID);
   const [idprofesional, setIDProfesional] = useState("0");
 
   const [showModal, setShowModal] = useState(false);
@@ -51,6 +66,15 @@ const registrarprofesional = ({ show, handleClose }) => {
   const [modalMessageTitulo, setModalMessageTitulo] = useState("");
   const [showModalAlta, setShowModalAlta] = useState(false);
   const [nuevo, setNuevo] = useState("");
+
+
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+
+  const closeMdlMensaje = () => {
+    setShowMDLMensaje(false);
+  };
 
   const showModalMessage = (message) => {
     setModalMessage(message);
@@ -156,6 +180,8 @@ const registrarprofesional = ({ show, handleClose }) => {
     // agregar o modificar
     //validaciones
     // Validaciones
+        
+
     if (!TipoDocumentoSelected) {
       showModalMessage("Debe seleccionar un tipo de documento");
       return;
@@ -197,8 +223,11 @@ const registrarprofesional = ({ show, handleClose }) => {
     }
 
     try {
+
       
-      await profesionalesService.GrabarAlta(
+
+      const response = await profesionalesService.GrabarAlta(
+        ClienteID,
         idprofesional,
         Nombres,
         Apellido,
@@ -211,13 +240,30 @@ const registrarprofesional = ({ show, handleClose }) => {
         CuitCuil,
         MatriculaNro,
         idTipoProfesionSelected,
-        idusuario,
+        userId,
         nuevo
       );
+  
+      if (response.data){
+              setMensaje(
+                "Se creó el profesional.\n\n" +
+                "Para activar la cuenta del profesional siga estos pasos:\n\n" +
+                "1.- Tiene que ir a LOGIN.\n\n" +
+                "2.- Olvidé mi contraseña.\n\n" +
+                "3.- Resetear la password usando el mail que ingresó."
+            );
 
-      openModalAltaExitosa();
+            openMdlMensaje();
+            handleClose()
+      }else{
+         setMensaje("No se pudo crear el profesional");
+          openMdlMensaje();
+      }
+      
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
+
+      console.log(error)
       return;
     }
   }
@@ -481,6 +527,14 @@ const registrarprofesional = ({ show, handleClose }) => {
           </div>
         </Modal.Body>
       </Modal>
+
+       {showMDLMensaje && (
+              <AbrirMDLMensaje
+                show={openMdlMensaje}
+                handleClose={closeMdlMensaje}
+                modalMessage={mensaje}
+              />
+            )}
 
       {mdlAltaExitosa && (
         <MdlAltaExitosa

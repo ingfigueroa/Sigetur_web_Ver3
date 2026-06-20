@@ -11,19 +11,21 @@ const httpService = axios.create({
 
 httpService.interceptors.request.use(
   (request) => {
+    
     modalService.BloquearPantalla(true);
-    const accessToken = sessionStorage.getItem("accessToken");
-    if (accessToken) {
-      request.headers["Authorization"] = "Bearer " + accessToken;
+
+    const token = localStorage.getItem("token");
+
+    if (token) {
+     request.headers.Authorization = `Bearer ${token}`;
     }
+   
     return request;
   },
   (error) => {
-    
     return Promise.reject(error);
   }
 );
-
 
 httpService.interceptors.response.use(
   (response) => {
@@ -31,30 +33,23 @@ httpService.interceptors.response.use(
     return response;
   },
   (error) => {
-    // loguear el error
-    
     modalService.BloquearPantalla(false);
 
+    if (error.response && error.response.status === 401) {
 
-    if (error.response.status === 401) {
-      // no auntenticado
-      error.message = "debe loguearse para acceder a esta funcionalidad";
-    } else if (error.response.status === 403) {
-      // no auntenticado
-      error.message = "usuario no autorizado para acceder a esta funcionalidad";
-    } else {
-      error.message =
-        error?.response?.data?.message ??
-        "Actualmente tenemos inconvenientes en el servidor, por favor intente más tarde";
+      modalService.Alert(
+        "Su sesión ha expirado. Debe volver a iniciar sesión.",
+        "Sesión expirada",
+        "Aceptar"
+      );
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.href = "/login";
     }
-    modalService.Alert(error.message);
-
 
     return Promise.reject(error);
-
-
-    //return error
-    //throw new Error(error?.response?.data?.Message ?? 'Ocurrio un error');
   }
 );
 

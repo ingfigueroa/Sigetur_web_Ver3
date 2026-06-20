@@ -21,11 +21,11 @@ async function Buscar(Nombre,sigla, bandera, pagina, cantidadPorPagina) {
   return resp.data;
 }
 
-async function BuscarPorPaciente(idpaciente) {
- console.log(idpaciente)
+async function BuscarOSPorPaciente(idcliente, idpaciente) {
+ 
   const resp = await httpService.get(urlResource1, {
    
-    params: { idpaciente }
+    params: { idcliente, idpaciente }
   });
 
  
@@ -55,10 +55,11 @@ async function BuscarPorId(item) {
 
 
 
-async function putAsignarObraSocialPaciente(idpaciente,idobrasocial, idusuario) {
+async function putAsignarObraSocialPaciente(idcliente,idpaciente,idobrasocial, idusuario) {
   try {
 
     await httpService.put(urlResourceAsignarPaciente, {
+      idcliente,
       idpaciente,
       idobrasocial,
       idusuario
@@ -70,10 +71,11 @@ async function putAsignarObraSocialPaciente(idpaciente,idobrasocial, idusuario) 
 }
 
 
-async function putDesafectarObraSocialPaciente(idpaciente,idobrasocial, idusuario) {
+async function putDesafectarObraSocialPaciente(idcliente, idpaciente,idobrasocial, idusuario) {
   try {
  
     await httpService.put(urlResourceDesafectarPaciente, {
+      idcliente,
       idpaciente,
       idobrasocial,
       idusuario
@@ -99,5 +101,5 @@ async function putActivarObraSocial(idobrasocial) {
 }
 
 export const obrassocialesService = {
-  Buscar, BuscarPorPaciente, BuscarPorProfesional, putAsignarObraSocialPaciente, putDesafectarObraSocialPaciente, putActivarObraSocial
+  Buscar, BuscarOSPorPaciente, BuscarPorProfesional, putAsignarObraSocialPaciente, putDesafectarObraSocialPaciente, putActivarObraSocial
 };

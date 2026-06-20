@@ -18,16 +18,14 @@ const MdlAltaTurno = ({
   show,
   handleClose,
   fila,
-  ApeyNom,
-  FechaTurno,
-  profesion,
-  hora,
+  idcliente,
+  idusuario
 }) => {
   const [nombreCompleto, setNombreCompleto] = useState("");
   const [osPorPaciente, setOsPorPaciente] = useState([]);
   const [idPaciente, SetIdPaciente] = useState("");
   const [idTurno, SetIdTurno] = useState("");
-  const [idUsuario, SetIdUsuario] = useState("1");
+  
   const [observaciones, SetObservaciones] = useState(null);
     const [mdlRegistrarPaciente, setModalRegistrarPaciente] = useState(false);
 
@@ -106,19 +104,21 @@ const MdlAltaTurno = ({
   };
 
   const recibirDatoDelHijo = (datoRecibido) => {
+   
     SetIdPaciente(datoRecibido);
 
     BuscarporID(datoRecibido);
   };
 
-  async function BuscarporID(id) {
+  async function BuscarporID(idpaciente) {
     try {
-      const data = await pacientesService.BuscarPorId(id);
+     
+      const data = await pacientesService.BuscarPorId(idcliente, idpaciente);
       // Asignar los valores recibidos a los estados del formulario
 
       acomodar(data);
 
-      BuscarosPorPaciente(id);
+      BuscarosPorPaciente(idcliente, idpaciente);
     } catch (error) {
       console.error("Error al buscar paciente:", error);
     }
@@ -134,9 +134,9 @@ const MdlAltaTurno = ({
     }
   }
 
-  async function BuscarosPorPaciente(id) {
+  async function BuscarosPorPaciente(idcliente, idpaciente) {
     try {
-      const data = await obrassocialesService.BuscarPorPaciente(id); // Llama a la función asíncrona
+      const data = await obrassocialesService.BuscarOSPorPaciente(idcliente, idpaciente); // Llama a la función asíncrona
       setOsPorPaciente(data); // Establece el estado con los datos obtenidos
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -161,22 +161,25 @@ const MdlAltaTurno = ({
       return;
     }
     try {
-      SetIdUsuario("1");
+     
       SetIdTurno(fila.idTurno);
 
       await turnosService.GrabarTurnoPaciente(
+       
         fila.idTurno,
         idPaciente,
         idObraSocialPacienteSelected,
         observaciones,
-        idUsuario
+        idusuario
       );
 
       openAltaExitosa(
-        "Turno registrado exitosamente al paciente: " + nombreCompleto
+        "Turno registrado al paciente: " + nombreCompleto
       );
     } catch (error) {
-      openAltaExitosa("Turno no registrado exitosamente");
+
+      
+      openAltaExitosa("Turno no registrado.");
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
       return;
     }
@@ -369,6 +372,7 @@ const MdlAltaTurno = ({
         <MdlListarPacientes
           show={openMdlListarPacientes}
           handleClose={closeMdlListarPacientes}
+          idcliente={idcliente}
           enviarAlPadre={recibirDatoDelHijo}
         />
       )}

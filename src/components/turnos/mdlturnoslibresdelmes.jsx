@@ -12,7 +12,7 @@ import MdlAltaTurno from "./mdlaltaturno";
 import "/src/css/pizarradeturnos.css";
 import "/src/css/tablapizaturnos.css";
 
-import { formatearFechaLarga, obtenerMes } from "../../components/utils/fecha";
+import { formatearFechaLarga, obtenerMes, formatearFecha } from "../../components/utils/fecha";
 
 import { turnosService } from "/src/services/turnos.service";
 
@@ -24,6 +24,7 @@ const mdlturnoslibresdelmes = ({
   idprofesional,
   fechainicio,
   fechafinal,
+  idcliente
 }) => {
 
 
@@ -55,26 +56,40 @@ const mdlturnoslibresdelmes = ({
    
      console.log(fechainicio)
     console.log(fechafinal)
+    console.log(idcliente)
+    console.log(idprofesional)
+    
+
     const data = await turnosService.TurnosLibresDelMes(
+      idcliente,
       idprofesional,
       fechainicio,
       fechafinal,
-      _pagina,
-      CantidaddeRegistros
+     
     );
    
-    if (data) {
-      setItems(data.registros);
-      
-      setCantidadTurnosLibresDias(data.lenght)
-    
-      setRegistrosTotal(data.total);
-    
-      setFechasAgrupadas(data.fechasagrupadas);
-    
-    } else {
-      console.warn("No se encontraron datos o hubo un error");
-    }
+   console.log(data);
+
+if (data && data.registros && data.registros.length > 0) {
+
+  setItems(data.registros);
+
+  setCantidadTurnosLibresDias(data.registros.length);
+
+  setRegistrosTotal(data.total);
+
+  setFechasAgrupadas(data.fechasagrupadas);
+
+} else {
+
+  console.warn("No se encontraron datos o hubo un error");
+
+  setItems([]);
+  setCantidadTurnosLibresDias(0);
+  setRegistrosTotal(0);
+  setFechasAgrupadas([]);
+
+}
 
    
   }
@@ -116,7 +131,7 @@ const mdlturnoslibresdelmes = ({
 
 // 👉 este solo busca datos del backend
 useEffect(() => {
-  Buscar();
+  Buscar(1);
 }, [fechainicio, fechafinal, Pagina, CantidaddeRegistros]);
 
 // 👉 este solo filtra, sin volver a llamar a Buscar
@@ -127,6 +142,7 @@ useEffect(() => {
       const fechaRegistro = format(new Date(r.fecha), "yyyy-MM-dd");
       return fechaRegistro === fechaFiltro;
     });
+    console.log(filtrados)
     setRegistrosFiltrados(filtrados);
     setCantidadTurnosLibresDias(filtrados.length);
   } else {
@@ -144,7 +160,7 @@ useEffect(() => {
         closeButton
         style={{ backgroundColor: "#0277bd", color: "white" }}
       >
-        <Modal.Title>Turnos libres del mes de {mes}</Modal.Title>
+        <Modal.Title>Turnos LIBRES del mes de {mes}</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ width: "100%", fontSize: "15px" }}>
         <div>
@@ -207,6 +223,8 @@ useEffect(() => {
             >
               DETALLES DE TURNOS LIBRES
             </InputGroup.Text>
+
+            
             
           </InputGroup>
 
@@ -266,7 +284,7 @@ useEffect(() => {
                           </Button>
                         </td>
                         <td style={{ textAlign: "center", fontSize: "12px" }}>
-                          {formatearFechaLarga(item.fecha)}
+                          {formatearFecha(item.fecha)}
                         </td>
                         <td style={{ textAlign: "center", fontSize: "12px" }}>
                          
@@ -300,12 +318,20 @@ useEffect(() => {
             </Table>
               <InputGroup className="mb-3" size="sm">
            
-             <InputGroup.Text
-              style={{  color: "black" }}
-              
-            >
-              Turnos libres del día: {CantidadTurnosLibresDias}
-            </InputGroup.Text>
+           <InputGroup.Text
+  style={{
+    color: "black",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
+  }}
+>
+  <h6 style={{ margin: 0 }}>Turnos libres del día:</h6>
+
+  <h6 style={{ margin: 0 }}>
+    {CantidadTurnosLibresDias}
+  </h6>
+</InputGroup.Text>
           </InputGroup>
           </div>
          {/*  <div className="paginador">

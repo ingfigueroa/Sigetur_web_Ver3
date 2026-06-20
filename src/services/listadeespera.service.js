@@ -13,7 +13,6 @@ async function AsignarTurnoListaDeEspera(idlistadeespera, idturno, idpac, idos, 
   
   try {
 
-console.log("Pasa por aca")
   console.log(idlistadeespera);
   console.log(idturno);
   console.log(idpac);
@@ -21,7 +20,7 @@ console.log("Pasa por aca")
   console.log(obs);
   console.log(idusuario);
 
-    await httpService.put(urlResourceListadeEsperaAsignarTurno, {
+    await httpService.post(urlResourceListadeEsperaAsignarTurno, {
       idlistadeespera,
       idturno,
       idpac,
@@ -37,14 +36,15 @@ console.log("Pasa por aca")
   }
 }
 
-async function getBuscar(pagina, cantidadPorPagina, apellidoPaciente, apellidoProfesional) {
+async function getBuscar(pagina, cantidadPorPagina, apellidoPaciente, apellidoProfesional, idcliente) {
 
   const resp = await httpService.get(urlResourceListadeesperaListar, {
     params: {
       pagina,
       cantidadPorPagina,
       apellidoPaciente,
-      apellidoProfesional
+      apellidoProfesional,
+      idcliente
     },
   });
 
@@ -55,12 +55,13 @@ async function getBuscar(pagina, cantidadPorPagina, apellidoPaciente, apellidoPr
 };
 
 
-async function AltaTurnoListadeEspera(idprofesional, idpaciente, idhoradesde, idhorahasta, fechadesde, fechahasta, lunes, martes, miercoles, jueves, viernes, sabado, domingo, observaciones, idusuario) {
+async function AltaTurnoListadeEspera(idprofesional, idpaciente, idhoradesde, idhorahasta, fechadesde, fechahasta, lunes, martes, miercoles, jueves, viernes, sabado, domingo, observaciones, idusuario, idcliente) {
   try {
 
 
 
     const resp = await httpService.post(urlResourceListadeEsperaAlta, {
+      idcliente,
       idprofesional,
       idpaciente,
       idhoradesde,

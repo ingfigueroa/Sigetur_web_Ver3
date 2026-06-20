@@ -14,7 +14,7 @@ import { profesionesService } from "/src/services/profesiones.service.js";
 import "/src/css/sigetur.css";
 import "/src/css/pizarradeturnos.css";
 
-const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
+const mdllistarprofesionales = ({ show, handleClose, idcliente, enviarAlPadre }) => {
   const [Apellido, SetApellido] = useState(null);
   const [VarDNI, SetDNI] = useState(null);
   const [items, setItems] = useState(null);
@@ -26,6 +26,32 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
   const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
   const [Paginas, setPaginas] = useState([]);
 
+ function LimpiarNoProfesion() {
+    SetApellido("");
+    SetDNI("");
+    setItems([]);
+    
+    
+  }
+
+  
+ function LimpiarNoDNI() {
+    SetApellido("");
+   setIdTipoProfesionSelected("");
+    setItems([]);
+    
+    
+  }
+
+  function LimpiarNoApellido() {
+    
+   setIdTipoProfesionSelected("");
+     SetDNI("");
+    setItems([]);
+    
+    
+  }
+
   const seleccionarProfesional = (idProfesional) => {
     enviarAlPadre(idProfesional);
     handleClose(); // Envía el id al componente padre
@@ -35,6 +61,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
     async function fetchData() {
       try {
         const data = await profesionesService.Buscar(); // Llama a la función asíncrona
+        
         setTipoProfesion(data); // Establece el estado con los datos obtenidos
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -52,9 +79,13 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
     else {
       _pagina = Pagina;
     }
+    
+      const apellidoString = String(Apellido ?? "");
+    
 
     const data = await profesionalesService.Buscar(
-      Apellido,
+      idcliente,
+      apellidoString,
       VarDNI,
       idTipoProfesionSelected,
       _pagina,
@@ -103,7 +134,10 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               placeholder="Buscar por apellido"
               aria-label="Buscar profesional"
               aria-describedby="basic-addon2"
-              onChange={(e) => SetApellido(e.target.value.toUpperCase())}
+              onChange={(e) => { SetApellido(e.target.value.toUpperCase())
+
+                LimpiarNoApellido();
+              }}
               value={Apellido}
               autoFocus
             />
@@ -138,7 +172,10 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               aria-label="Profesión"
               aria-describedby="basic-addon2"
               style={{ marginght: "20px", height: "28px" }}
-              onChange={(e) => SetDNI(e.target.value)}
+              onChange={(e) => { 
+                SetDNI(e.target.value)
+                LimpiarNoDNI();
+              }}
               value={VarDNI}
             />
             <Button
@@ -148,6 +185,7 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
               id="button-addon1"
               style={{ height: "28px" }}
               color="white"
+
               onClick={() => Buscar(1)}
             >
               <i class="fa-solid fa-magnifying-glass"></i>
@@ -169,14 +207,18 @@ const mdllistarprofesionales = ({ show, handleClose, enviarAlPadre }) => {
 
               height: "28px",
             }}
-            onChange={(e) => setIdTipoProfesionSelected(e.target.value)}
+            onChange={(e) =>{
+              const idprofesion = Number(e.target.value)
+              setIdTipoProfesionSelected(idprofesion)
+              LimpiarNoProfesion();
+            }}
             value={idTipoProfesionSelected}
           >
             <option value="" disabled>
               Seleccionar
             </option>
             {TipoProfesion.map((profesion) => (
-              <option key={profesion.id} value={profesion.id}>
+              <option key={profesion.ID} value={profesion.ID}>
                 {profesion.descripcion}
               </option>
             ))}

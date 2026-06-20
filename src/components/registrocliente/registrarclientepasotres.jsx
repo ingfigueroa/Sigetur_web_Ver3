@@ -69,18 +69,21 @@ const handleReset = () => {
 
     try {
       // 👉 acá llamás a tu service
-      console.log(formData)
+
+     
     
       const response = await clientesServices.CrearCliente(formData);
+
+    
 
       setClientId(response.idcliente);
       setUserId(response.idusuario);
 
-      setMensaje("Guardado correctamente");
+      setMensaje("El cliente se ha generado.\nSe envió un correo para actualizar la contraseña.");
       openMdlMensaje();
 
        setTimeout(() => {
-        navigate("/sigetur", {
+        navigate("/login", {
           state: { email: email }
         });
       }, 2000);
@@ -100,24 +103,22 @@ const handleReset = () => {
 
   return (
     <>
-    <div style={{
-          minHeight: "100vh",
-          background: "#f4f6f8",
-          display: "flex",
-          flexDirection: "column"
-    }}>
-
-  {/* HEADER */}
-      <div style={{
-        width: "100%",
-        height: "65px",
-        backgroundColor: "#1565c0",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 5px",
-        color: "white",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-      }}>
+    <div className="fondoprincipal">
+    
+       <div style={{
+            width: "100%",
+            height: "65px",
+            backgroundColor: "#1565c0",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 20px",
+            color: "white",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            zIndex: 1000
+          }}>
         <a href="/">
           <img 
             src="./assets/Logo_2022_resolucion.jpg" 

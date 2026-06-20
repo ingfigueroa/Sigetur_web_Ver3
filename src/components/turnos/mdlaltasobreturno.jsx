@@ -13,7 +13,7 @@ import MdlValidar from "../modales/mdlvalidar";
 import MdlListarPacientes from "../pacientes/mdllistarpacientes";
 import { FilterAlt } from "@mui/icons-material";
 
-const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
+const MdlAltaSobreturno = ({ show, handleClose, fila, idcliente }) => {
   const [nombreCompleto, setNombreCompleto] = useState("");
   const [osPorPaciente, setOsPorPaciente] = useState([]);
   const [idPaciente, SetIdPaciente] = useState("");
@@ -89,17 +89,17 @@ const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
   const recibirDatoDelHijo = (datoRecibido) => {
     SetIdPaciente(datoRecibido);
 
-    BuscarporID(datoRecibido);
+    BuscarporID(idcliente, datoRecibido);
   };
 
-  async function BuscarporID(id) {
+  async function BuscarporID(idcliente, idpaciente) {
     try {
-      const data = await pacientesService.BuscarPorId(id);
+      const data = await pacientesService.BuscarPorId(idcliente, idpaciente);
       // Asignar los valores recibidos a los estados del formulario
-
+  
       acomodar(data);
 
-      BuscarosPorPaciente(id);
+      BuscarosPorPaciente(idcliente, idpaciente);
     } catch (error) {
       console.error("Error al buscar paciente:", error);
     }
@@ -115,9 +115,9 @@ const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
     }
   }
 
-  async function BuscarosPorPaciente(id) {
+  async function BuscarosPorPaciente(idcliente, idpaciente) {
     try {
-      const data = await obrassocialesService.BuscarPorPaciente(id); // Llama a la función asíncrona
+      const data = await obrassocialesService.BuscarOSPorPaciente(idcliente, idpaciente); // Llama a la función asíncrona
       setOsPorPaciente(data); // Establece el estado con los datos obtenidos
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -146,6 +146,7 @@ const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
 
      
       await turnosService.GrabarSobreturnoPaciente(
+        idcliente,
         idProfesional,
         idPaciente,
         idObraSocialPacienteSelected,
@@ -166,7 +167,7 @@ const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
 
   useEffect(() => {
     if (fila.fecha) {
-      console.log(fila);
+      
       setIDProfesional(fila.idprofesional)
       setFechaTurno(fila.fecha)
       handleFechaChange();
@@ -343,6 +344,7 @@ const MdlAltaSobreturno = ({ show, handleClose, fila }) => {
         <MdlListarPacientes
           show={openMdlListarPacientes}
           handleClose={closeMdlListarPacientes}
+          idcliente={idcliente}
           enviarAlPadre={recibirDatoDelHijo}
         />
       )}

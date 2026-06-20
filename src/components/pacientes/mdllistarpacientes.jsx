@@ -14,7 +14,7 @@ import { pacientesService } from "/src/services/pacientes.service";
 import "/src/css/sigetur.css";
 import "/src/css/pizarradeturnos.css";
 
-const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
+const mdllistarpacientes = ({ show, handleClose, idcliente, enviarAlPadre }) => {
   const [Apellido, SetApellido] = useState(null);
   const [VarDNI, SetDNI] = useState(null);
   const [items, setItems] = useState(null);
@@ -26,6 +26,7 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
 
 
   const seleccionarPaciente = (id) => {
+   
     enviarAlPadre(id);
     handleClose(); // Envía el id al componente padre
   };
@@ -41,7 +42,7 @@ const mdllistarpacientes = ({ show, handleClose, enviarAlPadre }) => {
         _pagina = Pagina;
       }
      
-      const data = await pacientesService.Buscar(Apellido, VarDNI, _pagina, CantidaddeRegistros);
+      const data = await pacientesService.Buscar(idcliente, Apellido, VarDNI, _pagina, CantidaddeRegistros);
        setItems(data.registros);
       
       setRegistrosTotal(data.total);

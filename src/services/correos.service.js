@@ -3,6 +3,8 @@ import { config } from "../config.js";
 
 const urlcrearcuentacorreo = config.urlCorreoCrearCuenta;
 const urlcreatecodigocrearcuenta = config.urlCorreoCrearCuenta;
+const urlenviarrecordatorioxmailtodalagrilla = config.urlenviarrecordatorioxmailtodalagrilla;
+const urlenviarrecordatorioxmailpacienteseleccionado = config.urlenviarrecordatorioxmailpacienteseleccionado;
 
 async function CrearCuenta(email) {
 
@@ -25,6 +27,8 @@ async function CrearCuenta(email) {
 
 
 async function CreateCodigoCrearCuenta(email, codigo) {
+
+  console.error("pasa por aca");
   try {
     const response = await httpService.post(urlcreatecodigocrearcuenta, {
       email: email,
@@ -37,7 +41,33 @@ async function CreateCodigoCrearCuenta(email, codigo) {
     throw error;
   }
 };
+async function  EnviarRecordatoriosxMailTodaLaGrilla(turnos, clinica) {
+  try {
+     const response = await httpService.post(urlenviarrecordatorioxmailtodalagrilla, {
+      turnos,
+      clinica
+    });
+    return response;
+  } catch (error) {
+    
+  }
+  
+};
+
+async function  EnviarRecordatoriosxMailPacienteSeleccionado(turno, clinica) {
+  try {
+     const response = await httpService.post(urlenviarrecordatorioxmailpacienteseleccionado, {
+      turno,
+      clinica
+    });
+    return response;
+  } catch (error) {
+    
+  }
+  
+};
+
 
 export const correosServices = {
-  CrearCuenta, CreateCodigoCrearCuenta
+  CrearCuenta, CreateCodigoCrearCuenta, EnviarRecordatoriosxMailTodaLaGrilla, EnviarRecordatoriosxMailPacienteSeleccionado
 };

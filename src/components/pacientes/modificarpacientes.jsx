@@ -24,7 +24,7 @@ import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 import { calcularEdadDiaMesAnio, getFechaISO } from "../../components/utils/fecha";
 
 
-const modificarpaciente = ({ show, handleClose, idpaciente }) => {
+const modificarpaciente = ({ show, handleClose, idpaciente, idcliente, idusuario }) => {
 
   const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
     "¿Desea grabar la actualización de datos.?",
@@ -57,7 +57,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
   const [items, setItems] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
 
-  const [idusuario, setIDusuario] = useState(2);
+ 
   const [idPaciente, setIDPaciente] = useState("");
 
   const [showModal, setShowModal] = useState(false);
@@ -123,7 +123,7 @@ const modificarpaciente = ({ show, handleClose, idpaciente }) => {
     async function fetchData() {
       try {
        
-        const data = await pacientesService.BuscarPorId(idpaciente);
+        const data = await pacientesService.BuscarPorId(idcliente, idpaciente);
         
         setItems(data);
         setIDPaciente(idpaciente);

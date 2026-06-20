@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 
 import Registrarconsultoriocuerpo from "./registrarconsultoriocuerpo";
-import "../css/registrarconsultorio.css";
+
+
+import "/src/css/registrarconsultorio.css";
 
 
 
@@ -17,7 +19,11 @@ export default class Registrarconsultorio extends Component {
             alignItems: "center",
             padding: "0 20px",
             color: "white",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            zIndex: 1000
           }}>
           <a href="/" >
             <img style= {{marginBottom: "20px"}} src="./assets/Logo_2022_resolucion.jpg" alt="" />

@@ -6,18 +6,21 @@ import httpService from "./http.service";
  import {config} from "../config.js";
 
  const urlResource = config.urlResourceProfesional;
+ const urlResourceProfesionalAdd = config.urlResourceProfesionalAdd;
  const urlResourceID = config.urlResourceProfesionalID;
  const urlResourceProsefionalHorarios = config.urlResourceProfesionalHorarios;
  const urlResourceProfesionalDarBaja = config.urlResourceProfesionalDarBaja
 const urlResourceProfesionalFechaCambioHorario = config.urlResourceProfesionalFechaCambioHorario
 const urlResourceProfesionalCambioHorario = config.urlResourceProfesionalCambioHorario
+const urlResourceIDProfesionalEmail = config.urlResourceIDProfesionalEmail
 
 
 
-async function Buscar(Apellido, VarDni, idprofesion, pagina, cantidadPorPagina) {
- 
+
+async function Buscar(idcliente, Apellido, VarDni, idprofesion, pagina, cantidadPorPagina) {
+  
   const resp = await httpService.get(urlResource, {
-    params: { Apellido, VarDni, idprofesion, pagina, cantidadPorPagina },
+    params: { idcliente, Apellido, VarDni, idprofesion, pagina, cantidadPorPagina },
   });
   return resp.data;
 }
@@ -37,10 +40,14 @@ async function ActivarDesactivar(item) {
   await httpService.delete(urlResource + "/" + item.Id);
 }
 
-async function GrabarAlta(idProfesional, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion, idusuario, nuevo) {
+async function GrabarAlta(idcliente, idProfesional, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion, idusuario, nuevo) {
+
+
   try {
-   
-    await httpService.post(urlResource, {
+  
+    
+    const response = await httpService.post(urlResourceProfesionalAdd, {
+      idcliente,
       idProfesional,
       Nombres, 
       Apellido, 
@@ -57,6 +64,10 @@ async function GrabarAlta(idProfesional, Nombres, Apellido, TipoDocumento, NroDo
       nuevo
     });
    
+
+
+  return response
+
   } catch (error) {
     console.error('Error al registrar el profesional:', error.response?.data || error.message);
   }
@@ -79,9 +90,10 @@ async function GrabarBaja(idprofesional, observaciones, idusuario) {
 
 
 
-async function BuscarId(idprofesional) {
+async function BuscarId(idcliente, idprofesional) {
+ 
   const resp = await httpService.get(urlResourceID, {
-    params: {idprofesional},
+    params: {idcliente, idprofesional},
   } );
 
   return resp.data;
@@ -124,48 +136,16 @@ async function putCambioHorarioMultiple(payload){
 };
 
 
-/* 
-async function putCambioHorario(
-        idprofesional,
-        iddia,
-        idmañanatrabaja,
-        idmañanadesde,
-        idmañanahasta,
-        idmañanaintervalo,
-        tardetrabaja,
-        idtardedesde,
-        idtardehasta,
-        idtardeintervalo,
-        nochetrabaja,
-        idnochedesde,
-        idnochehasta,
-        idnocheintervalo,
-        fechadesde) {
-  try {
- 
-    await httpService.put(urlResourceProfesionalCambioHorario, {
-        idprofesional,
-        iddia,
-        idmañanatrabaja,
-        idmañanadesde,
-        idmañanahasta,
-        idmañanaintervalo,
-        tardetrabaja,
-        idtardedesde,
-        idtardehasta,
-        idtardeintervalo,
-        nochetrabaja,
-        idnochedesde,
-        idnochehasta,
-        idnocheintervalo,
-        fechadesde
-    });
-   
-  } catch (error) {
-    console.error('Error al registrar el profesional:', error.response?.data || error.message);
-  }
+
+async function BuscarIDProfesionalxEMail(email, idcliente) {
+
+  const resp = await httpService.get(urlResourceIDProfesionalEmail, {
+    params: {email, idcliente},
+  } );
+
+  return resp.data;
 }
- */
+
 export const profesionalesService = {
-  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja, getBuscarFechaCambioHorario, putCambioHorarioMultiple
+  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja, getBuscarFechaCambioHorario, putCambioHorarioMultiple, BuscarIDProfesionalxEMail
 };

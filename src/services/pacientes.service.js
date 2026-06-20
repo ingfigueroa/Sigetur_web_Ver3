@@ -11,28 +11,29 @@ import { Email } from "@mui/icons-material";
  const urlResourceID = config.urlResourcePacienteID;
  const urlResourceUltimosTurnos = config.urlResourcePacienteUltimosTurnos;
 
- async function Buscar(Apellido, VarDni, pagina, cantidadPorPagina) {
+ async function Buscar(idcliente, Apellido, VarDni, pagina, cantidadPorPagina) {
+
   const resp = await httpService.get(urlResource, {
-    params: { Apellido, VarDni, pagina, cantidadPorPagina},
+    params: { idcliente, Apellido, VarDni, pagina, cantidadPorPagina},
   });
   return resp.data;
 }
 
 
-async function BuscarPorId(idpaciente) {
+async function BuscarPorId(idcliente, idpaciente) {
  
   const resp = await httpService.get(urlResourceID, {
-    params: {idpaciente},
+    params: {idcliente, idpaciente},
   } );
   
   return resp.data;
 }
 
 
-async function BuscarUltimosTurnos(idpaciente) {
+async function BuscarUltimosTurnos(idcliente, idpaciente) {
   
   const resp = await httpService.get(urlResourceUltimosTurnos, {
-    params: {idpaciente},
+    params: {idcliente, idpaciente},
   } );
 
   return resp.data;

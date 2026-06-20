@@ -19,11 +19,13 @@ export const AuthProvider = ({ children }) => {
 
   // 🔹 guardar clientId
   useEffect(() => {
+
     if (clientId) {
       localStorage.setItem("clientId", clientId);
     } else {
       localStorage.removeItem("clientId");
     }
+    console.log(clientId)
   }, [clientId]);
 
   // 🔹 guardar userId

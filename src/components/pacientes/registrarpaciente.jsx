@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "react-bootstrap/Button";
 
 import Form from "react-bootstrap/Form";
@@ -19,7 +19,14 @@ import AbrirMDLMensaje from "../modales/MdlMensaje";
 
 import "/src/css/registrarpaciente.css";
 
+import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
+import { getClienteId, getUsuarioId } from "../utils/auth";
+
 const registrarpaciente = ({ show, handleClose }) => {
+
+     const { clientId, userId } = useContext(AuthContext); 
+         const ClienteID = getClienteId();
+         const UserID = getUsuarioId()
   // Estados de modales
   const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
   const [showMDLMensaje, setShowMDLMensaje] = useState(false);
@@ -67,7 +74,7 @@ const registrarpaciente = ({ show, handleClose }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [showModalAlta, setShowModalAlta] = useState(false);
 
-  const [idusuario, SetIDUsuario] = useState(2);
+ 
 
   const showModalMessage = (message) => {
     setModalMessage(message);
@@ -186,17 +193,18 @@ const registrarpaciente = ({ show, handleClose }) => {
     }
 
     try {
-      await pacientesService.GrabarAlta(
-        Nombres,
-        Apellido,
-        TipoDocumentoSelected,
-        NroDocumento,
-        EMail,
-        FechaNacimiento,
-        TECelular,
-        idTipoSexoSelected,
-        idusuario
-      );
+    await pacientesService.GrabarAlta({
+      idcliente: ClienteID,
+      Nombres,
+      Apellido,
+      TipoDocumento: TipoDocumentoSelected,
+      NroDocumento,
+      EMail,
+      FechaNacimiento,
+      TECelular,
+      Sexo: idTipoSexoSelected,
+      UserID
+    });
 
       setModalMessage("ALTA EXITOSA");
     } catch (error) {

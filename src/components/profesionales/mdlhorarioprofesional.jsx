@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
-import { formatearFechaLarga, formatearFechaLargaConelAnio, obtenerMes } from "../../components/utils/fecha";
+import { formatearFechaLarga, formatearFechaLargaConelAnio_llegafechalarga, obtenerMes } from "../../components/utils/fecha";
 
 import { profesionalesService } from "/src/services/profesional.service";
 
@@ -18,6 +18,7 @@ const mdlhorarioprofesional = ({
   fecha,
   profesional,
 }) => {
+
   const [selectedId, setSelectedId] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [Items, setItems] = useState(null);
@@ -33,10 +34,10 @@ const mdlhorarioprofesional = ({
       idprofesional,
       fecha
     );
-
+    console.log(data)
     setItems(data);
-    setFechaDesde(formatearFechaLargaConelAnio(data[0].FechaDesde));
-    setFechaHasta(formatearFechaLargaConelAnio(data[0].FechaHasta));
+    setFechaDesde(formatearFechaLargaConelAnio_llegafechalarga(data[0].FechaDesde));
+    setFechaHasta(formatearFechaLargaConelAnio_llegafechalarga(data[0].FechaHasta));
    
   }
 

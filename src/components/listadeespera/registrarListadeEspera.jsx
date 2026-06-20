@@ -13,8 +13,9 @@ import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 
 
 
-const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional  }) => {
+const registrarlistadeespera = ({ show, handleClose, idpaciente, idprofesional, idcliente, idusuario  }) => {
 
+   
     const [modalMessage, setModalMessage] = useState("");
     const [modalMessageTitulo, setModalMessageTitulo] = useState("");
 
@@ -31,7 +32,7 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
     const [IDProfesional, SetIDProfesional] = useState(null);
     const [profesion, setProfesion] = useState(null);
     const [IDProfesion, SetIDProfesion] = useState(null);
-    const [idusuario, SetIDUsuario] = useState(2);
+   
     const [apeyNomProfesional, setapeyNomProfesional] = useState(null);
     const [apeyNomPaciente, setapeyNomPaciente] = useState(null);
     const [Items, setItems] = useState(null);
@@ -53,7 +54,7 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
   };
 
   const openModalAltaExitosa = () => {
-    console.log("Pasa por aca: alta exitosa")
+  
     setModalMessage("Se registró una fila de la lista de espera con éxito.")
     setModalMessageTitulo("REGISTRAR LISTA DE ESPERA")
     setMdlAltaExitosa (true);
@@ -92,7 +93,7 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
     };
   
     async function BuscarProfesionalyProfesion(idprofesional) {
-      const data = await profesionalesService.BuscarId(idprofesional);
+      const data = await profesionalesService.BuscarId(idcliente, idprofesional);
   
       if (data) {
         setItems(data); // Asignar los datos a `Items`
@@ -118,7 +119,7 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
   
     async function BuscarPaciente(idpaciente) {
       try {
-        const data = await pacientesService.BuscarPorId(idpaciente);
+        const data = await pacientesService.BuscarPorId(idcliente, idpaciente);
         // Asignar los valores recibidos a los estados del formulario
   
         if (data) {
@@ -184,6 +185,75 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
       "Viernes",
       "Sábado",
     ];
+
+       const toggleDia = (dia) => {
+      setDiasSeleccionados((prev) =>
+        prev.includes(dia) ? prev.filter((d) => d !== dia) : [...prev, dia]
+      );
+    };
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      // Mapeo de días a bits
+      const diasBit = {
+        Lunes: 0,
+        Martes: 0,
+        Miercoles: 0,
+        Jueves: 0,
+        Viernes: 0,
+        Sabado: 0,
+        Domingo: 0,
+      };
+  
+      diasSeleccionados.forEach((dia) => {
+        diasBit[dia] = 1;
+      });
+  
+      
+      
+   
+      try {
+        
+       console.log(idcliente)
+         console.log(IDProfesional)
+       console.log( idPaciente)
+        console.log(idhoradesde)
+        console.log(idhorahasta)
+        console.log(fechadesde)
+        console.log(fechahasta)
+         console.log(diasBit)
+         console.log(observaciones)
+         console.log(idusuario)
+
+       const data = await listadeesperaService.AltaTurnoListadeEspera(
+         
+   
+    
+    
+        
+        IDProfesional,
+        idPaciente,
+        idhoradesde,
+        idhorahasta,
+        fechadesde,
+        fechahasta,
+        diasBit.Lunes,
+        diasBit.Martes,
+        diasBit.Miercoles,
+        diasBit.Jueves,
+        diasBit.Viernes,
+        diasBit.Sabado,
+        diasBit.Domingo,
+        observaciones,
+        idusuario,
+        idcliente);
+        console.log("por aca pasará: openaltaexitosa")
+       openModalAltaExitosa();
+       
+      } catch (error) {
+        console.error("Error al enviar datos:", error);
+      }
+    };
   
     useEffect(() => {
       async function obtenerHorarios() {
@@ -215,60 +285,12 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
         return;
       } else {
         SetIdPaciente(idpaciente);
-        console.log(idPaciente);
+       
         BuscarPaciente(idpaciente);
       }
     }, [idpaciente]);
   
-    const toggleDia = (dia) => {
-      setDiasSeleccionados((prev) =>
-        prev.includes(dia) ? prev.filter((d) => d !== dia) : [...prev, dia]
-      );
-    };
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      // Mapeo de días a bits
-      const diasBit = {
-        Lunes: 0,
-        Martes: 0,
-        Miercoles: 0,
-        Jueves: 0,
-        Viernes: 0,
-        Sabado: 0,
-        Domingo: 0,
-      };
-  
-      diasSeleccionados.forEach((dia) => {
-        diasBit[dia] = 1;
-      });
-  
-      
-      
-   
-      try {
-       const data = await listadeesperaService.AltaTurnoListadeEspera( IDProfesional,
-        idPaciente,
-        idhoradesde,
-        idhorahasta,
-        fechadesde,
-        fechahasta,
-        diasBit.Lunes,
-        diasBit.Martes,
-        diasBit.Miercoles,
-        diasBit.Jueves,
-        diasBit.Viernes,
-        diasBit.Sabado,
-        diasBit.Domingo,
-        observaciones,
-        idusuario);
-        console.log("por aca pasará: openaltaexitosa")
-       openModalAltaExitosa();
-       
-      } catch (error) {
-        console.error("Error al enviar datos:", error);
-      }
-    };
+ 
   
   return (
     <>
@@ -494,7 +516,7 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
                     type="text-area"
                     style={{ backgroundColor: "#eeeeee" }}
                     value={observaciones}
-                    onChange={(e) => setObservaciones(e.target.value)}
+                    onChange={(e) => setObservaciones(e.target.value.toUpperCase())}
                   />
                 </InputGroup>
               </div>
@@ -545,7 +567,9 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
         <MdlListarProfesionales
           show={openMdlListarProfesionales}
           handleClose={closeMdlListarProfesionales}
+           idcliente={idcliente}
           enviarAlPadre={recibirDatoDelHijo}
+         
         />
       )}
 
@@ -553,7 +577,9 @@ const registrarlistadeespera = ({ show, handleClose,  idpaciente, idprofesional 
         <MdlListarPacientes
           show={openMdlListarPacientes}
           handleClose={closeMdlListarPacientes}
+           idcliente={idcliente}
           enviarAlPadre={recibirDatoDelHijoPaciente}
+          
         />
       )}
     </>

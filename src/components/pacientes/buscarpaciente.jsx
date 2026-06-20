@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Table from "react-bootstrap/Table";
 
@@ -13,8 +13,17 @@ import { pacientesService } from "/src/services/pacientes.service";
 
 import "/src/css/sigetur.css";
 import "/src/css/pizarradeturnos.css";
+import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
+import { getClienteId } from "../utils/auth";
+
+
+
 
 const mdlbuscarpaciente = ({ show, handleClose, enviarAlPadre }) => {
+
+   const { clientId, userId } = useContext(AuthContext); 
+  const ClienteID = getClienteId();
+
   const [Apellido, SetApellido] = useState(null);
   const [VarDNI, SetDNI] = useState(null);
   const [items, setItems] = useState(null);
@@ -38,8 +47,10 @@ const mdlbuscarpaciente = ({ show, handleClose, enviarAlPadre }) => {
     else {
       _pagina = Pagina;
     }
+console.log("pasa por aca BUSCAR")
 
     const data = await pacientesService.Buscar(
+      ClienteID,
       Apellido,
       VarDNI,
       _pagina,

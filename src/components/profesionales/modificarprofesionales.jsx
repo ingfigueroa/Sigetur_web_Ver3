@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 
 
@@ -23,8 +23,17 @@ import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 
 import "/src/css/registrarprofesional.css";
 
+import { AuthContext } from "../../context/AuthContext"; // 👈 IMPORTANTE
 
-const modificarprofesional = ({ show, handleClose, idprofesional }) => {
+
+
+
+  
+  
+
+const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) => {
+
+
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
@@ -52,16 +61,18 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
   const [profesion, setProfesion] = useState("");
   const [items, setItems] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
-  const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
+ 
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
-  const [idusuario, setIDusuario] = useState(2);
-  const [idProfesional, setIDProfesional] = useState("");
+  
+  const [idProfesional, setIDProfesional] = useState(0);
    
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalMessageTitulo, setModalMessageTitulo] = useState("");
   const [nuevo, setNuevo] = useState("");
   const [mdlAltaExitosa, setMdlAltaExitosa] = useState(null);
+
+   const { clientId, userId } = useContext(AuthContext);
 
   const showModalMessage = (message) => {
     setModalMessage(message);
@@ -126,10 +137,8 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
         //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
         const formattedDate = new Date(data[0].FechaNacimiento).toISOString().split('T')[0]; // Solo la parte de la fecha
        
-/*   // Convertir la fecha a la zona horaria local sin cambiar el día
-  const zonedDate = utcToZonedTime(data[0].FechaNacimiento, 'America/Argentina/Buenos_Aires');
-  const formattedDateForInput = format(zonedDate, 'yyyy-MM-dd'); */
-  setFechaNacimiento(formattedDate);
+
+        setFechaNacimiento(formattedDate);
        
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -141,28 +150,6 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
   
   
 
-  useEffect(() => {
-    async function fetchInitialData() {
-      try {
-        const [sexoData, documentoData, profesionData, provinciaData] = await Promise.all([
-          tiposexoService.Buscar(),
-          tipodocumentoService.Buscar(),
-          profesionesService.Buscar(),
-          //profesionalesService.BuscarPorID(idprofesional),
-          provinciasService.Buscar(),
-        ]);
-        setTipoSexo(sexoData);
-        setTipoDocumento(documentoData);
-        setTipoProfesion(profesionData);
-        
-        setProvinciaSeleccionada(provinciaData);
-        setNuevo(1);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-    fetchInitialData();
-  }, []);
 
 
   async function GrabarModificacion() {
@@ -208,8 +195,10 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
 
     try {
 
-      
+     console.log(idcliente)
+     console.log(idprofesional)
       await profesionalesService.GrabarAlta(
+        idcliente,
         idProfesional,
         Nombres,
         Apellido,
@@ -222,8 +211,8 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
         CuitCuil,
         MatriculaNro,
         idTipoProfesionSelected,
-        idusuario,
-        nuevo
+        userId,
+        1
       );
 
       openModalModificacionExitosa();
@@ -232,6 +221,30 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
       return;
     }
   }
+
+
+  useEffect(() => {
+    async function fetchInitialData() {
+      try {
+        const [sexoData, documentoData, profesionData, provinciaData] = await Promise.all([
+          tiposexoService.Buscar(),
+          tipodocumentoService.Buscar(),
+          profesionesService.Buscar(),
+          //profesionalesService.BuscarPorID(idprofesional),
+          provinciasService.Buscar(),
+        ]);
+        setTipoSexo(sexoData);
+        setTipoDocumento(documentoData);
+        setTipoProfesion(profesionData);
+        
+        setProvinciaSeleccionada(provinciaData);
+        setNuevo(1);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchInitialData();
+  }, []);
 
   return (
     <>
@@ -446,7 +459,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
                     value={CuitCuil}
                   />
                 </InputGroup>
-                <InputGroup className="mb-3"></InputGroup>
+            
                 <InputGroup className="mb-3">
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
@@ -454,7 +467,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
                     Profesión
                   </InputGroup.Text>
                   <select
-                    style={{ width: "60%" }}
+                    style={{ width: "20%" }}
                     onChange={(e) => {
                       setIdTipoProfesionSelected(e.target.value);
                       
@@ -480,8 +493,28 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
                     aria-label="Ingresar matrícula"
                     aria-describedby="basic-addon2"
                     type="text"
+                    style={{ width: "5%" }}
                     onChange={(e) => setMatriculaNro(e.target.value)}
                     value={MatriculaNro}
+                  />
+                   <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white"}}
+                  >
+                    Usuario de sistema
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Usuario definido para el sistema"
+                    aria-label="Usuario definido para el sistema"
+                    aria-describedby="basic-addon2"
+                    type="email"
+                    readOnly
+                    style={{  width: "30%" }}
+                    onChange={(e) => {
+                      const email = e.target.value;
+                      setEMail(items.email);
+                     
+                    }}
+                    value={EMail}
                   />
                 </InputGroup>
               </div>
@@ -499,7 +532,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional }) => {
                 <Button variant="success" onClick={() => GrabarModificacion()}>
                   Grabar datos
                 </Button>
-                <Button variant="warning">Limpiar</Button>
+                
                 <Button variant="primary" onClick={handleClose}>
                   Cerrar
                 </Button>

@@ -5,9 +5,11 @@ import "/src/css/CalendarTurnos.css";
 import { toLocalDate } from "../../components/utils/fecha";
 
 export default function CalendarTurnos({ fecha, onChange }) {
+ 
   const hoy = toLocalDate(new Date());
 
   const fechaSeleccionada = toLocalDate(fecha);
+
 
 
   return (

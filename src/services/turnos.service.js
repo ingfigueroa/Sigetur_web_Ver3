@@ -23,11 +23,12 @@ const urlResourceListadeEspera = config.urlResourceTurnosListadeEspera
 const urlResourceMailTurnosProfesional = config.urlResourceMailTurnosProfesional
 const urlResourceTurnosLibresFechaMes = config.urlResourceturnoslibresfechames
 
-async function TurnosAnularPorPedidoProfesional(idprofesional, observaciones, fecha, idusuario) {
+async function TurnosAnularPorPedidoProfesional(idcliente, idprofesional, observaciones, fecha, idusuario) {
 
   try {
 
     const resp = await httpService.put(urlResourceTurnosAnularPorPedidoProfesional, {
+      idcliente,
       idprofesional,
       observaciones,
       fecha,
@@ -41,12 +42,13 @@ async function TurnosAnularPorPedidoProfesional(idprofesional, observaciones, fe
 }
 
 
-async function CrearTurnosPorProfesionalPorFecha(idusuario, idprof, fecha) {
+async function CrearTurnosPorProfesionalPorFecha(idusuario, idprofesional, fecha, idcliente) {
   const resp = await httpService.get(urlResourceTurnosCrear, {
     params: {
       idusuario,
-      idprof,
-      fecha
+      idprofesional,
+      fecha,
+      idcliente
     },
   });
   return resp.data;
@@ -79,15 +81,17 @@ async function Agendasemanal_FechasAgrupadas(idprof, fecha) {
 }
 
 
-async function TurnosPorProfesionalDiaCancelados(idprof, fecha) {
+async function TurnosPorProfesionalDiaCancelados(idcliente, idprofesional, fecha) {
 
 
   const resp = await httpService.get(urlResourceTurnosProfesionalDiaCancelados, {
     params: {
-      idprof,
+      idcliente,
+      idprofesional,
       fecha
     },
   });
+ 
   return resp.data;
 }
 
@@ -110,9 +114,6 @@ async function TurnoID(idturno) {
 
 
 async function TurnoLibreID(idturno) {
-
-  
-
   const resp = await httpService.get(urlResourceTurnoLibreID, {
     params: {
       idturno
@@ -141,14 +142,18 @@ async function EstadosPorTurno(idturno) {
 
 }
 
-async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, vieneDE) {
+async function TurnosCambiarEstado( idturno, idestado, observaciones, idusuario, vieneDE) {
   try {
-   
+
+ 
+     
+
     const resp = await httpService.put(urlResourceTurnosCambiarEstado, {
-      IDTurno,
+    
+      idturno,
       idestado,
-      Observaciones,
-      IDUsuario,
+      observaciones,
+      idusuario,
       vieneDE
     });
 
@@ -160,31 +165,33 @@ async function TurnosCambiarEstado(IDTurno, idestado, Observaciones, IDUsuario, 
 
 
 
-async function BuscarPorProfesionalFecha(IDProf, Fecha) {
+async function BuscarPorProfesionalFecha(idprofesional, fecha, idcliente) {
 
 
   const resp = await httpService.get(urlResource, {
     params: {
-      IDProf,
-      Fecha
+
+      idprofesional,
+      fecha,
+      idcliente
     },
   });
  
   return resp.data;
 }
 
-async function GrabarTurnoPaciente(IDTurno, IDPac, IDOS, Obs, IDUsuario) {
+async function GrabarTurnoPaciente( idturno, idpaciente, idos, Obs, idusuario) {
   try {
 
 
 
     await httpService.put(urlResourcePasaraPendiente, {
-
-      IDTurno,
-      IDPac,
-      IDOS,
+      
+      idturno,
+      idpaciente,
+      idos,
       Obs,
-      IDUsuario
+      idusuario
 
     });
 
@@ -218,21 +225,22 @@ async function TurnosConsultaPorFecha(fechadesde, fechahasta, idprofesion, idest
 }
 
 
-async function TurnosLibresDelMes(idprofesional, fechadesde, fechahasta, pagina, cantidadPorPagina) {
+async function TurnosLibresDelMes(idcliente, idprofesional, fechadesde, fechahasta) {
   try {
 
       
     const resp = await httpService.get(urlResourceTurnosLibresFechaMes 
 , {
       params: {
+        idcliente,
         idprofesional,
         fechadesde,
-        fechahasta,
-        pagina,
-        cantidadPorPagina
+        fechahasta
+       
       }
     });
- 
+
+    console.log(resp.data)
     return resp.data;
   } catch (error) {
     console.error('Error en TurnosConsultaPorFecha:', error);
@@ -255,11 +263,12 @@ async function enviarTurnosProfesionalpoFecha(turnos) {
   }
 }
 
-async function GrabarSobreturnoPaciente(idprofesional, idpaciente, idobrasocial, fecha, observaciones, idusuario) {
+async function GrabarSobreturnoPaciente(idcliente, idprofesional, idpaciente, idobrasocial, fecha, observaciones, idusuario) {
  
 
   try {
     const response = await httpService.post(urlResourceSobreturnoCrear,{
+      idcliente,
       idprofesional,
       idpaciente,
       idobrasocial,

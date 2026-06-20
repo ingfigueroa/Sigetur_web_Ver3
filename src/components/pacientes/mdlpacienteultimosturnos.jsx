@@ -17,6 +17,7 @@ const mdlpacienteultimosturnos = ({
   handleClose,
   idpaciente,
   paciente,
+  idcliente
 }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -39,10 +40,10 @@ const mdlpacienteultimosturnos = ({
   async function Buscar() {
     /*  const fechaActual = formatearFecha(fechaActualSinParsear); */
 
-    const data = await pacientesService.BuscarUltimosTurnos(idpaciente);
+    const data = await pacientesService.BuscarUltimosTurnos(idcliente, idpaciente);
    
-    setItems(data);
-    setCantidadTurnos(data.length)
+    setItems(data.registros);
+    setCantidadTurnos(data.total)
     
   }
 
@@ -78,11 +79,21 @@ const mdlpacienteultimosturnos = ({
 
           <div>
             <InputGroup className="mb-3" size="sm">
-              <InputGroup.Text
-                style={{ backgroundColor: "#679bb9", color: "white" }}
-              >
-                CANTIDAD DE TURNOS ENCONTRADOS: {cantidadTurnos}
-              </InputGroup.Text>
+                       <InputGroup.Text
+  style={{
+    color: "black",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
+  }}
+>
+  <h6 style={{ margin: 0 }}>CANTIDAD DE TURNOS ENCONTRADOS: </h6>
+
+  <h6 style={{ margin: 0 }}>
+    {cantidadTurnos}
+  </h6>
+</InputGroup.Text>
+             
             </InputGroup>
 
             <Table

@@ -19,7 +19,7 @@ function RegistrarClientePasoDos() {
   const navigate = useNavigate();
 
    const [email, setEmail] = useState("");
-   const [codigo, setCodigo] = useState("");
+   const [token, setToken] = useState("");
 
    const [searchParams] = useSearchParams();
 
@@ -40,72 +40,94 @@ function RegistrarClientePasoDos() {
     
   };
 
+const volveallogin = async () => {
+   setTimeout(() => {
+              navigate("/login", {
+                
+              });
+            }, 500);
+};
+
 const handleSubmit = async () => {
   try {
     
-    console.log(email + codigo)
-    const data = await clientesServices.getValidarCodigoEmail(email, codigo);
+    console.log("pasa por aca validar token")
+    const response = await clientesServices.getValidarCodigoEmail(email, token);
+    const verificado = response.data;
+    console.log(verificado)
 
-  
-    if (data === 0){
-      setMensaje("No se encontró el código, vuelva a empezar el proceso de creación de cuenta.")
-      openMdlMensaje();
-    }else if (data > 0) {
-      setMensaje("La validación del código y el email ha sido confirmada.");
-      openMdlMensaje();
-
+      if (verificado) {
+          setMensaje(`Código válido para: ${email}`);
+          openMdlMensaje();
+            
+              setTimeout(() => {
+                navigate("/registrarconsultorio", {
+                  state: { email: email }
+                });
+              }, 2000);
+            
+      } else {
+        // ✅ válido
+              // ❌ inválido
+        setMensaje("Código inválido o expirado");
+        openMdlMensaje();
+          setTimeout(() => {
+              navigate("/login", {
+                
+              });
+            }, 2000);
       
-      setTimeout(() => {
-        navigate("/registrarconsultorio", {
-          state: { email: email }
-        });
-      }, 2000);
-    }
-     
-   
+          }
     
   } catch (error) {
-    alert("Error al enviar el mail");
-  }
-}; 
+           setMensaje("Error al enviar el mail" + error);
+        openMdlMensaje();
+          
+        }
+      };
 
 useEffect(() => {
-    const cod = searchParams.get("codigo");
+    const cod = searchParams.get("token");
 
     if (cod) {
-      setCodigo(cod);
+      setToken(cod);
     }
       
   }, []);
 
   return (
     <>
-    <div className="fondoprincipal">
-    
+     <div className="fondoprincipal">
        <div style={{
-    width: "100%",
-    height: "65px",
-    backgroundColor: "#1565c0",
-    display: "flex",
-    alignItems: "center",
-    padding: "0 20px",
-    color: "white",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-  }}>
+            width: "100%",
+            height: "65px",
+            backgroundColor: "#1565c0",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 20px",
+            color: "white",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            zIndex: 1000
+          }}>
           <a href="/" >
             <img style= {{marginBottom: "20px"}} src="./assets/Logo_2022_resolucion.jpg" alt="" />
           </a>
           <h3>Sistema de Gestión de Turnos para profesionales de la salud</h3>
         </div>
-      <div>
-        <div>
-           <h1 style={{ 
-        marginBottom: "25px",
-        color: "#0277bd",
-        fontFamily: "Roboto",
-        fontSize: "30px"
-      }}>Registrar CONSULTORIO - Paso 2</h1>
-        </div>
+
+     <div id="rccuerpo1">
+       
+       
+          <h1 style={{ 
+           
+            color: "#0277bd",
+            fontFamily: "Roboto",
+           
+          }}>Registrar CONSULTORIO - Paso 2</h1>
+        
 
         <div>
           <h5 className="rccuerpo-h5">
@@ -132,7 +154,7 @@ useEffect(() => {
         <Form.Control
           style={{fontSize:"40px", textAlign: "center"}}
           placeholder="código"
-          value={codigo}
+          value={token}
           readOnly
          
         />
@@ -161,13 +183,18 @@ useEffect(() => {
 
         <div className="volverallogin">
           
-          <div className="volverallogin1">
+         {/*  <div className="volverallogin1">
             
             <InputGroup className="mb-3 justify-content-center">
               <InputGroup.Text style={{ textAlign: "center" }}>
                 <a href="/Login">Volver al login</a>
               </InputGroup.Text>
             </InputGroup>
+          </div> */}
+            <div className="volverallogin1">
+             <Button onClick={volveallogin}>Volver al LOGIN</Button>
+            
+            
           </div>
 
            <div className="volverallogin1">

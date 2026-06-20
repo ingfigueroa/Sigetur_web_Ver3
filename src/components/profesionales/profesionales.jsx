@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 //import { format, parse } from "date-fns";
 
 import Table from "react-bootstrap/Table";
@@ -20,12 +20,17 @@ import MdlTurnosLibresDelMes from "../turnos/mdlturnoslibresdelmes";
 
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
-
+import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
+import { getClienteId } from "../utils/auth";
 
 
 import modalDialogService from "/src/services/modalDialog.service";
 
 function Profesionales() {
+
+  const { clientId, userId } = useContext(AuthContext); 
+  const ClienteID = getClienteId();
+  
   
   
    const [accionConfirmada, setAccionConfirmada] = useState(null);
@@ -138,6 +143,7 @@ function Profesionales() {
 
   const openMdlRegistrarProfe = () => {
     setModalRegistrarProfesional(true);
+    Buscar(1)
   };
 
   const closeMdlRegistrarProfe = () => {
@@ -166,8 +172,10 @@ function Profesionales() {
       _pagina = Pagina;
     }
     
+    console.log(ClienteID)
+
     modalDialogService.BloquearPantalla(true);
-    const data = await profesionalesService.Buscar(Apellido, VarDNI, idProfesion,  _pagina, CantidaddeRegistros);
+    const data = await profesionalesService.Buscar(ClienteID, Apellido, VarDNI, idProfesion,  _pagina, CantidaddeRegistros);
     modalDialogService.BloquearPantalla(false);
 
      setItems(data.registros);
@@ -337,7 +345,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <i class="fa-solid fa-magnifying-glass"></i>
               </Button>
               
-                <Button variant="success" onClick={() => Limpiar()}>
+                <Button variant="primary" onClick={() => Limpiar()}>
                   Limpiar
                 </Button>
                 
@@ -489,12 +497,12 @@ const anio1 = ultimoDiaMes.getFullYear();
                       >
                        <i class="fas fa-calendar-day"></i>
                       </button>
-                      <button
+{/*                       <button
                         title="Dashboard"
                         className="btn btn-sm btn-light btn-danger"
                       >
                          <i class="fa-solid fa-chart-pie"></i>
-                      </button>
+                      </button> */}
                     {/*   <button
                         title="Cancelar turnos por fecha"
                         className="btn btn-sm btn-light btn-danger"
@@ -571,6 +579,7 @@ const anio1 = ultimoDiaMes.getFullYear();
           show={openMdlEditarProfesional}
           handleClose={closeMdlEditarProfesional}
           idprofesional={idProfesional}
+          idcliente={ClienteID}
         />
       )}
 
@@ -593,6 +602,7 @@ const anio1 = ultimoDiaMes.getFullYear();
           idprofesional={idProfesional}
           fechainicio={fechaSistema}
           fechafinal={fechaFinal}
+          idcliente={ClienteID}
          
         />
       )}

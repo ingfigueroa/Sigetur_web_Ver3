@@ -2,19 +2,19 @@ import React, {useState} from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import "../css/registrarconsultorio.css";
+import "/src/css/registrarconsultorio.css";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
-import {correosServices} from "../services/correos.service";
+import {correosServices} from "../../services/correos.service";
 
-import AbrirMDLMensaje from "./modales/mdlMensaje";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
 
 
 
 function registrarconsultoriocuerpo() {
 
-  
+  const navigate = useNavigate();
 
    const [email, setEmail] = useState("");
 
@@ -48,16 +48,21 @@ const handleSubmit = async () => {
       }
 
   try {
-    console.log(email)
+
    
     const data = await correosServices.CrearCuenta(email);
     
     setMensaje(data.message);
     openMdlMensaje();
+    setTimeout(() => {
+              navigate("/login", {
+                
+              });
+            }, 2000);
    
     
   } catch (error) {
-  if (error.response) {
+  if (error.response) { 
     return error.response.data;
   }
 
@@ -75,55 +80,46 @@ const handleSubmit = async () => {
 }
 }; 
 
+const volveallogin = async () => {
+   setTimeout(() => {
+              navigate("/login", {
+                
+              });
+            }, 500);
+};
+
   return (
     <>
     <div id="rccuerpo1">
-      <div>
-        <div>
-           <h1 style={{ 
+      <div > 
+       <div >
+ <h3 >
+            <span className="bolded">Crear una cuenta en el Portal</span>{" "}
+          </h3>
+<br />
+          <h1 style={{ 
             marginBottom: "25px",
             color: "#0277bd",
             fontFamily: "Roboto",
-            fontSize: "30px"
-          }}>
-        Registrar CONSULTORIO - Paso 1</h1>
-        </div>
+           
+          }}>Registrar CONSULTORIO - Paso 1</h1>
 
-        <div>
-          <h5 className="rccuerpo-h5">
-            <span className="bolded">¿Cómo crear una cuenta en el Portal?</span>{" "}
-          </h5>
+         
           <br />
           <h5 className="rccuerpo-h5">
             {" "}
             1.- Ingresar el mail que identifica a la Clinica o Consultorio.
           </h5>
 
-          <h5 className="rccuerpo-h5"> 2.- Tildar el captcha</h5>
+          
           <h5 className="rccuerpo-h5">
             {" "}
-            3.- Hacer click en el botón CREAR CUENTA.
+            2.- Hacer click en el botón ENVIAR CODIGO.
           </h5>
           <br />
-          <h5 className="rccuerpo-h5">
-            {" "}
-            <span className="bolded">
-              ¿Qué hacer si se bloquea tu cuenta?
-            </span>{" "}
-          </h5>
-
-          <h5 className="rccuerpo-h5">
-            <span className="bolded">Opción 1:</span> aguardá 3hs hasta que se
-            desbloquee e ingresá nuevamente con tu clave registrada.
-          </h5>
-
-          <h5 className="rccuerpo-h5">
-            <span className="bolded">Opción 2:</span> restablecé tu clave
-            ingresando al e-mail de aviso que recibiste en tu correo.
-          </h5>
-        </div>
-        <br />
-        <div>
+         
+          <br />
+          <br />
           <InputGroup className="mb-3">
         <InputGroup.Text>Ingresar mail</InputGroup.Text>
         <Form.Control
@@ -144,33 +140,18 @@ const handleSubmit = async () => {
 
         <div className="volverallogin">
           
+        
           <div className="volverallogin1">
+             <Button onClick={volveallogin}>Volver al LOGIN</Button>
             
-            <InputGroup className="mb-3 justify-content-center">
-              <InputGroup.Text style={{ textAlign: "center" }}>
-                <a href="/Login">Volver al login</a>
-              </InputGroup.Text>
-            </InputGroup>
+            
           </div>
 
            <div className="volverallogin1">
-             <Button onClick={handleSubmit}>Crear cuenta</Button>
-            {/* <InputGroup className="mb-3" style={{ textAlign: "center" }}>
-              <InputGroup.Text >
-                <a href="/configuracion">Crear cuenta</a>
-              </InputGroup.Text>
-            </InputGroup> */}
+             <Button onClick={handleSubmit}>Enviar código</Button>
+            
           </div>
-          {/* <div className="volverallogin2">
-            <Button
-              variant="outline-primary"
-              size="lm"
-              style={{ marginLeft: "40px" }}
-            >
-              
-              Crear cuenta
-            </Button>
-          </div> */}
+        
         </div>
       </div>
     </div>

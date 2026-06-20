@@ -1,4 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+
+
+
 import {
   Drawer,
   List,
@@ -16,15 +21,22 @@ import GroupIcon from "@mui/icons-material/Group";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SearchIcon from "@mui/icons-material/Search";
+import LogoutIcon from "@mui/icons-material/Logout";
+
+import Tooltip from "@mui/material/Tooltip";
 
 import "../css/sigetur.css";
 import "../css/menu-hamburguesa.css";
 
-import Button from "react-bootstrap/Button";
+import {clientesServices} from "../services/clientes.service";
+
+
 
 import Image from "react-bootstrap/Image";
 
 import PizarradeTurnos from "./turnos/pizarradeturnos";
+
+import PizarradeTurnosProfesional from "./turnos/pizarradeturnosprofesional";
 
 import ConsultaTurnos from "./turnos/consultaturno";
 
@@ -48,165 +60,156 @@ import { AuthContext } from "../context/AuthContext"; // 👈 IMPORTANTE
 
 
 export default function sigetur() {
+
+  const navigate = useNavigate();
+  //traigo el objeto user desde el login
+  const user = JSON.parse(localStorage.getItem("user"));
+
+
   const [mostrarProfesional, setMostrarProfesional] = useState(false);
 
-  const [mostrarObraSocial, setMostrarObraSocial] = useState(false);
-
-   const [mostrarHistoriaClinica, setMostrarHistoriaClinica] = useState(false);
-
-  const [mostrarPaciente, setMostrarPaciente] = useState(false);
-
-  const [mostrarPizarradeTurnos, setMostrarPizarradeTurnos] = useState(true);
-
-  const [mostrarAgendaSemanal, setMostrarAgendaSemanal] = useState(false);
-
-  const [mostraConsulta, setMostrarConsulta] = useState(false);
-
-   const [mostraDashBoard, setMostrarDashboard] = useState(false);
-
-  const [mostrarListadeEspera, setMostrarListadeEspera] = useState(false);
-
-  const [titulo, setTitulo] = useState("PIZARRA DE TURNOS");
-
-
-  const MostrarObraSocial = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPizarradeTurnos(false);
-    setMostrarPaciente(false);
-    setMostrarListadeEspera(false);
-    setMostrarObraSocial(false);
-    setMostrarProfesional(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-    setTitulo("GESTIÓN DE OBRAS SOCIALES");
-    setOpen(false);
-  };
-
-
-  const MostrarHistoriaClinica = () => {
-    setMostrarHistoriaClinica(true)
-    setMostrarPizarradeTurnos(false);
-    setMostrarPaciente(false);
-    setMostrarListadeEspera(false);
-    setMostrarObraSocial(false);
-    setMostrarProfesional(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-   
-     setTitulo("GESTIÓN DE HISTORIA CLINICA");
-    setOpen(false);
-  };
-
-  const MostrarListaDeEspera = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPizarradeTurnos(false);
-    setMostrarPaciente(false);
-    setMostrarObraSocial(false);
-    setMostrarProfesional(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-    setMostrarDashboard(false);
-    setMostrarListadeEspera(true);
-    setTitulo("ADMINISTRAR LISTA DE ESPERA - TURNOS");
-    setOpen(false);
-  };
-
-  const MostrarProfesionales = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPizarradeTurnos(false);
-    setMostrarPaciente(false);
-    setMostrarObraSocial(false);
-    setMostrarListadeEspera(false);
-    setMostrarProfesional(true);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-    setMostrarDashboard(false);
-    setTitulo("GESTIÓN DE PROFESIONALES");
-    setOpen(false);
-  };
-
-  const MostrarPacientes = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPizarradeTurnos(false);
-    setMostrarPaciente(true);
-    setMostrarObraSocial(false);
-    setMostrarProfesional(false);
-    setMostrarListadeEspera(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-    setMostrarDashboard(false);
-    setTitulo("GESTIÓN DE PACIENTES");
-    setOpen(false);
-  };
-
-  const MostrarPizarradeTurnos = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPaciente(false);
-    setMostrarObraSocial(false);
-    setMostrarPizarradeTurnos(true);
-    setMostrarProfesional(false);
-    setMostrarListadeEspera(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-    setMostrarDashboard(false);
-    setTitulo("PIZARRA DE TURNOS");
-    setOpen(false);
-  };
-
-  const MostrarAgendaSemanal = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPaciente(false);
-    setMostrarObraSocial(false);
-    setMostrarPizarradeTurnos(false);
-    setMostrarProfesional(false);
-    setMostrarListadeEspera(false);
-    setMostrarAgendaSemanal(true);
-    setMostrarConsulta(false);
-    setMostrarDashboard(false);
-    setTitulo("AGENDA SEMANAL POR PROFESIONAL");
-    setOpen(false);
-  };
-
-  const MostrarConsulta = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPaciente(false);
-    setMostrarObraSocial(false);
-    setMostrarPizarradeTurnos(false);
-    setMostrarProfesional(false);
-    setMostrarListadeEspera(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(true);
-   setMostrarDashboard(false);
-    setTitulo("CONSULTA DE TURNOS");
-    setOpen(false);
-  };
-
-  
-  const MostrarDashboard = () => {
-    setMostrarHistoriaClinica(false)
-    setMostrarPaciente(false);
-    setMostrarObraSocial(false);
-    setMostrarPizarradeTurnos(false);
-    setMostrarProfesional(false);
-    setMostrarListadeEspera(false);
-    setMostrarAgendaSemanal(false);
-    setMostrarConsulta(false);
-    setMostrarDashboard(true);
-    setTitulo("DASHBOARD");
-    setOpen(false);
-  };
-
+  const location = useLocation();
   const { clientId, userId } = useContext(AuthContext);
 
-console.log(clientId, userId);
-  const varusuario = userId;
-  const varcliente = clientId;
+   const [status, setStatus] = useState("invalid");
+
+   const [titulo, setTitulo] = useState("PIZARRA DE TURNOS");
+   const [razonsocialCliente, setRazonsocialCliente] = useState("");
+
+   const [nombreUsuario, setNombreUsuario] = useState("");
+   const [perfil, setPerfil] = useState("");
+
+  const [cantidadProfesionales, setCantidadProfesionales] = useState("");
+
+  const [vistaActiva, setVistaActiva] = useState("");
+
+  const cambiarVista = (vista, titulo) => {
+   
+  setVistaActiva(vista);
+  setTitulo(titulo);
+  setOpen(false);
+};
+
+
+const MostrarHistoriaClinica = () => {
+  cambiarVista("historiaClinica", "GESTIÓN DE HISTORIA CLINICA");
+};
+
+const MostrarListaDeEspera = () => {
+  cambiarVista("listaespera", "ADMINISTRAR LISTA DE ESPERA - TURNOS");
+};
+
+const MostrarProfesionales = () => {
+  cambiarVista("profesionales", "GESTIÓN DE PROFESIONALES");
+};
+
+const MostrarPacientes = () => {
+  cambiarVista("pacientes", "GESTIÓN DE PACIENTES");
+};
+
+const MostrarPizarradeTurnos = () => {
+  cambiarVista("pizarradeturnos", "PIZARRA DE TURNOS");
+};
+
+
+const MostrarAgendaSemanal = () => {
+  cambiarVista("agendasemanal", "AGENDA SEMANAL POR PROFESIONAL");
+};
+
+const MostrarConsulta = () => {
+  cambiarVista("consultas", "CONSULTAS E INFORMES");
+};
+
+const MostrarDashboard = () => {
+  cambiarVista("dashboard", "DASHBOARD");
+};
+
+const MostrarObrasSociales = () => {
+  cambiarVista("obrasociales", "GESTIÓN DE OBRAS SOCIALES");
+};
+
+
+  
+
+
 
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (state) => {
     setOpen(state);
   };
+
+  const handleLogout = () => {
+
+  localStorage.removeItem("token");
+
+  // opcional
+  localStorage.removeItem("user");
+
+  window.location.href = "/login";
+};
+
+
+  useEffect(() => {
+  if (!user?.clienteid || !user?.usuarioid) return;
+
+
+
+      const cargarDatos = async () => {
+
+    
+        try {
+          const data = await clientesServices.getValoresPantallaInicial(user.clienteid, user.usuarioid);
+
+          
+
+          const cantprof = data.cantidadprofesionales?.[0]?.Cantidaprofesionales ?? 0;
+
+          setCantidadProfesionales(cantprof);
+
+          setRazonsocialCliente(data.cliente?.[0]?.Cliente);
+          setNombreUsuario(data.usuario?.[0]?.Usuario);
+          setPerfil(data.perfil?.[0]?.Perfil)
+
+          if (cantprof === 0){
+              setTimeout(() => {
+          cambiarVista("profesionales", "GESTIÓN DE PROFESIONALES");;
+          }, 2000);
+          }
+
+        } catch (error) {
+          console.error("Error al cargar datos:", error);
+        }
+      };
+
+
+      cargarDatos();
+}, [clientId, userId]);
+
+
+useEffect(() => {
+  if (!perfil) return;
+
+  if (perfil === "PROFESIONAL") {
+     console.log("pasa por useeffect")
+    cambiarVista("pizarradeturnosprofesional", "MIS TURNOS");
+    return;
+  }
+
+  if (perfil === "SECRETARIA") {
+    cambiarVista("pizarradeturnos", "PIZARRA DE TURNOS");
+    return;
+  }
+ 
+
+  if (perfil === "ADMINISTRADOR") {
+   //cambiarVista("dashboard", "DASHBOARD");
+    return;
+  }
+
+  navigate("/login");
+}, [perfil]);
+
 
   return (
     <>
@@ -265,25 +268,39 @@ console.log(clientId, userId);
             <h3 style={{ textAlign: "left", margin: 0 }}>{titulo}</h3>
 
             {/* Contenedor derecho con usuario e imagen */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <h6 style={{ margin: 0 }}>
+            <div style={{ display: "flex", alignItems: "right", gap: "10px" }}>
+              <h6 style={{ margin: 0, color: "white", fontSize: "12px" }}>
                 
-                CONSULTORIO: <br />{clientId}
+                Consultorio: <br />{razonsocialCliente}
               </h6>
-              <Image
+              {/* <Image
                 style={{
                   width: "30px",
                   height: "30px",
                 }}
                 src="assets/sinfoto.png"
                 roundedCircle
-              />
+              /> */}
 
-              <h6 style={{ margin: 0 }}>
+              <h6 style={{ margin: 0,  fontSize: "12px" }}>
                 
-                Usuario: <br /> {varusuario}
+                Usuario: <br /> {nombreUsuario}
               </h6>
+               <h6 style={{ margin: 0,  fontSize: "12px" }}>
+                
+                Perfil: <br /> {perfil}
+              </h6>
+              <Tooltip title="Cerrar sesión">
+             <IconButton
+                  onClick={handleLogout}
+                  style={{ color: "white" }}
+
+                >
+                  <LogoutIcon />
+              </IconButton>
+            </Tooltip>
             </div>
+            
           </div>
           {/*  */}
 
@@ -402,7 +419,7 @@ console.log(clientId, userId);
 
               <ListItem
                 button
-                onClick={MostrarObraSocial}
+                onClick={MostrarObrasSociales}
                 sx={{
                   "&:hover": {
                     backgroundColor: "#2980B9",
@@ -504,20 +521,24 @@ console.log(clientId, userId);
         <div
           style={{ display: "flex", width: "100%", backgroundColor: "white" }}
         >
-          {mostrarProfesional && <Profesionales />}
-          {mostrarPaciente && <Pacientes />}
-          {mostrarPizarradeTurnos && <PizarradeTurnos />}
-          {mostrarObraSocial && <ObrasSociales />}
-          {mostrarAgendaSemanal && <AgendaSemanal />}
-          {mostraConsulta && <ConsultaTurnos />}
 
-          {mostrarHistoriaClinica && <HistoriaClinica />}
+          {vistaActiva === "historiaClinica" && <HistoriaClinica />}
+          {vistaActiva === "pacientes" && <Pacientes />}
+          {vistaActiva === "profesionales" && <Profesionales />}
+          {vistaActiva === "pizarradeturnos" && <PizarradeTurnos />}
+
+          {vistaActiva === "pizarradeturnosprofesional" && <PizarradeTurnosProfesional />}
+
+          {vistaActiva === "obrasocial" && <ObrasSociales />}
+
+           {vistaActiva === "agendasemanal" && <AgendaSemanal />}
+          {vistaActiva === "consultas" && <ConsultaTurnos />}
+
+         
            
-          {mostrarListadeEspera && (
-            <ListadeEsperaV1 />
-          )}
+          {vistaActiva === "listaespera" && <ListadeEsperaV1 />}
 
-          {mostraDashBoard && <DashboardTurnos />}
+          {vistaActiva === "dashboard" && <DashboardTurnos />}
 
         </div>
       </div>

@@ -21,7 +21,18 @@ import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import AsignarListadeEspera from "./asignarTurnoListadeEspera";
 
+import { getClienteId, getUsuarioId } from "../utils/auth";
+
+
+
+  
+
+
 function listadeespera_v1() {
+
+  const ClienteID = getClienteId();
+  const UserID = getUsuarioId();
+
   const [mostrarModal, setMostrarModal] = useState(null);
    const [mostrarAsignar, setMostrarAsignar] = useState(false);
   
@@ -58,7 +69,7 @@ function listadeespera_v1() {
     if (respuesta) {
       // Lógica si confirmó que quiere eliminar
       eliminarFila(idFila);
-      console.log("Usuario confirmó la eliminación");
+   
       // Acá llamás a tu función para eliminar el objeto
     } else {
       console.log("Usuario canceló la operación");
@@ -114,7 +125,8 @@ function listadeespera_v1() {
         Pagina,
         CantidaddeRegistros,
         apeyNomPaciente,
-        apeyNomProfesional
+        apeyNomProfesional,
+        ClienteID
       );
 
       setItems(data.registros);
@@ -156,6 +168,7 @@ function listadeespera_v1() {
 
   // Llamás a la función dentro del useEffect
   useEffect(() => {
+    console.log("Pasa por lista de espera")
     cargarlistadeespera();
   }, [Pagina, CantidaddeRegistros]);
 
@@ -257,7 +270,7 @@ function listadeespera_v1() {
                 <i class="fa-solid fa-magnifying-glass"></i>
               </Button>
 
-              <Button variant="success" onClick={() => Limpiar()}>
+              <Button variant="primary" onClick={() => Limpiar()}>
                 Limpiar
               </Button>
             </InputGroup>
@@ -354,7 +367,7 @@ function listadeespera_v1() {
               {Items &&
                 Items.map((Item) => (
                   <tr key={Item.IDListaEspera}>
-                    <td style={{ textAlign: "center" }}>
+                    <td style={{ textAlign: "center", fontSize: "12px"  }}>
                       {Item.IDListaEspera}
                     </td>
                     <td style={{ textAlign: "left", fontSize: "12px" }}>
@@ -484,6 +497,8 @@ function listadeespera_v1() {
         <MdlAltaListadeEspera
           show={openMdlRegistrarListadeEspera}
           handleClose={closeMdlRegistrarListadeEspera}
+          idcliente={ClienteID}
+          idusuario={UserID}
         />
       )}
 

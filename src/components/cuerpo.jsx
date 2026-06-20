@@ -15,7 +15,7 @@ function cuerpo() {
      
     
       <div className="presentacion">
-        <h1 className="">Gestión de Turnos</h1>
+        <h1 className="">Sistema de Gestión de Turnos</h1>
 
         <h2 className="">para profesionales de la salud</h2>
         <br></br>

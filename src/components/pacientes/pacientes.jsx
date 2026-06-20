@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Table from "react-bootstrap/Table";
 
@@ -27,10 +27,16 @@ import MdlAsignarObraSocial from "../obrassociales/asignarobrasocial";
 
 import AbrirMDLMensaje from "../modales/mdlMensaje";
 
+import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
+import { getClienteId, getUsuarioId } from "../utils/auth";
+
 function Pacientes() {
 
-     const [showMDLMensaje, setShowMDLMensaje] = useState("");
-       const [mensaje, setMensaje] = useState("");
+  const { clientId, userId } = useContext(AuthContext); 
+  const ClienteID = getClienteId();
+  const UserID = getUsuarioId();
+  const [showMDLMensaje, setShowMDLMensaje] = useState("");
+  const [mensaje, setMensaje] = useState("");
 
   const [Apellido, SetApellido] = useState(null);
 
@@ -66,9 +72,6 @@ const closeMdlMensaje = () => {
   //setTimeout(() => Buscar(1), 300); // espera 300 ms
 };
 
-  useEffect(() => {
-    document.title = "Si.Ge.Tur. - Pacientes";
-  }, []);
 
   const openMdlUltimosTurnos = (item) => {
     setIDPaciente(item.ID);
@@ -80,7 +83,7 @@ const closeMdlMensaje = () => {
   
     const openModalAsignarObraSocial = (item) => {
      // setApeNom( Apellido + ", " + Nombres);
-     console.log(item)
+      
      setIDPaciente(item.ID);
       const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
       setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
@@ -97,14 +100,14 @@ const closeMdlMensaje = () => {
   };
 
 
-
+/* 
   const openMdlHistoriaClinica = () => {
     setModalHistoriaClinica(true);
   };
 
   const closeMdlHistoriaClinica = () => {
     setModalHistoriaClinica(false);
-  };
+  }; */
 
   const openMdlRegistrarPaciente = () => {
     setModalRegistrarPaciente(true);
@@ -137,6 +140,7 @@ const closeMdlMensaje = () => {
     modalDialogService.BloquearPantalla(true);
 
     const data = await pacientesService.Buscar(
+      ClienteID,
       Apellido,
       VarDNI,
       _pagina,
@@ -230,6 +234,9 @@ const closeMdlMensaje = () => {
   }
 
   
+  useEffect(() => {
+    document.title = "Si.Ge.Tur. - Pacientes";
+  }, []);
   return (
     <>
       <div
@@ -321,7 +328,7 @@ const closeMdlMensaje = () => {
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
               </Button>
-              <Button variant="success" onClick={() => Limpiar()}>
+              <Button variant="primary" onClick={() => Limpiar()}>
                 Limpiar
               </Button>
             </InputGroup>
@@ -468,15 +475,15 @@ const closeMdlMensaje = () => {
                       >
                         <i class="fa-solid fa-hospital"></i>
                       </button>
-                      <button
+                      {/* <button
                         title="Historia Clínica"
                         className="btn btn-sm btn-light btn-danger"
                         onClick={() => openMdlHistoriaClinica()}
                       >
-                       {/* <i class="fa-solid fa-notes-medical"></i> */}
+                       
                         <i class="fa-solid fa-book-medical"></i>
 
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                   //<TableRow item={item} />
@@ -539,6 +546,7 @@ const closeMdlMensaje = () => {
           show={openMdlEditarPaciente}
           handleClose={closeMdlEditarPaciente}
           idpaciente={idPaciente}
+          idcliente={ClienteID}
         />
       )}
 
@@ -548,6 +556,7 @@ const closeMdlMensaje = () => {
           handleClose={closeMdlUltimosTurnos}
           idpaciente={idPaciente}
           paciente={apeyNom}
+          idcliente={ClienteID}
         />
       )}
 
@@ -566,9 +575,11 @@ const closeMdlMensaje = () => {
           show={openModalAsignarObraSocial}
           handleClose={CloseModalAsignarObraSocial}
           apellidoynombres={apeyNom}
-          id={idPaciente}
+          idpaciente={idPaciente}
           vienede="PACIENTE" //paciente
           idvienede="0"
+          idcliente={ClienteID}
+          idusuario={UserID}
         />
       )}
 
