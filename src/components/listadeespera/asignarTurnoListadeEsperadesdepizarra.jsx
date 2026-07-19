@@ -319,7 +319,7 @@ const verificarGrabar = () => {
         <Modal.Header
           closeButton
           style={{
-            backgroundColor: "#044f82",
+            backgroundColor: "#198754",
             color: "white",
             borderTopLeftRadius: "15px",
             borderTopRightRadius: "15px",
@@ -329,7 +329,7 @@ const verificarGrabar = () => {
         </Modal.Header>
         <Modal.Body>
                   <div className="">
-                       <Button variant="secondary" 
+                       <Button variant="light" 
                style={{
                        height: "30px", // más alto
                        fontSize: "16px", // texto más grande
@@ -518,7 +518,7 @@ const verificarGrabar = () => {
       borderRight: "2px solid #dcdcdc",
     }}
   >
-          <Button variant="secondary" 
+          <Button variant="light" 
                style={{
                        height: "30px", // más alto
                        fontSize: "16px", // texto más grande
@@ -676,7 +676,7 @@ const verificarGrabar = () => {
           </div>
 
           <div style={{ width: "100%", marginTop: "10px" }}>
-             <Button variant="secondary" 
+             <Button variant="light" 
                style={{
                        height: "30px", // más alto
                        fontSize: "16px", // texto más grande

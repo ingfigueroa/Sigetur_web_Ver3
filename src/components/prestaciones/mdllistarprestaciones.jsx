@@ -25,11 +25,24 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
 
 
   const seleccionarPrestacion = (idPrestacion) => {
+   
     enviarAlPadre(idPrestacion);
     handleClose() // Envía el id al componente padre
   };
     /*Carga Tipo de profesiones*/
-    useEffect(() => {
+   
+
+  
+  async function Buscar() {
+  
+    const data = await prestacionesService.BuscarPrestaciones(idCapituloSelected);
+    
+    setPrestacionCapitulo(data); 
+
+
+  }
+
+   useEffect(() => {
       async function fetchData() {
 
           try {
@@ -46,15 +59,11 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
       fetchData(); // Ejecuta la función para obtener los datos
   }, []); 
 
-  
-  async function Buscar() {
-  
-    const data = await prestacionesService.BuscarPrestaciones(idCapituloSelected);
-    
-    setPrestacionCapitulo(data); 
-
-
+  useEffect(() => {
+  if (idCapituloSelected !== "") {
+    Buscar();
   }
+}, [idCapituloSelected]);
 
   return (
     <Modal show={show} onHide={handleClose} size="lg"
@@ -80,39 +89,23 @@ const mdllistarprestaciones = ({ show, handleClose, enviarAlPadre, idprofesion }
               >
                 Capitulo:
               </InputGroup.Text>
-              <select 
-              
-               style={{
-                backgroundColor: "white",
-               
-                height: "28px",
-
-              }}
-              onChange={(e) =>setIdCapituloSelected(e.target.value)}
-              value={idCapituloSelected}
-              >
-                 <option value="" disabled>Seleccionar</option>
-              {TipoCapitulo.map(capitulo => (
-                <option key={capitulo.ID} value={capitulo.ID}>
-                    {capitulo.Descripcion}
-                </option>
-            ))}
-              </select>
+       <select
+  style={{
+    backgroundColor: "white",
+    height: "28px",
+  }}
+  onChange={(e) => setIdCapituloSelected(e.target.value)}
+  value={idCapituloSelected}
+>
+  <option value="" disabled>Seleccionar</option>
+  {TipoCapitulo.map((capitulo) => (
+    <option key={capitulo.ID} value={capitulo.ID}>
+      {capitulo.Descripcion}
+    </option>
+  ))}
+</select>
              
-        <Button
-        size="sm" 
-             title="Buscar por capitulo"
-              variant="outline-secondary"
-              id="button-addon1"
-              style={{ height: "28px" }}
-              color="white"
-              
-              onClick={() => Buscar() }
-             
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </Button>
-            
+       
             
         </div>
 

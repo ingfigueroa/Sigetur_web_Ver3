@@ -258,6 +258,7 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
     const monday = getMonday(fechaBase);
    
     setFechaComienzoSemana(formatearFecha_yyyy_mm_dd(monday))
+    
     const weekDates = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
@@ -273,59 +274,6 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
    
     return weekDates;
   };
-
-  /*   const handleFechaChange = (input) => {
-    const valor = typeof input === "string" ? input : input.target.value;
-
-    SetFecha(valor);
-    const fechaISO = valor;
-
-    // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
-    const fechaObj = new Date(fechaISO);
-
-    // Ajustar la fecha al UTC manualmente
-    const fechaLocal = new Date(
-      fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
-    );
-
-    // Formatear usando toLocaleString o date-fns como prefieras
-    const fechaLarga = fechaLocal.toLocaleDateString("es-ES", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    SetFechaLarga(fechaLarga);
-    setTurnos([]);
-  }; */
-
-  /*     const handleFechaChange = (e) => {
-    setFechaComienzoSemana(e.target.value);
-    contador.current = contador.current + 1;
-    
-    const fechaISO = e.target.value;
-
-    // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
-    const fechaObj = new Date(fechaISO);
-
-    // Ajustar la fecha al UTC manualmente
-    const fechaLocal = new Date(
-      fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
-    );
-
-    // Formatear usando toLocaleString o date-fns como prefieras
-    const fechaLarga = fechaLocal.toLocaleDateString("es-ES", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    SetFechaLarga(fechaLarga);
-    /* setDiasSemana(generarFechasSemana(Fecha)); 
-    setTurnos([]);
-  }; */
 
 
   const definirEstadosdeTurnos = (fila, VieneDE) => {

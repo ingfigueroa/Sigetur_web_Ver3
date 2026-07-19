@@ -1,6 +1,7 @@
 
 const urlServidor = "http://localhost:3000"
 
+//PROFESIONALES
 const urlResourceProfesional = urlServidor + "/profesionales";
 const urlResourceProfesionalAdd = urlServidor + "/profesionalesadd";
 const urlResourceProfesionalProfesionID = urlServidor + "/profesionalesProfesionid";
@@ -11,26 +12,34 @@ const urlResourceProfesionalFechaCambioHorario = urlServidor + "/profesional/fec
 const urlResourceProfesionalCambioHorario = urlServidor + "/profesional/cambiohorariomultiple"
 const urlResourceIDProfesionalEmail = urlServidor + "/idprofesionalemail";
 
+
+//PACIENTES
 const urlResourcePacientes = urlServidor + "/pacientesget";
 const urlResourcePacientesAdd = urlServidor + "/pacienteadd"; 
 const urlResourcePacientesUpdate = urlServidor + "/pacienteupdate"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
 const urlResourcePacienteUltimosTurnos = urlServidor + "/pacientesultimosturnos";
 
-
+//OBRAS SOCIALES
 const urlResourceObrasSociales = urlServidor + "/obrassociales";
 const urlResourceObrasSocialesPorPaciente = urlServidor + "/obrassociales/paciente";
 const urlResourceObrasSocialesAsignarPaciente = urlServidor + "/obrassociales/asignarapaciente";
 const urlResourceObrasSocialesDesafectarPaciente = urlServidor + "/obrassociales/desafectarapaciente";
 const urlResourceObrasSocialesActivar = urlServidor + "/obrassociales/activar";
 
+
+//PROFESIONES
 const urlResourceProfesiones = urlServidor + "/profesiones";
 
+
+//VARIOS
 const urlResourceTipoSexo = urlServidor + "/tiposexo";
 const urlResourceTipoDocumento = urlServidor + "/tipodocumento";
 const urlResourceProvincia = urlServidor + "/provincias";
 const urlResourceLocalidad = urlServidor + "/localidades";
 const urlResourceEstado = urlServidor + "/estados"
+
+
 //TURNOS
 const urlResourceTurnos = urlServidor + "/turnos";
 const urlResourceTurnosPasaraPendiente = urlServidor + "/turnos/pasarapendiente"
@@ -46,27 +55,44 @@ const urlResourceturnoslibresfechames = urlServidor + "/turnos/turnoslibresfecha
 const urlResourceTurnoID = urlServidor + "/turnoid"
 const urlResourceTurnoLibreID = urlServidor + "/turnolibreid"
 const urlResourceMailTurnosProfesional = urlServidor + "/turnos/postEnviarTurnosManual"
+const urlResourcepostTurnoCobrar = urlServidor + "/turnos/cobrar"
+const urlResourcepostTurnoRegistrarPrestaciones = urlServidor + "/turnos/registrarprestaciones"
+
+const urlResourceTurnoIDPrestaciones = urlServidor + "/turnos/prestacionesporturno"
+
+const urlResourceTurnoIDDetalle = urlServidor + "/turnoid/detalle"
+
+
+//RECORDATORIO MAIL
 const urlenviarrecordatorioxmailtodalagrilla = urlServidor + "/correos/urlenviarrecordatorioxmailtodalagrilla"
 
 const urlenviarrecordatorioxmailpacienteseleccionado = urlServidor + "/correos/urlenviarrecordatorioxmailpacienteseleccionado"
 
+//LISTA DE ESPERA
 const urlResourceListadeEsperaAlta = urlServidor + "/listadeesperaalta"
 const urlResourceListadeesperaListar = urlServidor + "/listadeesperalistar"
 const urlResourceListadeEsperaBajaFila = urlServidor + "/listadeesperabajafila"
 const urlResourceListadeEsperaAsignarTurno = urlServidor + "/listadeesperaasignarturno"
 
 const urlResourceAgeSemTurProfFechaAgrupado = urlServidor + "/turnos/AgeSemTurProfFechaAgrupado"
+
+//CAPITULOS PRESTACIONES
 const urlResourceCapitulos = urlServidor + "/capitulos"
 const urlResourcePrestaciones = urlServidor + "/prestaciones"
 const urlResourcePrestacion = urlServidor + "/prestacion"
 
+//HORAS
 const urlResourceHorasListar = urlServidor + "/horaslistar"
 const urlResourceHorasMananaTardeNoche = urlServidor + "/horasmananatardenoche"
 
+//MEDIOS DE PAGOS
 const urlResourceMediosdePagos = urlServidor + "/mediosdepagos"
+const urlResourceTarjetasdeCreditos = urlServidor + "/tarjetascreditodebito"
 
+//INTERVALOS
 const urlResourceIntervalosListar = urlServidor + "/intervaloslistar"
 
+//DIAS
 const urlResourceDiasSemanaListar = urlServidor + "/diassemanalistar"
 
 /*----HISTORIA CLINICA---*/
@@ -100,6 +126,8 @@ const urlTokenEmailProfesional = urlServidor + "/enviartokenemailprofesional"
 
 //SIGETUR CONFIGURACION O PANTALLA DE INICIO
 const urlValoresPantallaInicio = urlServidor + "/valorespantallainicio"
+
+
 
 
 
@@ -179,5 +207,10 @@ export const config = {
     urlTokenEmailProfesional,
     urlResourceIDProfesionalEmail,
     urlenviarrecordatorioxmailtodalagrilla,
-    urlenviarrecordatorioxmailpacienteseleccionado
+    urlenviarrecordatorioxmailpacienteseleccionado,
+    urlResourcepostTurnoCobrar,
+    urlResourceTarjetasdeCreditos,
+    urlResourcepostTurnoRegistrarPrestaciones,
+    urlResourceTurnoIDPrestaciones,
+    urlResourceTurnoIDDetalle
 }

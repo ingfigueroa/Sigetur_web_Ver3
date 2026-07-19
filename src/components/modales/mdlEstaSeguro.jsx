@@ -28,7 +28,7 @@ const mdlEstaSeguro = ({
     <Modal show={show} onHide={handleClose} size="lg" centered>
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#FFE8A3 ", color: "black" }}
+        style={{ backgroundColor: "#e6b31c", color: "black" }}
       >
         <Modal.Title>{mensajetitulo}</Modal.Title>
       </Modal.Header>
@@ -38,19 +38,19 @@ const mdlEstaSeguro = ({
           <div>
             <InputGroup className="mb-3">
               <InputGroup.Text
-                style={{ backgroundColor: "#6c757d", color: "white" }}
+                style={{ color: "black" }}
               >
-                <span dangerouslySetInnerHTML={{ __html: mensajecuerpo }} />
+                <h4><span dangerouslySetInnerHTML={{ __html: mensajecuerpo }} /></h4>
               </InputGroup.Text>
             </InputGroup>
           </div>
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button style={{ backgroundColor: "#FFE8A3 ", color: "black" }} onClick={seleccionarSi}>
+        <Button variant="success"  onClick={seleccionarSi}>
           SI
         </Button>
-        <Button variant="secondary" onClick={seleccionarNO}>
+        <Button variant="warning" onClick={seleccionarNO}>
           NO
         </Button>
       </Modal.Footer>

@@ -17,8 +17,9 @@ import MdlTurnoDetalle from "./mdlturnosdetalle_vers1";
 import Mdlanularturno from "./mdlanularturno";
 import MdlAltaSobreturno from "./mdlaltasobreturno";
 import Mdlanulartodoslosturnos from "./mdlanulartodoslosturnos";
-import Mdlturnoregistrarcobro from "./mdlturnoregistrarcobro";
+import MdlRegistrarPrestaciones from "./mdlregistrarprestaciones";
 import MdlCambiarEstado from "../modales/mdlCambiarEstado";
+import CobrarModal from "../cobros/cobrarmodal"; 
 
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
@@ -36,7 +37,7 @@ import { profesionalesService } from "/src/services/profesional.service";
 
 import { getClienteId, getUsuarioId, getRazonSocial } from "../utils/auth";
 
-import { formatearFecha, formatearFechaLarga, getFechaISO, formatearFecha_a_MM_DD_YYYY, crearFechaHora, formatearFechaentradd_mm_yyy_sale_yyyy_mm_dd } from "../utils/fecha";
+import { formatearFecha, formatearFechaLargaConelAnio, getFechaISO, formatearFecha_a_MM_DD_YYYY, crearFechaHora, formatearFechaentradd_mm_yyy_sale_yyyy_mm_dd } from "../utils/fecha";
 import { correosServices } from "../../services/correos.service";
 
 function tablapizarradeturnos({}) {
@@ -53,7 +54,7 @@ function tablapizarradeturnos({}) {
   const [mdlSiNoMensaje, setModalSiNoMensaje] = useState(null);
   const [mdlcambiarestado, setCambiarEstado] = useState(null);
   const [mdlcambiarestadoMensaje, setCambiarEstadoMensaje] = useState("");
-  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
+  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
 
   const [mdlAnularTurno, setModalAnularTurno] = useState(false);
   const [mdlAnularTodosLosTurnos, setModalAnularTodosLosTurnos] =
@@ -66,6 +67,8 @@ function tablapizarradeturnos({}) {
   const [mdlListaEsperaDesdePizarra, setModalListaEsperaDesdePizarra] = useState(false);
   const [mdlListaProfesionales, setModalListarProfesionales] = useState(false);
 
+  const [showCobro, setShowCobro] = useState(false);
+
   const [Items, setItems] = useState([]);
   const [Item, setItem] = useState(null);
 
@@ -76,8 +79,8 @@ function tablapizarradeturnos({}) {
   const [idTurno, setIDTurno] = useState();
 
   const [Fecha, setFecha] = useState(null);
-  const [fechaSistema, setFechaSistema] = useState(null);
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
+  const [fechaSistema, setFechaSistema] = useState(formatearFechaLargaConelAnio(new Date()));
+  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
 
   const [HoraTurno, setHoraTurno] = useState();
   const [HoraActual, setHoraActual] = useState();
@@ -85,11 +88,11 @@ function tablapizarradeturnos({}) {
   const fechaActualSinParsear = formatearFecha_a_MM_DD_YYYY(new Date().toLocaleDateString());
   
 
-  const [FechaLarga, SetFechaLarga] = useState(formatearFechaLarga(new Date()));
+  const [FechaLarga, SetFechaLarga] = useState(fechaSistema);
   
    
 
-  const [idusuario, setUsuario] = useState("2");
+  const [idusuario, setUsuario] = useState("");
 
   const [filaSeleccionada, setFilaSeleccionada] = useState(null);
 
@@ -133,8 +136,7 @@ function tablapizarradeturnos({}) {
   };
 
   const openMdlHoraProfe = () => {
-   console.log(Fecha)
-   console.log(fechaActual)
+
    setFechaSistema(formatearFechaentradd_mm_yyy_sale_yyyy_mm_dd(fechaActual))
     setModalHoraProfe(true);
   };
@@ -206,17 +208,32 @@ function tablapizarradeturnos({}) {
     setModalMostrarMensaje(false);
   };
 
-  const [mdlturnoregistrarcobro, setModalTurnoRegistrarCobro] = useState(false);
+  const [mdlregistrarprestaciones, setModalRegistrarPrestaciones] = useState(false);
+  const [mdlRegistrarCobro, setModalRegistrarCobro] = useState(false);
 
-  const openMdlTurnoRegistrarCobro = (fila) => {
+  const openMdlTurnoRegistrarPrestaciones = (fila) => {
     setItem(fila);
-    setModalTurnoRegistrarCobro(true);
+    setModalRegistrarPrestaciones(true);
   };
 
-  const closeMdlTurnoRegistrarCobro = () => {
-    setModalTurnoRegistrarCobro(false);
-    procesar(IDProfesional, fechaActual, ClienteID);
+  
+  const closeMdlTurnoRegistrarPrestaciones = () => {
+    setModalRegistrarPrestaciones(false);
+    procesar(IDProfesional, Fecha, ClienteID);
   };
+
+  const closeMdlCobrar = () => {
+    setShowCobro(false);
+    procesar(IDProfesional, Fecha, ClienteID);
+  };
+
+  const openMdlCobrar = (fila) => {
+    setItem(fila)
+    setShowCobro(true);
+
+    
+  };
+  
 
   const definirEstadosdeTurnos = (fila, VieneDE) => {
     try {
@@ -243,14 +260,14 @@ function tablapizarradeturnos({}) {
       }
 
       setItem(fila);
-      procesar(IDProfesional, fechaActual, ClienteID);
+      procesar(IDProfesional, Fecha, ClienteID);
     } catch (error) {}
   };
 
   const handleYes = (observaciones) => {
     TurnosCambiarEstado(Item, "PNC", observaciones);
 
-    procesar(IDProfesional, fechaActual, ClienteID);
+    procesar(IDProfesional, Fecha, ClienteID);
 
     // Aquí agregas la lógica para cambiar el estado del turno
   };
@@ -584,10 +601,23 @@ function tablapizarradeturnos({}) {
    
     limpiarTabla();
 
-
     const fechadadavuelta = getFechaISO(fecha)
   
-   
+    if (idprofesional < 1){
+        setModalMensaje(
+                    "Debe elegir un profesional para buscar los turnos."
+                  );
+        openMdlMensaje();
+        return;
+    }
+
+    if (Fecha === null){
+       setModalMensaje(
+                    "Debe elegir una fecha válida para buscar los turnos."
+                  );
+        openMdlMensaje();
+        return;
+    }
 
     if (idprofesional > 0) {
 
@@ -637,6 +667,7 @@ function tablapizarradeturnos({}) {
                 setProfesion(turnosencontrados.servicio);
                 setMailProfesional(turnosencontrados.email);
                 setItems(turnosencontrados);
+               
                 return;
             } 
           
@@ -669,6 +700,7 @@ function tablapizarradeturnos({}) {
       }
     }
   }, [HoraTurno]);
+
 
   useEffect(() => {
     document.title = "Si.Ge.Tur. - Pizarra de turnos";
@@ -718,7 +750,7 @@ function tablapizarradeturnos({}) {
 
               //onChange={handleFechaChange}
 
-              const fechalistalarga = formatearFechaLarga(date);
+              const fechalistalarga = formatearFechaLargaConelAnio(date);
            
               SetFechaLarga(fechalistalarga)
               
@@ -971,6 +1003,11 @@ function tablapizarradeturnos({}) {
               <Table bordered hover className="tabla-turnos">
                 <thead style={{ fontSize: "12px", backgroundColor: "white" }}>
                   <tr >
+                    
+
+                    <th style={{ textAlign: "center", width: "7%" }} key="1">
+                      Hora
+                    </th>
                     <th
                       style={{
                         textAlign: "center",
@@ -978,10 +1015,6 @@ function tablapizarradeturnos({}) {
                       }}
                     >
                       Estado
-                    </th>
-
-                    <th style={{ textAlign: "center", width: "7%" }} key="1">
-                      Hora
                     </th>
 
                     <th
@@ -1060,7 +1093,7 @@ function tablapizarradeturnos({}) {
                           break;
 
                         case "ACA":
-                          buttonVariant = "info";
+                          buttonVariant = "danger";
                           buttonText = item.estado;
                           break;
                         case "ASA":
@@ -1068,7 +1101,7 @@ function tablapizarradeturnos({}) {
                           buttonText = item.estado;
                           break;
                         case "PEN COB":
-                          buttonVariant = "warning";
+                          buttonVariant = "danger";
                           buttonText = item.estado;
                           break;
                         case "PRE COB":
@@ -1080,8 +1113,8 @@ function tablapizarradeturnos({}) {
                           buttonText = item.estado;
                           break;
                         case "PRE NCOB":
-                          buttonVariant = "primary";
-                          isButtonDisabled = true;
+                          buttonVariant = "info";
+                          //isButtonDisabled = true;
                           buttonText = item.estado;
                           break;
 
@@ -1098,6 +1131,16 @@ function tablapizarradeturnos({}) {
 
                       return (
                         <tr key={item.idTurno}>
+                           <td style={{ textAlign: "center", width: "7%", border: "none", fontSize: "14px" }}>
+                             <Button
+                              variant="secondary"
+                              size="sm"
+                             
+                            >
+                               {item.hora}
+                            </Button>
+                           
+                          </td>{" "}
                           <td style={{ textAlign: "center", width: "20%", border: "none" }}>
                             <Button
                               variant={buttonVariant}
@@ -1148,9 +1191,7 @@ function tablapizarradeturnos({}) {
                               {buttonText}
                             </Button>
                           </td>
-                          <td style={{ textAlign: "center", width: "7%", border: "none" }}>
-                            {item.hora}
-                          </td>{" "}
+                         
                           {/* Mostrar hora formateada */}
                           <td style={{ textAlign: "center", width: "27%", border: "none" }}>
                             <Button
@@ -1168,50 +1209,50 @@ function tablapizarradeturnos({}) {
                             {item.os}
                           </td>
                           <td style={{ textAlign: "center",  width: "17%", border: "none" }}>
-                            {item.estado == "PENDIENTE" && (
-                              <button
-                                title="Anular turno"
-                                className="btn btn-sm btn-light btn-danger"
-                                onClick={(event) => {
-                                  event.preventDefault();
 
-                                  definirEstadosdeTurnos(item, "ANULAR");
-                                }}
-                              >
-                                <i className="fa-solid fa-trash"></i>
-                              </button>
+                           {item.estado === "PENDIENTE" && (
+                              <>
+                                <button
+                                  title="Anular turno"
+                                  className="btn btn-sm btn-light btn-danger me-1"
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    definirEstadosdeTurnos(item, "ANULAR");
+                                  }}
+                                >
+                                  <i className="fa-solid fa-trash"></i>
+                                </button>
+
+                                <button
+                                  title="Recordar turno al paciente"
+                                  className="btn btn-sm btn-light btn-success"
+                                  disabled={Items.length === 0}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    enviarRecordatorioTurnoAPacienteIndividual(item);
+                                  }}
+                                >
+                                  <i className="fa-solid fa-envelope"></i>
+                                </button>
+                              </>
                             )}
 
-                            {item.estado == "PENDIENTE" && (
+                          {item.estado === "PRESENTE" && item.prestacionesregistradas && (
                               <button
-                                title="Registrar cobro"
+                                title="Registrar PRESTACIONES"
                                 className="btn btn-sm btn-light btn-success"
                                 variant="outline-secondary"
                                 onClick={(event) => {
                                   event.preventDefault();
 
-                                  openMdlTurnoRegistrarCobro(item);
+                                  openMdlTurnoRegistrarPrestaciones(item);
                                 }}
                               >
-                                <i className="fa-solid fa-dollar-sign"></i>
-                              </button>
-
-                              
-                            )}
-
-                            {item.estado == "PENDIENTE" && (
-                              <button
-                                title="Recordar turno al paciente"
-                                className="btn btn-sm btn-light btn-success"
-                                disabled={Items.length == 0}
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  enviarRecordatorioTurnoAPacienteIndividual(item);
-                                }}
-                              >
-                                <i className="fa-solid fa-envelope"></i>
+                                <i className="fa-solid fa-notes-medical"></i>
                               </button>
                             )}
+
+                           
 
                             {item.estado !== "LIBRE" &&
                               item.estado !== "ANULADO" && (
@@ -1255,18 +1296,34 @@ function tablapizarradeturnos({}) {
                                 </button>
                               )}
 
-                            {item.estado == "PRESENTE NO COBRADO" && (
+                            {item.estado === "PRESENTE NO COBRADO" && !item.prestacionesregistradas && (
+                              
                               <button
-                                title="Registrar cobro"
+                                title="Registrar PRESTACIONES"
                                 className="btn btn-sm btn-light btn-success"
                                 variant="outline-secondary"
                                 onClick={(event) => {
                                   event.preventDefault();
 
-                                  openMdlTurnoRegistrarCobro(item);
+                                  openMdlTurnoRegistrarPrestaciones(item);
                                 }}
                               >
-                                <i className="fa-solid fa-dollar-sign"></i>
+                                <i className="fa-solid fa-notes-medical"></i>
+                              </button>
+                            )}
+                             {item.estado === "PRESENTE NO COBRADO" && item.prestacionesregistradas && (
+                              
+                              <button
+                                title="Registrar el COBRO del TURNO"
+                                className="btn btn-sm btn-light btn-success"
+                                variant="outline-secondary"
+                                onClick={(event) => {
+                                  event.preventDefault();
+
+                                  openMdlCobrar(item);
+                                }}
+                              >
+                               <i className="fa-solid fa-dollar-sign"></i>
                               </button>
                             )}
                           </td>
@@ -1309,16 +1366,19 @@ function tablapizarradeturnos({}) {
           show={openMdlTurnoDetalle}
           handleClose={CloseMdlTurnoDetalle}
           idturno={idTurno}
+         
         />
       )}
 
-      {mdlturnoregistrarcobro && (
-        <Mdlturnoregistrarcobro
-          show={openMdlTurnoRegistrarCobro}
-          handleClose={closeMdlTurnoRegistrarCobro}
+      {mdlregistrarprestaciones && (
+        <MdlRegistrarPrestaciones
+          show={openMdlTurnoRegistrarPrestaciones}
+          handleClose={closeMdlTurnoRegistrarPrestaciones}
           fila={Item}
         />
       )}
+
+      
       {mdlHoraProfe && (
         <Mdlhorarioprofesional
           show={openMdlHoraProfe}
@@ -1383,7 +1443,7 @@ function tablapizarradeturnos({}) {
 
       {mdlModalMostarMensaje && (
         <MdlMensaje
-          show={setModalMostrarMensaje}
+          show={openMdlMensaje}
           handleClose={closeMdlMensaje}
           modalMessage={mdlMensaje}
         />
@@ -1398,6 +1458,15 @@ function tablapizarradeturnos({}) {
           enviaralpadre={mdlSiNo}
         />
       )}
+
+         {showCobro && (
+            <CobrarModal
+                show={openMdlCobrar}
+                handleClose={closeMdlCobrar}
+                fila={Item}
+                   
+            />
+         )}
     </>
   );
 }

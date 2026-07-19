@@ -1,3 +1,4 @@
+
 import react, { useState, useEffect, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
@@ -9,6 +10,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Table from "react-bootstrap/Table";
 
 import { obrassocialesService } from "/src/services/obrassociales.service";
+import { turnosService } from "../../services/turnos.service";
 
 import MdlListarPrestaciones from "../prestaciones/mdllistarprestaciones";
 import { prestacionesService } from "../../services/prestaciones.service";
@@ -17,12 +19,17 @@ import MdlMensaje from "../modales/MdlMensaje";
 import { formatearFecha} from "../utils/fecha";
 
 import CobrarModal from "../cobros/cobrarmodal"; 
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+
+import {  getUsuarioId } from "../utils/auth";
 
 
-const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
+const mdlregistrarprestaciones = ({ show, handleClose, fila }) => {
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
+
+ const UserID = getUsuarioId();
 
 const [vieneDe, setVieneDe] = useState("");
 
@@ -36,6 +43,8 @@ const [vieneDe, setVieneDe] = useState("");
   const [inputValueCantidad, setInputValueCantidad] = useState("1");
 
   const [mdlModalMostarMensaje, setModalMostrarMensaje] = useState(false);
+  const [mdlMensaje, setModalMensaje] = useState(false);
+  const [cerrarMdlMensaje, setCerrarModalMensaje] = useState(false);
 
     const [showCobro, setShowCobro] = useState(false);
 
@@ -58,9 +67,14 @@ const [vieneDe, setVieneDe] = useState("");
 
   //const totalConDescuento = resultAcumulado - (resultAcumulado * descuentoCoseguro / 100);
 
-  const acobrarobrasocial = costo - ((costo * descuentoCoseguro) / 100);
+   const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
+      const [modalTitulo, setModalTitulo] = useState("REGISTRAR PRESTACIONES");
+      const [modalCuerpo, setModalCuerpo] = useState("¿Desea registrar las prestaciones elegidas?");
 
-  const acobrarpaciente = costo - acobrarobrasocial;
+  let acobrarobrasocial = costo - ((costo * descuentoCoseguro) / 100);
+
+
+  let acobrarpaciente = costo - acobrarobrasocial;
 
  
 
@@ -76,7 +90,7 @@ const [vieneDe, setVieneDe] = useState("");
   const [subcodigoPrestacion, setSubCodigoPrestacion] = useState("");
   const [codigoPrestacion, setCodigoPrestacion] = useState("");
   const [codigoCapitulo, setCodigoCapitulo] = useState("");
-  const [mdlMensaje, setModalMensaje] = useState(false);
+ 
 
   const [Prestacion, setPrestacion] = useState([]);
 
@@ -92,6 +106,15 @@ const [vieneDe, setVieneDe] = useState("");
   };
 
   
+     const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+  };
+
+  
   const openMdlMensaje = () => {
     // setModalSiNoMensaje("¿Está seguro de anular el turno?")
 
@@ -100,19 +123,12 @@ const [vieneDe, setVieneDe] = useState("");
 
   const closeMdlMensaje = () => {
     setModalMostrarMensaje(false);
+    if (cerrarMdlMensaje === true){
+        handleClose();
+    }
+     
   };
 
-  const closeMdlCobrar = () => {
-    setShowCobro(false);
-  };
-
-  const openMdlCobrar = () => {
-    
-
-    
-    setShowCobro(true);
-    
-  };
 
   const closeMdlListarPrestaciones = () => {
     setModalListarPrestaciones(false);
@@ -138,6 +154,18 @@ const [vieneDe, setVieneDe] = useState("");
 
   const BuscarPrestacion = async (idprestacion) => {
     try {
+
+       const existe = prestaciones.some(
+        (p) => p.idprestacion === idprestacion
+      );
+
+      if (existe) {
+        setModalMensaje("La prestación ya se encuentra cargada.");
+        openMdlMensaje();
+        return;
+      }
+
+
       const data = await prestacionesService.BuscarPrestacion(idprestacion);
 
       // Verifica la estructura de los datos
@@ -193,7 +221,7 @@ const [vieneDe, setVieneDe] = useState("");
         acumuladoParcial = Number(nuevoValor)
     }
 
-    console.log(acumuladoParcial)
+ 
     setResultAcumulado(acumuladoParcial);
     
     const totalacobrar = parseFloat(acumuladoParcial).toLocaleString("es-AR", {
@@ -279,6 +307,9 @@ const [vieneDe, setVieneDe] = useState("");
   };
 
   const handleAgregarPrestacion = () => {
+
+    setCerrarModalMensaje(false)
+   
     if (!codigoCapitulo) {
       setModalMensaje("El código de capítulo es obligatorio.");
       openMdlMensaje();
@@ -319,6 +350,8 @@ const [vieneDe, setVieneDe] = useState("");
       return;
     }
 
+    setCerrarModalMensaje(true)
+
     const nuevoSubtotal = parseFloat(costo) * inputValueCantidad;
     setSubTotal(nuevoSubtotal)
 
@@ -337,29 +370,36 @@ const [vieneDe, setVieneDe] = useState("");
       maximumFractionDigits: 2,
     });
 
-    //setSubTotalFormateado(subTotalFormateado)
+      if (fila.os === 'PARTICULAR'){
+        acobrarobrasocial = 0;
+        acobrarpaciente = costo - acobrarobrasocial;
+      }
+      else{
+        acobrarobrasocial = costo - ((costo * descuentoCoseguro) / 100);
+        acobrarpaciente = costo - acobrarobrasocial;
+      }
 
-/* idprestacion: idprestacion,
-      idprestacionporcapitulo: idprestacionporcapitulo, */
+    
 
-    const nuevaPrestacion = {
-      idprestacion: idPrestacion,
-      idcapitulo: codigoCapitulo,
-      nombreprestacion: nombrePrestacion,
-      cantidad: inputValueCantidad,
-      preciounitario: costo, // Usamos el costo formateado
-      subtotalformateado: subtotalFormateado,
-      observaciones: observaciones,
-      coseguro: descuentoCoseguro,
-      cobrarapaciente: acobrarpaciente,
-      cobraraobrasocial: acobrarobrasocial
-    };
+      const nuevaPrestacion = {
+        idprestacion: idPrestacion,
+        idcapitulo: codigoCapitulo,
+        nombreprestacion: nombrePrestacion,
+        cantidad: inputValueCantidad,
+        preciounitario: costo,
+        subtotalformateado: subtotalFormateado,
+        observaciones: observaciones,
+        coseguro: descuentoCoseguro,
+        cobrarapaciente: acobrarpaciente,
+        cobraraobrasocial: acobrarobrasocial
+      };
 
-    console.log(acobrarpaciente)
-    console.log(acobrarobrasocial)
+      setPrestaciones((prev) => [...prev, nuevaPrestacion]);
+
+      
 
     // Actualiza el array de prestaciones
-    setPrestaciones([...prestaciones, nuevaPrestacion]);
+   // setPrestaciones([...prestaciones, nuevaPrestacion]);
     
     
     calculateTotalaPagar(nuevoSubtotal);
@@ -368,6 +408,47 @@ const [vieneDe, setVieneDe] = useState("");
   };
 
   
+   async function RegistrarPrestaciones(idturno, idusuario, montoTotalaCobrar, prestaciones) {
+    
+  
+    try {
+       
+        const result = await turnosService.postTurnoRegistrarPrestaciones(
+            idturno,
+            idusuario,
+            montoTotalaCobrar,
+            prestaciones
+        );
+
+        if (result === 0) {
+          
+            setModalMensaje("Se registraron las prestaciones.");
+            openMdlMensaje();
+           
+        } else {
+            setModalMensaje("No se pudieron registrar las prestaciones.");
+            openMdlMensaje();
+        }
+
+    } catch (error) {
+
+        setModalMensaje("Error de comunicación con el servidor.");
+        openMdlMensaje();
+
+    }
+
+}
+
+    const mdlSiNo = async (respuesta) => {
+     
+      if (respuesta) {
+          RegistrarPrestaciones(fila.idTurno, UserID, resultAcumulado, prestaciones)
+      }else{
+         
+
+      }
+    };
+
 
   useEffect(() => {
     setOSElegida(fila.os);
@@ -388,6 +469,8 @@ useEffect(() => {
     costoRef.current?.focus();
     costoRef.current?.select(); // Selecciona todo el contenido
 }, []);
+
+
   return (
     <>
       <Modal show={show} onHide={handleClose} size="lg" >
@@ -814,10 +897,10 @@ useEffect(() => {
         <Modal.Footer>
           <Button
             variant="success"
-            onClick={openMdlCobrar}
+            onClick={openMdlEstaSeguro}
             disabled={resultAcumulado <= 0}
           >
-            Cobrar turno
+            Registrar PRESTACIONES
           </Button>
           <Button className="" variant="primary" onClick={limpiar}>
             Limpiar
@@ -837,17 +920,15 @@ useEffect(() => {
         />
       )}
 
-       {showCobro && (
-          <CobrarModal
-              show={openMdlCobrar}
-              handleClose={closeMdlCobrar}
-              totalacobrar={resultAcumulado}
-              totalacobrarpaciente = {totalacobrarpaciente}
-              prestaciones={prestaciones}
-              fila={fila}
-              vienede={vieneDe}
-          />
-       )}
+                 {showMDLEstaSeguro && (
+                     <MDLEstaSeguro
+                       show={openMdlEstaSeguro}
+                       handleClose={closeMdlEstaSeguro}
+                       mensajetitulo={modalTitulo}
+                       mensajecuerpo={modalCuerpo}
+                       enviaralpadre={mdlSiNo}
+                     />
+                   )}
 
              {mdlModalMostarMensaje && (
                <MdlMensaje
@@ -860,4 +941,4 @@ useEffect(() => {
   );
 };
 
-export default mdlturnoregistrarcobro;
+export default mdlregistrarprestaciones;

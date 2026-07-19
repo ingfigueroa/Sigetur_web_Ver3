@@ -15,14 +15,24 @@ import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 import { turnosService } from "/src/services/turnos.service";
 import { profesionalesService } from "/src/services/profesional.service";
 import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
+
 import MdlAltaTurno from "../turnos/mdlaltaturno";
 import MdlMensaje from "../modales/MdlMensaje";
 import MdlCambiarEstado from "../modales/mdlCambiarEstado";
-import Mdlturnoregistrarcobro from "../turnos/mdlturnoregistrarcobro";
+import CobrarModal from "../cobros/cobrarmodal";
+import MdlRegistrarPrestaciones from "../turnos/mdlregistrarprestaciones";
 import MdlTurnoDetalle from "../turnos/mdlturnosdetalle_vers1";
 import { TuneOutlined } from "@mui/icons-material";
+import { getClienteId, getUsuarioId } from "../utils/auth";
 
-const agendasemanal = ({ show, handleClose, idprofesional }) => {
+import { getMonday} from "../utils/fecha";
+
+const agendasemanal = ({ show, handleClose }) => {
+
+  
+    const ClienteID = getClienteId();
+    const UserID = getUsuarioId();
+
   const [mdlTurnoDetalle, setModalTurnoDetalle] = useState(false);
   const [Items, setItems] = useState(null);
   const [Item, setItem] = useState(null);
@@ -38,6 +48,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     const [mdlHoraProfe, setModalHoraProfe] = useState(false);
       const [descripcion, setDescripcion] = useState("");
 
+      const [showCobro, setShowCobro] = useState(false);
   const [filaSeleccionada, setFilaSeleccionada] = useState(null);
 
   const [FechaLarga, SetFechaLarga] = useState(null);
@@ -74,15 +85,28 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   const [mdlMensaje, setModalMensaje] = useState(false);
   const [mdlModalMostarMensaje, setModalMostrarMensaje] = useState(false);
   const [mdlturnoregistrarcobro, setModalTurnoRegistrarCobro] = useState(false);
+  const [mdlregistrarprestaciones, setModalRegistrarPrestaciones] = useState(false);
 
-  const openMdlTurnoRegistrarCobro = (fila) => {
-    setItem(fila);
-    setModalTurnoRegistrarCobro(true);
+  const closeMdlCobrar = () => {
+    setShowCobro(false);
+    BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
   };
 
-  const closeMdlTurnoRegistrarCobro = () => {
-    setModalTurnoRegistrarCobro(false);
-    BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+  const openMdlCobrar = (fila) => {
+    setItem(fila)
+    setShowCobro(true);
+
+    
+  };
+    const openMdlTurnoRegistrarPrestaciones = (fila) => {
+    setItem(fila);
+    setModalRegistrarPrestaciones(true);
+  };
+
+  
+  const closeMdlTurnoRegistrarPrestaciones = () => {
+    setModalRegistrarPrestaciones(false);
+    BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
   };
 
   const openMdlTurnoDetalle = (fila) => {
@@ -100,7 +124,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   const handleYes = (observaciones) => {
     TurnosCambiarEstado(Item, "PNC", observaciones);
 
-    BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+    BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
 
     // Aquí agregas la lógica para cambiar el estado del turno
   };
@@ -114,39 +138,11 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         idusuario,
         vieneDE
       );
-      BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+      BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
+
     } catch (error) {}
   }
 
-  /* 
-  const formatearFecha_yyyy_mm_dd = (fecha) => {
-    let fechaActualParseada;
-
-    if (fecha instanceof Date) {
-      // Si ya es un objeto Date, lo usamos directamente
-      fechaActualParseada = fecha;
-    }
-    // Caso 1: formato yyyy-MM-dd
-    else if (typeof fecha === "string" && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "yyyy-MM-dd", new Date());
-    }
-    // Caso 2: formato d/M/yyyy
-    else if (
-      typeof fecha === "string" &&
-      /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(fecha)
-    ) {
-      fechaActualParseada = parse(fecha, "d/M/yyyy", new Date());
-    }
-    // Caso 3: formato de Date.toString()
-    else if (typeof fecha === "string" && isNaN(Date.parse(fecha)) === false) {
-      fechaActualParseada = new Date(fecha);
-    } else {
-      console.error("Formato de fecha no reconocido:", fecha);
-      return "";
-    }
-
-    return format(fechaActualParseada, "yyyy-MM-dd");
-  }; */
 
   const formatearFecha_yyyy_mm_dd = (fecha) => {
     let fechaActualParseada;
@@ -177,12 +173,6 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     );
   };
 
-  /* const formatearFecha_yyyy_mm_dd = (fecha) => {
-  return formatInTimeZone(fecha, "UTC", "yyyy-MM-dd");
-}; */
-
-  /*   const fechaSemana = generarFechasSemana(new Date()); */
-
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
   };
@@ -203,15 +193,16 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
 
   const recibirDatoDelHijo = (datoRecibido) => {
     SetIDProfesional(datoRecibido);
-
-    BuscarProfesionalyProfesion(datoRecibido);
+  
+    BuscarProfesionalyProfesion(ClienteID, datoRecibido);
     limpiarTabla();
   };
 
   const closeCambiarAPresente = () => {
     setCambiarEstado(false);
 
-    BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+     BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
+
   };
 
   const openMdlRegistrarTurno = (fila) => {
@@ -223,16 +214,18 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
   const closeMdlRegistrarTurno = () => {
     setModalRegistrarTurno(false);
 
-    BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+     BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
+
   };
 
   const openMdlListarProfesionales = () => {
-    setTurnos([]);
+    
     setModalListarProfesionales(true);
   };
 
   const closeMdlListarProfesionales = () => {
     setModalListarProfesionales(false);
+    limpiarTabla();
   };
 
   const limpiarTabla = () => {
@@ -248,22 +241,17 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     SetFechaLarga("");
     setTurnos([]);
     setCantidadTurnos(0);
+    SetIDProfesional(0);
   };
 
-  // función que genera array de 7 días empezando en lunes
-  // función auxiliar: calcula el lunes de la semana
-  const getMonday = (date) => {
-    const d = new Date(date);
-    const day = d.getDay(); // 0=domingo, 1=lunes, ..., 6=sábado
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    d.setDate(diff);
-    return d;
-  };
-
+  
   // función que devuelve array de lunes a domingo
 
   const getWeekDates = (fechaBase) => {
     const base = new Date(fechaBase);
+
+    console.log(fechaBase)
+
 
     // si la fecha es inválida, uso hoy
     if (isNaN(base)) {
@@ -272,6 +260,9 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     }
 
     const monday = getMonday(fechaBase);
+
+    console.log(monday)
+    
 
     setFechaComienzoSemana(formatearFecha_yyyy_mm_dd(monday));
 
@@ -323,29 +314,34 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         openMdlAnularTurno();
       }
 
-      BuscarTurnosProfesionalFecha(IDProfesional, fechaComienzoSemana);
+       BuscarTurnosProfesionalFecha(ClienteID, IDProfesional, fechaComienzoSemana, UserID);
+
     } catch (error) {}
   };
 
-  async function BuscarTurnosProfesionalFecha(idprofesional, fecha) {
+  async function BuscarTurnosProfesionalFecha(idcliente, idprofesional, fecha, idusuario) {
     if (fecha === null) return;
+   
 
     if (idprofesional > 0) {
       // BuscarTurnosFechasAgrupadas(idprofesional, fecha);
       const data = await turnosService.Agendasemanal_PorProfesionalPorFecha(
+        idcliente,
         idprofesional,
-        fecha
-      );
+        fecha,
+        idusuario
 
+      );
+      
       setCantidadTurnos(data.length);
 
       setTurnos(data);
     }
   }
 
-  async function BuscarProfesionalyProfesion(idprofesional) {
-    const data = await profesionalesService.BuscarId(idprofesional);
-
+  async function BuscarProfesionalyProfesion(idcliente, idprofesional) {
+    const data = await profesionalesService.BuscarId(idcliente, idprofesional);
+    console.log(data)
     if (data) {
       setItems(data); // Asignar los datos a `Items`
 
@@ -390,7 +386,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     0
   );
 
-  const getButtonProperties = (estado, fecha, hora, sobreturno, paciente) => {
+  const getButtonProperties = (sigla, fecha, hora, sobreturno, paciente) => {
     let buttonVariant = "success"; // Color por defecto
     let buttonText = hora;
     let isButtonDisabled = false;
@@ -408,7 +404,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
 
     // Comparar fecha y hora por separado
 
-    if (estado === "LIB") {
+    if (sigla === "LIB") {
       /*       console.log("Fecha del sistema " + fechaActual1)
       console.log("Fecha del turno " + fecha1) */
       if (fechaActual1 > fecha1) {
@@ -423,13 +419,14 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       }
     }
 
-    if (estado === "ANU") {
+   /*  if (estado === "ANU") {
       isButtonDisabled = true;
-    }
-
-    switch (estado) {
+    } */
+    
+    switch (sigla) {
       case "ANU":
         buttonVariant = "dark";
+        isButtonDisabled = true;
         break;
       case "PEN":
         if (!sobreturno) {
@@ -443,22 +440,23 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         buttonVariant = "primary";
         break;
       case "ACA":
-        buttonVariant = "info";
+        buttonVariant = "danger";
         break;
       case "ASA":
         buttonVariant = "danger";
         break;
       case "PEN COB":
-        buttonVariant = "warning";
+        
+        buttonVariant = "danger";
         break;
-      case "PRE COB":
+      case "COB":
         buttonVariant = "primary";
         break;
       case "NCI":
         buttonVariant = "secondary";
         break;
       case "PRE NCOB":
-        buttonVariant = "primary";
+        buttonVariant = "info";
         break;
       case "LIB":
         buttonVariant = "success";
@@ -467,7 +465,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         buttonVariant = "secondary";
     }
     if (paciente === true) {
-      buttonVariant = "light";
+      buttonVariant = "secondary";
     }
     return { buttonVariant, buttonText, isButtonDisabled };
   };
@@ -491,20 +489,6 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
     setDiasSemana(getWeekDates(setFechaActual1));
   }, []);
 
-  /*   useEffect(() => {
-    const esFechaValida = fechaTurno >= fechaActual;
-    const esHoraValida = HoraTurno > horaActual;
-
-    if (!esFechaValida) {
-      if (esHoraValida) return;
-
-      setModalMensaje(
-        "No se puede dar un turno cuando ya pasó el día o la hora del mismo."
-      );
-      openMdlMensaje();
-      setModalRegistrarTurno(false);
-    }
-  }, [HoraTurno]); */
 
   return (
     <>
@@ -702,12 +686,16 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
                 textAlign: "center",
                 height: "30px",
               }}
+              
+              disabled={IDProfesional < 1 ? true : false}
               onClick={(event) => {
                 event.preventDefault();
-
+              
                 BuscarTurnosProfesionalFecha(
+                  ClienteID,
                   IDProfesional,
-                  fechaComienzoSemana
+                  fechaComienzoSemana,
+                  UserID
                 );
               }}
             >
@@ -812,7 +800,7 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
 
                     // Turno que corresponde a esta fila
                     const turno = turnosDelDia[filaIndex];
-
+                   
                     return (
                       <React.Fragment key={colIndex}>
                         {/* Columna de Hora */}
@@ -880,7 +868,12 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
                                   setModalMensaje(
                                     "Fecha expirada. No se puede cambiar el estado del turno."
                                   );
-                                  openMdlTurnoRegistrarCobro(turno);
+                                  if (turno.prestacionesregistradas === true){
+                                    openMdlCobrar(turno)
+                                  }else {
+                                      openMdlTurnoRegistrarPrestaciones(turno);
+                                  }
+                                  
                                 }
                               }}
                             >
@@ -948,21 +941,23 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
       )}
 
       {mdlListaProfesionales && (
-        <MdlListarProfesionales
-          show={openMdlListarProfesionales}
-          handleClose={closeMdlListarProfesionales}
-          enviarAlPadre={recibirDatoDelHijo}
-        />
-      )}
+             <MdlListarProfesionales
+               show={openMdlListarProfesionales}
+               handleClose={closeMdlListarProfesionales}
+               idcliente={ClienteID}
+               enviarAlPadre={recibirDatoDelHijo}
+             />
+           )}
+
+
       {mdlRegistrarTurno && (
         <MdlAltaTurno
           show={setModalRegistrarTurno}
           handleClose={closeMdlRegistrarTurno}
           fila={filaSeleccionada}
-          ApeyNom={apeyNom}
-          FechaTurno={fechaTurno}
-          profesion={profesion}
-          hora={HoraTurno}
+
+          idcliente={ClienteID}
+          idusuario={UserID}
         />
       )}
 
@@ -983,13 +978,14 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
         />
       )}
 
-      {mdlturnoregistrarcobro && (
-        <Mdlturnoregistrarcobro
-          show={openMdlTurnoRegistrarCobro}
-          handleClose={closeMdlTurnoRegistrarCobro}
-          fila={Item}
-        />
-      )}
+           {showCobro && (
+                 <CobrarModal
+                     show={openMdlCobrar}
+                     handleClose={closeMdlCobrar}
+                     fila={Item}
+                        
+                 />
+              )}
 
       {mdlTurnoDetalle && (
         <MdlTurnoDetalle
@@ -998,6 +994,14 @@ const agendasemanal = ({ show, handleClose, idprofesional }) => {
           idturno={idTurno}
         />
       )}
+
+          {mdlregistrarprestaciones && (
+              <MdlRegistrarPrestaciones
+                show={openMdlTurnoRegistrarPrestaciones}
+                handleClose={closeMdlTurnoRegistrarPrestaciones}
+                fila={Item}
+              />
+            )}
     </>
   );
 };

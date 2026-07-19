@@ -108,9 +108,9 @@ const mdllistarprofesionales = ({ show, handleClose, idcliente, enviarAlPadre })
     <Modal show={show} onHide={handleClose} size="xl" style={{ width: "100%"}}>
       <Modal.Header
         closeButton
-       style={{ backgroundColor: "#99a3a4", color: "black" }}
+       style={{ backgroundColor: "#198754", color: "white" }}
       >
-        <Modal.Title>Buscar profesionales</Modal.Title>
+        <Modal.Title>BUSCAR PROFESIONALES</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ width: "100%" }}>
         <div className="acomodarencabezadopizaturnos">
@@ -371,7 +371,9 @@ const mdllistarprofesionales = ({ show, handleClose, idcliente, enviarAlPadre })
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="success" onClick={handleClose}
+          style = {{color: "white"}}
+        >
           Cerrar
         </Button>
       </Modal.Footer>

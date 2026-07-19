@@ -7,7 +7,7 @@ const MdlMensaje = ({ show, handleClose, modalMessage }) => {
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header
         closeButton
-        style={{ backgroundColor: "#BFD4C4", color: "Black" }}
+        style={{ backgroundColor: "#e6b31c", color: "Black" }}
       >
         <Modal.Title>INFORMACIÓN</Modal.Title>
       </Modal.Header>
@@ -15,7 +15,9 @@ const MdlMensaje = ({ show, handleClose, modalMessage }) => {
         {modalMessage}
       </Modal.Body>
       <Modal.Footer>
-        <Button style={{ backgroundColor: "#BFD4C4 ", color: "black" }} onClick={handleClose}>
+        <Button   onClick={handleClose}
+        style={{ backgroundColor: "#e6b31c", color: "black"}}
+        >
           Cerrar
         </Button>
       </Modal.Footer>

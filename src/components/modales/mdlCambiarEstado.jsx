@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
+  console.log(fila)
 const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalTituloMessage, setModalTituloMessage] = useState('');

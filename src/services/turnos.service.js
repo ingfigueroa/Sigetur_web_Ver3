@@ -22,6 +22,11 @@ const urlResourceAgeSemTurProfFechaAgrup = config.urlResourceAgeSemTurProfFechaA
 const urlResourceListadeEspera = config.urlResourceTurnosListadeEspera
 const urlResourceMailTurnosProfesional = config.urlResourceMailTurnosProfesional
 const urlResourceTurnosLibresFechaMes = config.urlResourceturnoslibresfechames
+const urlResourcepostTurnoCobrar = config.urlResourcepostTurnoCobrar
+const urlResourcepostTurnoRegistrarPrestaciones = config.urlResourcepostTurnoRegistrarPrestaciones
+const urlResourceTurnoIDPrestaciones = config.urlResourceTurnoIDPrestaciones
+
+const urlResourceTurnoIDDetalle = config.urlResourceTurnoIDDetalle
 
 async function TurnosAnularPorPedidoProfesional(idcliente, idprofesional, observaciones, fecha, idusuario) {
 
@@ -56,12 +61,14 @@ async function CrearTurnosPorProfesionalPorFecha(idusuario, idprofesional, fecha
 
 
 
-async function Agendasemanal_PorProfesionalPorFecha(idprof, fecha) {
+async function Agendasemanal_PorProfesionalPorFecha(idcliente, idprof, fecha, idusuario) {
 
   const resp = await httpService.get(urlResourceAgeSemTurProfFecha, {
     params: {
+      idcliente,
       idprof,
-      fecha
+      fecha,
+      idusuario
     },
   });
 
@@ -240,7 +247,7 @@ async function TurnosLibresDelMes(idcliente, idprofesional, fechadesde, fechahas
       }
     });
 
-    console.log(resp.data)
+    
     return resp.data;
   } catch (error) {
     console.error('Error en TurnosConsultaPorFecha:', error);
@@ -286,6 +293,113 @@ async function GrabarSobreturnoPaciente(idcliente, idprofesional, idpaciente, id
 }
 
 
+async function postTurnoCobrar( 
+     idturno, 
+    
+      idusuario,
+      observaciones,
+      idformapago,
+      idtarjeta,
+      nrotarjeta,
+      fechavto,
+      titular,
+      montoTotalaCobrar,
+      vienede) {
+
+  try {
+
+    const resp = await httpService.post(urlResourcepostTurnoCobrar, {
+      
+      idturno, 
+     
+      idusuario,
+      observaciones,
+      idformapago,
+      idtarjeta,
+      nrotarjeta,
+      fechavto,
+      titular,
+      montoTotalaCobrar,
+      vienede
+    });
+
+      return resp.data;   // <-- Esto faltaba
+
+        } catch (error) {
+          console.error(
+            "Error al cobrar el turno:",
+            error.response?.data || error.message
+          );
+
+          return -1; // opcional, para indicar error
+        }
+
+}
+
+      async function postTurnoRegistrarPrestaciones(
+        idturno,
+        idusuario,
+        montoTotalaCobrar,
+        tabla_prestaciones
+      ) {
+        try {
+          const resp = await httpService.post(
+            urlResourcepostTurnoRegistrarPrestaciones,
+            {
+              idturno,
+              idusuario,
+              montoTotalaCobrar,
+              tabla_prestaciones
+            }
+          );
+
+          return resp.data;   // <-- Esto faltaba
+
+        } catch (error) {
+          console.error(
+            "Error al cobrar el turno:",
+            error.response?.data || error.message
+          );
+
+          return -1; // opcional, para indicar error
+        }
+      }
+
+async function TurnoIDPrestaciones(idturno) {
+
+  console.log(idturno)
+  const resp = await httpService.get(urlResourceTurnoIDPrestaciones,  {
+      params: {
+        idturno,
+        
+      }
+    
+
+  });
+
+  return resp.data;
+
+
+}
+
+async function TurnoIDDetalle(idturno) {
+
+  
+
+  const resp = await httpService.get(urlResourceTurnoIDDetalle, {
+    params: {
+      idturno
+    },
+
+  });
+
+  return resp.data;
+
+
+}
+
+
+
 export const turnosService = {
   BuscarPorProfesionalFecha,
   GrabarTurnoPaciente,
@@ -301,5 +415,9 @@ export const turnosService = {
   TurnoLibreID,
   enviarTurnosProfesionalpoFecha,
   GrabarSobreturnoPaciente,
-  TurnosLibresDelMes
+  TurnosLibresDelMes,
+  postTurnoCobrar,
+  postTurnoRegistrarPrestaciones,
+  TurnoIDPrestaciones,
+  TurnoIDDetalle
   };

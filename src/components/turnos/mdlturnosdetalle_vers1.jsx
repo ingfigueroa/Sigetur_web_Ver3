@@ -13,37 +13,60 @@ import "/src/css/personalizar-modales.css";
 
 const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
   const [FechaLarga, SetFechaLarga] = useState(null);
-  const [Items, setItems] = useState(null);
+  const [Items, setItems] = useState({});
+  const [prestacionesItems, setPrestacionesItems] = useState([]);
   const [sobreTurno, setSobreTurno] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!idturno) return;
+  
+  
+ useEffect(() => {
+  if (!idturno) return;
 
-    // Limpia Items antes de traer nuevos datos
-    setItems(null);
+  async function fetchDataTurno() {
+    try {
+      setLoading(true);
 
-    async function fetchDataTurno() {
-      try {
-        
-        const data = await turnosService.TurnoID(idturno);
-     
-        setItems(data);
-        
-      } catch (error) {
-        console.error("Error al obtener detalles del turno:", error);
-      }
+      const response = await turnosService.TurnoIDDetalle(idturno);
+
+      setItems(response.turno);
+      setPrestacionesItems(response.prestaciones);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchDataTurno();
-  }, [idturno]);
+  fetchDataTurno();
+}, [idturno]); 
+/* 
+useEffect(() => {
+  if (!idturno) return;
 
+  setPrestacionesItems([]);
 
-  useEffect(() => {
+  async function getTurnoIDPrestaciones() {
+    try {
+      const data = await turnosService.TurnoIDPrestaciones(idturno);
+      setPrestacionesItems(data || []);
+    } catch (error) {
+      console.error(error);
+      setPrestacionesItems([]);
+    }
+  }
+
+  getTurnoIDPrestaciones();
+}, [idturno]);
+ */
+useEffect(() => {
     if (Items?.fecha) {
-     
-      SetFechaLarga(handleFechaChange(Items.fecha));
+        SetFechaLarga(handleFechaChange(Items.fecha));
+        
     }
-  }, [Items]);
+
+ 
+}, [Items]);
 
   const handleFechaChange = (fecha) => {
     const fechaISO = fecha;
@@ -66,7 +89,9 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
 
     return fechaLarga;
   };
-
+  if (loading) {
+    return ;
+  }
   return (
     <Modal
       show={show}
@@ -76,9 +101,9 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
       centered
     >
       <Modal.Header
-        closeButton
+        closeButton 
         style={{
-          backgroundColor: "#044f82",
+         backgroundColor: "#198754",
           color: "white",
           borderTopLeftRadius: "15px",
           borderTopRightRadius: "15px",
@@ -89,7 +114,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
       <Modal.Body>
        <div style={{ width: "100%" }}>
   <h1
-    style={{ fontSize: "50px", color: "#044f82", textAlign: "center" }}
+    style={{ fontSize: "30px", color: "#044f82", textAlign: "center" }}
   >
     {Items?.estado || ""}
   </h1>
@@ -116,10 +141,10 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
               width: "50%",
             }}
           >
-            <h1 style={{ fontSize: "55px", color: "#044f82" }}>
+            <h1 style={{ fontSize: "35px", color: "#044f82" }}>
               {Items?.hora || ""}
             </h1>
-            <h1 style={{ fontSize: "25px", color: "#044f82" }}>{FechaLarga}</h1>
+            <h1 style={{ fontSize: "15px", color: "#044f82" }}>{FechaLarga}</h1>
           </div>
           <div
             style={{
@@ -187,21 +212,7 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
                 />
               </InputGroup>
 
-             {/*  <InputGroup className="mb-3">
-                <Button
-                  size="sm"
-                  title="Servicio"
-                  variant="outline-secondary"
-                  style={{ height: "25px" }}
-                >
-                  <i className="fa-solid fa-kit-medical"></i>
-                </Button>
-                <Form.Control
-                  readOnly
-                  style={{ textAlign: "center", fontSize: "12px" }}
-                  value={Items?.servicio || ""}
-                />
-              </InputGroup> */}
+             
 
               <InputGroup className="mb-3">
                 <Button
@@ -228,8 +239,8 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
           </div>
         </div>
 
-        <div style={{ width: "100%", marginTop: "10px" }}>
-          <h6 style={{ textAlign: "left" }}>Observaciones</h6>
+ <div style={{ width: "100%", marginTop: "0px" }}>
+          <h4 style={{ textAlign: "left" }}>Observaciones</h4>
           <InputGroup className="mb-3">
             <Form.Control
               as="textarea"
@@ -239,35 +250,51 @@ const mdlturnodetalle_Ver1 = ({ show, handleClose, idturno }) => {
             />
           </InputGroup>
 
-          {/*         <h6 style={{ textAlign: "left" }}>Detalle de estados</h6>
-          <Table bordered hover>
-            <thead>
-              <tr className="personalizarfila h-50">
-                <th style={{ textAlign: "center", backgroundColor: "rgb(136, 161, 184)", width: "200px" }}>Fecha</th>
-                <th style={{ textAlign: "center", backgroundColor: "rgb(136, 161, 184)" }}>Estado</th>
-                <th style={{ textAlign: "center", backgroundColor: "rgb(136, 161, 184)" }}>Observaciones</th>
+
+        </div>
+
+        <div style={{ width: "100%", marginTop: "0px" }}>
+          <h4 style={{ textAlign: "left" }}>Prestaciones cargadas</h4>
+             <Table striped bordered hover size="sm">
+            <thead style={{ fontWeight: "normal" }}>
+              <tr className="">
+                <th style={{ textAlign: "center",  width: "200px", fontWeight: "normal" }}>Prestación</th>
+                <th style={{ textAlign: "center", fontWeight: "normal"  }}>Observaciones</th>
+                <th style={{ textAlign: "center", fontWeight: "normal"  }}>Precio</th>
+                <th style={{ textAlign: "center", fontWeight: "normal"  }}>Cobrar paciente</th>
+                <th style={{ textAlign: "center", fontWeight: "normal"  }}>Cobrar obra social</th>
               </tr>
             </thead>
             <tbody>
-              {Estados.map((item, index) => (
+              {prestacionesItems?.map((item, index) => (
                 <tr key={index}>
                   <td style={{ textAlign: "center", fontSize: "10px" }}>
-                    {formatearFecha(item.fecha)}
+                    {item.prestacion}
                   </td>
-                  <td style={{ textAlign: "center", fontSize: "10px" }}>
-                    {item.estado}
-                  </td>
+                  
                   <td style={{ textAlign: "center", fontSize: "10px" }}>
                     {item.observaciones}
+                  </td>
+                  <td style={{ textAlign: "center", fontSize: "10px" }}>
+                    {item.costo}
+                  </td>
+                   <td style={{ textAlign: "center", fontSize: "10px" }}>
+                    {item.cobrarapaciente}
+                  </td>
+                  <td style={{ textAlign: "center", fontSize: "10px" }}>
+                    {item.cobraraobrasocial}
                   </td>
                 </tr>
               ))}
             </tbody>
-          </Table> */}
+          </Table>
         </div>
+       
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={handleClose}>
+        <Button variant="primary" onClick={handleClose}
+        style={{backgroundColor: "#198754"}}
+        >
           Cerrar
         </Button>
       </Modal.Footer>

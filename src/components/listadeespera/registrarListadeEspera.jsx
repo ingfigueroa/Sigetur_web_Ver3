@@ -214,16 +214,6 @@ const registrarlistadeespera = ({ show, handleClose, idpaciente, idprofesional, 
    
       try {
         
-       console.log(idcliente)
-         console.log(IDProfesional)
-       console.log( idPaciente)
-        console.log(idhoradesde)
-        console.log(idhorahasta)
-        console.log(fechadesde)
-        console.log(fechahasta)
-         console.log(diasBit)
-         console.log(observaciones)
-         console.log(idusuario)
 
        const data = await listadeesperaService.AltaTurnoListadeEspera(
          
@@ -297,7 +287,7 @@ const registrarlistadeespera = ({ show, handleClose, idpaciente, idprofesional, 
       <Modal show={show} onHide={handleClose} size="xl">
         <Modal.Header
           closeButton
-          style={{ backgroundColor: "#0277bd", color: "white" }}
+          style={{ backgroundColor: "#198754", color: "white" }}
         >
           <Modal.Title>REGISTRAR LISTA DE ESPERA</Modal.Title>
         </Modal.Header>
@@ -535,14 +525,14 @@ const registrarlistadeespera = ({ show, handleClose, idpaciente, idprofesional, 
                 }}
               >
                 <Button
-                  variant="primary"
+                  variant="success"
                   type="submit"
                   style={{ height: "40px" }}
                 >
-                  Grabar
+                  Grabar 
                 </Button>
                 <Button
-                  variant="success"
+                  variant="primary"
                   onClick={Limpiar}
                   style={{ height: "40px" }}
                 >

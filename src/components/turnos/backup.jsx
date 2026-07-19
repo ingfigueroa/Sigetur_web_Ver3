@@ -12,17 +12,23 @@ import { obrassocialesService } from "/src/services/obrassociales.service";
 
 import MdlListarPrestaciones from "../prestaciones/mdllistarprestaciones";
 import { prestacionesService } from "../../services/prestaciones.service";
+import { turnosService } from "/src/services/turnos.service";
+
 import MdlMensaje from "../modales/MdlMensaje";
 
 import { formatearFecha} from "../utils/fecha";
 
 import CobrarModal from "../cobros/cobrarmodal"; 
 
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
-const mdlturnoregistrarcobro = ({ show, handleClose, fila }) => {
+
+const mdlregistrarprestaciones = ({ show, handleClose, fila }) => {
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
+
+  console.log(fila)
 
 const [vieneDe, setVieneDe] = useState("");
 
@@ -41,13 +47,15 @@ const [vieneDe, setVieneDe] = useState("");
 
   // Estado para almacenar el valor del porcentaje de entrada
 
-  const [result, setResult] = useState(0);
-
-  const [resultAcumulado, setResultAcumulado] = useState(0); // Estado para almacenar el resultado del cálculo
-
-  const [totalacobrarpaciente, setTotalacobrarpaciente] = useState(0); 
-  const [subTotal, setSubTotal] = useState(0); 
+   const [totalacobrarpaciente, setTotalacobrarpaciente] = useState(0); 
+  
+    const [totalacobrarObraSocial, setTotalacobrarObraSocial] = useState(0); 
+  const [totalACobrar, setTotalACobrar] = useState(0); 
+  const [totalParcial, setTotalParcial] = useState(0); 
  // const [subTotalFormateado, setSubTotalFormateado] = useState(0); 
+
+
+  const [subTotal, setSubTotal] = useState(0); 
 
    const [descuentoCoseguro, setDescuentoCoseguro] = useState(0);
 
@@ -58,9 +66,7 @@ const [vieneDe, setVieneDe] = useState("");
 
   //const totalConDescuento = resultAcumulado - (resultAcumulado * descuentoCoseguro / 100);
 
-  const acobrarobrasocial = costo - ((costo * descuentoCoseguro) / 100);
-
-  const acobrarpaciente = costo - acobrarobrasocial;
+  
 
  
 
@@ -87,6 +93,22 @@ const [vieneDe, setVieneDe] = useState("");
 
   const [prestaciones, setPrestaciones] = useState([]);
 
+    const acobrarobrasocial = costo - ((costo * descuentoCoseguro) / 100);
+
+  const acobrarpaciente = costo - acobrarobrasocial;
+
+    const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
+      const [modalTitulo, setModalTitulo] = useState("REGISTRAR PRESTACIONES");
+      const [modalCuerpo, setModalCuerpo] = useState("¿Desea registrar las prestaciones elegidas?");
+
+     const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+  };
+
     const openMdlListarPrestaciones = () => {
     setModalListarPrestaciones(true);
   };
@@ -107,8 +129,6 @@ const [vieneDe, setVieneDe] = useState("");
   };
 
   const openMdlCobrar = () => {
-    
-
     
     setShowCobro(true);
     
@@ -193,7 +213,7 @@ const [vieneDe, setVieneDe] = useState("");
         acumuladoParcial = Number(nuevoValor)
     }
 
-    console.log(acumuladoParcial)
+   
     setResultAcumulado(acumuladoParcial);
     
     const totalacobrar = parseFloat(acumuladoParcial).toLocaleString("es-AR", {
@@ -367,27 +387,46 @@ const [vieneDe, setVieneDe] = useState("");
     limpiarAgregarPrestacion();
   };
 
+
   
+    async function RegistrarPrestaciones() {
+  
+      console.log(prestaciones)
+
+      await turnosService.postTurnoRegistrarPrestaciones(
+            fila.idTurno, 
+            UserID,
+            montoTotalaCobrar,
+            prestaciones
+      );
+  
+      setModalMensaje("Se registraron las prestaciones.");
+      setShowMDLMensaje(true);
+      handleClose();
+    }
+
+  
+    const mdlSiNo = async (respuesta) => {
+     
+      if (respuesta) {
+          console.log("pasa por mdsino - si")
+          RegistrarPrestaciones()
+      }
+    };
+
 
   useEffect(() => {
     setOSElegida(fila.os);
   }, []);
 
-  useEffect(() => {
 
-    if (fila.os == 'PARTICULAR'){
-        setVieneDe("P")
-    }else {
-        setVieneDe("O")
-    }
-      
-    ;
-  }, []);
 
 useEffect(() => {
     costoRef.current?.focus();
     costoRef.current?.select(); // Selecciona todo el contenido
 }, []);
+
+
   return (
     <>
       <Modal show={show} onHide={handleClose} size="lg" >
@@ -661,31 +700,7 @@ useEffect(() => {
                 <Table bordered hover size="sm" style={{ fontSize: "12px" }}>
                   <thead>
                     <tr className="personalizarfila h-50">
-                      {/* <th
-                        style={{ backgroundColor: "rgb(136, 161, 184)" }}
-                        key="101"
-                      >
-                        Capítulo
-                      </th>
-                      <th
-                        style={{
-                          backgroundColor: "rgb(136, 161, 184)",
-                          textAlign: "center",
-                        }}
-                        key="100"
-                      >
-                        Código
-                      </th>
-                      <th
-                        style={{
-                          backgroundColor: "rgb(136, 161, 184)",
-                          textAlign: "center",
-                        }}
-                        key="102"
-                      >
-                        Subcódigo
-                      </th> */}
-
+                    
                       <th
                         style={{ backgroundColor: "rgb(136, 161, 184)" }}
                         key="103"
@@ -810,14 +825,24 @@ useEffect(() => {
            
             </div>
           </div>
+         
         </Modal.Body>
         <Modal.Footer>
-          <Button
+         
+        {/*   <Button
             variant="success"
             onClick={openMdlCobrar}
             disabled={resultAcumulado <= 0}
           >
-            Cobrar turno
+            Registrar prestaciones y cobrar
+          </Button> */}
+
+           <Button
+            variant="success"
+            onClick={openMdlEstaSeguro}
+            disabled={totalACobrar <= 0}
+          >
+            Registrar PRESTACIONES
           </Button>
           <Button className="" variant="primary" onClick={limpiar}>
             Limpiar
@@ -837,17 +862,7 @@ useEffect(() => {
         />
       )}
 
-       {showCobro && (
-          <CobrarModal
-              show={openMdlCobrar}
-              handleClose={closeMdlCobrar}
-              totalacobrar={resultAcumulado}
-              totalacobrarpaciente = {totalacobrarpaciente}
-              prestaciones={prestaciones}
-              fila={fila}
-              vienede={vieneDe}
-          />
-       )}
+      
 
              {mdlModalMostarMensaje && (
                <MdlMensaje
@@ -856,8 +871,18 @@ useEffect(() => {
                  modalMessage={mdlMensaje}
                />
              )}
+
+               {showMDLEstaSeguro && (
+                     <MDLEstaSeguro
+                       show={openMdlEstaSeguro}
+                       handleClose={closeMdlEstaSeguro}
+                       mensajetitulo={modalTitulo}
+                       mensajecuerpo={modalCuerpo}
+                       enviaralpadre={mdlSiNo}
+                     />
+                   )}
     </>
   );
 };
 
-export default mdlturnoregistrarcobro;
+export default mdlregistrarprestaciones;

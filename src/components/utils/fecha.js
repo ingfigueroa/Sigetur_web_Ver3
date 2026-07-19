@@ -93,18 +93,39 @@ export const formatearFechaLarga = (fecha, mostrarAno = false) => {
 
   return capitalizarPrimera(fechaLarga);
 };
-export const formatearFechaLargaConelAnio = (fecha, mostrarAno = true) => {
- 
-  //llega una fecha con formato dd-mm-yyyy
+export const formatearFechaLargaConelAnio = (
+  fecha,
+  mostrarAno = true
+) => {
 
   if (!fecha) return "";
 
-  const [dia, mes, anio] = fecha.split("-");
+  let fechaObj;
 
-  const fechaObj = new Date(anio, mes - 1, dia);
+  // Caso 1: viene un objeto Date
+  if (fecha instanceof Date) {
+    fechaObj = fecha;
+  }
 
-  // sumar 1 día
-  fechaObj.setDate(fechaObj.getDate() + 1);
+  // Caso 2: viene formato YYYY-MM-DD
+  else if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    fechaObj = new Date(fecha + "T00:00:00");
+  }
+
+  // Caso 3: viene formato DD-MM-YYYY
+  else if (/^\d{2}-\d{2}-\d{4}$/.test(fecha)) {
+    const [dia, mes, anio] = fecha.split("-");
+    fechaObj = new Date(anio, mes - 1, dia);
+  }
+
+  // Caso 4: cualquier string de fecha válido
+  else {
+    fechaObj = new Date(fecha);
+  }
+
+  if (isNaN(fechaObj.getTime())) {
+    return "";
+  }
 
   const opciones = {
     weekday: "long",
@@ -112,7 +133,9 @@ export const formatearFechaLargaConelAnio = (fecha, mostrarAno = true) => {
     month: "long",
   };
 
-  if (mostrarAno) opciones.year = "numeric";
+  if (mostrarAno) {
+    opciones.year = "numeric";
+  }
 
   return fechaObj
     .toLocaleDateString("es-AR", opciones)
@@ -404,4 +427,22 @@ export const formatearFechaLargaConelAnio_llegafechalarga_Ver1 = (
   return fechaObj
     .toLocaleDateString("es-AR", opciones)
     .replace(",", "");
+};
+
+export const getMonday = (date) => {
+  let d;
+
+  if (typeof date === "string") {
+    const [year, month, day] = date.split("-").map(Number);
+    d = new Date(year, month - 1, day); // Fecha LOCAL
+  } else {
+    d = new Date(date);
+  }
+
+  const dayOfWeek = d.getDay();
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+  d.setDate(d.getDate() + diff);
+
+  return d;
 };
