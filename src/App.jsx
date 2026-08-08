@@ -12,7 +12,7 @@ import RegistrarClientePasoDos from "./components/registrocliente/registrarclien
 import RegistrarClientePasoTres from "./components/registrocliente/registrarclientepasotres";
 import EmailResetPassword from "./components/login/ingresaremailresetpassword"
 import ResetPassword from "./components/login/resetpassword"
-import PrivateRoute from "./components/login/PrivateRoute";
+import PrivateRoute from "./components/login/privateroute";
 
 
 function App() {
