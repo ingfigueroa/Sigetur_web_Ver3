@@ -10,7 +10,7 @@ import Sigetur from "./components/sigetur";
 
 import RegistrarClientePasoDos from "./components/registrocliente/registrarclientepasodos";
 import RegistrarClientePasoTres from "./components/registrocliente/registrarclientepasotres";
-import EmailResetPassword from "./components/login/ingresarEmailResetPassword"
+import EmailResetPassword from "./components/login/ingresaremailresetpassword"
 import ResetPassword from "./components/login/resetpassword"
 import PrivateRoute from "./components/login/PrivateRoute";
 
