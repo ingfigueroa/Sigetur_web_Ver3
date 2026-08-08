@@ -115,6 +115,7 @@ const closeMdlMensaje = () => {
 
   const closeMdlRegistrarPaciente = () => {
     setModalRegistrarPaciente(false);
+    Buscar(1);
   };
 
   const openMdlEditarPaciente = (item) => {
@@ -237,6 +238,8 @@ const closeMdlMensaje = () => {
   useEffect(() => {
     document.title = "Si.Ge.Tur. - Pacientes";
   }, []);
+
+
   return (
     <>
       <div
@@ -247,12 +250,29 @@ const closeMdlMensaje = () => {
           backgroundColor: "white",
         }}
       >
-        <form>
-          <div className="acomodarencabezadopizaturnos">
-            <div style={{ width: "30%", textAlign: "left" }}>
+        
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+
+          }}
+          >
+           
+
+            <div  style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}>
               <button
-                title="Registrar nuevo paciente"
+                title="Registrar nuevo profesional"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                
                 onClick={(event) => {
                   event.preventDefault();
                   openMdlRegistrarPaciente();
@@ -260,16 +280,58 @@ const closeMdlMensaje = () => {
               >
                 <i class="fa-solid fa-plus"></i>
               </button>
+
               <button
                 title="Imprimir"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                style={{ display: "none" }}
                 onClick={() => Imprimir()}
               >
                 <i class="fa fa-print"></i>
               </button>
+
+               <Button
+
+              variant="success"
+              className="btn"
+              size="sm"
+                            style={{
+                              marginLeft: "auto",
+                             
+                              width: "10%",
+                              textAlign: "center",
+                              
+                              
+                            }}
+                            
+                           
+                           onClick={() => Buscar(1)}
+                          >
+                            BUSCAR
+                          </Button>
+                           <Button
+                            title="Limpiar parámetros"
+                            variant="primary"
+                            className="btn "
+                            size="sm"
+                            style={{
+                              
+                              
+                              textAlign: "center",
+                             
+                            }}
+                            onClick={(event) => {
+                              
+                              event.preventDefault();
+                              Limpiar();
+
+                            }}
+                          >
+                            <i className="fa-solid fa-broom"></i>
+                          </Button> 
             </div>
           </div>
-
+<hr />
           <div className="acomodarencabezadopizaturnos">
             <InputGroup className="mb-3">
               <InputGroup.Text
@@ -289,7 +351,7 @@ const closeMdlMensaje = () => {
                 value={Apellido}
                 autoFocus
               />
-              <Button
+             {/*  <Button
                 title="Buscar por paciente"
                 variant="outline-secondary"
                 id="button-addon1"
@@ -298,7 +360,7 @@ const closeMdlMensaje = () => {
                 onClick={() => Buscar(1)}
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+              </Button> */}
             </InputGroup>
             <InputGroup className="mb-3">
               <InputGroup.Text
@@ -318,7 +380,7 @@ const closeMdlMensaje = () => {
                 onChange={(e) => SetDNI(e.target.value)}
                 value={VarDNI}
               />
-              <Button
+           {/*    <Button
                 title="Buscar por DNI"
                 variant="outline-secondary"
                 id="button-addon1"
@@ -330,10 +392,10 @@ const closeMdlMensaje = () => {
               </Button>
               <Button variant="primary" onClick={() => Limpiar()}>
                 Limpiar
-              </Button>
+              </Button> */}
             </InputGroup>
           </div>
-        </form>
+       
 
         <div className="">
           <Table bordered hover>
@@ -538,6 +600,8 @@ const closeMdlMensaje = () => {
         <MdlAltaPaciente
           show={openMdlRegistrarPaciente}
           handleClose={closeMdlRegistrarPaciente}
+          idcliente={ClienteID}
+          idusuario={UserID}
         />
       )}
 

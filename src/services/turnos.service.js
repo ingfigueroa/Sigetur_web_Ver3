@@ -26,6 +26,8 @@ const urlResourcepostTurnoCobrar = config.urlResourcepostTurnoCobrar
 const urlResourcepostTurnoRegistrarPrestaciones = config.urlResourcepostTurnoRegistrarPrestaciones
 const urlResourceTurnoIDPrestaciones = config.urlResourceTurnoIDPrestaciones
 
+const urlResourceTurnosProfesionalDiaAtiende = config.urlResourceTurnosProfesionalDiaAtiende;
+
 const urlResourceTurnoIDDetalle = config.urlResourceTurnoIDDetalle
 
 async function TurnosAnularPorPedidoProfesional(idcliente, idprofesional, observaciones, fecha, idusuario) {
@@ -101,6 +103,8 @@ async function TurnosPorProfesionalDiaCancelados(idcliente, idprofesional, fecha
  
   return resp.data;
 }
+
+
 
 
 async function TurnoID(idturno) {
@@ -340,8 +344,12 @@ async function postTurnoCobrar(
         idturno,
         idusuario,
         montoTotalaCobrar,
+        cobrarapaciente,
+        cobraraobrasocial,
         tabla_prestaciones
       ) {
+
+   
         try {
           const resp = await httpService.post(
             urlResourcepostTurnoRegistrarPrestaciones,
@@ -349,6 +357,8 @@ async function postTurnoCobrar(
               idturno,
               idusuario,
               montoTotalaCobrar,
+              cobrarapaciente,
+            cobraraobrasocial,
               tabla_prestaciones
             }
           );
@@ -398,6 +408,20 @@ async function TurnoIDDetalle(idturno) {
 
 }
 
+async function TurnosProfesionalNoAtiendeeseDia(idcliente, idprofesional, fecha) {
+
+
+  const resp = await httpService.get(urlResourceTurnosProfesionalDiaAtiende, {
+    params: {
+      idcliente,
+      idprofesional,
+      fecha
+    },
+  });
+ 
+  return resp.data;
+}
+
 
 
 export const turnosService = {
@@ -419,5 +443,6 @@ export const turnosService = {
   postTurnoCobrar,
   postTurnoRegistrarPrestaciones,
   TurnoIDPrestaciones,
-  TurnoIDDetalle
+  TurnoIDDetalle,
+  TurnosProfesionalNoAtiendeeseDia
   };

@@ -12,6 +12,8 @@ import "/src/css/sigetur.css";
 import "/src/css/pizarradeturnos.css";
 
 import { profesionalesService } from "/src/services/profesional.service";
+import { profesionesService } from "/src/services/profesiones.service.js";
+
 import MdlAltaProfesionales from "./registrarprofesional";
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 import Mdlanulartodoslosturnos from "../turnos/mdlanulartodoslosturnos";
@@ -19,25 +21,29 @@ import MdlEditarProfesionales from "./modificarprofesionales";
 import MdlTurnosLibresDelMes from "../turnos/mdlturnoslibresdelmes";
 
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+import MdlUpdateHorariosProfesional from "../profesionales/mdlupdatehorariosprofesional";
 
 import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
-import { getClienteId } from "../utils/auth";
+
 
 
 import modalDialogService from "/src/services/modalDialog.service";
 
+import { getClienteId, getUsuarioId } from "../utils/auth";
+
 function Profesionales() {
 
-  const { clientId, userId } = useContext(AuthContext); 
+
   const ClienteID = getClienteId();
+  const UserID = getUsuarioId();
   
   
   
-   const [accionConfirmada, setAccionConfirmada] = useState(null);
+  const [accionConfirmada, setAccionConfirmada] = useState(null);
 
   const [Apellido, SetApellido] = useState("");
 
-  const [VarDNI, SetDNI] = useState(null);
+  const [VarDNI, SetDNI] = useState(0);
 
   const [apeyNom, setapeyNom] = useState(null);
 
@@ -46,6 +52,7 @@ function Profesionales() {
   const [idProfesional, setIDProfesional] = useState(0);
 
   const [mdlRegistrarProfesional, setModalRegistrarProfesional] = useState(false);
+  const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
 
     const [mdlEditarProfesional, setMdlEditarProfesional] = useState(false);
 
@@ -59,7 +66,11 @@ function Profesionales() {
   const [Item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
   const [RegistrosTotal, setRegistrosTotal] = useState(0);
   const [Pagina, setPagina] = useState(1);
+   
   const [idProfesion, setIDProfesion] = useState(0);
+  
+
+   
 
     const [profesion, setProfesion] = useState("");
   const [Paginas, setPaginas] = useState([]);
@@ -70,6 +81,8 @@ function Profesionales() {
 
    const [fechaSistema, setFechaSistema] = useState("");
 
+   const [TipoProfesion, setTipoProfesion] = useState([]);
+
   const [modalTitulo, setModalTitulo] = useState();
   const [modalCuerpo, setModalCuerpo] = useState();
     const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
@@ -78,12 +91,27 @@ function Profesionales() {
   const [mdlTurnosLIbresDelMes, setModalTurnosLIbresDelMes] = useState(false)
   const [CantidaddeRegistros, setCantidaddeRegistros] = useState(10);
 
+  const [mdlUpdateHorariosProfesional, setMdlUpdateHorariosProfesional] = useState(false);
+
   const closeMdlListaEspera = () => {
     setModalListaEspera(false);
   };
 
   const openMdlListaEspera = () => {
     setModalListaEspera(true);
+  };
+
+  
+  const openMdlUpdateHorariosProfesionales = (item) => {
+     setIDProfesional(item.ID);
+    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+    setapeyNom(apyNom.trim()); 
+    setProfesion(item.especialidad)
+    setMdlUpdateHorariosProfesional(true);
+  };
+
+   const closeMdlUpdateHorariosProfesionales = () => {
+    setMdlUpdateHorariosProfesional(false);
   };
 
   
@@ -108,12 +136,7 @@ function Profesionales() {
     setModalTurnosLIbresDelMes(true);
   };
 
-  const openMdlHoraProfe = (item) => {
-    setIDProfesional(item.ID);
-    const apyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
-    setapeyNom(apyNom.trim()); // Eliminar espacios en blanco innecesarios
-    setModalHoraProfe(true);
-  };
+  
 
 
   const mdlSiNo = async (respuesta) => {
@@ -124,7 +147,8 @@ function Profesionales() {
             idProfesional,
             observacionesBaja,
 
-            idusuario
+            idusuario,
+            ClienteID
           );
           
         }
@@ -135,7 +159,15 @@ function Profesionales() {
     };
   
 
-
+const openMdlHoraProfe = (item) => {
+    
+    setIDProfesional(item.ID);
+    const apeyNom = `${item.Apellido || ""}, ${item.Nombres || ""}`; // Concatenar manejando valores nulos
+   
+    setapeyNom(apeyNom.trim()); // Eliminar espacios en blanco innecesarios
+    setProfesion(item.especialidad)
+    setModalHoraProfe(true);
+  };
 
   const closeMdlHoraProfe = () => {
     setModalHoraProfe(false);
@@ -152,6 +184,7 @@ function Profesionales() {
   };
 
   const openMdlEditarProfesional = (item) => {
+    
     setIDProfesional(item.ID)
     setMdlEditarProfesional(true);
   };
@@ -172,10 +205,9 @@ function Profesionales() {
       _pagina = Pagina;
     }
     
-    console.log(ClienteID)
-
+  
     modalDialogService.BloquearPantalla(true);
-    const data = await profesionalesService.Buscar(ClienteID, Apellido, VarDNI, idProfesion,  _pagina, CantidaddeRegistros);
+    const data = await profesionalesService.Buscar(ClienteID, Apellido, VarDNI, idTipoProfesionSelected,  _pagina, CantidaddeRegistros);
     modalDialogService.BloquearPantalla(false);
 
      setItems(data.registros);
@@ -193,13 +225,22 @@ function Profesionales() {
     setPaginas(arrPaginas);
   }
 
-
-  async function Limpiar(params) {
-      SetApellido("")
-      SetDNI("")
-      setItems([])
+  
+ function LimpiarNoProfesion() {
+    SetApellido("");
+    SetDNI("");
+    setItems([]);
+    
+    
   }
 
+ async function Limpiar() {
+    SetApellido("");
+    SetDNI(0);
+    setIDProfesion("Seleccionar");
+    setIdTipoProfesionSelected(""); // <-- vuelve al option "Seleccionar"
+    setItems([]);
+}
   function Imprimir() {
     modalDialogService.Alert("En desarrollo...");
   }
@@ -245,6 +286,20 @@ const anio1 = ultimoDiaMes.getFullYear();
     setFechaFinal(fechaFormateada);
   }, []); 
 
+    useEffect(() => {
+      async function fetchData() {
+        try {
+          const data = await profesionesService.Buscar(); // Llama a la función asíncrona
+          
+          setTipoProfesion(data); // Establece el estado con los datos obtenidos
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+  
+      fetchData(); // Ejecuta la función para obtener los datos
+    }, []);
+
 
   return (
     <>
@@ -257,13 +312,28 @@ const anio1 = ultimoDiaMes.getFullYear();
         }}
       >
         <form>
-          <div className="acomodarencabezadopizaturnos">
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+
+          }}
+          >
            
 
-            <div style={{ width: "30%", textAlign: "left" }}>
+            <div  style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}>
               <button
                 title="Registrar nuevo profesional"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                
                 onClick={(event) => {
                   event.preventDefault();
                   openMdlRegistrarProfe();
@@ -275,10 +345,51 @@ const anio1 = ultimoDiaMes.getFullYear();
               <button
                 title="Imprimir"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                style={{ display: "none" }}
                 onClick={() => Imprimir()}
               >
                 <i class="fa fa-print"></i>
               </button>
+
+               <Button
+
+              variant="success"
+              className="btn"
+              size="sm"
+                            style={{
+                              marginLeft: "auto",
+                             
+                              width: "10%",
+                              textAlign: "center",
+                              
+                              
+                            }}
+                            
+                           
+                           onClick={() => Buscar(1)}
+                          >
+                            BUSCAR
+                          </Button>
+                           <Button
+                            title="Limpiar parámetros"
+                            variant="primary"
+                            className="btn "
+                            size="sm"
+                            style={{
+                              
+                              
+                              textAlign: "center",
+                             
+                            }}
+                            onClick={(event) => {
+                              
+                              event.preventDefault();
+                              Limpiar();
+
+                            }}
+                          >
+                            <i className="fa-solid fa-broom"></i>
+                          </Button> 
             </div>
           </div>
          
@@ -304,7 +415,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 autoFocus
               />
 
-              <Button
+{/*               <Button
                 title="Buscar por profesional"
                 variant="outline-secondary"
                 id="button-addon1"
@@ -314,7 +425,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 onClick={() => Buscar(1)}
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+              </Button> */}
             </InputGroup>
             <InputGroup className="mb-3">
               <InputGroup.Text
@@ -334,7 +445,39 @@ const anio1 = ultimoDiaMes.getFullYear();
                 onChange={(e) => SetDNI(e.target.value)}
                 value={VarDNI}
               />
-              <Button
+
+               <InputGroup.Text
+                         style={{
+                  backgroundColor: "#679bb9",
+                  color: "white",
+                  height: "38px",
+                }}
+                        >
+                          Profesión
+                        </InputGroup.Text>
+                        <select
+                          style={{
+                  backgroundColor: "white",
+                  color: "black",
+                  height: "38px",
+                }}
+                          onChange={(e) =>{
+                            const idprofesion = Number(e.target.value)
+                            setIdTipoProfesionSelected(idprofesion)
+                            LimpiarNoProfesion();
+                          }}
+                          value={idTipoProfesionSelected}
+                        >
+                          <option value="">
+                            Seleccionar
+                          </option>
+                          {TipoProfesion.map((profesion) => (
+                            <option key={profesion.ID} value={profesion.ID}>
+                              {profesion.descripcion}
+                            </option>
+                          ))}
+                        </select>
+              {/* <Button
                 title="Buscar por DNI"
                 variant="outline-secondary"
                 id="button-addon1"
@@ -343,11 +486,11 @@ const anio1 = ultimoDiaMes.getFullYear();
                 onClick={() => Buscar(1)}
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+              </Button> */}
               
-                <Button variant="primary" onClick={() => Limpiar()}>
+             {/*    <Button variant="primary" onClick={() => Limpiar()}>
                   Limpiar
-                </Button>
+                </Button> */}
                 
              
             </InputGroup>
@@ -497,6 +640,13 @@ const anio1 = ultimoDiaMes.getFullYear();
                       >
                        <i class="fas fa-calendar-day"></i>
                       </button>
+                       <button
+                          title="Modificar horarios del profesional"
+                          className="btn btn-sm btn-light btn-danger"
+                          onClick={() => openMdlUpdateHorariosProfesionales(Item)}
+                        >
+                          <i className="fa-solid fa-user-clock"></i>
+                        </button>
 {/*                       <button
                         title="Dashboard"
                         className="btn btn-sm btn-light btn-danger"
@@ -590,6 +740,7 @@ const anio1 = ultimoDiaMes.getFullYear();
           idprofesional={idProfesional}
           fecha={fechaSistema}
           profesional={apeyNom}
+          idcliente={ClienteID}
         />
       )}
 
@@ -613,7 +764,7 @@ const anio1 = ultimoDiaMes.getFullYear();
           handleClose={closeMdlAnularTodosLosTurnos}
           fecha={Fecha}
           idprofesional={idProfesional}
-          idusuario={idusuario}
+          idusuario={UserID}
           apeynom={apeyNom}
           vienede="profesionales"
           observaciones="POR PEDIDO DEL PROFESIONAL, SE CANCELAN LOS TURNOS DE ESTE DÍA."
@@ -629,6 +780,18 @@ const anio1 = ultimoDiaMes.getFullYear();
           enviaralpadre={mdlSiNo}
         />
       )}
+
+        {mdlUpdateHorariosProfesional && (
+              <MdlUpdateHorariosProfesional
+                show={openMdlUpdateHorariosProfesionales}
+                handleClose={closeMdlUpdateHorariosProfesionales}
+                idprofesional={idProfesional}
+                profesion={profesion}
+                profesional={apeyNom}
+                idcliente={ClienteID}
+                idusuario={UserID}
+              />
+            )}
     </>
   );
 }

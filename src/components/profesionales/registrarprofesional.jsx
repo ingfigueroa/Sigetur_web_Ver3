@@ -16,35 +16,39 @@ import { localidadesService } from "/src/services/localidades.service.js";
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 import AbrirMDLMensaje from "../modales/mdlMensaje";
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import "/src/css/registrarprofesional.css";
-import { AuthContext } from "/src/context/AuthContext"; // 👈 IMPORTANTE
-import { getClienteId, getUsuarioId } from "../utils/auth";
 
-const registrarprofesional = ({ show, handleClose }) => {
 
-   const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
-      "HISTORIA CLINICA - DIAGNOSTICO- IMPRESION CLINICA",
-    );
+const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
+
+ const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
+    "¿Desea grabar un nuevo profesional?",
+  );
+
+  const [mdlMensajeTitulo, setModalMensajeTitulo] = useState(
+    "REGISTRAR PROFESIONAL",
+  );
   
     const [showMDLMensaje, setShowMDLMensaje] = useState("");
     const [mensaje, setMensaje] = useState("");
 
-    const { clientId, userId } = useContext(AuthContext); 
-    const ClienteID = getClienteId();
-    const UserID = getUsuarioId();
-  
+  const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
+
+    const [modalTitulo, setModalTitulo] = useState();
+    const [modalCuerpo, setModalCuerpo] = useState();
 
   const [item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
 
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
   const [TipoDocumento, setTipoDocumento] = useState([]);
-  const [NroDocumento, setNroDocumento] = useState([]);
+  const [NroDocumento, setNroDocumento] = useState(0);
   const [EMail, setEMail] = useState("");
 
   const [mdlAltaExitosa, setMdlAltaExitosa] = useState(null);
@@ -55,11 +59,15 @@ const registrarprofesional = ({ show, handleClose }) => {
   const [TipoSexo, setTipoSexo] = useState([]);
   const [MatriculaNro, setMatriculaNro] = useState("");
   const [TipoProfesion, setTipoProfesion] = useState([]);
+  const [provincias, setProvincias] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
   const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
   const [idusuario, setIDusuario] = useState(UserID);
   const [idprofesional, setIDProfesional] = useState("0");
+  const [idprovincia, setIDProvincia] = useState(0);
+  const [idlocalidad, setIDLocalidad] = useState(0);
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -67,7 +75,101 @@ const registrarprofesional = ({ show, handleClose }) => {
   const [showModalAlta, setShowModalAlta] = useState(false);
   const [nuevo, setNuevo] = useState("");
 
+  
+ function validar() {
 
+    
+     if (!TipoDocumentoSelected) {
+        showModalMessage("Debe seleccionar un tipo de documento");
+        return false;
+      }
+
+      if (typeof NroDocumento !== "string" || !NroDocumento.trim()) {
+        showModalMessage(
+          "El campo 'Número de Documento' es obligatorio y debe ser un texto válido"
+        );
+        return false;
+      }
+
+      if (!/^\d{7,8}$/.test(NroDocumento)) {
+        showModalMessage("El DNI debe contener entre 7 y 8 dígitos");
+        return false;
+      }
+
+      if (!idTipoSexoSelected) {
+        showModalMessage("Debe seleccionar un sexo");
+        return false;
+      }
+
+      if (!Apellido.trim()) {
+        showModalMessage("El campo 'Apellido' es obligatorio");
+        return false;
+      }
+
+      if (!Nombres.trim()) {
+        showModalMessage("El campo 'Nombres' es obligatorio");
+        return false;
+      }
+
+      if (!validarEmail(EMail)) {
+        showModalMessage("El correo electrónico no es válido");
+        return false;
+      }
+
+    if (!CuitCuil.trim()) {
+      showModalMessage("El campo 'CUIT/CUIL' es obligatorio");
+      return false; 
+    } 
+      if (!idTipoProfesionSelected > 0) {
+      showModalMessage("Debe seleccionar un tipo de profesión");
+      return false;
+    }
+    if (!MatriculaNro.trim()) {
+      showModalMessage("El campo 'Número de Matrícula' es obligatorio");
+      return false;
+    }
+  
+
+      if (!TECelular.trim()) {
+        showModalMessage("El campo 'Teléfono Celular' es obligatorio");
+        return false;
+      }
+
+
+
+      if (!idprovincia > 0) {
+        showModalMessage("Debe seleccionar una provincia");
+        return false;
+      }
+
+      if (!idlocalidad > 0) {
+        showModalMessage("Debe seleccionar una localidad");
+        return false;
+      }
+
+
+      return true;
+    }
+
+ const openMdlEstaSeguro = () => {
+ 
+      if (!validar()){
+          
+         console.log("paso por aca profesional alta")
+          return;
+      }
+
+    setModalTitulo("REGISTRAR PROFESIONAL")
+    setModalCuerpo("¿Está seguro de registrar un profesional.?")
+
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+   
+
+  };
   const openMdlMensaje = () => {
     setShowMDLMensaje(true);
   };
@@ -107,6 +209,105 @@ const registrarprofesional = ({ show, handleClose }) => {
   const validarEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+  };
+
+   async function Grabar() {
+    // agregar o modificar
+    //validaciones
+    // Validaciones
+        
+
+
+    try {
+
+      
+
+      const response = await profesionalesService.GrabarAlta(
+        ClienteID,
+        idprofesional,
+        Nombres,
+        Apellido,
+        TipoDocumentoSelected,
+        NroDocumento,
+        EMail,
+        FechaNacimiento,
+        TECelular,
+        idTipoSexoSelected,
+        CuitCuil,
+        MatriculaNro,
+        idTipoProfesionSelected,
+        userId,
+        idprovincia,
+        idlocalidad,
+        nuevo
+      );
+  
+      if (response.data){
+              setMensaje(
+                "Se creó el profesional.\n\n" +
+                "Para activar la cuenta del profesional siga estos pasos:\n\n" +
+                "1.- Tiene que ir a LOGIN.\n\n" +
+                "2.- Olvidé mi contraseña.\n\n" +
+                "3.- Resetear la password usando el mail que ingresó."
+            );
+
+            openMdlMensaje();
+            handleClose()
+      }else{
+         setMensaje("No se pudo crear el profesional");
+          openMdlMensaje();
+      }
+      
+    } catch (error) {
+      /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
+
+      console.log(error)
+      return;
+    }
+  }
+
+  const cargarLocalidades = async (idprovincia) => {
+    console.log(idprovincia)
+  try {
+
+ if (idprovincia > 0) {
+     
+    const response = await localidadesService.Buscar(idprovincia);
+    setLocalidades(response);
+
+    }
+  } catch (error) {
+    //console.error("Error al cargar localidades:", error);
+    setLocalidades([]);
+  }
+};
+
+  const mdlSiNo = async (respuesta) => {
+    closeMdlEstaSeguro(); // cerramos primero el modal de confirmación
+
+    if (respuesta) {
+      try {
+         
+       const bandera = await Grabar(); // ejecutamos la función de grabar
+        
+        if (bandera){
+        setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
+        openMdlMensaje(); // abrimos el modal de mensaje
+        handleClose();
+        }else{
+           setMensaje("No se grabó el NUEVO PACIENTE."); // mensaje a mostrar
+        openMdlMensaje(); // abrimos el modal de mensaje
+        handleClose();
+        }
+       
+      } catch (error) {
+        setMensaje("Ocurrió un error al grabar");
+        openMdlMensaje();
+      }
+    } else {
+      setMensaje("Usuario canceló la operación");
+      openMdlMensaje(); // opcional, si querés mostrar que canceló
+    }
   };
 
   /*Carga Tipo de sexo*/
@@ -156,7 +357,8 @@ const registrarprofesional = ({ show, handleClose }) => {
     async function fetchData() {
       try {
         const data = await provinciasService.Buscar(); // Llama a la función asíncrona
-        setProvinciaSeleccionada(data); // Establece el estado con los datos obtenidos
+        
+        setProvincias(data); // Establece el estado con los datos obtenidos
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -166,116 +368,27 @@ const registrarprofesional = ({ show, handleClose }) => {
   }, []);
 
   /* Carga provincias*/
-  useEffect(() => {
-    if (provinciaSeleccionada > 0) {
+ /*  useEffect(() => {
+    if (idprovincia > 0) {
       const fetchLocalidades = async () => {
-        const data = await localidadesService.Buscar(provinciaSeleccionada); // Función para obtener ciudades basadas en la provincia seleccionada
+        const data = await localidadesService.Buscar(idprovincia); // Función para obtener ciudades basadas en la provincia seleccionada
         setLocalidades(data);
       };
       fetchLocalidades();
     }
-  }, [provinciaSeleccionada]);
+  }, [provinciaSeleccionada]); */
 
-  async function Grabar() {
-    // agregar o modificar
-    //validaciones
-    // Validaciones
-        
-
-    if (!TipoDocumentoSelected) {
-      showModalMessage("Debe seleccionar un tipo de documento");
-      return;
-    } else if (typeof NroDocumento !== "string" || !NroDocumento.trim()) {
-      showModalMessage(
-        "El campo 'Número de Documento' es obligatorio y debe ser un texto válido"
-      );
-      return;
-    } else if (!idTipoSexoSelected) {
-      showModalMessage("Debe seleccionar un sexo");
-      return;
-    } else if (!Apellido.trim()) {
-      showModalMessage("El campo 'Apellido' es obligatorio");
-      return;
-    } else if (!Nombres.trim()) {
-      showModalMessage("El campo 'Nombres' es obligatorio");
-      return;
-    } else if (!NroDocumento.trim()) {
-      showModalMessage("El campo 'Número de Documento' es obligatorio");
-      return;
-    } else if (!validarEmail(EMail)) {
-      showModalMessage("El correo electrónico no es válido");
-      return;
-    } else if (!FechaNacimiento) {
-      showModalMessage("El campo 'Fecha de Nacimiento' es obligatorio");
-      return;
-    } else if (!TECelular.trim()) {
-      showModalMessage("El campo 'Teléfono Celular' es obligatorio");
-      return;
-    } else if (!CuitCuil.trim()) {
-      showModalMessage("El campo 'CUIT/CUIL' es obligatorio");
-      return;
-    } else if (!MatriculaNro.trim()) {
-      showModalMessage("El campo 'Número de Matrícula' es obligatorio");
-      return;
-    } else if (!idTipoProfesionSelected) {
-      showModalMessage("Debe seleccionar un tipo de profesión");
-      return;
-    }
-
-    try {
-
-      
-
-      const response = await profesionalesService.GrabarAlta(
-        ClienteID,
-        idprofesional,
-        Nombres,
-        Apellido,
-        TipoDocumentoSelected,
-        NroDocumento,
-        EMail,
-        FechaNacimiento,
-        TECelular,
-        idTipoSexoSelected,
-        CuitCuil,
-        MatriculaNro,
-        idTipoProfesionSelected,
-        userId,
-        nuevo
-      );
-  
-      if (response.data){
-              setMensaje(
-                "Se creó el profesional.\n\n" +
-                "Para activar la cuenta del profesional siga estos pasos:\n\n" +
-                "1.- Tiene que ir a LOGIN.\n\n" +
-                "2.- Olvidé mi contraseña.\n\n" +
-                "3.- Resetear la password usando el mail que ingresó."
-            );
-
-            openMdlMensaje();
-            handleClose()
-      }else{
-         setMensaje("No se pudo crear el profesional");
-          openMdlMensaje();
-      }
-      
-    } catch (error) {
-      /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
-
-      console.log(error)
-      return;
-    }
-  }
+ 
 
   return (
     <>
       <Modal show={show} onHide={handleClose} size="xl">
         <Modal.Header
           closeButton
-          style={{ backgroundColor: "#0277bd", color: "white" }}
+          style={{  color:"white",
+            backgroundColor: "#198754", }}
         >
-          <Modal.Title>DAR DE ALTA UN PROFESIONAL</Modal.Title>
+          <Modal.Title>REGISTRAR UN PROFESIONAL</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "100%", background: "white" }}>
           <div
@@ -301,6 +414,7 @@ const registrarprofesional = ({ show, handleClose }) => {
                   <select
                     onChange={(e) => setTipoDocumentoSelected(e.target.value)}
                     value={TipoDocumentoSelected}
+                    style={{ width: "30%"}}
                   >
                     <option value="" disabled>
                       Seleccionar
@@ -331,20 +445,13 @@ const registrarprofesional = ({ show, handleClose }) => {
                     }}
                     value={NroDocumento}
                   />
-                  <Button
-                    variant="outline-secondary"
-                    id="button-addon1"
-                    color="white"
-                    disabled={isDisabled}
-                  >
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </Button>
-                  <InputGroup.Text
+                 <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Sexo
                   </InputGroup.Text>
                   <select
+                  style={{ width: "15%"}}
                     onChange={(e) => setIDTipoSexoSelected(e.target.value)}
                     value={idTipoSexoSelected}
                   >
@@ -359,12 +466,14 @@ const registrarprofesional = ({ show, handleClose }) => {
                   </select>
                 </InputGroup>
                 <InputGroup className="mb-3">
+                    
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Apellido
                   </InputGroup.Text>
                   <Form.Control
+                  style={{ width: "18%"}}
                     placeholder="Ingresar apellido"
                     aria-label="Ingresar apellido"
                     aria-describedby="basic-addon2"
@@ -379,6 +488,7 @@ const registrarprofesional = ({ show, handleClose }) => {
                     Nombres
                   </InputGroup.Text>
                   <Form.Control
+                  style={{ width: "18%"}}
                     placeholder="Ingresar nombres"
                     aria-label="Ingresar nombres"
                     aria-describedby="basic-addon2"
@@ -402,12 +512,14 @@ const registrarprofesional = ({ show, handleClose }) => {
                 </InputGroup>
 
                 <InputGroup className="mb-3">
+                 
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Correo electrónico
                   </InputGroup.Text>
                   <Form.Control
+                    style={{ width: "40%"}}
                     placeholder="Ingresar correo electrónico"
                     aria-label="Ingresar correo electrónico"
                     aria-describedby="basic-addon2"
@@ -427,6 +539,7 @@ const registrarprofesional = ({ show, handleClose }) => {
                     Celular
                   </InputGroup.Text>
                   <Form.Control
+                  style={{ width: "15%"}}
                     placeholder="Ingresar número de celular"
                     aria-label="Ingresar número de celular"
                     aria-describedby="basic-addon2"
@@ -440,7 +553,11 @@ const registrarprofesional = ({ show, handleClose }) => {
                     }}
                     value={TECelular}
                   />
-                  <InputGroup.Text
+                 
+                </InputGroup>
+                <InputGroup className="mb-3"></InputGroup>
+                <InputGroup className="mb-3">
+                 <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     CUIT/CUIL
@@ -459,16 +576,13 @@ const registrarprofesional = ({ show, handleClose }) => {
                     }}
                     value={CuitCuil}
                   />
-                </InputGroup>
-                <InputGroup className="mb-3"></InputGroup>
-                <InputGroup className="mb-3">
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Profesión
                   </InputGroup.Text>
                   <select
-                    style={{ width: "60%" }}
+                    style={{ width: "40%" }}
                     onChange={(e) => {
                       setIdTipoProfesionSelected(e.target.value);
                      
@@ -498,9 +612,64 @@ const registrarprofesional = ({ show, handleClose }) => {
                     value={MatriculaNro}
                   />
                 </InputGroup>
+
+              <InputGroup className="mb-3">
+                <InputGroup.Text
+                  style={{ backgroundColor: "#679bb9", color: "white" }}
+                >
+                  Provincia que reside
+                </InputGroup.Text>
+
+                <select
+                  style={{ width: "34%" }}
+                  value={idprovincia}
+                  onChange={(e) => {
+                    const idProv = e.target.value;
+
+                    setIDProvincia(idProv);
+                    setIDLocalidad("");
+                    setLocalidades([]);
+
+                    // Próximo paso:
+                    cargarLocalidades(idProv);
+                  }}
+                >
+                  <option value="">Seleccionar</option>
+
+                  {provincias.map((prov) => (
+                    <option key={prov.ID} value={prov.ID}>
+                      {prov.Nombre}
+                    </option>
+                  ))}
+                </select>
+
+                <InputGroup.Text
+                  style={{ backgroundColor: "#679bb9", color: "white" }}
+                >
+                  Localidad que reside
+                </InputGroup.Text>
+
+                <select
+                  style={{ width: "34%" }}
+                  value={idlocalidad}
+                  disabled={!idprovincia}
+                  onChange={(e) => {
+                    setIDLocalidad(e.target.value);
+                  }}
+                >
+                  <option value="">Seleccionar</option>
+
+                  {localidades.map((localidad) => (
+                    <option key={localidad.ID} value={localidad.ID}>
+                      {localidad.localidad}
+                    </option>
+                  ))}
+                </select>
+              </InputGroup>
+
               </div>
             </div>
-
+<hr />
             <div
               style={{
                 width: "100%",
@@ -510,7 +679,11 @@ const registrarprofesional = ({ show, handleClose }) => {
               }}
             >
               <ButtonGroup className="mb-2">
-                <Button variant="success" onClick={() => Grabar()}>
+                <Button
+                  variant="success"
+                  onClick={openMdlEstaSeguro}
+                  // onClick={() => Grabar() }
+                >
                   Grabar
                 </Button>
                 <Button variant="primary">Limpiar</Button>
@@ -525,25 +698,38 @@ const registrarprofesional = ({ show, handleClose }) => {
               modalMessage={modalMessage}
             />
           </div>
+          <MdlValidar
+                        show={showModal}
+                        handleClose={closeModalMessage}
+                        modalMessage={modalMessage}
+                      />
+                      <MdlAltaExitosa
+                        show={showModalAlta}
+                        handleClose={closeModalAlta}
+                        modalMessage={modalMessage}
+                      />
+                    
         </Modal.Body>
       </Modal>
 
-       {showMDLMensaje && (
-              <AbrirMDLMensaje
-                show={openMdlMensaje}
-                handleClose={closeMdlMensaje}
-                modalMessage={mensaje}
+       
+        {showMDLEstaSeguro && (
+              <MDLEstaSeguro
+                show={openMdlEstaSeguro}
+                handleClose={closeMdlEstaSeguro}
+                mensajetitulo={mdlMensajeTitulo}
+                mensajecuerpo={mdlMensajeCuerpo}
+                enviaralpadre={mdlSiNo} // esta función recibe la respuesta
               />
             )}
 
-      {mdlAltaExitosa && (
-        <MdlAltaExitosa
-          show={openModalAltaExitosa}
-          handleClose={handleClose}
-          varMensaje={modalMessage}
-          varMensajeTitulo={modalMessageTitulo}
-        />
-      )}
+               {showMDLMensaje && (
+                    <AbrirMDLMensaje
+                      show={showMDLMensaje}
+                      handleClose={closeMdlMensaje}
+                      modalMessage={mensaje}
+                    />
+                  )}
     </>
   );
 };

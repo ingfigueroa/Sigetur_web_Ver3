@@ -867,6 +867,7 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
                                     setFechaTurnoBD(t.fecha);
 
                                     if (t.sigla == "PEN") {
+                                     
                                       if (fechaTurno > fechaActual) {
                                         setModalMensaje(
                                           "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."

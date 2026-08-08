@@ -40,7 +40,7 @@ const mdlEstaSeguro = ({
               <InputGroup.Text
                 style={{ color: "black" }}
               >
-                <h4><span dangerouslySetInnerHTML={{ __html: mensajecuerpo }} /></h4>
+                <h6><span dangerouslySetInnerHTML={{ __html: mensajecuerpo }} /></h6>
               </InputGroup.Text>
             </InputGroup>
           </div>

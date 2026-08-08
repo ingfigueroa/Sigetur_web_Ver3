@@ -112,13 +112,19 @@ export const formatearFechaLargaConelAnio = (
     fechaObj = new Date(fecha + "T00:00:00");
   }
 
-  // Caso 3: viene formato DD-MM-YYYY
+  // Caso 3: viene formato YYYY-MM-DDTHH:mm:ss.sssZ
+  else if (/^\d{4}-\d{2}-\d{2}T/.test(fecha)) {
+    const [anio, mes, dia] = fecha.substring(0, 10).split("-");
+    fechaObj = new Date(anio, mes - 1, dia);
+  }
+
+  // Caso 4: viene formato DD-MM-YYYY
   else if (/^\d{2}-\d{2}-\d{4}$/.test(fecha)) {
     const [dia, mes, anio] = fecha.split("-");
     fechaObj = new Date(anio, mes - 1, dia);
   }
 
-  // Caso 4: cualquier string de fecha válido
+  // Caso 5: cualquier string de fecha válido
   else {
     fechaObj = new Date(fecha);
   }
@@ -388,6 +394,7 @@ export function getFechaDMY(fecha) {
   return `${dia}-${mes}-${anio}`;
 }
 export function crearFechaHora(fecha, hora) {
+ 
   if (!fecha || !hora) return null;
 
   const [dia, mes, anio] = fecha.split("-");
@@ -446,3 +453,12 @@ export const getMonday = (date) => {
 
   return d;
 };
+
+
+export function getFechaActualISODevuelve_YYYY_MM_DD(fecha = new Date()) {
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const dia = String(fecha.getDate()).padStart(2, "0");
+
+  return `${anio}-${mes}-${dia}`;
+}

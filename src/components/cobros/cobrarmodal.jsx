@@ -18,7 +18,7 @@ import { tr } from "date-fns/locale";
 
 const CobrarModal = ({ show, handleClose, fila }) => {
 
-  console.log(fila)
+
 
     const UserID = getUsuarioId();
 
@@ -277,7 +277,7 @@ const closeMdlMensaje = () => {
     useEffect(() => {
       
           
-        setMontoTotalaCobrar(fila.totalacobrar)
+        setMontoTotalaCobrar(fila.cobrarapaciente)
         if (fila.os === 'PARTICULAR'){
             setVieneDe("P");
         }else{

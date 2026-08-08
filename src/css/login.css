@@ -21,7 +21,7 @@ background-color: rgb(247, 247, 250);
 #fondo {
 
   background-image:
-    linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+    linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.8)),
     url("../assets/escritorio.jpg");
 
   background-repeat: no-repeat;
@@ -77,7 +77,7 @@ input[type=button]{
   background-color: white;
  
  
-    width: 55%;
+    width: 50%;
     height: auto;
    
    

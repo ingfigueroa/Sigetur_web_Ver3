@@ -9,13 +9,14 @@ import InputGroup from "react-bootstrap/InputGroup";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
 
-import MdlUpdateHorariosProfesional from "../profesionales/mdlupdatehorariosprofesional";
+
 
 import { tiposexoService } from "/src/services/tiposexo.service.js";
 import { profesionesService } from "/src/services/profesiones.service.js";
 import { profesionalesService } from "/src/services/profesional.service.js";
 import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
 import { provinciasService } from "/src/services/provincias.service.js";
+import { localidadesService } from "/src/services/localidades.service.js";
 
 
 import MdlValidar from "../modales/mdlvalidar";
@@ -26,17 +27,13 @@ import "/src/css/registrarprofesional.css";
 import { AuthContext } from "../../context/AuthContext"; // 👈 IMPORTANTE
 
 
-
-
-  
-  
-
 const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) => {
 
 
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
+  const [localidadSeleccionada, setLocalidadSeleccionada] = useState("");
 
   const [item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
 
@@ -46,25 +43,34 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
   const [TipoDocumento, setTipoDocumento] = useState([]);
-  const [idTipoDocumento, setIDTipoDocumento] = useState("");
+  
   const [NroDocumento, setNroDocumento] = useState([]);
-  const [EMail, setEMail] = useState("");
+  const [TipoSexo, setTipoSexo] = useState([]);
+  const [TipoProfesion, setTipoProfesion] = useState([]);
+  
+  const [items, setItems] = useState([]);
+    const [provincias, setProvincias] = useState([]);
+    const [localidades, setLocalidades] = useState([]);
+  
+  const [idTipoDocumento, setIDTipoDocumento] = useState("");
+    const [EMail, setEMail] = useState("");
 
 
   const [FechaNacimiento, setFechaNacimiento] = useState("");
   const [TECelular, setTECelular] = useState("");
   const [CuitCuil, setCuitCuil] = useState("");
-  const [TipoSexo, setTipoSexo] = useState([]);
+  
   const [idTipoSexo, setIDTipoSexo] = useState("");
   const [MatriculaNro, setMatriculaNro] = useState("");
-  const [TipoProfesion, setTipoProfesion] = useState([]);
+  
   const [profesion, setProfesion] = useState("");
-  const [items, setItems] = useState([]);
   const [idTipoSexoSelected, setIDTipoSexoSelected] = useState("");
  
   const [idTipoProfesionSelected, setIdTipoProfesionSelected] = useState("");
   
   const [idProfesional, setIDProfesional] = useState(0);
+    const [idprovincia, setIDProvincia] = useState(0);
+    const [idlocalidad, setIDLocalidad] = useState(0);
    
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -116,7 +122,10 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await profesionalesService.BuscarId(idprofesional); 
+
+        const data = await profesionalesService.BuscarId(idcliente, idprofesional); 
+         
+  
         setItems(data); 
         setIDProfesional(idprofesional)
         setApellido(data[0].Apellido)
@@ -133,6 +142,10 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
         setIDTipoSexoSelected(data[0].idsexo)
       
         setProfesion(data[0].tprofesion)
+
+        setProvinciaSeleccionada(data[0].provincia)
+        setLocalidadSeleccionada(data[0].localidad)
+
 
         //const fechaLarga = format(new Date(data[0].FechaNacimiento), "yyyy-MM-dd", {locale: es});
         const formattedDate = new Date(data[0].FechaNacimiento).toISOString().split('T')[0]; // Solo la parte de la fecha
@@ -231,13 +244,13 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
           tipodocumentoService.Buscar(),
           profesionesService.Buscar(),
           //profesionalesService.BuscarPorID(idprofesional),
-          provinciasService.Buscar(),
+          
         ]);
         setTipoSexo(sexoData);
         setTipoDocumento(documentoData);
         setTipoProfesion(profesionData);
         
-        setProvinciaSeleccionada(provinciaData);
+       
         setNuevo(1);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -254,7 +267,8 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
     >
         <Modal.Header
           
-          style={{ backgroundColor: "#0277bd", color: "white" }}
+           style={{  color:"white",
+            backgroundColor: "#198754", }}
         >
           <Modal.Title>MODIFICAR DATOS DEL PROFESIONAL</Modal.Title>
         </Modal.Header>
@@ -265,7 +279,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
            
            
 
-            <div style={{ width: "30%", textAlign: "left" }}>
+{/*             <div style={{ width: "30%", textAlign: "left" }}>
               <button
                 title="Modificar horarios del profesional"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -275,10 +289,10 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
               </button>
 
            
-            </div>
+            </div> */}
           
          
-<hr></hr>
+
             
             <div
               style={{
@@ -329,34 +343,6 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     }}
                     value={NroDocumento}
                   />
-                  <Button
-                    variant="outline-secondary"
-                    id="button-addon1"
-                    color="white"
-                    disabled={isDisabled}
-                  >
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                  </Button>
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#679bb9", color: "white" }}
-                  >
-                    Sexo
-                  </InputGroup.Text>
-                  <select
-                    onChange={(e) => setIDTipoSexoSelected(e.target.value)}
-                    value={idTipoSexoSelected}
-                  >
-                    <option value="" disabled>
-                      Seleccionar
-                    </option>
-                    {TipoSexo.map((sexo) => (
-                      <option key={sexo.id} value={sexo.id}>
-                        {sexo.descripcion}
-                      </option>
-                    ))}
-                  </select>
-                </InputGroup>
-                <InputGroup className="mb-3">
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
@@ -385,6 +371,35 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     onChange={(e) => setNombres(e.target.value.toUpperCase())}
                     value={Nombres}
                   />
+{/*                   <Button
+                    variant="outline-secondary"
+                    id="button-addon1"
+                    color="white"
+                    disabled={isDisabled}
+                  >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </Button> */}
+                 
+                </InputGroup>
+                <InputGroup className="mb-3">
+                   <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white" }}
+                  >
+                    Sexo
+                  </InputGroup.Text>
+                  <select
+                    onChange={(e) => setIDTipoSexoSelected(e.target.value)}
+                    value={idTipoSexoSelected}
+                  >
+                    <option value="" disabled>
+                      Seleccionar
+                    </option>
+                    {TipoSexo.map((sexo) => (
+                      <option key={sexo.id} value={sexo.id}>
+                        {sexo.descripcion}
+                      </option>
+                    ))}
+                  </select>
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
@@ -395,32 +410,11 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     aria-label="Ingresar fecha de nacimiento"
                     aria-describedby="basic-addon2"
                     type="date"
+                     style={{ width: "5%"}}
                     onChange={(e) => setFechaNacimiento(e.target.value)}
                     value={FechaNacimiento}
                   />
-                </InputGroup>
-
-                <InputGroup className="mb-3">
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#679bb9", color: "white" }}
-                  >
-                    Correo electrónico
-                  </InputGroup.Text>
-                  <Form.Control
-                    placeholder="Ingresar correo electrónico"
-                    aria-label="Ingresar correo electrónico"
-                    aria-describedby="basic-addon2"
-                    type="email"
-                    onChange={(e) => {
-                      const email = e.target.value;
-                      setEMail(items.email);
-                      if (!validarEmail(email)) {
-                        // Aquí podrías mostrar un mensaje de error o aplicar algún estilo al campo
-                      }
-                    }}
-                    value={EMail}
-                  />
-                  <InputGroup.Text
+                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Celular
@@ -439,6 +433,33 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     }}
                     value={TECelular}
                   />
+                   {/*  <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white" }}
+                  >
+                    Correo electrónico/usuario del sistema
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Ingresar correo electrónico"
+                    aria-label="Ingresar correo electrónico"
+                    aria-describedby="basic-addon2"
+                    type="email"
+                    onChange={(e) => {
+                      const email = e.target.value;
+                      setEMail(items.email);
+                      if (!validarEmail(email)) {
+                        // Aquí podrías mostrar un mensaje de error o aplicar algún estilo al campo
+                      }
+                    }}
+                    value={EMail}
+                  /> */}
+                </InputGroup>
+
+               
+                
+                 
+                
+            
+                <InputGroup className="mb-3">
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
@@ -458,10 +479,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     }}
                     value={CuitCuil}
                   />
-                </InputGroup>
-            
-                <InputGroup className="mb-3">
-                  <InputGroup.Text
+                                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}
                   >
                     Profesión
@@ -497,10 +515,33 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     onChange={(e) => setMatriculaNro(e.target.value)}
                     value={MatriculaNro}
                   />
+                </InputGroup>
+                  <InputGroup className="mb-3">
                    <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white"}}
                   >
-                    Usuario de sistema
+                   Correo electrónico
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Correo electrónico"
+                    aria-label="Correo Electrónico"
+                    aria-describedby="basic-addon2"
+                    type="email"
+                    readOnly
+                    style={{  width: "30%" }}
+                    onChange={(e) => {
+                      const email = e.target.value;
+                      setEMail(items.email);
+                     
+                    }}
+                    value={EMail}
+                  />
+                </InputGroup>
+                <InputGroup className="mb-3">
+                 <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white"}}
+                  >
+                   Usuario de ingreso al sistema
                   </InputGroup.Text>
                   <Form.Control
                     placeholder="Usuario definido para el sistema"
@@ -517,9 +558,45 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
                     value={EMail}
                   />
                 </InputGroup>
+                
+                <InputGroup className="mb-3">
+                  <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white" }}
+                  >
+                    Provincia que reside
+                  </InputGroup.Text>
+
+                  <Form.Control
+                    placeholder="Provincia en la que reside"
+                    aria-label="Provincia en la que reside"
+                    aria-describedby="basic-addon2"
+                    type="text"
+                    readOnly
+                    style={{  width: "30%" }}
+                   
+                    value={provinciaSeleccionada}
+                  />
+
+                  <InputGroup.Text
+                    style={{ backgroundColor: "#679bb9", color: "white" }}
+                  >
+                    Localidad que reside
+                  </InputGroup.Text>
+                    <Form.Control
+                    placeholder="Localidad en la que reside"
+                    aria-label="Localidad en la que reside"
+                    aria-describedby="basic-addon2"
+                    type="text"
+                    readOnly
+                    style={{  width: "30%" }}
+                    
+                    value={localidadSeleccionada}
+                  />
+                
+                </InputGroup>
               </div>
             </div>
-
+<hr></hr>
             <div
               style={{
                 width: "100%",
@@ -556,7 +633,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
         />
       )}
 
-       {mdlUpdateHorariosProfesional && (
+      {/*  {mdlUpdateHorariosProfesional && (
         <MdlUpdateHorariosProfesional
           show={openMdlUpdateHorariosProfesionales}
           handleClose={closeMdlUpdateHorariosProfesionales}
@@ -564,7 +641,7 @@ const modificarprofesional = ({ show, handleClose, idprofesional, idcliente }) =
           profesion={profesion}
           profesional={apeynom}
         />
-      )}
+      )} */}
 
     </>
   );

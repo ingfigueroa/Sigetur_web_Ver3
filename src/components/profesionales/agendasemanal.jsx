@@ -25,7 +25,7 @@ import MdlTurnoDetalle from "../turnos/mdlturnosdetalle_vers1";
 import { TuneOutlined } from "@mui/icons-material";
 import { getClienteId, getUsuarioId } from "../utils/auth";
 
-import { getMonday} from "../utils/fecha";
+import { getMonday, crearFechaHora, getFechaActualISO, getFechaDMY, getFechaActualISODevuelve_YYYY_MM_DD} from "../utils/fecha";
 
 const agendasemanal = ({ show, handleClose }) => {
 
@@ -143,7 +143,7 @@ const agendasemanal = ({ show, handleClose }) => {
     } catch (error) {}
   }
 
-
+/* 
   const formatearFecha_yyyy_mm_dd = (fecha) => {
     let fechaActualParseada;
 
@@ -171,7 +171,7 @@ const agendasemanal = ({ show, handleClose }) => {
       ),
       "yyyy-MM-dd"
     );
-  };
+  }; */
 
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
@@ -183,7 +183,7 @@ const agendasemanal = ({ show, handleClose }) => {
 
   const openMdlMensaje = () => {
     // setModalSiNoMensaje("¿Está seguro de anular el turno?")
-    console.log("pasa por open");
+    
     setModalMostrarMensaje(true);
   };
 
@@ -250,7 +250,7 @@ const agendasemanal = ({ show, handleClose }) => {
   const getWeekDates = (fechaBase) => {
     const base = new Date(fechaBase);
 
-    console.log(fechaBase)
+   
 
 
     // si la fecha es inválida, uso hoy
@@ -258,13 +258,14 @@ const agendasemanal = ({ show, handleClose }) => {
       console.warn("⚠️ Fecha inválida en getWeekDates, uso hoy");
       base.setHours(0, 0, 0, 0);
     }
-
+    
     const monday = getMonday(fechaBase);
-
-    console.log(monday)
+  
+    
     
 
-    setFechaComienzoSemana(formatearFecha_yyyy_mm_dd(monday));
+    setFechaComienzoSemana(getFechaActualISODevuelve_YYYY_MM_DD(monday));
+    
 
     const weekDates = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(monday);
@@ -392,29 +393,37 @@ const agendasemanal = ({ show, handleClose }) => {
     let isButtonDisabled = false;
 
     const ahora = new Date();
-    const fechaActual1 = formatearFecha_yyyy_mm_dd(ahora); // Fecha actual YYYY-MM-DD
-    const fecha1 = formatearFecha_yyyy_mm_dd(fecha);
+    const fechaActual1 = getFechaActualISO(ahora); // Fecha actual YYYY-MM-DD
+    const fecha1 = getFechaDMY(fecha);
+  
+    
+    const fechaTurnoCompleta = crearFechaHora(fecha1, hora)
+
+    
+    
     // Obtener la hora actual en formato HH:MM
     const horaActual1 = format(new Date(), "HH:mm"); // Extrae "HH:MM"
     //const hora1 = format(new hora, "HH:mm"); // Extrae "HH:MM"
     // Validar que fecha y hora sean correctas
-    if (!fecha1 || !hora) {
+    if (!fecha || !hora) {
+
       return { buttonVariant, buttonText, isButtonDisabled };
     }
 
     // Comparar fecha y hora por separado
 
     if (sigla === "LIB") {
-      /*       console.log("Fecha del sistema " + fechaActual1)
-      console.log("Fecha del turno " + fecha1) */
-      if (fechaActual1 > fecha1) {
+
+      if (fechaTurnoCompleta < ahora) {
         isButtonDisabled = true;
-      } else if (fechaActual1 === fecha1) {
+        
+      } else {
         /*         console.log("Hora del sistema " + horaActual1)
         console.log("Hora del turno " + hora) */
-
-        if (horaActual1 > hora) {
-          isButtonDisabled = true; // Si la fecha ya pasó, deshabilitar botón
+        
+        if (fechaTurnoCompleta > ahora) {
+          
+          isButtonDisabled = false; // Si la fecha ya pasó, deshabilitar botón
         }
       }
     }
@@ -477,7 +486,7 @@ const agendasemanal = ({ show, handleClose }) => {
     const hoy = new Date();
 
     //formateamos la fecha del dia a yyyy-mm-dd
-    const setFechaActual1 = formatearFecha_yyyy_mm_dd(hoy);
+    const setFechaActual1 = getFechaActualISO(hoy);
 
     //pasar la fecha al calendar
     setFechaActual(setFechaActual1);
@@ -501,19 +510,30 @@ const agendasemanal = ({ show, handleClose }) => {
           marginLeft: "20px",
         }}
       >
-        <div
+       <div
           style={{
             display: "flex",
-            backgroundColor: "white",
-            marginBottom: "5px",
+            flexDirection: "column",
+            width: "100%",
+
           }}
         >
-          <div style={{ width: "40%", textAlign: "left", marginTop: "10px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}
+          >
             <button
               title="Enviar mail al profesional de los turnos de la semana.."
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
               disabled="true"
-              /* style={{ display: "none" }} */
+              style={{ display: "none" }}
             >
               <i class="fa-solid fa-envelope"></i>
             </button>
@@ -521,7 +541,7 @@ const agendasemanal = ({ show, handleClose }) => {
               title="Dashboard"
               className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
               disabled="true"
-              // style={{ display: "none" }}
+              style={{ display: "none" }}
             >
               <i class="fa-solid fa-chart-pie"></i>
             </button>
@@ -537,6 +557,74 @@ const agendasemanal = ({ show, handleClose }) => {
             >
               <i class="fa-solid fa-clock"></i>
             </button>
+
+            <Button
+
+              variant="success"
+              className="btn"
+              size="sm"
+              style={{
+                marginLeft: "auto",
+               
+                width: "10%",
+                textAlign: "center",
+                
+                
+              }}
+              
+              disabled={IDProfesional < 1 ? true : false}
+              onClick={(event) => {
+                event.preventDefault();
+              
+                BuscarTurnosProfesionalFecha(
+                  ClienteID,
+                  IDProfesional,
+                  fechaComienzoSemana,
+                  UserID
+                );
+              }}
+            >
+              BUSCAR TURNOS
+            </Button>
+             <Button
+              title="Limpiar parámetros"
+              variant="primary"
+              className="btn "
+              size="sm"
+              style={{
+                
+                
+                textAlign: "center",
+               
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+                limpiar();
+              }}
+            >
+              <i className="fa-solid fa-broom"></i>
+            </Button> 
+
+           {/*  <button
+             variant="primary"
+              className="btn  acomodarbotonespt"
+              size="sm"
+                style={{
+                
+               
+                width: "10%",
+                textAlign: "center",
+                height: "30px",
+              }}
+             
+              onClick={(event) => {
+                event.preventDefault();
+                limpiar();
+              }}
+            >
+              Limpiar
+              
+            </button> */}
           </div>
         </div>
 
@@ -551,7 +639,7 @@ const agendasemanal = ({ show, handleClose }) => {
         >
           <div
             style={{
-              width: "95%",
+              width: "100%",
               backgroundColor: "",
             }}
           >
@@ -668,7 +756,7 @@ const agendasemanal = ({ show, handleClose }) => {
               style={{ display: "flex", alignItems: "center", gap: "10px" }}
             ></InputGroup>
           </div>
-          <div
+  {/*         <div
             style={{
               display: "grid",
               width: "15%",
@@ -718,7 +806,7 @@ const agendasemanal = ({ show, handleClose }) => {
             >
               Limpiar
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <div className="acomodartabla">
@@ -842,18 +930,19 @@ const agendasemanal = ({ show, handleClose }) => {
                                 event.preventDefault();
                                 setHoraTurno(turno.hora);
                                 setFechaTurno(
-                                  formatearFecha_yyyy_mm_dd(turno.fecha)
+                                  getFechaActualISO(turno.fecha)
                                 );
                                 setFechaTurnoBD(turno.fecha);
 
                                 if (turno.sigla === "PEN") {
-                                  /* if (turno.fecha !== fechaSistema) {
+                                  
+                                  if (turno.fecha > fechaSistema) {
                                     setModalMensaje(
-                                      "No se puede dar el PRESENTE en esta fecha. El PRESENTE se otorga al turno el mismo día."
+                                     "No se puede dar el PRESENTE en esta fecha. El PRESENTE se da a partir de la fecha del turno."
                                     );
                                     openMdlMensaje();
                                     return;
-                                  } */
+                                  }
                                   definirEstadosdeTurnos(turno, "PENDIENTE");
                                 } else if (turno.sigla === "LIB") {
                                   if (turno.fecha >= fechaSistema) {

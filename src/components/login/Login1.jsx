@@ -68,7 +68,7 @@ const handleSubmit = async () => {
 
   return (
     <div id="fondo1">
-      <div id="loginform" style={{background:"#e2dede"}}>
+      <div id="loginform" style={{background:"white"}}>
         <Form action="">
           <div className="portaldeturnos">
             <a href="/">
@@ -114,38 +114,33 @@ const handleSubmit = async () => {
               
               />
             </Form.Group>
-            <div >
-              <div class="d-grid col-11 " >
-             <Button variant="outline-primary"
+            <div class="d-grid col-11 " >
+              <br />
+             <Button variant="primary"
                   size="lm"
                   
-                  style={{marginLeft: "20px"}}
+                  style={{marginLeft: "20px", width: "95%"}}
                   onClick={handleSubmit}
               >   Iniciar Sesión  
                </Button>
-              </div>
-              <div>
                 <h6>
             <a href="/emailresetpassword">
               <strong>¿Olvido su contraseña?</strong>
             </a>{" "}
           </h6>
-              </div>
-            </div>
-            
-            
-          </Form>
-
-         
-          <br />
-          
             <h4 style={{marginBottom: 0}}>¿NO TIENES UNA CUENTA?</h4>
             <h6 style={{margin: 0}}>
               <a href="/crearcuentapasouno">
                 <strong> Registrá tu consultorio o clínica</strong>
               </a>
             </h6>
-          
+              </div>
+              
+            
+            
+            
+          </Form>
+
         </Form>
       </div>
       <div id="fondo">

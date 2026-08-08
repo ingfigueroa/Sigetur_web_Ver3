@@ -15,9 +15,10 @@
 
 #cuerpo h1{
     text-align: left;
-    font-size:500S;
+    font-size:300S;
     margin-left: 45px;
-    padding-top: 45px;
+    padding-top: 20px;
+    margin-top: 10px;
 }
 
 #cuerpo h2{

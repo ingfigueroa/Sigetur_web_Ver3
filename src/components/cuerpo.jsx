@@ -1,11 +1,15 @@
 import React from "react";
+import Button from "react-bootstrap/Button";
 
 import "../css/cuerpo.css";
 
+import { Link } from "react-router-dom";
+
 import Funcionalidades1 from "./Funcionalidades1";
 import Footer from "./Footer";
-import Funcionalidades from "./Funcionalidades";
+import Funcionalidades from "./funcionalidades";
 import Quienessomos from "./Quienessomos";
+/* import Funcionalidades from "./home/funcionalidades"; */
 
 
 function cuerpo() {
@@ -13,11 +17,17 @@ function cuerpo() {
     <div id="cuerpo">
        
      
-    
+     
       <div className="presentacion">
-        <h1 className="">Sistema de Gestión de Turnos</h1>
+{/*         <h1 className="">Sistema de Gestión de Turnos</h1>
 
-        <h2 className="">para profesionales de la salud</h2>
+        <h2 className="">para profesionales de la salud</h2> */}
+
+        <h1 className="">La plataforma integral para la administración</h1>
+        
+
+        <h1 className="">de consultorios y centros de salud.</h1>
+
         <br></br>
 
         <h5 className="h5home">te ayudamos a gestionar, organizar </h5>
@@ -28,23 +38,29 @@ function cuerpo() {
           <br />
           <br />
           <br />
-          <h6>
-            <a href="/Login">Mis Turnos</a>
-          </h6>
-        
-          <h6>
-            <a href="/crearcuentapasouno"> Registrar consultorio</a>
-          </h6>
+          
+            <Link to="/login">
+           <Button variant="outline-primary" className="text-white" size="lg">
+                Iniciar sesión
+              </Button>
+            </Link>
+       
+            <Link to="/crearcuentapasouno"> 
+            <Button variant="outline-primary" className="text-white" size="lg">
+            Registrarse
+            </Button>
+            </Link>
+          
         
       </div>
       
         <Quienessomos />
       
-      
+       
       
         <Funcionalidades />
       
-        <Funcionalidades1 />
+        <Funcionalidades1 /> 
       
 
       

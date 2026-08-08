@@ -14,6 +14,7 @@ import {
   formatearFechaLarga,
   validarHorasDesdeHastaIntervalo,
   getFechaISO,
+  formatearFechaLargaConelAnio
 } from "../../components/utils/fecha";
 
 import { profesionalesService } from "/src/services/profesional.service";
@@ -28,7 +29,11 @@ const mdlupdatehorariosprofesional = ({
   idprofesional,
   profesion,
   profesional,
+  idcliente,
+  idusuario
 }) => {
+
+ 
   const [horas, setHoras] = useState({ noche: [], manana: [], tarde: [] });
   const [intervalos, setIntervalos] = useState([]);
   const [diasSemana, setDiasSemana] = useState([]);
@@ -39,10 +44,12 @@ const mdlupdatehorariosprofesional = ({
   const [fechaLargarMostrar, setFechaLargaMostrar] = useState("");
 
   const [errorFecha, setErrorFecha] = useState(true);
-  const [validarBotonAgregarHorario, setValidarBotonAgregarHorario] =
-    useState(false);
+  const [validarBotonAgregarHorario, setValidarBotonAgregarHorario] = useState(false);
 
   const [fechaDesdeCambioHorario, setFechaDesdeCambioHorario] = useState("");
+
+  
+  const [horarios, setHorarios] = useState([]); // tabla secundaria
 
   const [mensaje, setMensaje] = useState("");
 
@@ -71,6 +78,7 @@ const mdlupdatehorariosprofesional = ({
     // Llamás al servicio con el idprofesional (que deberías tenerlo en un estado o prop)
    
     const data = await profesionalesService.getBuscarFechaCambioHorario(
+      idcliente,
       idprofesional
     );
 
@@ -92,14 +100,16 @@ const mdlupdatehorariosprofesional = ({
 
     // Actualizar el estado si la fecha es válida
     setFechaCambioHorario(fechaSeleccionada);
-    setFechaLargaMostrar(formatearFechaLarga(fechaSeleccionada, true));
+    setFechaLargaMostrar(formatearFechaLargaConelAnio(fechaSeleccionada, true));
     setValidarBotonAgregarHorario(true);
     setErrorFecha(false); // 👈 quitamos error
   }
-const updateHorarios = async (idprofesional, fechadesde) => {
+const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
   try {
     console.log(horarios)
     const payload = horarios.map(item => ({
+      idusuario,
+      idcliente,
       idprofesional,
       iddia: item.iddia,
       mananatrabaja: item.trabajaManana,
@@ -125,60 +135,6 @@ const updateHorarios = async (idprofesional, fechadesde) => {
 };
 
 
-/* 
-  async function UpdateHorario() {
-    try {
-      const idprofesional = 0;
-      const iddia = 0;
-      const mañanatrabaja = 0;
-      const idmañanadesde = 0;
-      const idmañanahasta = 0;
-      const idmañanaintervalo = 0;
-      const tardetrabaja = 0;
-      const idtardedesde = 0;
-      const idtardehasta = 0;
-      const idtardeintervalo = 0;
-      const nochetrabaja = 0;
-      const idnochedesde = 0;
-      const idnochehasta = 0;
-      const idnocheintervalo = 0;
-
-      // Suponemos que tenés un estado/constante con los horarios a actualizar
-      // Ejemplo: const horarios = [{ id: 1, desde: '08:00', hasta: '12:00' }, ...]
-       
-    for (const horarios of horario) {
-        mañanatrabaja = horarios.mañanatrabaja
-      const data = await profesionalesService.putCambioHorario(
-        idprofesional,
-        iddia,
-        mañanatrabaja,
-        idmañanadesde,
-        idmañanahasta,
-        idmañanaintervalo,
-        tardetrabaja,
-        idtardedesde,
-        idtardehasta,
-        idtardeintervalo,
-        nochetrabaja,
-        idnochedesde,
-        idnochehasta,
-        idnocheintervalo,
-        fechadesde);
-
-      console.log("Resultado update:", data);
-    } 
-      console.log(horarios);
-
-      setMensaje("Todos los horarios fueron actualizados correctamente");
-    } catch (error) {
-      console.error("Error al actualizar horarios:", error);
-      setMensaje("Error al actualizar horarios");
-    }
-  }
- */
-  const [horarios, setHorarios] = useState([]); // tabla secundaria
-
-  // Estado con lo que se va seleccionando
   const [seleccion, setSeleccion] = useState({
  
     iddia: "",
@@ -208,19 +164,12 @@ const updateHorarios = async (idprofesional, fechadesde) => {
     idIntervaloNoche: "",
     descripcionIntervaloNoche: "",
   });
-/* 
-  const handleChange = (campo, valor) => {
-    setSeleccion({
-      ...seleccion,
-      [campo]: valor,
-    });
-  };
- */
+
   function limpiar() {
     setHorarios([]);
     const hoyISO = getFechaActualISO(); // YYYY-MM-DD
     setFechaCambioHorario(hoyISO);
-    setFechaLargaMostrar(formatearFechaLarga(hoyISO, true));
+    setFechaLargaMostrar(formatearFechaLargaConelAnio(hoyISO, true));
   }
 
   // Función para agregar un horario
@@ -342,7 +291,7 @@ const updateHorarios = async (idprofesional, fechadesde) => {
     const nuevaFecha = e.target.value;
     //VALIDAR Q UE NO HAYA TURNOS
     setFechaCambioHorario(nuevaFecha);
-    setFechaLargaMostrar(formatearFechaLarga(nuevaFecha, true));
+    setFechaLargaMostrar(formatearFechaLargaConelAnio(nuevaFecha, true));
   };
 
   const getCellStyle = (valor) => ({
@@ -357,9 +306,9 @@ const updateHorarios = async (idprofesional, fechadesde) => {
 
     const hoyISO = getFechaActualISO(); // YYYY-MM-DD
     setFechaCambioHorario(hoyISO);
-    setFechaLargaMostrar(formatearFechaLarga(hoyISO, true));
+    setFechaLargaMostrar(formatearFechaLargaConelAnio(hoyISO, true));
   
-  validarFechaCambioHorario(fechaCambioHorario)
+    validarFechaCambioHorario(fechaCambioHorario)
 
     // BuscarFechaCambioHorario();
     // setFechaCambioHorario(getFechaISO(itemsFechaCambioHorario.proximolunes))
@@ -374,7 +323,8 @@ const updateHorarios = async (idprofesional, fechadesde) => {
       backdrop="static" // evita que se cierre al hacer clic fuera
       keyboard={false} // evita que se cierre con la tecla ESC
     >
-      <Modal.Header style={{ backgroundColor: "#71717B", color: "white" }}>
+      <Modal.Header  style={{  color:"white",
+            backgroundColor: "#198754", }}>
         <Modal.Title>
           PROFESIONAL - PLANIFICACIÓN DE NUEVOS HORARIOS
         </Modal.Title>
@@ -1042,9 +992,13 @@ const updateHorarios = async (idprofesional, fechadesde) => {
               }}
             >
               <ButtonGroup className="mb-2">
-                <Button variant="success" onClick={() => updateHorarios(idprofesional, fechaCambioHorario)}>
-                  Grabar nuevos horarios
-                </Button>
+              <Button
+                variant="success"
+                onClick={() => updateHorarios(idcliente, idprofesional, fechaCambioHorario)}
+                disabled={horarios.length === 0}
+              >
+                Grabar nuevos horarios
+              </Button>
                 <Button variant="warning" onClick={limpiar}>
                   Limpiar
                 </Button>

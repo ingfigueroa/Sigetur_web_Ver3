@@ -25,11 +25,11 @@ async function Buscar(idcliente, Apellido, VarDni, idprofesion, pagina, cantidad
   return resp.data;
 }
 
-async function BuscarHorarios(idprofesional, fecha) {
+async function BuscarHorarios(idcliente, idprofesional, fecha) {
 
 
   const resp = await httpService.get(urlResourceProsefionalHorarios, {
-    params: { idprofesional, fecha },
+    params: { idcliente, idprofesional, fecha },
   });
   return resp.data;
 }
@@ -74,13 +74,14 @@ async function GrabarAlta(idcliente, idProfesional, Nombres, Apellido, TipoDocum
 }
 
 
-async function GrabarBaja(idprofesional, observaciones, idusuario) {
+async function GrabarBaja(idprofesional, observaciones, idusuario, idcliente) {
   try {
  
     await httpService.put(urlResourceProfesionalDarBaja, {
       idprofesional,
       observaciones,
-      idusuario
+      idusuario,
+      idcliente
     });
    
   } catch (error) {
@@ -100,11 +101,11 @@ async function BuscarId(idcliente, idprofesional) {
 }
 
 
-async function getBuscarFechaCambioHorario(idprofesional) {
+async function getBuscarFechaCambioHorario(idcliente, idprofesional) {
 
  
   const resp = await httpService.get(urlResourceProfesionalFechaCambioHorario, {
-    params: { idprofesional },
+    params: { idcliente, idprofesional },
   });
   
   return resp.data;
@@ -113,7 +114,7 @@ async function getBuscarFechaCambioHorario(idprofesional) {
 async function putCambioHorarioMultiple(payload){
   try{
   
-   
+   console.log(payload)
   await httpService.post(urlResourceProfesionalCambioHorario, payload );
   
   //return httpService.post("/profesional/cambiohorariomultiple", payload);

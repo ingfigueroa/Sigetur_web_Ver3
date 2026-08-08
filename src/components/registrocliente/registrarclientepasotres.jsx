@@ -3,9 +3,11 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useLocation,  useNavigate } from "react-router-dom";
 
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Row, Col, InputGroup } from "react-bootstrap";
+
 
 import {clientesServices} from "../../services/clientes.service";
+import { provinciasService } from "/src/services/provincias.service.js";
 
 import "/src/css/registrarconsultorio.css";
 import AbrirMDLMensaje from "../modales/mdlMensaje";
@@ -17,6 +19,12 @@ const registrarclientepasotres = () => {
   const navigate = useNavigate();
 
 const [mensaje, setMensaje] = useState("");
+
+  const [provincias, setProvincias] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
+
+    const [idprovincia, setIDProvincia] = useState(0);
+    const [idlocalidad, setIDLocalidad] = useState(0);
     
   
      const [showMDLMensaje, setShowMDLMensaje] = useState("");
@@ -43,7 +51,21 @@ const [mensaje, setMensaje] = useState("");
   const location = useLocation();
   const email = location.state?.email;
   
+  const cargarLocalidades = async (idprovincia) => {
+    console.log(idprovincia)
+  try {
 
+ if (idprovincia > 0) {
+     
+    const response = await localidadesService.Buscar(idprovincia);
+    setLocalidades(response);
+
+    }
+  } catch (error) {
+    //console.error("Error al cargar localidades:", error);
+    setLocalidades([]);
+  }
+};
 
 const handleReset = () => {
   setFormData({
@@ -100,6 +122,21 @@ const handleReset = () => {
     }));
   }
 }, [email]);
+
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await provinciasService.Buscar(); // Llama a la función asíncrona
+        
+        setProvincias(data); // Establece el estado con los datos obtenidos
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchData(); // Ejecuta la función para obtener los datos
+  }, []);
 
   return (
     <>
@@ -201,31 +238,68 @@ const handleReset = () => {
             </Form.Group>
           </Col>
 
-         
-
-        {/*   <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>CUIL</Form.Label>
-              <Form.Control
-                type="text"
-                name="cuil"
-                value={formData.cuil}
-                onChange={handleChange}
-              />
-            </Form.Group>
+          <Col md={12}>
+            <InputGroup className="mb-3">
+                            <InputGroup.Text
+                              style={{ backgroundColor: "#679bb9", color: "white" }}
+                            >
+                              Provincia que reside
+                            </InputGroup.Text>
+            
+                            <select
+                              style={{ width: "34%" }}
+                              value={idprovincia}
+                              onChange={(e) => {
+                                const idProv = e.target.value;
+            
+                                setIDProvincia(idProv);
+                                setIDLocalidad("");
+                                setLocalidades([]);
+            
+                                // Próximo paso:
+                                cargarLocalidades(idProv);
+                              }}
+                            >
+                              <option value="">Seleccionar</option>
+            
+                              {provincias.map((prov) => (
+                                <option key={prov.ID} value={prov.ID}>
+                                  {prov.Nombre}
+                                </option>
+                              ))}
+                            </select>
+            
+                            <InputGroup.Text
+                              style={{ backgroundColor: "#679bb9", color: "white" }}
+                            >
+                              Localidad que reside
+                            </InputGroup.Text>
+            
+                            <select
+                              style={{ width: "34%" }}
+                              value={idlocalidad}
+                              disabled={!idprovincia}
+                              onChange={(e) => {
+                                setIDLocalidad(e.target.value);
+                              }}
+                            >
+                              <option value="">Seleccionar</option>
+            
+                              {localidades.map((localidad) => (
+                                <option key={localidad.ID} value={localidad.ID}>
+                                  {localidad.localidad}
+                                </option>
+                              ))}
+                            </select>
+                          </InputGroup>
+            
+          </Col>
+          <Col md={12}>
+            
           </Col>
 
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Celular</Form.Label>
-              <Form.Control
-                type="text"
-                name="celular"
-                value={formData.celular}
-                onChange={handleChange}
-              />
-            </Form.Group>
-          </Col> */}
+         
+
 
         </Row>
 

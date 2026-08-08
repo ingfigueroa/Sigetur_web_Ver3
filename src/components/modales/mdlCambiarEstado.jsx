@@ -6,21 +6,35 @@ import Button from 'react-bootstrap/Button';
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+
 const mdlCambiarEstado = ({show, handleClose, enviarAlPadre, fila}) => {
-  console.log(fila)
+
+   const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
+  
 const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalTituloMessage, setModalTituloMessage] = useState('');
 
+    const [modalTitulo, setModalTitulo] = useState("REGISTRAR ´PRESENTE");
+    const [modalCuerpo, setModalCuerpo] = useState("¿Quiere registrar el turno al estado PRESENTE?");
+
   const [observaciones, SetObservaciones] = useState(null);
   const fechaLarga = format(new Date(fila.fecha), "EEEE, d 'de' MMMM 'de' yyyy", {locale: es});
 
-  const seleccionarSi = () => {
+  const mdlSiNo = () => {
     enviarAlPadre(observaciones);
-    handleClose() // Envía el id al componente padre
+    handleClose()
   };
   
  
+  const openMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(true);
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+  };
 
   const openAltaExitosa = (mensaje) => {
     setModalTituloMessage("TURNO - REGISTRAR PRESENTE")
@@ -162,7 +176,7 @@ const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
       </Modal.Body>
       <Modal.Footer>
      
-     <Button variant="success" onClick={seleccionarSi}>
+     <Button variant="success" onClick={openMdlEstaSeguro}>
          Aplicar
        </Button>
        <Button variant="primary" onClick={handleClose}>
@@ -172,12 +186,18 @@ const [modalAltaExitosa, setModalAltaExitosa] = useState(false);
      </Modal.Footer>
        
       </Modal>
-        {/*   <MdlAltaExitosa
-                    show={modalAltaExitosa}
-                    handleClose={closeAltaExitosa}
-                    varMensaje={modalMessage}
-                    varMensajeTitulo={modalTituloMessage}
-              /> */}
+
+  {showMDLEstaSeguro && (
+        <MDLEstaSeguro
+          show={openMdlEstaSeguro}
+          handleClose={closeMdlEstaSeguro}
+          mensajetitulo={modalTitulo}
+          mensajecuerpo={modalCuerpo}
+          enviaralpadre={mdlSiNo}
+        />
+      )}
+
+      
               </>
   );
 }; 

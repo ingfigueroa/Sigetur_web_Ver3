@@ -55,6 +55,7 @@ const [vieneDe, setVieneDe] = useState("");
   const [resultAcumulado, setResultAcumulado] = useState(0); // Estado para almacenar el resultado del cálculo
 
   const [totalacobrarpaciente, setTotalacobrarpaciente] = useState(0); 
+  const [totalacobrarobrasocial, setTotalacobrarobrasocial] = useState(0); 
   const [subTotal, setSubTotal] = useState(0); 
  // const [subTotalFormateado, setSubTotalFormateado] = useState(0); 
 
@@ -355,9 +356,7 @@ const [vieneDe, setVieneDe] = useState("");
     const nuevoSubtotal = parseFloat(costo) * inputValueCantidad;
     setSubTotal(nuevoSubtotal)
 
-    const totalacobrarpaciente_parcial = totalacobrarpaciente + acobrarpaciente
-
-    setTotalacobrarpaciente(totalacobrarpaciente_parcial);
+    
 
 
     // Formatea el costo y el subtotal con dos decimales
@@ -373,11 +372,21 @@ const [vieneDe, setVieneDe] = useState("");
       if (fila.os === 'PARTICULAR'){
         acobrarobrasocial = 0;
         acobrarpaciente = costo - acobrarobrasocial;
+        
       }
       else{
         acobrarobrasocial = costo - ((costo * descuentoCoseguro) / 100);
         acobrarpaciente = costo - acobrarobrasocial;
+        
       }
+
+      const totalacobrarobrasocial_parcial = totalacobrarobrasocial + acobrarobrasocial
+
+      setTotalacobrarobrasocial(totalacobrarobrasocial_parcial);
+
+      const totalacobrarpaciente_parcial = totalacobrarpaciente + acobrarpaciente
+
+      setTotalacobrarpaciente(totalacobrarpaciente_parcial);
 
     
 
@@ -408,7 +417,7 @@ const [vieneDe, setVieneDe] = useState("");
   };
 
   
-   async function RegistrarPrestaciones(idturno, idusuario, montoTotalaCobrar, prestaciones) {
+   async function RegistrarPrestaciones(idturno, idusuario, montoTotalaCobrar, cobrarapaciente, cobraraobrasocial,  prestaciones) {
     
   
     try {
@@ -417,6 +426,8 @@ const [vieneDe, setVieneDe] = useState("");
             idturno,
             idusuario,
             montoTotalaCobrar,
+            cobrarapaciente,
+            cobraraobrasocial,
             prestaciones
         );
 
@@ -440,9 +451,9 @@ const [vieneDe, setVieneDe] = useState("");
 }
 
     const mdlSiNo = async (respuesta) => {
-     
+ 
       if (respuesta) {
-          RegistrarPrestaciones(fila.idTurno, UserID, resultAcumulado, prestaciones)
+          RegistrarPrestaciones(fila.idTurno, UserID, resultAcumulado, totalacobrarpaciente, totalacobrarobrasocial, prestaciones)
       }else{
          
 

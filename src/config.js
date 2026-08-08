@@ -62,6 +62,8 @@ const urlResourceTurnoIDPrestaciones = urlServidor + "/turnos/prestacionesportur
 
 const urlResourceTurnoIDDetalle = urlServidor + "/turnoid/detalle"
 
+const urlResourceTurnosProfesionalDiaAtiende = urlServidor + "/turnos/turnoprofesionaldiaatiende"
+
 
 //RECORDATORIO MAIL
 const urlenviarrecordatorioxmailtodalagrilla = urlServidor + "/correos/urlenviarrecordatorioxmailtodalagrilla"
@@ -212,5 +214,6 @@ export const config = {
     urlResourceTarjetasdeCreditos,
     urlResourcepostTurnoRegistrarPrestaciones,
     urlResourceTurnoIDPrestaciones,
-    urlResourceTurnoIDDetalle
+    urlResourceTurnoIDDetalle,
+    urlResourceTurnosProfesionalDiaAtiende
 }

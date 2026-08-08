@@ -266,7 +266,7 @@ function tablapizarradeturnos({}) {
 
   const handleYes = (observaciones) => {
     TurnosCambiarEstado(Item, "PNC", observaciones);
-
+    
     procesar(IDProfesional, Fecha, ClienteID);
 
     // Aquí agregas la lógica para cambiar el estado del turno
@@ -343,7 +343,7 @@ function tablapizarradeturnos({}) {
   };
 
 
-   const handleFechaChange = (input) => {
+ /*   const handleFechaChange = (input) => {
     const valor = typeof input === "string" ? input : input.target.value;
    
     setFecha(valor);
@@ -367,7 +367,7 @@ function tablapizarradeturnos({}) {
 
     SetFechaLarga(fechaLarga);
     limpiarTabla();
-  }; 
+  }; */ 
   
   const fechaActual = fechaActualSinParsear;
   
@@ -380,7 +380,7 @@ function tablapizarradeturnos({}) {
           idprofesional,
           fecha
         );
-        console.log(data)
+       
         // Devuelve true si hay registros, de lo contrario, false
         // Agrega este console para ver qué se devuelve
 
@@ -391,6 +391,29 @@ function tablapizarradeturnos({}) {
           
           return false;
         }
+      } catch (error) {
+        console.error("Error al buscar turnos:", error);
+        return false;
+      }
+    
+     
+  }
+
+  
+  async function TurnosProfesionalNoAtiendeeseDia(idcliente, idprofesional, fecha) {
+    
+      try {
+        const data = await turnosService.TurnosProfesionalNoAtiendeeseDia(
+          idcliente,
+          idprofesional,
+          fecha
+        );
+        
+        // Asegúrate de que data sea un array antes de verificar su longitud
+        
+          
+          return data[0].ExisteHorario;
+        
       } catch (error) {
         console.error("Error al buscar turnos:", error);
         return false;
@@ -619,6 +642,8 @@ function tablapizarradeturnos({}) {
         return;
     }
 
+   
+
     if (idprofesional > 0) {
 
       //fechaactual es la fecha de sistema
@@ -654,6 +679,26 @@ function tablapizarradeturnos({}) {
                   openMdlMensaje();
                   return;
               }
+             
+              const notrabajaesedia = await TurnosProfesionalNoAtiendeeseDia(
+                idcliente,
+                idprofesional,
+                fechadadavuelta
+              );
+      
+              
+              //setTurnosAnulados(hayTurnosAnulados);
+             
+              if (notrabajaesedia === false) {
+                  setModalMensaje(
+                    "El profesional no atiende el día " + formatearFechaLargaConelAnio(fechadadavuelta)
+                  );
+                  //turnosencontrados([]);
+                  openMdlMensaje();
+                  return;
+              }
+
+
 
                 setModalTitulo("Turnos no generados");
                 setModalCuerpo("¿Desea generar turnos para esta fecha para el profesional elegido?");
@@ -760,7 +805,7 @@ function tablapizarradeturnos({}) {
           />
           <hr />
                    <Button
-                     variant="primary"
+                     variant="success"
                      style={{
                        height: "30px", // más alto
                        fontSize: "16px", // texto más grande
@@ -774,7 +819,7 @@ function tablapizarradeturnos({}) {
                        procesar(IDProfesional, Fecha, ClienteID);
                      }}
                    >
-                     BUSCAR
+                     BUSCAR TURNOS
                    </Button>
         </div>
 
@@ -860,37 +905,32 @@ function tablapizarradeturnos({}) {
             >
               <i className="fa-solid fa-chart-pie"></i>
             </button>
+             <Button
+                          title="Limpiar parámetros"
+                          variant="primary"
+                          className="btn "
+                          size="sm"
+                          style={{
+                            
+                            marginLeft: "auto",
+                            textAlign: "center",
+                           
+                          }}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            limpiar();
+                          }}
+                        >
+                         <i className="fa-solid fa-rotate-left"></i>
+                        </Button> 
             
-            <button
-              title="Limpiar"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              style={{ marginLeft: "auto" }}
-              onClick={(event) => {
-                event.preventDefault();
-                limpiar();
-              }}
-            >
-              <i className="fa-solid fa-broom"></i>
-            </button>
-{/*                         <button
-              title="Limpiar"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
-              
-              onClick={(event) => {
-                event.preventDefault();
-                limpiar();
-              }}
-            >
-              <i className="fa-solid fa-broom"></i>
-            </button> */}
 
-            {/* <h5 style={{ color: "black" }}>{descripcion}</h5> */}
           </div>
           <div style={{ flex: 1 }}>
             <InputGroup className="mb-3">
               <Form.Control
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#191970",
                   //backgroundColor: "blue",
                   color: "white",
                   height: "28px",
@@ -907,7 +947,7 @@ function tablapizarradeturnos({}) {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#191970",
                   color: "white",
                   height: "28px",
                 }}
@@ -940,7 +980,7 @@ function tablapizarradeturnos({}) {
               </Button>
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#191970",
                   color: "white",
                   height: "28px",
                 }}
@@ -961,7 +1001,7 @@ function tablapizarradeturnos({}) {
               />
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#191970",
                   color: "white",
                   height: "28px",
                   width: "15%",
@@ -980,23 +1020,7 @@ function tablapizarradeturnos({}) {
                 readOnly
                 value={cantidadTurnos}
               />
-              {/*   <Button
-                variant="primary"
-                size="sm"
-                style={{
-                  marginLeft: "10px",
-                  marginRight: "10px",
-                  width: "10%",
-                  textAlign: "center",
-                  height: "30px",
-                }}
-                onClick={(event) => {
-                  event.preventDefault();
-                  limpiar();
-                }}
-              >
-                Limpiar
-              </Button> */}
+             
             </InputGroup>
 
           <div className="tabla-container">
@@ -1061,8 +1085,9 @@ function tablapizarradeturnos({}) {
                   {Items &&
                     Items.map((item) => {
                       // Formatear el campo "Descripcion" como hora
-
+                   
                       const fechaTurnoCompleta = crearFechaHora(Fecha, item.hora)
+                      
 
                       const ahora = new Date();
 
@@ -1119,7 +1144,7 @@ function tablapizarradeturnos({}) {
                           break;
 
                         case "LIB":
-
+                         
                           if (ahora >= fechaTurnoCompleta) {
                             isButtonDisabled = true;
                           }
@@ -1386,6 +1411,7 @@ function tablapizarradeturnos({}) {
           idprofesional={IDProfesional}
           fecha={fechaSistema}
           profesional={apeyNom}
+          idcliente={ClienteID}
         />
       )}
 
