@@ -2,7 +2,7 @@ import {React, useState} from "react";
 
 import { useSearchParams, useNavigate } from "react-router-dom";
 
-import "/src/CSS/login.css";
+import "/src/css/login.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
