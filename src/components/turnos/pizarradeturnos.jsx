@@ -27,7 +27,7 @@ import Mdllistaespera from "../listadeespera/listadeespera_ver1";
 import MdlAsignarlistaesperadesdePizarra from "../listadeespera/asignarTurnoListadeEsperadesdepizarra";
 
 import MdlAnular from "../modales/mdlAnular";
-import MdlMensaje from "../modales/MdlMensaje";
+import MdlMensaje from "../modales/mdlMensaje";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import { turnosService } from "/src/services/turnos.service";
