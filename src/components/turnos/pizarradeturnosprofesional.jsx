@@ -23,7 +23,7 @@ import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
 import Mdllistaespera from "../mdlListaEspera";
 
 import MdlAnular from "../modales/mdlAnular";
-import MdlMensaje from "../modales/MdlMensaje";
+import MdlMensaje from "../modales/mdlMensaje";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import { turnosService } from "/src/services/turnos.service";
