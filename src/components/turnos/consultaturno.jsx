@@ -16,7 +16,7 @@ import "/src/css/tablapizaturnos.css";
 
 import { turnosService } from "/src/services/turnos.service";
 
-import { profesionesService } from "/src/services/profesiones.Service";
+import { profesionesService } from "/src/services/profesiones.service";
 import { estadosService } from "/src/services/estados.service";
 import MdlTurnoDetalle from "./mdlturnosdetalle_vers1";
 
