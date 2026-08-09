@@ -186,7 +186,7 @@
 .presentacion{
   width: 200vh;
   height: 550px;
-  background-image: url("../assets/Turnos.jpg");
+  background-image: url("/public/assets/Turnos.jpg");
   background-repeat: no-repeat;
   background-position: left;
   

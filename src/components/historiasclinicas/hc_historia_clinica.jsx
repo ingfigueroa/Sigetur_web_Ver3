@@ -249,8 +249,8 @@ const closeMdlMensaje = () => {
       carahinchadapusohielo: false,
       carahinchadapusocalor: false,
       carahinchadapusootros: "",
-      momentosazucardiarios: "",
-      indicedeplacas: "",
+  
+      
       observaciones: "",
       localizadodolor: "",
       irradiadodolor: "",
@@ -829,7 +829,7 @@ const closeMdlMensaje = () => {
       (ao.general.carahinchadapusocalor = data.carahinchadapusocalor),
       (ao.general.carahinchadapusootros = data.carahinchadapusootros),
       (ao.general.momentosazucardiarios = data.momentosazucardiarios),
-      (ao.general.indicedeplacas = data.indicedeplacas),
+      
       (ao.general.observaciones = data.observaciones),
       (ao.dolor.hatenidodolor = data.hatenidodolor),
       (ao.general.localizadodolor = data.localizadodolor),

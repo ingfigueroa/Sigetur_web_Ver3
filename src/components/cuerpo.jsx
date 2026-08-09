@@ -5,7 +5,7 @@ import "../css/cuerpo.css";
 
 import { Link } from "react-router-dom";
 
-import Funcionalidades1 from "./Funcionalidades1";
+import Funcionalidades1 from "./funcionalidades1";
 import Footer from "./Footer";
 import Funcionalidades from "./funcionalidades";
 import Quienessomos from "./Quienessomos";

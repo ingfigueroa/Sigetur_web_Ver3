@@ -161,7 +161,7 @@ function ConsultaTurnos() {
         style={{
           width: "100%",
 
-          marginTop: "0",
+         
           marginBottom: "0",
           marginLeft: "5px",
           marginRight: "5px",
@@ -228,7 +228,7 @@ function ConsultaTurnos() {
                 backgroundColor: "#679bb9",
                 width: "auto",
                 color: "black",
-                backgroundColor: "white",
+                
                 height: "28px",
               }}
             >
@@ -256,7 +256,7 @@ function ConsultaTurnos() {
                 backgroundColor: "#679bb9",
                 width: "auto",
                 color: "black",
-                backgroundColor: "white",
+               
                 height: "28px",
               }}
             >

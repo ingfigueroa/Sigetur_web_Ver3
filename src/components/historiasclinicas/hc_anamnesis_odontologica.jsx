@@ -83,8 +83,8 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
       carahinchadapusohielo: data.general.carahinchadapusohielo,
       carahinchadapusocalor: data.general.carahinchadapusocalor,
       carahinchadapusootros: data.general.carahinchadapusootros,
-      momentosazucardiarios: data.general.momentosazucardiarios,
-      indicedeplacas: data.general.indicedeplacas,
+    
+      
       observaciones: data.general.observaciones,
 
       // ================= CONSULTAS PREVIAS =================
