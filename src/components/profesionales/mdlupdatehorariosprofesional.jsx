@@ -889,7 +889,7 @@ const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
 
             <h5>Horarios nuevos</h5>
             {/* TABLA FINAL */}
-            <Table bordered striped hover responsive size="sm" responsive>
+            <Table bordered striped hover responsive size="sm">
               <thead
                 style={{
                   backgroundColor: "#083149ff",

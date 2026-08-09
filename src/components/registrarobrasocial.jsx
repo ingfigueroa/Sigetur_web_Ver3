@@ -27,7 +27,7 @@ export default function registrarobrasocial() {
             display: "flex",
             width: "100%",
             padding: "20px 10px",
-            backgroundColor: "white",
+            backgroundColor: "white"
           }}
         >
           <div style={{ width: "70%", margin: "auto" }}>
