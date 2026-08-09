@@ -11,7 +11,7 @@ import Modal from "react-bootstrap/Modal";
 import { tiposexoService } from "/src/services/tiposexo.service.js";
 
 import { pacientesService } from "/src/services/pacientes.service.js";
-import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
+import { tipodocumentoService } from "/src/services/tipodocumento.service.js";
 
 
 import MdlValidar from "../modales/mdlvalidar";

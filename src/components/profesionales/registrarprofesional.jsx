@@ -9,7 +9,7 @@ import Modal from "react-bootstrap/Modal";
 import { tiposexoService } from "/src/services/tiposexo.service.js";
 import { profesionesService } from "/src/services/profesiones.service.js";
 import { profesionalesService } from "/src/services/profesional.service.js";
-import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
+import { tipodocumentoService } from "/src/services/tipodocumento.service.js";
 import { provinciasService } from "/src/services/provincias.service.js";
 import { localidadesService } from "/src/services/localidades.service.js";
 

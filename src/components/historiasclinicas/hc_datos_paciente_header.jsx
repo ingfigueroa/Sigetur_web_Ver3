@@ -4,7 +4,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 
 import { tiposexoService } from "/src/services/tiposexo.service";
-import { tipodocumentoService } from "/src/services/tipoDocumento.service";
+import { tipodocumentoService } from "/src/services/tipodocumento.service";
 
 
 import { calcularEdadDiaMesAnio, getFechaDMY } from "../../components/utils/fecha";

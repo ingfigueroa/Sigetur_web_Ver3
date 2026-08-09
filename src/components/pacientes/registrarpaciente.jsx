@@ -11,7 +11,7 @@ import Modal from "react-bootstrap/Modal";
 // Servicios
 import { pacientesService } from "../../services/pacientes.service";
 import { tiposexoService } from "/src/services/tiposexo.service.js";
-import { tipodocumentoService } from "/src/services/tipoDocumento.service.js";
+import { tipodocumentoService } from "/src/services/tipodocumento.service.js";
 import { provinciasService } from "/src/services/provincias.service.js";
 import { localidadesService } from "/src/services/localidades.service.js";
 
