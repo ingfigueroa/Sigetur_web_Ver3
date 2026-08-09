@@ -18,7 +18,7 @@ import { turnosService } from "/src/servicenos.service";
 import { profesionalesService } from "/src/services/profesional.service";
 import MdlListarProfesionales from "../profesionales/mdllistarprofesionales";
 import MdlAltaTurno from "../turnos/mdlaltaturno";
-import MdlMensaje from "../modales/MdlMensaje";
+import MdlMensaje from "../modales/mdlMensaje";
 import MdlCambiarEstado from "../modales/mdlCambiarEstado";
 import Mdlturnoregistrarcobro from "../turnos/mdlturnoregistrarcobro";
 import MdlTurnoDetalle from "../turnos/mdlturnosdetalle_vers1";

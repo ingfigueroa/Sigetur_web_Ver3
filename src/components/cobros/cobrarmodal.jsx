@@ -7,7 +7,7 @@ import DebitoForm from "./tarjetadebitoform";
 import TransferenciaForm from "./transferenciaform";
 import ContadoForm from "./contadoform";
 
-import MdlMensaje from "../modales/MdlMensaje";
+import MdlMensaje from "../modales/mdlMensaje";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import { mediosdepagosService } from "/src/services/mediosdepagos.service";

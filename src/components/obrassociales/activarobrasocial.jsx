@@ -14,7 +14,7 @@ import "/src/css/tablapizaturnos.css";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
-import AbrirMDLMensaje from "../modales/MdlMensaje";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
 
 import { obrassocialesService } from "/src/services/obrassociales.service";
 

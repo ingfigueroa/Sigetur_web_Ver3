@@ -12,7 +12,7 @@ import { obrassocialesService } from "/src/services/obrassociales.service";
 
 import MdlListarPrestaciones from "../prestaciones/mdllistarprestaciones";
 import { prestacionesService } from "../../services/prestaciones.service";
-import MdlMensaje from "../modales/MdlMensaje";
+import MdlMensaje from "../modales/mdlMensaje";
 
 import { formatearFecha} from "../utils/fecha";
 

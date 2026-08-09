@@ -11,7 +11,7 @@ import { listadeesperaService } from "/src/services/listadeespera.service";
 import { obrassocialesService } from "/src/services/obrassociales.service";
 
 import "/src/css/personalizar-modales.css";
-import AbrirMDLMensaje from "../modales/MdlMensaje";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import {formatearFecha, ajustarHoraArgentina, formatearFechaLargaConelAnio_llegafechalarga_Ver1 } from "../../components/utils/fecha";

@@ -19,7 +19,7 @@ import { localidadesService } from "/src/services/localidades.service.js";
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
-import AbrirMDLMensaje from "../modales/MdlMensaje";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
 
 // Utilidades
 import { calcularEdadDiaMesAnio } from "../../components/utils/fecha";
