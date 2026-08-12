@@ -75,7 +75,7 @@ const handleSubmit = async () => {
               <img src="./assets/Logo_2022_resolucion.jpg" alt="" />
             </a>
           </div>
-        
+         
           <Form >
             <Form.Group className="mb-3" 
             >

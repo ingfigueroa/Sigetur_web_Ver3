@@ -54,13 +54,13 @@ function cuerpo() {
         
       </div>
       
-        <Quienessomos />
+      {/*   <Quienessomos />
       
        
       
         <Funcionalidades />
       
-        <Funcionalidades1 /> 
+        <Funcionalidades1 />  */}
       
 
       
