@@ -3,13 +3,13 @@
 
   display: grid;
   place-items: center;
-  height: 1200px;
-  width:  1250px;
-  justify-content: left;
-  align-items: center;
+ 
+  width:  1300px;
+  
   margin-left: 3%;
   color: white;
   text-align: right;
+  
 
 }
 
@@ -25,13 +25,13 @@
   text-align: left;
   font-size:500S;
   margin-left: 45px;
-  margin-bottom: 45px;
+ 
 }
 
 #cuerpo h5{
   
   
-  margin-right: 35px;
+  margin-right: 135px;
   
  
   
@@ -49,8 +49,8 @@
 
 #cuerpo a{
   
-  
-  margin-right: 35px;
+  margin-top: 50px;
+  margin-right: 135px;
   color: white;
   font-size: 200%;
  
@@ -173,6 +173,7 @@
   
   color: black;
 }
+
 #quienessomos h5{
   
   text-align: center;
@@ -184,11 +185,11 @@
 
 
 .presentacion{
-  width: 200vh;
+  width: 220vh;
   height: 550px;
   background-image: url("/public/assets/Turnos.jpg");
   background-repeat: no-repeat;
-  background-position: left;
+  background-position: 0 0;
   
 
 }

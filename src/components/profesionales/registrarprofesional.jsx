@@ -23,6 +23,8 @@ import "/src/css/registrarprofesional.css";
 
 const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
 
+
+
  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
     "¿Desea grabar un nuevo profesional?",
   );
@@ -155,7 +157,7 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
  
       if (!validar()){
           
-         console.log("paso por aca profesional alta")
+        
           return;
       }
 
@@ -236,19 +238,19 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
         CuitCuil,
         MatriculaNro,
         idTipoProfesionSelected,
-        userId,
+        UserID,
         idprovincia,
         idlocalidad,
         nuevo
       );
-  
-      if (response.data){
+   console.log(response)
+      if (response.data.resultado===0){
               setMensaje(
                 "Se creó el profesional.\n\n" +
                 "Para activar la cuenta del profesional siga estos pasos:\n\n" +
                 "1.- Tiene que ir a LOGIN.\n\n" +
                 "2.- Olvidé mi contraseña.\n\n" +
-                "3.- Resetear la password usando el mail que ingresó."
+                "3.- Resetear la password usando el mail que ingresó del profesional."
             );
 
             openMdlMensaje();
@@ -261,13 +263,14 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
 
-      console.log(error)
+     setMensaje(error)
+     openMdlMensaje();
       return;
     }
   }
 
   const cargarLocalidades = async (idprovincia) => {
-    console.log(idprovincia)
+   
   try {
 
  if (idprovincia > 0) {
@@ -289,11 +292,11 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
       try {
          
        const bandera = await Grabar(); // ejecutamos la función de grabar
-        
+        console.log(bandera)
         if (bandera){
-        setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
-        openMdlMensaje(); // abrimos el modal de mensaje
-        handleClose();
+            setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
+            openMdlMensaje(); // abrimos el modal de mensaje
+            handleClose();
         }else{
            setMensaje("No se grabó el NUEVO PACIENTE."); // mensaje a mostrar
         openMdlMensaje(); // abrimos el modal de mensaje

@@ -1,6 +1,6 @@
 
-//const urlServidor = "http://localhost:3000"
-const urlServidor = "https://sigetur.ar";
+const urlServidor = "http://localhost:3000"
+//const urlServidor = "https://sigetur.ar";
 
 //PROFESIONALES
 const urlResourceProfesional = urlServidor + "/profesionales";

@@ -14,39 +14,48 @@ import Quienessomos from "./Quienessomos";
 
 function cuerpo() {
   return (
+    <>
     <div id="cuerpo">
        
      
      
       <div className="presentacion">
-{/*         <h1 className="">Sistema de Gestión de Turnos</h1>
 
-        <h2 className="">para profesionales de la salud</h2> */}
 
-        <h1 className="">La plataforma integral para la administración</h1>
+        <h2 className="">La plataforma integral para la administración</h2>
         
 
-        <h1 className="">de consultorios y centros de salud.</h1>
+        <h2 className="">de consultorios y centros de salud.</h2>
 
         <br></br>
+         <h5>   </h5>
 
-        <h5 className="h5home">te ayudamos a gestionar, organizar </h5>
-        <h5 className="h5home"> los turnos de tu consultorio</h5>
-        <h5 className="h5home"> y a administrar a tus</h5>
-        <h5 className="h5home"> pacientes-profesionales. </h5>
+
+
+<div></div>
+<br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+        <h5 className="h5home">Te ayudamos a organizar los turnos de tu consultorio, </h5>
+        <h5 className="h5home"> así como a gestionar los datos</h5>
+        
+        <h5 className="h5home"> de tus pacientes y profesionales. </h5>
 
           <br />
           <br />
           <br />
           
             <Link to="/login">
-           <Button variant="outline-primary" className="text-white" size="lg">
+           <Button variant="outline-primary" className="" size="lg">
                 Iniciar sesión
               </Button>
             </Link>
        
             <Link to="/crearcuentapasouno"> 
-            <Button variant="outline-primary" className="text-white" size="lg">
+            <Button variant="outline-primary" className="" size="lg">
             Registrarse
             </Button>
             </Link>
@@ -58,15 +67,17 @@ function cuerpo() {
       
        
       
-        <Funcionalidades />
+        
       
         <Funcionalidades1 />  */}
       
-
+<Funcionalidades />
       
-        <Footer />
+        
       
     </div>
+    <Footer />
+    </>
   );
 }
 

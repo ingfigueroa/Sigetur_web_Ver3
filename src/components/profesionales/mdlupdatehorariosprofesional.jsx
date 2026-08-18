@@ -17,6 +17,9 @@ import {
   formatearFechaLargaConelAnio
 } from "../../components/utils/fecha";
 
+import MDLEstaSeguro from "../modales/mdlEstaSeguro";
+import AbrirMDLMensaje from "../modales/mdlMensaje";
+
 import { profesionalesService } from "/src/services/profesional.service";
 
 import { horasService } from "/src/services/horas.service";
@@ -52,6 +55,64 @@ const mdlupdatehorariosprofesional = ({
   const [horarios, setHorarios] = useState([]); // tabla secundaria
 
   const [mensaje, setMensaje] = useState("");
+    const [showMDLMensaje, setShowMDLMensaje] = useState("");
+
+
+    const [modalTitulo, setModalTitulo] = useState();
+    const [modalCuerpo, setModalCuerpo] = useState();
+      const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState("");
+
+  
+  const openMdlMensaje = () => {
+    setShowMDLMensaje(true);
+  };
+
+  const closeMdlMensaje = () => {
+    setShowMDLMensaje(false);
+  };
+
+  const openMdlEstaSeguro = () => {
+
+     setModalTitulo("REGISTRAR CAMBIO DE HORARIOS")
+    setModalCuerpo("¿Está seguro de registrar el cambio de horario a partir de " + fechaLargarMostrar + "?")
+
+    setShowMDLEstaSeguro(true);
+   
+  };
+
+  const closeMdlEstaSeguro = () => {
+    setShowMDLEstaSeguro(false);
+  };
+
+    const mdlSiNo = async (respuesta) => {
+    closeMdlEstaSeguro(); // cerramos primero el modal de confirmación
+
+    if (respuesta) {
+      try {
+         
+      await updateHorarios(idcliente, idprofesional, fechaCambioHorario)
+       /*  
+        if (bandera){
+        setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
+        openMdlMensaje(); // abrimos el modal de mensaje
+        handleClose();
+        }else{
+           setMensaje("No se grabó el NUEVO PACIENTE."); // mensaje a mostrar
+        openMdlMensaje(); // abrimos el modal de mensaje
+        handleClose();
+        } */
+        setMensaje("Se grabó con éxito el cambio de horario.");
+        openMdlMensaje();
+       
+      } catch (error) {
+        setMensaje("Ocurrió un error al grabar");
+        openMdlMensaje();
+      }
+    } else {
+      setMensaje("Usuario canceló la operación");
+      openMdlMensaje(); // opcional, si querés mostrar que canceló
+    }
+  };
 
   async function Buscar() {
     /*  const fechaActual = formatearFecha(fechaActualSinParsear); */
@@ -104,9 +165,9 @@ const mdlupdatehorariosprofesional = ({
     setValidarBotonAgregarHorario(true);
     setErrorFecha(false); // 👈 quitamos error
   }
-const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
+async function updateHorarios (idcliente,idprofesional, fechadesde) {
   try {
-    console.log(horarios)
+    
     const payload = horarios.map(item => ({
       idusuario,
       idcliente,
@@ -126,11 +187,23 @@ const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
       idnocheintervalo: item.idIntervaloNoche || null,
       fechadesde,
     }));
-    console.log(payload)
-    await profesionalesService.putCambioHorarioMultiple(payload);
-    console.log("Horarios enviados correctamente");
+    
+    const response = await profesionalesService.putCambioHorarioMultiple(payload);
+    if (response.data){
+              setMensaje(
+                "Se registró el cambio de horario." 
+            );
+
+            openMdlMensaje();
+            handleClose()
+      }else{
+         setMensaje("No se pudo crear el profesional");
+          openMdlMensaje();
+      }
+
   } catch (error) {
-    console.error("Error al enviar horarios:", error);
+    setMensaje("Error al enviar horarios:", error);
+    showMDLMensaje();
   }
 };
 
@@ -316,6 +389,7 @@ const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
   
   
   return (
+    <>
     <Modal
       show={show}
       onHide={handleClose}
@@ -994,7 +1068,8 @@ const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
               <ButtonGroup className="mb-2">
               <Button
                 variant="success"
-                onClick={() => updateHorarios(idcliente, idprofesional, fechaCambioHorario)}
+                onClick={openMdlEstaSeguro}
+                //onClick={() => updateHorarios(idcliente, idprofesional, fechaCambioHorario)}
                 disabled={horarios.length === 0}
               >
                 Grabar nuevos horarios
@@ -1013,6 +1088,24 @@ const updateHorarios = async (idcliente,idprofesional, fechadesde) => {
         </div>
       </Modal.Body>
     </Modal>
+       {showMDLEstaSeguro && (
+        <MDLEstaSeguro
+          show={openMdlEstaSeguro}
+          handleClose={closeMdlEstaSeguro}
+          mensajetitulo={modalTitulo}
+          mensajecuerpo={modalCuerpo}
+          enviaralpadre={mdlSiNo}
+        />
+      )}
+
+       {showMDLMensaje && (
+                          <AbrirMDLMensaje
+                            show={showMDLMensaje}
+                            handleClose={closeMdlMensaje}
+                            modalMessage={mensaje}
+                          />
+                        )}
+      </>
   );
 };
 

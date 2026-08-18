@@ -20,9 +20,9 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import "../css/hero.css";
+import "./hero.css";
 
-const Home = () => {
+const Hero = () => {
   return (
     <div className="home">
 
@@ -729,4 +729,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Hero;

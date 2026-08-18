@@ -36,8 +36,7 @@ function Profesionales() {
 
   const ClienteID = getClienteId();
   const UserID = getUsuarioId();
-  
-  
+
   
   const [accionConfirmada, setAccionConfirmada] = useState(null);
 
@@ -721,6 +720,8 @@ const anio1 = ultimoDiaMes.getFullYear();
         <MdlAltaProfesionales
           show={openMdlRegistrarProfe}
           handleClose={closeMdlRegistrarProfe}
+          ClienteID={ClienteID}
+          UserID={UserID}
         />
       )}
 
