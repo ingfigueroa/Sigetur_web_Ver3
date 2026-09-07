@@ -69,14 +69,15 @@ function registrarconsultoriocuerpo() {
               }
             };
     
-
-const handleSubmit = async () => {
-
   const emailValido = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
-      if (!email || !emailValido(email)) {
+const handleSubmit = async () => {
+
+
+
+      if (!EMail || !emailValido(EMail)) {
         setMensaje('Debe ingresar una cuenta de correo con formato válido.');
         openMdlMensaje();
         return;
@@ -85,7 +86,7 @@ const handleSubmit = async () => {
   try {
 
    
-    const data = await correosServices.CrearCuenta(email);
+    const data = await correosServices.CrearCuenta(EMail);
     
     setMensaje(data.message);
     openMdlMensaje();
