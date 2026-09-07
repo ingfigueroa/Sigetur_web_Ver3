@@ -581,7 +581,7 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                   backgroundColor: "#4b959b",
 
                   color: "white",
                   height: "28px",
@@ -610,7 +610,7 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
               />
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                   backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                 }}
@@ -644,7 +644,7 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                 }}
@@ -665,7 +665,7 @@ const fechaActualSinParsear = new Date().toLocaleDateString();
               />
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                   width: "20%",

@@ -29,6 +29,9 @@ import { AuthContext } from "/src/context/AuthContext";
 
 // CSS
 import "/src/css/registrarpaciente.css";
+
+
+
 const registrarpaciente = ({ show, handleClose, idcliente, idusuario }) => {
  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
     "¿Desea grabar el nuevo paciente?",
@@ -72,7 +75,7 @@ const [modalMessage, setModalMessage] = useState("");
  const openMdlEstaSeguro = () => {
  
       if (!validar()){
-          console.log("Pasa por aca")
+         
          
           return;
       }
@@ -104,6 +107,7 @@ const [modalMessage, setModalMessage] = useState("");
 
   const closeMdlMensaje = () => {
     setShowMDLMensaje(false);
+     handleClose();
   };
   const openModalAlta = () => {
     setModalMessage("ALTA EXITOSA");
@@ -223,6 +227,32 @@ const [modalMessage, setModalMessage] = useState("");
             console.error(error);
           }
         };
+        const BuscarPacientePorEMAIL = async () => {
+          if (!EMail) return;
+
+          try {
+              
+              const data = await pacientesService.BuscarPacientexEMail(
+                EMail
+              );
+          
+              console.log(data)
+            if (data.total === 1) {
+              setMensaje("Ya existe un paciente con el EMAIL ingresado.");
+              setEMail("")
+              openMdlMensaje()
+
+              
+              // Completar los datos del formulario
+              // setApellido(respuesta.data.apellido);
+              // setNombre(respuesta.data.nombre);
+              // ...
+            } 
+          } catch (error) {
+            setMensaje(error);
+            openMdlMensaje();
+          }
+        };
 
     const cargarLocalidades = async (idprovincia) => {
       
@@ -265,12 +295,10 @@ const [modalMessage, setModalMessage] = useState("");
       idprovincia,
       idlocalidad
     });
-      setMensaje(response.message);
-
-      openMdlMensaje();
+     
       return true;
   }catch (error) {
-    console.error(error);
+   
     return false;
 }
   }
@@ -287,11 +315,11 @@ const [modalMessage, setModalMessage] = useState("");
         if (bandera){
            setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
         openMdlMensaje(); // abrimos el modal de mensaje
-        handleClose();
+       
         }else{
            setMensaje("No se grabó el NUEVO PACIENTE."); // mensaje a mostrar
         openMdlMensaje(); // abrimos el modal de mensaje
-        handleClose();
+        
         }
        
       } catch (error) {
@@ -499,8 +527,13 @@ const [modalMessage, setModalMessage] = useState("");
                     aria-label="Ingresar correo electrónico"
                     aria-describedby="basic-addon2"
                     type="email"
+                     onChange={(e) => {
+                      const email = e.target.value;
+                      setEMail(email);
+                      
+                    }}
+                     onBlur={BuscarPacientePorEMAIL}
                     value={EMail}
-                    onChange={(e) => setEMail(e.target.value)}
                   />
                   <InputGroup.Text
                     style={{ backgroundColor: "#679bb9", color: "white" }}

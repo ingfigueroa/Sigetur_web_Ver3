@@ -12,7 +12,7 @@ import httpService from "./http.service";
  const urlResourceProfesionalDarBaja = config.urlResourceProfesionalDarBaja
 const urlResourceProfesionalFechaCambioHorario = config.urlResourceProfesionalFechaCambioHorario
 const urlResourceProfesionalCambioHorario = config.urlResourceProfesionalCambioHorario
-const urlResourceIDProfesionalEmail = config.urlResourceIDProfesionalEmail
+const urlResourceProfesionalEmail = config.urlResourceProfesionalEmail
 
 
 
@@ -40,7 +40,7 @@ async function ActivarDesactivar(item) {
   await httpService.delete(urlResource + "/" + item.Id);
 }
 
-async function GrabarAlta(idcliente, idProfesional, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion, idusuario, nuevo) {
+async function GrabarAlta(idcliente, idProfesional, Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, CuitCuil, matriculanro, idtipoprofesion, idusuario, idprovincia, idlocalidad, nuevo) {
 
 
   try {
@@ -61,10 +61,12 @@ async function GrabarAlta(idcliente, idProfesional, Nombres, Apellido, TipoDocum
       matriculanro, 
       idtipoprofesion,
       idusuario,
+      idprovincia,
+      idlocalidad,
       nuevo
     });
    
-
+    
 
   return response
 
@@ -138,15 +140,15 @@ async function putCambioHorarioMultiple(payload){
 
 
 
-async function BuscarIDProfesionalxEMail(email, idcliente) {
+async function BuscarProfesionalxEMail(email) {
 
-  const resp = await httpService.get(urlResourceIDProfesionalEmail, {
-    params: {email, idcliente},
+  const resp = await httpService.get(urlResourceProfesionalEmail, {
+    params: {email},
   } );
 
   return resp.data;
 }
 
 export const profesionalesService = {
-  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja, getBuscarFechaCambioHorario, putCambioHorarioMultiple, BuscarIDProfesionalxEMail
+  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja, getBuscarFechaCambioHorario, putCambioHorarioMultiple, BuscarProfesionalxEMail
 };

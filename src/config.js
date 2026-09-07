@@ -11,7 +11,7 @@ const urlResourceProfesionalID = urlServidor + "/profesionalid";
 const urlResourceProfesionalDarBaja = urlServidor + "/profesional/baja";
 const urlResourceProfesionalFechaCambioHorario = urlServidor + "/profesional/fechacambiohorario";
 const urlResourceProfesionalCambioHorario = urlServidor + "/profesional/cambiohorariomultiple"
-const urlResourceIDProfesionalEmail = urlServidor + "/idprofesionalemail";
+const urlResourceProfesionalEmail = urlServidor + "/idprofesionalemail";
 
 
 //PACIENTES
@@ -20,6 +20,7 @@ const urlResourcePacientesAdd = urlServidor + "/pacienteadd";
 const urlResourcePacientesUpdate = urlServidor + "/pacienteupdate"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
 const urlResourcePacienteUltimosTurnos = urlServidor + "/pacientesultimosturnos";
+const urlResourcePacienteEMAIL = urlServidor + "/pacienteemail";
 
 //OBRAS SOCIALES
 const urlResourceObrasSociales = urlServidor + "/obrassociales";
@@ -130,6 +131,8 @@ const urlTokenEmailProfesional = urlServidor + "/enviartokenemailprofesional"
 //SIGETUR CONFIGURACION O PANTALLA DE INICIO
 const urlValoresPantallaInicio = urlServidor + "/valorespantallainicio"
 
+//USUARIOS MANEJO DE ROUTES
+const urlResourceUsuarioEmail = urlServidor + "/usuarioemail";
 
 
 
@@ -208,7 +211,7 @@ export const config = {
     urlValidarTokenEmailResetPassword,
     urlUpdatePassword,
     urlTokenEmailProfesional,
-    urlResourceIDProfesionalEmail,
+    urlResourceProfesionalEmail,
     urlenviarrecordatorioxmailtodalagrilla,
     urlenviarrecordatorioxmailpacienteseleccionado,
     urlResourcepostTurnoCobrar,
@@ -216,5 +219,7 @@ export const config = {
     urlResourcepostTurnoRegistrarPrestaciones,
     urlResourceTurnoIDPrestaciones,
     urlResourceTurnoIDDetalle,
-    urlResourceTurnosProfesionalDiaAtiende
+    urlResourceTurnosProfesionalDiaAtiende,
+    urlResourcePacienteEMAIL,
+    urlResourceUsuarioEmail
 }

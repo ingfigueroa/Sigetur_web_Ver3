@@ -8,6 +8,8 @@ import Button from "react-bootstrap/Button";
 
 import { clientesServices } from "/src/services/clientes.service.js";
 
+import AbrirMDLMensaje from "../modales/mdlMensaje";
+
 
 function Login1() {
 
@@ -36,28 +38,45 @@ const handleSubmit = async () => {
 
 
     const response = await clientesServices.getLoginUsuario(usuario,password);
-   console.log(response)
-    const { isValid, user, token } = response;
+   
+   
+if (response === false) {
  
 
-    if (isValid) {
+  setMensaje("No se pudo acceder a la plataforma de SIGETUR.");
+  openMdlMensaje();
 
-      // 🔐 guardar token
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+  setTimeout(() => {
+    
+    handleClose();
+  }, 2000);
 
-      // 🚀 navegar
-      setTimeout(() => {
-        navigate("/sigetur", {
-          state: { user }
-        });
-      }, 500);
+  return;
 
-    } else {
-      setMensaje("Contraseña o usuario incorrecto");
-      openMdlMensaje();
     }
 
+   
+        const { isValid, user, token } = response;
+        if (isValid) {
+
+          // 🔐 guardar token
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+
+          // 🚀 navegar
+          setTimeout(() => {
+            navigate("/sigetur", {
+              state: { user }
+            });
+          }, 500);
+        }else{
+          setMensaje("Error en el ingreso del usuario o contraseña.");
+      openMdlMensaje();
+        }
+
+    
+
+   
   } catch (error) {
     console.log(error);
   }
@@ -67,6 +86,7 @@ const handleSubmit = async () => {
   
 
   return (
+    <>
     <div id="fondo1">
       <div id="loginform" style={{background:"white"}}>
         <Form action="">
@@ -144,28 +164,35 @@ const handleSubmit = async () => {
         </Form>
       </div>
       <div id="fondo">
-        <h1 classname="">Portal de turnos - Si.Ge.Tur.</h1>
-        
+
+         <h1>
+         Plataforma  
+          <span> de turnos para</span> 
+          <span>profesionales de la salud.</span>
+        </h1>
 
         <h2 classname="">
-          Administrá los turnos <br></br>de tu consultorio o clínica
+          Administrá los turnos de tu consultorio <br></br>particular o multiespecialidad
         </h2>
+        
 
-        <h4 className="">te ayudamos a GESTIONAR y ORGANIZAR tu consultorio</h4>
-        <h4 className="">pacientes / profesionales / turnos </h4>
+        <h4 className="">te ayudamos a GESTIONAR y ORGANIZAR tus</h4>
+        <h4 className="">pacientes - profesionales - turnos - historia clínica</h4>
       </div>
     </div>
     
-
-  );
-  {showMDLMensaje && (
+ {showMDLMensaje && (
             <AbrirMDLMensaje
               show={openMdlMensaje}
               handleClose={closeMdlMensaje}
               modalMessage={mensaje}
             />
           )}
+          </>
+  );
+ 
 }
 
+          
 
 export default Login1;

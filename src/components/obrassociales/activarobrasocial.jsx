@@ -153,7 +153,7 @@ useEffect(() => {
       <Modal show={show} onHide={handleClose} size="xl" backdrop="static">
         <Modal.Header
           closeButton
-          style={{ backgroundColor: "#9ba4aaff", color: "white" }}
+          style={{ backgroundColor: "#198754", color: "white" }}
         >
           <Modal.Title>ACTIVAR UNA OBRA SOCIAL EN LA CLINICA O CONSULTORIO</Modal.Title>
         </Modal.Header>

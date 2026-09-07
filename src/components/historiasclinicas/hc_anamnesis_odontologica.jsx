@@ -159,7 +159,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
       altodientes: data.lesiones.altodientes,
       altodientesdetalle: data.lesiones.altodientesdetalle,
     };
-
+ 
     try {
       
       await historiaclinicaService.GrabarAnamnesisOdontologica(payload);
@@ -1104,7 +1104,7 @@ function AnamnesisOdontologica({ data, setData, idpaciente }) {
                 whiteSpace: "nowrap",
               }}
               onClick={(event) => {
-                grabarAnamnesis();
+                openMdlEstaSeguro();
                 event.preventDefault();
               }}
             >

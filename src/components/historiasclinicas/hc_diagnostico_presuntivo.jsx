@@ -8,7 +8,7 @@ import { historiaclinicaService } from "../../services/historiaclinica.service";
 
 import {formatearFechaLargaConelAnio} from "../utils/fecha"
 
-function DiagnosticoPresuntivo({ data, idpaciente, idprofesional, idusuario }) {
+function DiagnosticoPresuntivo({ data, idpaciente, idcliente, idusuario }) {
   console.log(data);
   const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
     "¿Desea grabar el diágnostico?",
@@ -46,7 +46,7 @@ function DiagnosticoPresuntivo({ data, idpaciente, idprofesional, idusuario }) {
     try {
       const data = await historiaclinicaService.CreateHCDiagnostico(
         idpaciente,
-        idprofesional,
+        idcliente,
         idusuario,
         diagnostico,
       );
@@ -54,8 +54,8 @@ function DiagnosticoPresuntivo({ data, idpaciente, idprofesional, idusuario }) {
       setMensaje("Se dió de alta el diagnostico.");
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
-      console.log("por error");
-
+      setMensaje("por error");
+      openMdlMensaje();
       return;
     }
   }

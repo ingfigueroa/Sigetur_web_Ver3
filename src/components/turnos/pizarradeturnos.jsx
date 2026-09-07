@@ -804,23 +804,7 @@ function tablapizarradeturnos({}) {
             }}
           />
           <hr />
-                   <Button
-                     variant="success"
-                     style={{
-                       height: "30px", // más alto
-                       fontSize: "16px", // texto más grande
-                       padding: "0px 20px", // más espacio interno
-                       whiteSpace: "nowrap",
-                       width: "100%"
-                       
-                     }}
-                     onClick={(event) => {
-                       event.preventDefault();
-                       procesar(IDProfesional, Fecha, ClienteID);
-                     }}
-                   >
-                     BUSCAR TURNOS
-                   </Button>
+                 
         </div>
 
         <div
@@ -905,6 +889,38 @@ function tablapizarradeturnos({}) {
             >
               <i className="fa-solid fa-chart-pie"></i>
             </button>
+            <Button
+                title="Buscar profesional"
+                 variant="outline-success"
+                  className="btn"
+                  size="sm"
+                            style={{
+                              marginLeft: "auto",
+                             
+                             
+                              textAlign: "center",
+                              
+                              
+                            }}
+                     onClick={openMdlListarProfesionales}
+                   >
+                     <i class="fa-solid fa-magnifying-glass"></i>  PROFESIONAL
+                   </Button>
+              <Button
+                        title="Buscar turnos"
+                        variant="outline-success"
+                        className="btn"
+                        size="sm"
+                        style={{
+                          textAlign: "center",
+                        }}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          procesar(IDProfesional, Fecha, ClienteID);
+                        }}
+                   >
+                     <i class="fa-solid fa-magnifying-glass"></i> TURNOS
+                   </Button>
              <Button
                           title="Limpiar parámetros"
                           variant="primary"
@@ -912,7 +928,7 @@ function tablapizarradeturnos({}) {
                           size="sm"
                           style={{
                             
-                            marginLeft: "auto",
+                            
                             textAlign: "center",
                            
                           }}
@@ -921,16 +937,17 @@ function tablapizarradeturnos({}) {
                             limpiar();
                           }}
                         >
-                         <i className="fa-solid fa-rotate-left"></i>
+                        <i className="fa-solid fa-broom"></i>
                         </Button> 
             
 
           </div>
+          <hr />
           <div style={{ flex: 1 }}>
             <InputGroup className="mb-3">
               <Form.Control
                 style={{
-                  backgroundColor: "#191970",
+                  backgroundColor: "#4b959b",
                   //backgroundColor: "blue",
                   color: "white",
                   height: "28px",
@@ -947,7 +964,7 @@ function tablapizarradeturnos({}) {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#191970",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                 }}
@@ -966,21 +983,10 @@ function tablapizarradeturnos({}) {
                 readOnly
                 value={apeyNom}
               />
-              <Button
-                size="sm"
-                title="Buscar profesional."
-                variant="outline-secondary"
-                id="button-addon1"
-                style={{ height: "28px" }}
-                color="white"
-                onClick={openMdlListarProfesionales}
-                /* onClick={() => BuscarTurnosProfesionalFecha() } */
-              >
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+             
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#191970",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                 }}
@@ -1001,7 +1007,7 @@ function tablapizarradeturnos({}) {
               />
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#191970",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                   width: "15%",

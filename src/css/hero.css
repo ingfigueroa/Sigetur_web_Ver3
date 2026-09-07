@@ -20,6 +20,30 @@
   align-items: center;
 }
 
+
+/* Botones de acceso superiores */
+.logo-sigetur {
+  position: absolute;
+  top: 8px;
+  left: 40px;
+  height: 35px;
+  width: auto;
+  z-index: 10;
+}
+
+.hero-auth-buttons {
+  position: absolute;
+  top: 25px;
+  right: 40px;
+  z-index: 10;
+  display: flex;
+  gap: 12px;
+}
+.hero-auth-buttons .btn {
+  padding: 8px 18px;
+  border-radius: 6px;
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -138,6 +162,34 @@
   line-height: 1.15;
 
   font-weight: 750;
+
+  color: #17324d;
+}
+
+.section-title h3,
+.sigetur-section h3,
+.security-section h3 {
+  margin-top: 15px;
+
+  font-size: clamp(2rem, 4vw, 2rem);
+
+  line-height: 1.15;
+
+  font-weight: 400;
+
+  color: #17324d;
+}
+
+.section-title h4,
+.sigetur-section h4,
+.security-section h4 {
+  margin-top: 15px;
+
+  font-size: clamp(2rem, 4vw, 1.5rem);
+
+  line-height: 1.15;
+
+  font-weight: 300;
 
   color: #17324d;
 }

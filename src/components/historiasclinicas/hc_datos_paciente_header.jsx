@@ -84,7 +84,7 @@ const asignarCampos = (data) => {
   setNombres(data[0].Nombres);
   setNroDocumento(data[0].NroDocumento);
   setTECelular(data[0].TECelular);
-  setTipoDocumento(data[0].tdocu);
+  setTipoDocumento(data[0].descripcion);
   setTipoSexo(data[0].sexo);
   setFechaNacimiento(fecha);
 

@@ -10,6 +10,7 @@ import { Email } from "@mui/icons-material";
  const urlResourceUpdate = config.urlResourcePacientesUpdate;
  const urlResourceID = config.urlResourcePacienteID;
  const urlResourceUltimosTurnos = config.urlResourcePacienteUltimosTurnos;
+ const urlResourcePacienteEmail = config.urlResourcePacienteEMAIL
 
  async function Buscar(idcliente, Apellido, VarDni, pagina, cantidadPorPagina) {
 
@@ -45,30 +46,6 @@ async function ActivarDesactivar(item) {
   await httpService.delete(urlResource + "/" + item.Id);
 }
 
-/* 
-async function GrabarAlta( Nombres, Apellido, TipoDocumento, NroDocumento, EMail, FechaNacimiento, TECelular, Sexo, idusuario) {
-  try {
-   
-      
-
-    await httpService.post(urlResourceAdd, {
-     
-      Nombres, 
-      Apellido, 
-      TipoDocumento,
-      NroDocumento, 
-      EMail, 
-      FechaNacimiento, 
-      TECelular, 
-      Sexo,
-      idusuario
-      
-    });
-   
-  } catch (error) {
-    console.error('Error al registrar el paciente:', error.response?.data || error.message);
-  }
-} */
 
   async function GrabarAlta(data) {
   try {
@@ -119,7 +96,15 @@ async function GrabarAlta( Nombres, Apellido, TipoDocumento, NroDocumento, EMail
 }
 
 
+async function BuscarPacientexEMail(email) {
+
+  const resp = await httpService.get(urlResourcePacienteEmail, {
+    params: {email},
+  } );
+  console.log(res.data)
+  return resp.data;
+}
 
 export const pacientesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos, GrabarModificar
+  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos, GrabarModificar, BuscarPacientexEMail
 };

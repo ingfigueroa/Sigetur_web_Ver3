@@ -15,10 +15,17 @@ import { pacientesService } from "/src/services/pacientes.service";
 
 import "../../css/historia_clinica.css";
 
-import MdlBuscarPacientes from "../pacientes/buscarpaciente";
+import MdlListarPacientes from "../pacientes/mdllistarpacientes";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
+import { getClienteId, getUsuarioId } from "../utils/auth";
+
 function HC_HistoriaClinica() {
+
+
+  const ClienteID = getClienteId();
+  const UserID = getUsuarioId();
+
   const [mdlBuscarPacientes, setModalBuscarPacientes] = useState(false);
   const [titulo, setTitulo] = useState("PACIENTE - HC:");
    const [showMDLMensaje, setShowMDLMensaje] = useState("");
@@ -34,7 +41,7 @@ function HC_HistoriaClinica() {
   
     const [VarDNI, SetDNI] = useState(null);
 
-  const [idProfesional, setIDProfesional] = useState("89");
+  const [idProfesional, setIDProfesional] = useState("");
 
   const [diagnosticoPresuntivo, setDiagnosticoPresuntivo] = useState("");
 
@@ -104,6 +111,7 @@ const closeMdlMensaje = () => {
   };
 
   const openMdlBuscarPacientes = () => {
+    resetearHC();
     setModalBuscarPacientes(true);
   };
 
@@ -146,7 +154,7 @@ const closeMdlMensaje = () => {
       medicacionultimoscincoaniosdetalle: "",
 
       tratamientoHomeopaticoAcupuntura: false,
-      detalleTratamientoHomeopatico: "",
+      tratamientohomeopaticoacupunturadescriba: "",
 
       esalergico: false,
 
@@ -334,43 +342,6 @@ const closeMdlMensaje = () => {
     initialAnamnesisOdontologica,
   );
 
-  /* const [exploracionClinica, setExploracionClinica] = useState({
-    labios: "",
-    lengua: "",
-    paladar: "",
-    pisoBoca: "",
-    carrillos: "",
-    rebordes: "",
-    trigono: "",
-
-    lesiones: {
-      manchas: false,
-      abultamientos: false,
-      ulceraciones: false,
-      ampollas: false,
-      otras: "",
-    },
-
-    sangrado: false,
-    sangradoCuando: "",
-
-    pus: false,
-    pusDonde: "",
-
-    movilidad: false,
-    dientesAltos: false,
-
-    caraHinchada: false,
-    caraHinchadaDetalle: "",
-
-    azucarDiaria: "",
-    indicePlaca: "",
-    estadoHigiene: "",
-
-    sarro: false,
-    enfermedadPeriodontal: false,
-  }); */
-
   const [planTratamiento, setPlanTratamiento] = useState([
     {
       codigo: "0005",
@@ -411,40 +382,70 @@ const closeMdlMensaje = () => {
 
   const [odontograma, setOdontograma] = useState(crearEstructuraOdontograma);
 
-  const mdlSiNo = (respuesta) => {
+  const mdlSiNo = async (respuesta)  => {
     if (respuesta) {
-      // Lógica si confirmó que quiere eliminar
-      CreateHC(idPaciente, idProfesional, idUsuario);
-      mostrarHC(idPaciente);
-      closeMdlEstaSeguro();
-      setMensaje("Se creó la historia clínica del paciente.")
-      openMdlMensaje();
+      // Lógica si confirmó que quiere crear HC
+      const resultado = await CreateHC(ClienteID, idPaciente, UserID);
+      
+      if (resultado){
+
+       
+      
+         
+         
+           mostrarHC(idPaciente);
+           setMostrarTabs(true);
+        setTabActivo("anamnesisMedica");
+          setMensaje("Se creó la historia clínica del paciente.")
+          openMdlMensaje();
+      }
+    
     } else {
       setMensaje("Se canceló la operación.");
       openMdlMensaje();
     }
   };
-  function CreateHC(idpaciente, idprofesional, idusuario) {
+
+ /*  function CreateHC(idcliente, idpaciente, idusuario) {
     try {
-      historiaclinicaService.CreateHC(idpaciente, idprofesional, idusuario);
+      historiaclinicaService.CreateHC(idcliente, idpaciente,  idusuario);
     } catch (error) {}
+  } */
+
+
+async function CreateHC(idcliente, idpaciente, idusuario) {
+  try {
+    const response = await historiaclinicaService.CreateHC(
+      idcliente,
+      idpaciente,
+      idusuario
+    );
+
+    return response.status === 201;
+
+  } catch (error) {
+    console.error("Error al crear la historia clínica:", error);
+    return false;
   }
+}
+
 
   function mostrarHC(idpaciente) {
-    BuscarPaciente(idpaciente);
+    BuscarPaciente(ClienteID, idpaciente);
     cargarAnamnesis(idpaciente);
     cargarAnamnesisOdontologica(idpaciente);
     cargarOdontogramaUltimaFoto(idpaciente);
     cargarDiagnostico(idpaciente)
+    
   }
 
   const recibirDatoDelHijo = async (datoRecibido) => {
     if (datoRecibido > 0) {
       setIDPaciente(datoRecibido);
       const hcnro = await BuscarHCNro(datoRecibido);
-      
+     
       if (hcnro > 0) {
-        setIDPaciente(datoRecibido);
+        
         mostrarHC(datoRecibido);
 
         setMostrarTabs(true);
@@ -466,15 +467,17 @@ const closeMdlMensaje = () => {
 
       return hcnro; // 👈 devolverlo
     } catch (error) {
-      console.error("Error al buscar paciente:", error);
+      setMensaje("Error al buscar paciente:", error);
+      openMdlMensaje();
       return 0;
     }
   }
   
-  async function BuscarPaciente(idpaciente) {
+  async function BuscarPaciente(idcliente, idpaciente) {
     try {
-      const data = await pacientesService.BuscarPorId(idpaciente);
-
+    
+      const data = await pacientesService.BuscarPorId(idcliente, idpaciente);
+     
       const nombreCompleto = data[0].Apellido + ", " + data[0].Nombres;
       const documento = data[0].NroDocumento;
 
@@ -484,7 +487,8 @@ const closeMdlMensaje = () => {
 
       setItems(data);
     } catch (error) {
-      console.error("Error al buscar paciente:", error);
+      setMensaje("Error al buscar paciente:", error);
+      openMdlMensaje();
     }
 
     //generar array de las páginas para mostrar en select del paginador
@@ -572,17 +576,17 @@ const closeMdlMensaje = () => {
       case 9:
         return "#ffffff"; // Diente sano
       case 1:
-        return "#b6787e"; // Caries
+        return "#FF0000"; // Caries
       case 2:
-        return "#b6787e"; // Caries recurrentes
+        return "#FF0000"; // Caries recurrentes
       case 10:
-        return "#9fa7ad"; //diente ausente
+        return "#BDBDBD"; //diente ausente
       case 16:
-        return "#7FB3FF"; // Obturación
+        return "#0000FF"; // Obturación
       case 19:
-        return "#66A3FF"; //SELLADOR
+        return "#B5EAD7"; //SELLADOR
       case 27:
-        return "#FFF9C4"; //extrusion
+        return "#FFFF00"; //extrusion
       case 33:
         return "#FF9F43";
         fractura;
@@ -671,7 +675,7 @@ const closeMdlMensaje = () => {
       (am.general.tratamientohomeopaticoacupunturadescriba =
         data.tratamientohomeopaticoacupunturadescriba),
       (am.general.medicoClinico = data.medicoclinico),
-      (am.general.clinicaDerivacion = data.clinicahostpitalderivacion),
+      (am.general.clinicaDerivacion = data.clinicahospitalderivacion),
       (am.general.observaciones = data.observaciones),
       (am.alergias.otras = data.otrasalergias),
       (am.alergias.detalle = data.detallealergias),
@@ -1086,7 +1090,7 @@ const closeMdlMensaje = () => {
                       left: "50%",
                       transform: "translateX(-50%)",
                       width: "50%",
-                      backgroundColor: "#0a58ca",
+                     backgroundColor: "#4b959b",
                       color: "white",
                       padding: "4px 4px",
                       borderRadius: "4px",
@@ -1096,6 +1100,7 @@ const closeMdlMensaje = () => {
                     }}
                   >
                     {titulo}
+                    
                   </div>
 
                   {/* SEPARADOR FLEX */}
@@ -1245,16 +1250,17 @@ const closeMdlMensaje = () => {
                   setData={setOdontograma}
                   modo="realizado"
                   idhc={nroHC}
-                  idprofesional={idProfesional}
+                  idcliente={ClienteID}
+                  idusuario={UserID}
                 />
               </Tab>
 
-              <Tab eventKey="diagnostico" title="Diagnóstico">
+              <Tab eventKey="diagnostico" title="Diagnóstico" tabClassName="d-none">
                 <DiagnosticoPresuntivo
                   data={diagnosticoPresuntivo}
                   idpaciente={idPaciente}
-                  idprofesional={idProfesional}
-                  idusuario={idUsuario}
+                  idcliente={ClienteID}
+                  idusuario={UserID}
                 />
               </Tab>
 
@@ -1276,9 +1282,10 @@ const closeMdlMensaje = () => {
       </div>
 
       {mdlBuscarPacientes && (
-        <MdlBuscarPacientes
+        <MdlListarPacientes
           show={openMdlBuscarPacientes}
           handleClose={closeMdlBuscarPacientes}
+          idcliente={ClienteID}
           enviarAlPadre={recibirDatoDelHijo}
         />
       )}

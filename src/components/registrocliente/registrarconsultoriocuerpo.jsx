@@ -6,7 +6,10 @@ import "/src/css/registrarconsultorio.css";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
+
+
 import {correosServices} from "../../services/correos.service";
+import { usuariosService } from "../../services/usuarios.service.js";
 
 import AbrirMDLMensaje from "../modales/mdlMensaje";
 
@@ -16,7 +19,7 @@ function registrarconsultoriocuerpo() {
 
   const navigate = useNavigate();
 
-   const [email, setEmail] = useState("");
+  const [EMail, setEMail] = useState("");
 
  
   const [showMDLMensaje, setShowMDLMensaje] = useState("");
@@ -34,6 +37,38 @@ function registrarconsultoriocuerpo() {
     
     
   };
+
+  
+  const validarEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const BuscarUsuarioPorEmail = async () => {
+              if (!EMail) return;
+    
+              try {
+             
+                  const data = await usuariosService.BuscarUsuarioxEMail(EMail);
+              
+                 
+                if (data.total === 1) {
+                  setMensaje("Ya existe el EMAIL ingresado.");
+                  setEMail("")
+                  openMdlMensaje()
+    
+                  
+                  // Completar los datos del formulario
+                  // setApellido(respuesta.data.apellido);
+                  // setNombre(respuesta.data.nombre);
+                  // ...
+                } 
+              } catch (error) {
+                setMensaje(error);
+                openMdlMensaje();
+              }
+            };
+    
 
 const handleSubmit = async () => {
 
@@ -108,7 +143,7 @@ const volveallogin = async () => {
           <br />
           <h5 className="rccuerpo-h5">
             {" "}
-            1.- Ingresar el mail que identifica a la Clinica o Consultorio.
+            1.- Ingresar el mail que identifica a la Clinica o MI CONSULTORIO.
           </h5>
 
           
@@ -124,8 +159,15 @@ const volveallogin = async () => {
         <InputGroup.Text>Ingresar mail</InputGroup.Text>
         <Form.Control
           placeholder="Ingrese su mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+           onChange={(e) => {
+                      const email = e.target.value;
+                      setEMail(email);
+                      if (!validarEmail(email)) {
+                        // Aquí podrías mostrar un mensaje de error o aplicar algún estilo al campo
+                      }
+                    }}
+                     onBlur={BuscarUsuarioPorEmail}
+                    value={EMail}
         />
       </InputGroup>
         </div>
@@ -148,7 +190,8 @@ const volveallogin = async () => {
           </div>
 
            <div className="volverallogin1">
-             <Button onClick={handleSubmit}>Enviar código</Button>
+             <Button  variant="outline-success" 
+             onClick={handleSubmit}>Enviar código</Button>
             
           </div>
         

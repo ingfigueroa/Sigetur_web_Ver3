@@ -13,6 +13,8 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
 import "/src/css/tablapizaturnos.css";
+import "/src/css/sigetur.css";
+import "/src/css/pizarradeturnos.css";
 
 import { turnosService } from "/src/services/turnos.service";
 
@@ -157,18 +159,86 @@ function ConsultaTurnos() {
 
   return (
     <>
-      <div
+       <div
         style={{
+          display: "grid",
           width: "100%",
-
-         
-          marginBottom: "0",
-          marginLeft: "5px",
-          marginRight: "5px",
-          marginTop: "10px",
+          margin: "15px 15px",
           backgroundColor: "white",
         }}
       >
+        <form>
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+
+          }}
+          >
+           
+
+            <div  style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}>
+             
+
+              <button
+                title="Imprimir"
+                className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                
+                onClick={() => Imprimir()}
+              >
+                <i class="fa fa-print"></i>
+              </button>
+
+                <Button
+           variant="outline-success"
+            size="sm"
+             style={{
+                              marginLeft: "auto",
+                             
+                              width: "10%",
+                              textAlign: "center",
+                              
+                              
+                            }}
+            onClick={(event) => {
+              event.preventDefault();
+              BuscarTurnosConsultasPorFecha(1);
+            }}
+          >
+            <i class="fa-solid fa-magnifying-glass"></i> CONSULTAR
+          </Button>
+
+          {/* Botón */}
+          <Button
+            variant="primary"
+            size="sm"
+            style={{
+              height: "30px", // más alto
+              fontSize: "16px", // texto más grande
+              padding: "0px 20px", // más espacio interno
+              
+              whiteSpace: "nowrap",
+            }}
+            onClick={(event) => {
+              event.preventDefault();
+              limpiar();
+            }}
+          >
+            <i className="fa-solid fa-broom"></i>
+          </Button>
+            </div>
+          </div>
+         </form>
+<hr></hr>
+
         {/*  //fecha desde facha hasta */}
         <div
           style={{
@@ -187,7 +257,7 @@ function ConsultaTurnos() {
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <InputGroup.Text
               style={{
-                backgroundColor: "white",
+                backgroundColor: "#4b959b",
                 color: "black",
                 height: "28px",
               }}
@@ -207,7 +277,7 @@ function ConsultaTurnos() {
             <InputGroup.Text
               style={{
                 color: "black",
-                backgroundColor: "white",
+               backgroundColor: "#4b959b",
                 height: "28px",
               }}
             >
@@ -225,7 +295,7 @@ function ConsultaTurnos() {
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <InputGroup.Text
               style={{
-                backgroundColor: "#679bb9",
+                backgroundColor: "#4b959b",
                 width: "auto",
                 color: "black",
                 
@@ -253,7 +323,7 @@ function ConsultaTurnos() {
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <InputGroup.Text
               style={{
-                backgroundColor: "#679bb9",
+               backgroundColor: "#4b959b",
                 width: "auto",
                 color: "black",
                
@@ -275,42 +345,7 @@ function ConsultaTurnos() {
               ))}
             </select>
           </div>
-           <div>
-          <Button
-            variant="success"
-            style={{
-              height: "30px", // más alto
-              fontSize: "16px", // texto más grande
-              padding: "0px 20px", // más espacio interno
-              whiteSpace: "nowrap",
-            }}
-            onClick={(event) => {
-              event.preventDefault();
-              BuscarTurnosConsultasPorFecha(1);
-            }}
-          >
-            Buscar
-          </Button>
-
-          {/* Botón */}
-          <Button
-            variant="primary"
-            size="sm"
-            style={{
-              height: "30px", // más alto
-              fontSize: "16px", // texto más grande
-              padding: "0px 20px", // más espacio interno
-              
-              whiteSpace: "nowrap",
-            }}
-            onClick={(event) => {
-              event.preventDefault();
-              limpiar();
-            }}
-          >
-            Limpiar
-          </Button>
-        </div>
+           
         </div>
        
         <span

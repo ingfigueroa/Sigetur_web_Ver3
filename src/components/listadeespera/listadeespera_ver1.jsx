@@ -182,9 +182,24 @@ function listadeespera_v1() {
           backgroundColor: "white",
         }}
       >
-        <form>
-          <div className="acomodarencabezadopizaturnos">
-            <div style={{ width: "30%", textAlign: "left" }}>
+         <form>
+       
+              <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+
+          }}
+          >
+             <div  style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}>
               <button
                 title="Registrar en la lista de espera"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -202,6 +217,45 @@ function listadeespera_v1() {
               >
                 <i class="fa fa-print"></i>
               </button>
+              
+                              <Button
+                          variant="success"
+                          size="sm"
+                           style={{
+                                            marginLeft: "auto",
+                                           
+                                            width: "10%",
+                                            textAlign: "center",
+                                            
+                                            
+                                          }}
+                          onClick={(event) => {
+                            event.preventDefault();
+                           cargarlistadeespera()
+                          }}
+                        >
+                          Buscar
+                        </Button>
+              
+                        {/* Botón */}
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          style={{
+                            height: "30px", // más alto
+                            fontSize: "16px", // texto más grande
+                            padding: "0px 20px", // más espacio interno
+                            
+                            whiteSpace: "nowrap",
+                          }}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            Limpiar();
+                          }}
+                          
+                        >
+                          <i className="fa-solid fa-broom"></i>
+                        </Button>
             </div>
           </div>
 
@@ -228,7 +282,7 @@ function listadeespera_v1() {
                 value={apeyNomPaciente}
                 autoFocus
               />
-              <Button
+             {/*  <Button
                 title="Buscar por paciente"
                 variant="outline-secondary"
                 id="button-addon1"
@@ -237,7 +291,7 @@ function listadeespera_v1() {
                 onClick={() => cargarlistadeespera()}
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+              </Button> */}
             </InputGroup>
             <InputGroup className="mb-3">
               <InputGroup.Text
@@ -259,7 +313,7 @@ function listadeespera_v1() {
                 value={apeyNomProfesional}
                 autoFocus
               />
-              <Button
+             {/*  <Button
                 title="Buscar por profesional"
                 variant="outline-secondary"
                 id="button-addon1"
@@ -268,15 +322,15 @@ function listadeespera_v1() {
                 onClick={() => cargarlistadeespera()}
               >
                 <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+              </Button> */}
 
-              <Button variant="primary" onClick={() => Limpiar()}>
+            {/*   <Button variant="primary" onClick={() => Limpiar()}>
                 Limpiar
-              </Button>
+              </Button> */}
             </InputGroup>
           </div>
-        </form>
-
+        
+</form>
         <div className="">
           <Table bordered hover>
             <thead>

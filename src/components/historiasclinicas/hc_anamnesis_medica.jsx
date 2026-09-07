@@ -41,14 +41,16 @@ function AnamnesisMedica({ data, setData, idpaciente }) {
   };
 
   
-    const mdlSiNo = (respuesta) => {
+    const mdlSiNo = async (respuesta) => {
+      
       if (respuesta) {
         // Lógica si confirmó que quiere eliminar
         
         closeMdlEstaSeguro();
-        grabarAnamnesis();
-        setMensaje("Se grabó la anamnesis médica del paciente.")
-        openMdlMensaje();
+        const resultado = await grabarAnamnesis();
+
+        setMensaje(resultado.message)
+        openMdlMensaje(); 
       } else {
         setMensaje("Se canceló la grabación de la anamnesis médica del paciente.");
         openMdlMensaje();
@@ -81,7 +83,7 @@ function AnamnesisMedica({ data, setData, idpaciente }) {
       tratamientoMedico: false,
       detalleTratamiento: "",
       medicacionHabitual: "",
-      medicacionultimoscincoaniosdetalle: "",
+      medicacionultimoscincoaniosdetalle: "", 
       realizaDeporte: false,
       detalleRealizaDeporte: "",
       tieneMalestarDeporte: false,
@@ -158,6 +160,10 @@ function AnamnesisMedica({ data, setData, idpaciente }) {
     setData(initialData);
   };
   async function grabarAnamnesis() {
+   
+
+      
+
     const payload = {
       idpaciente: idpaciente,
 
@@ -175,29 +181,24 @@ function AnamnesisMedica({ data, setData, idpaciente }) {
       tratamientomedico: data.general.tratamientoMedico,
       tratamientomedicodetalle: data.general.detalleTratamiento,
       medicamentosconsumedetalle: data.general.medicacionHabitual,
-      medicacionultimoscincoaniosdetalle:
-        data.general.medicacionultimoscincoaniosdetalle,
+      medicacionultimoscincoaniosdetalle: data.general.medicacionultimoscincoaniosdetalle,
       realizaalgundeporte: data.general.realizaDeporte,
       realizaalgundeportedetalle: data.general.detalleRealizaDeporte,
       deportemalestaralrealizarlo: data.general.tieneMalestarDeporte,
       deportemalestaralrealizarlodetalle: data.general.detalleMalestarDeporte,
 
       enfermedadinfectocontagiosa: data.general.enfermedadInfectocontagiosa,
-      enfermedadinfectocontagiosadescriba:
-        data.general.detalleEnfermedadInfectocontagiosa,
+      enfermedadinfectocontagiosadescriba: data.general.detalleEnfermedadInfectocontagiosa,
       enfermedadalgunaotra: data.general.otraEnfermedad,
       enfermedadalgunaotradetalle: data.general.detalleOtraEnfermedad,
 
       recomendacionmedicoquieredejar: data.general.medicoRecomendacion,
-      recomendacionmedicoquieredejardetalle:
-        data.general.detalleMedicoRecomendacion,
-      tratamientohomeopaticoacupuntura:
-        data.general.tratamientoHomeopaticoAcupuntura,
-      tratamientohomeopaticoacupunturadescriba:
-        data.general.tratamientohomeopaticoacupunturadescriba,
+      recomendacionmedicoquieredejardetalle: data.general.detalleMedicoRecomendacion,
+      tratamientohomeopaticoacupuntura: data.general.tratamientoHomeopaticoAcupuntura,
+      tratamientohomeopaticoacupunturadescriba: data.general.tratamientohomeopaticoacupunturadescriba,
 
       medicoclinico: data.general.medicoClinico,
-      clinicahostpitalderivacion: data.general.clinicaDerivacion,
+      clinicahospitalderivacion: data.general.clinicaDerivacion,
       observaciones: data.general.observaciones,
       // ================= ALERGIAS =================45
       esalergico: data.general.esalergico,
@@ -250,11 +251,14 @@ function AnamnesisMedica({ data, setData, idpaciente }) {
       renales: data.patologias.renal,
     };
     
+   
+    
     try {
       //console.log(idhc)
-      await historiaclinicaService.GrabarAnamnesisMedica(payload);
+      const response = await historiaclinicaService.GrabarAnamnesisMedica(payload);
 
-      setMensaje("Se grabarón los datos con éxito.");
+      return response;
+
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
       return;

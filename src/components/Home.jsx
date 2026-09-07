@@ -22,6 +22,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "../css/hero.css";
 
+import { Link } from "react-router-dom";
+
 const Home = () => {
   return (
     <div className="home">
@@ -29,59 +31,242 @@ const Home = () => {
       {/* =====================================================
           HERO
       ===================================================== */}
-      <section className="hero">
+   <section className="hero">
 
-        <div className="hero-overlay"></div>
+  <div className="hero-overlay"></div>
+ <img 
+        src="./assets/logo_1220_330.png"
+         alt="SIGETUR"
+         className="logo-sigetur"
+         />
 
-        <Container className="hero-content">
-          <Row className="align-items-center">
+  {/* Botones superiores */}
+  <div className="hero-auth-buttons">
+       
+    <Link to="/login">
+      <Button className="btn-outline-sigetur">
+        Iniciar sesión
+      </Button>
+    </Link>
 
-            <Col lg={7}>
+    <Link to="/crearcuentapasouno">
+      <Button 
+        className="btn-outline-sigetur"
+      >
+        Registrarse
+      </Button>
+    </Link>
+  </div>
 
-              <span className="hero-badge">
-                SISTEMA INTEGRAL DE GESTIÓN
-              </span>
+  <Container className="hero-content">
+    <Row className="align-items-center">
 
-              <h1>
-                Gestioná tu consultorio
-                <span> de manera simple.</span>
-              </h1>
+      <Col lg={7}>
 
-              <p className="hero-text">
-                SIGETUR reúne en una sola plataforma la gestión de
-                turnos, pacientes, historia clínica, prestaciones y
-                cobros.
-              </p>
+        <span className="hero-badge">
+          SISTEMA INTEGRAL DE GESTIÓN
+        </span>
 
-              <div className="hero-buttons">
+        <h1>
+          Gestioná tu consultorio
+          <span> de manera simple.</span>
+        </h1>
 
-                <Button
-                  className="btn-primary-sigetur"
-                  href="#que-es"
-                >
-                  Conocé SIGETUR
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="ms-2"
-                  />
-                </Button>
+        <p className="hero-text">
+          SIGETUR reúne en una sola plataforma la gestión de
+          turnos, pacientes, historia clínica, prestaciones y
+          cobros.
+        </p>
 
-                <Button
-                  className="btn-outline-sigetur"
-                  href="#planes"
-                >
-                  Quiero contratarlo
-                </Button>
+        <div className="hero-buttons">
 
-              </div>
+          <Button
+            className="btn-primary-sigetur"
+            href="#que-es"
+          >
+            Conocé SIGETUR
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className="ms-2"
+            />
+          </Button>
+
+          <Button
+            className="btn-outline-sigetur"
+            href="#planes"
+          >
+            Quiero contratarlo
+          </Button>
+
+        </div>
+
+      </Col>
+
+    </Row>
+  </Container>
+
+</section> 
+
+   {/* =====================================================
+          PLANES
+      ===================================================== */}
+      <section
+        id="planes"
+        className="section plans-section"
+      >
+
+        <Container>
+
+          <div className="section-title">
+
+            <span className="section-label">
+
+              COMENZÁ A TRABAJAR CON NUESTRA PLATAFORMA DE TURNOS
+            </span>
+
+           
+             <h2>
+                  SIGETUR
+            </h2>
+            <span className="section-label">
+
+               orientada a satisfacer las necesidades de los profesionales de la salud.
+            </span>
+            <p>
+            
+            </p>
+
+          </div>
+
+
+          <Row className="justify-content-center mt-4">
+
+            <Col md={3} lg={4}>
+
+              <Card className="plan-card">
+
+                <Card.Body>
+
+                  <h3>
+                    Crear consultorios particulares
+                  </h3>
+
+                  <p>
+                    Ideal para profesionales
+                    independientes del área de salud.
+                  </p>
+
+                  
+
+                
+
+{/* 
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Gestión de turnos
+                    </li>
+
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Pacientes
+                    </li>
+
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Historia clínica
+                    </li>
+
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Gestión de prestaciones
+                    </li>
+ */}
+                
+
+                 
+
+                </Card.Body>
+
+              </Card>
 
             </Col>
+            <Col md={3} lg={4}>
+
+              <Card className="plan-card">
+
+                <Card.Body>
+
+                  <h3>
+                    Crear consultorios interdisciplinarios
+                  </h3>
+
+                  <p>
+                   Ideal para consultorios donde interactuan profesionales de distintas especialidades.
+                  </p>
+
+                 
+{/* 
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Gestión de turnos
+                    </li>
+
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Pacientes
+                    </li>
+
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Historia clínica
+                    </li>
+
+                    <li>
+                      <FontAwesomeIcon icon={faCheck} />
+                      Gestión de prestaciones
+                    </li>
+ */}
+                
+
+                
+
+                </Card.Body>
+
+              </Card>
+
+            </Col>
+             <div className="section-title">
+ <h3 className="section-label">
+
+              Profesionales con especialidades como
+            </h3>
+            <h4>
+    Odontología - Psicología - Centros de estética 
+            </h4>
+            <h4>
+     Medicina - Nutrición - Quiropraxia
+            </h4>
+             </div>
+            
+         
+            <div className="section-title">
+
+               <Link to="/crearcuentapasouno">
+                  <Button 
+                    className=""
+                    style={{width: "100%"}}
+                  >
+                    Registrarse
+                  </Button>
+                </Link>
+            </div>
+           
 
           </Row>
+
         </Container>
 
       </section>
-
 
       {/* =====================================================
           EL PROBLEMA
@@ -240,7 +425,7 @@ const Home = () => {
               <div className="dashboard-image">
 
                 <img
-                  src="/assets/Turnos.jpg"
+                  src="/assets/login2.jpg"
                   alt="SIGETUR - Gestión de turnos"
                 />
 
@@ -608,93 +793,7 @@ const Home = () => {
       </section>
 
 
-      {/* =====================================================
-          PLANES
-      ===================================================== */}
-      <section
-        id="planes"
-        className="section plans-section"
-      >
-
-        <Container>
-
-          <div className="section-title">
-
-            <span className="section-label">
-              ELEGÍ TU MODALIDAD
-            </span>
-
-            <h2>
-              Comenzá a trabajar con SIGETUR
-            </h2>
-
-            <p>
-              Una solución para cada necesidad.
-            </p>
-
-          </div>
-
-
-          <Row className="justify-content-center mt-4">
-
-            <Col md={6} lg={4}>
-
-              <Card className="plan-card">
-
-                <Card.Body>
-
-                  <h3>
-                    Profesional
-                  </h3>
-
-                  <p>
-                    Ideal para profesionales
-                    independientes.
-                  </p>
-
-                  <div className="plan-price">
-                    Consultar
-                  </div>
-
-                  <ul>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Gestión de turnos
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Pacientes
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Historia clínica
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Gestión de prestaciones
-                    </li>
-
-                  </ul>
-
-                  <Button className="plan-button">
-                    Solicitar información
-                  </Button>
-
-                </Card.Body>
-
-              </Card>
-
-            </Col>
-
-          </Row>
-
-        </Container>
-
-      </section>
+   
 
 
       {/* =====================================================
@@ -713,14 +812,20 @@ const Home = () => {
             adecuada para tu consultorio.
           </p>
 
-          <Button className="btn-cta">
+          {/* <Button className="btn-cta">
             Contactanos
             <FontAwesomeIcon
               icon={faArrowRight}
               className="ms-2"
             />
-          </Button>
-
+          </Button> */}
+ <Link to="/crearcuentapasouno">
+      <Button 
+        className="btn-outline-sigetur"
+      >
+        Registrarse
+      </Button>
+    </Link>
         </Container>
 
       </section>

@@ -11,7 +11,7 @@ const MdlMensaje = ({ show, handleClose, modalMessage }) => {
       >
         <Modal.Title>INFORMACIÓN</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ textAlign: "center", color: "Black" }}>
+      <Modal.Body style={{ textAlign: "center", color: "Black", whiteSpace: "pre-line" }}>
         {modalMessage}
       </Modal.Body>
       <Modal.Footer>

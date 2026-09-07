@@ -584,7 +584,7 @@ const agendasemanal = ({ show, handleClose }) => {
                 );
               }}
             >
-              BUSCAR TURNOS
+              <i class="fa-solid fa-magnifying-glass"></i> TURNOS
             </Button>
              <Button
               title="Limpiar parámetros"
@@ -646,7 +646,7 @@ const agendasemanal = ({ show, handleClose }) => {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
 
                   color: "white",
                   height: "28px",
@@ -675,7 +675,7 @@ const agendasemanal = ({ show, handleClose }) => {
               />
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                   backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                 }}
@@ -709,7 +709,7 @@ const agendasemanal = ({ show, handleClose }) => {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                 }}
@@ -730,7 +730,7 @@ const agendasemanal = ({ show, handleClose }) => {
               />
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                   backgroundColor: "#4b959b",
                   color: "white",
                   height: "28px",
                   width: "20%",
@@ -814,11 +814,11 @@ const agendasemanal = ({ show, handleClose }) => {
             bordered
             hover
             border="1"
-            style={{ width: "100%", textAlign: "center" }}
+            style={{ width: "100%", textAlign: "center", backgroundColor: "#4b959b" }}
           >
-            <thead style={{ fontSize: "14px", backgroundColor: "white" }}>
+            <thead style={{ fontSize: "14px", backgroundColor: "#4b959b",   }}>
               {/* Encabezado de fechas */}
-              <tr style={{ background: "#679bb9", color: "white" }}>
+              <tr style={{ background: "#4b959b", color: "white" }}>
                 {diasSemana.map((dia, index) => (
                   <th
                     key={index}

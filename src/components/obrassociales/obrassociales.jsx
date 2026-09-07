@@ -11,19 +11,13 @@ import "/src/css/sigetur.css";
 
 import { obrassocialesService } from "/src/services/obrassociales.service";
 
-import modalDialogService from "/src/services/modalDialog.service";
+
 
 import ActivarObraSocial from "../obrassociales/activarobrasocial";
 
-function ObrasSociales() {
-  const TituloAccionABMC = {
-    A: "(Agregar)",
-    B: "(Eliminar)",
-    M: "(Modificar)",
-    C: "(Consultar)",
-    L: "(Listado)",
-  };
-  const [AccionABMC, setAccionABMC] = useState("L");
+function ObrasSociales() { 
+
+
 
   const [Descripcion, SetDescripcion] = useState("");
     const [sigla, setSigla] = useState("");
@@ -85,13 +79,17 @@ function ObrasSociales() {
   }
 
 
+  
 
-
-
-  // Volver/Cancelar desde Agregar/Modificar/Consultar
-  function Volver() {
-    setAccionABMC("L");
+  async function Limpiar() {
+    SetDescripcion("");
+    setSigla("");
+    setRegistrosTotal(0);
+    setPaginas([]);
+    setItems([]);
   }
+
+
 
   return (
     <>
@@ -104,8 +102,24 @@ function ObrasSociales() {
         }}
       >
         <form>
-          <div className="acomodarencabezadopizaturnos">
-            <div style={{ width: "30%", textAlign: "left" }}>
+         <div style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+
+          }}
+          >
+           
+
+            <div  style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "white",
+              marginBottom: "5px",
+              padding: "5px",
+            }}>
               <button
                 title="ACTIVAR nueva obra social en el CONSULTORIO"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
@@ -116,13 +130,57 @@ function ObrasSociales() {
               >
                 <i class="fa-solid fa-plus"></i>
               </button>
-              <button
+               <button
                 title="Imprimir"
                 className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+                style={{ display: "none" }}
                 onClick={() => Imprimir()}
               >
                 <i class="fa fa-print"></i>
               </button>
+               <Button
+title="Buscar por obra social"
+                
+                
+                
+                color="white"
+              variant="success"
+              className="btn"
+              size="sm"
+                            style={{
+                              marginLeft: "auto",
+                             
+                              width: "10%",
+                              textAlign: "center",
+                              
+                              
+                            }}
+                            
+                           
+                           onClick={() => Buscar(1)}
+                          >
+                           <i class="fa-solid fa-magnifying-glass"></i> TURNOS
+                          </Button>
+                           <Button
+                            title="Limpiar parámetros"
+                            variant="primary"
+                            className="btn "
+                            size="sm"
+                            style={{
+                              
+                              
+                              textAlign: "center",
+                             
+                            }}
+                            onClick={(event) => {
+                              
+                              event.preventDefault();
+                              Limpiar();
+
+                            }}
+                          >
+                            <i className="fa-solid fa-broom"></i>
+                          </Button> 
             </div>
           </div>
           <hr />
@@ -131,7 +189,7 @@ function ObrasSociales() {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                 backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -139,7 +197,7 @@ function ObrasSociales() {
                 Obra Social
               </InputGroup.Text>
               <Form.Control
-                placeholder="Buscar por nombre de las obras sociales"
+                placeholder="Filtrar por nombre de las obras sociales"
                 aria-label="Buscar obras social"
                 aria-describedby="basic-addon2"
                 onChange={(e) => 
@@ -148,19 +206,10 @@ function ObrasSociales() {
                 value={Descripcion}
                 autoFocus
               />
-              <Button
-                title="Buscar por obra social"
-                variant="outline-secondary"
-                id="button-addon1"
-                style={{ height: "38px" }}
-                color="white"
-                onClick={() => Buscar(1)}
-              >
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+             
                <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -168,7 +217,7 @@ function ObrasSociales() {
                 Sigla
               </InputGroup.Text>
               <Form.Control
-                placeholder="Buscar por nombre de las obras sociales"
+                placeholder="Buscar por sigla de la obra social"
                 aria-label="Buscar obras social"
                 aria-describedby="basic-addon2"
                 onChange={(e) => 
@@ -177,19 +226,10 @@ function ObrasSociales() {
                 value={sigla}
                 autoFocus
               />
-              <Button
-                title="Buscar por obra social"
-                variant="outline-secondary"
-                id="button-addon1"
-                style={{ height: "38px" }}
-                color="white"
-                onClick={() => Buscar(1)}
-              >
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </Button>
+             
             </InputGroup>
           </div>
-          <hr />
+         
         </form>
 
         <div className="">

@@ -12,6 +12,7 @@ import { profesionalesService } from "/src/services/profesional.service.js";
 import { tipodocumentoService } from "/src/services/tipodocumento.service.js";
 import { provinciasService } from "/src/services/provincias.service.js";
 import { localidadesService } from "/src/services/localidades.service.js";
+import { usuariosService } from "/src/services/usuarios.service.js";
 
 import MdlValidar from "../modales/mdlvalidar";
 import MdlAltaExitosa from "../modales/mdlAltaExitosa";
@@ -19,6 +20,7 @@ import AbrirMDLMensaje from "../modales/mdlMensaje";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import "/src/css/registrarprofesional.css";
+import { Email } from "@mui/icons-material";
 
 
 const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
@@ -112,9 +114,31 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
         showModalMessage("El campo 'Nombres' es obligatorio");
         return false;
       }
+      if (typeof FechaNacimiento !== "string" || !FechaNacimiento.trim()) {
+  showModalMessage(
+    "El campo 'Fecha de Nacimiento' es obligatorio y debe ser una fecha válida"
+  );
+  return false;
+}
+
+const fechaNacimiento = new Date(FechaNacimiento);
+
+if (isNaN(fechaNacimiento.getTime())) {
+  showModalMessage(
+    "El campo 'Fecha de Nacimiento' debe contener una fecha válida"
+  );
+  return false;
+}
+
+if (fechaNacimiento > new Date()) {
+  showModalMessage(
+    "La fecha de nacimiento no puede ser posterior a la fecha actual"
+  );
+  return false;
+}
 
       if (!validarEmail(EMail)) {
-        showModalMessage("El correo electrónico no es válido");
+        showModalMessage("El formato de correo electrónico no es válido");
         return false;
       }
 
@@ -177,7 +201,9 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
   };
 
   const closeMdlMensaje = () => {
+
     setShowMDLMensaje(false);
+    handleClose();
   };
 
   const showModalMessage = (message) => {
@@ -207,6 +233,89 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
     setMdlAltaExitosa(false);
   };
 
+   const BuscaProfesionalPorDNI = async () => {
+            if (!NroDocumento) return;
+  
+            try {
+                
+                const data = await profesionalesService.Buscar(
+                  ClienteID,
+                  "",
+                  NroDocumento,
+                  1,
+                  10
+                );
+            
+  
+              if (data.total === 1) {
+                setMensaje("Ya existe un profesional con el DNI ingresado.");
+                setNroDocumento(0)
+                openMdlMensaje()
+  
+                
+                // Completar los datos del formulario
+                // setApellido(respuesta.data.apellido);
+                // setNombre(respuesta.data.nombre);
+                // ...
+              } 
+            } catch (error) {
+              console.error(error);
+            }
+          };
+
+  const BuscaUsuarioPorEmail = async () => {
+            if (!EMail) return;
+  
+            try {
+                
+                const data = await usuariosService.BuscarUsuarioxEMail(
+                  EMail
+                 
+                );
+            
+               
+              if (data.total === 1) {
+                setMensaje("Ya existe el EMAIL ingresado.");
+                setEMail("")
+                openMdlMensaje()
+  
+                
+                // Completar los datos del formulario
+                // setApellido(respuesta.data.apellido);
+                // setNombre(respuesta.data.nombre);
+                // ...
+              } 
+            } catch (error) {
+              console.error(error);
+            }
+          };
+          
+   const BuscaProfesionalPorEMAIL = async () => {
+            if (!EMail) return;
+  
+            try {
+                
+                const data = await profesionalesService.BuscarProfesionalxEMail(
+                  EMail
+                 
+                );
+            
+                console.log(data)
+              if (data.total === 1) {
+                setMensaje("Ya existe un profesional con el EMAIL ingresado.");
+                setEMail("")
+                openMdlMensaje()
+  
+                
+                // Completar los datos del formulario
+                // setApellido(respuesta.data.apellido);
+                // setNombre(respuesta.data.nombre);
+                // ...
+              } 
+            } catch (error) {
+              console.error(error);
+            }
+          };
 
   const validarEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -214,12 +323,6 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
   };
 
    async function Grabar() {
-    // agregar o modificar
-    //validaciones
-    // Validaciones
-        
-
-
     try {
 
       
@@ -243,22 +346,8 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
         idlocalidad,
         nuevo
       );
-   console.log(response)
-      if (response.data.resultado===0){
-              setMensaje(
-                "Se creó el profesional.\n\n" +
-                "Para activar la cuenta del profesional siga estos pasos:\n\n" +
-                "1.- Tiene que ir a LOGIN.\n\n" +
-                "2.- Olvidé mi contraseña.\n\n" +
-                "3.- Resetear la password usando el mail que ingresó del profesional."
-            );
-
-            openMdlMensaje();
-            handleClose()
-      }else{
-         setMensaje("No se pudo crear el profesional");
-          openMdlMensaje();
-      }
+    return true;
+     
       
     } catch (error) {
       /*  modalDialogService.Alert(error?.response?.data?.message ?? error.toString()) */
@@ -291,9 +380,33 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
     if (respuesta) {
       try {
          
-       const bandera = await Grabar(); // ejecutamos la función de grabar
-        console.log(bandera)
-        if (bandera){
+      const bandera = await Grabar();
+
+
+      if (bandera === true) {
+          
+
+
+      setMensaje(
+          "Se creó el profesional.\n\n" +
+          "Para activar la cuenta del profesional siga estos pasos:\n\n" +
+          "1.- Tiene que ir a LOGIN.\n\n" +
+          "2.- Olvidé mi contraseña.\n\n" +
+          "3.- Resetear la password usando el mail que ingresó del profesional."
+      );
+
+     
+
+      openMdlMensaje();
+
+
+      } else {
+          console.log("ENTRA POR FALSE");
+
+          setMensaje("No se pudo crear el profesional");
+          openMdlMensaje();
+      }
+        /* if (bandera){
             setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
             openMdlMensaje(); // abrimos el modal de mensaje
             handleClose();
@@ -301,7 +414,7 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
            setMensaje("No se grabó el NUEVO PACIENTE."); // mensaje a mostrar
         openMdlMensaje(); // abrimos el modal de mensaje
         handleClose();
-        }
+        } */
        
       } catch (error) {
         setMensaje("Ocurrió un error al grabar");
@@ -370,17 +483,6 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
     fetchData(); // Ejecuta la función para obtener los datos
   }, []);
 
-  /* Carga provincias*/
- /*  useEffect(() => {
-    if (idprovincia > 0) {
-      const fetchLocalidades = async () => {
-        const data = await localidadesService.Buscar(idprovincia); // Función para obtener ciudades basadas en la provincia seleccionada
-        setLocalidades(data);
-      };
-      fetchLocalidades();
-    }
-  }, [provinciaSeleccionada]); */
-
  
 
   return (
@@ -446,6 +548,7 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
                         setNroDocumento(value);
                       }
                     }}
+                    onBlur={BuscaProfesionalPorDNI}
                     value={NroDocumento}
                   />
                  <InputGroup.Text
@@ -534,6 +637,7 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
                         // Aquí podrías mostrar un mensaje de error o aplicar algún estilo al campo
                       }
                     }}
+                     onBlur={BuscaUsuarioPorEmail}
                     value={EMail}
                   />
                   <InputGroup.Text

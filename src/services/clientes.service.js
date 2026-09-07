@@ -7,14 +7,16 @@ const urlValoresPantallaIniciO= config.urlValoresPantallaInicio;
 const urlLoginUsuario = config.urlLoginUsuario
 
 
-async function CrearCliente(data) {
+async function CrearCliente(data, idprovincia, idlocalidad) {
   try {
    
 
     const response = await httpService.post(urlCrearCliente, {
       email: data.email,
       razonsocial: data.razonSocial,
-      tipocliente: data.tipoCliente
+      tipocliente: data.tipoCliente,
+      idprovincia: idprovincia,
+      idlocalidad: idlocalidad
     });
    
      return response.data; // 👈 CLAVE
@@ -82,17 +84,13 @@ async function getLoginUsuario(email, password) {
          password
       
         });
-
+    
     return response.data;
 
  } catch (error) {
-  if (error.response?.data?.mensaje) {
-    console.log(error.response.data.mensaje);
-    
-  
-  } else {
-    console.log(error);
-  }
+ 
+    return false;
+ 
 }
 };
 

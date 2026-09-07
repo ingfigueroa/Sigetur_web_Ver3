@@ -21,7 +21,7 @@ background-color: rgb(247, 247, 250);
 #fondo {
 
   background-image:
-    linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.8)),
+    linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.9)),
     url("../assets/escritorio.jpg");
 
   background-repeat: no-repeat;
@@ -36,8 +36,9 @@ background-color: rgb(247, 247, 250);
 
 #fondo h1 {
   margin-left:20px;
-  margin-top: 40px;
-  margin-right: 25px;
+  margin-top: 60px;
+ 
+  margin-bottom: 200px;
    font-size: 45px;
   color: white;
      position: relative;
@@ -46,10 +47,10 @@ background-color: rgb(247, 247, 250);
 
 #fondo h2 {
 
-  margin-top: 65px;
+  margin-top: 85px;
   
   margin-right: 25px;
-  margin-bottom: 200px;
+  margin-bottom: 30px;
    font-size: 30px;
   color: white;
    text-align: right;
@@ -151,3 +152,15 @@ input[type=button]{
   height: auto  ;
 
 }
+#fondo h1 {
+  margin-top: 10px;
+  font-size: clamp(2.7rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+#fondo h1 span {
+  display: block;
+}
+

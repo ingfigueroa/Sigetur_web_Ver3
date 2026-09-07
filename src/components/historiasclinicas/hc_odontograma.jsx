@@ -12,7 +12,7 @@ import AbrirMDLMensaje from "../modales/mdlMensaje";
 
   
 
-const Odontograma = ({ data, setData, modo, idhc, idprofesional }) => {
+const Odontograma = ({ data, setData, modo, idhc, idcliente, idusuario }) => {
 
   
   const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
@@ -77,10 +77,12 @@ const Odontograma = ({ data, setData, modo, idhc, idprofesional }) => {
   const [idUsuario, setIDUsuario] = useState("2");
 
   function getCara(prev, caraBuscada) {
-  return Object.values(prev)
-    .flatMap(p => Object.entries(p.caras || {}))
-    .find(([nombre]) => nombre === caraBuscada)?.[1];
-}
+    console.log(caraBuscada)
+    return Object.values(prev)
+      .flatMap(p => Object.entries(p.caras || {}))
+      .find(([nombre]) => nombre === caraBuscada)?.[1];
+  }
+
 function getIdPieza(prev, piezaBuscada) {
   const pieza = prev[piezaBuscada];
   if (!pieza) return null;
@@ -164,7 +166,8 @@ function getIdPieza(prev, piezaBuscada) {
 
       setSituacionDentaria(data[0]);
     } catch (error) {
-      console.error("Error al buscar situación dentaria:", error);
+     setMensaje("Error al buscar situación dentaria:", error);
+     openMdlMensaje();
     }
   }
 
@@ -221,9 +224,9 @@ function getIdPieza(prev, piezaBuscada) {
           idpieza: parseInt(caraData.idpieza),
           idcara: parseInt(caraData.idcara),
           idsituaciondentaria: caraData.idsituaciondentaria,
-          idprofesional: idprofesional,
           observaciones: caraData.observacion ?? null,
-          idusuario: idUsuario,
+          idusuario: idusuario,
+          idcliente: idcliente
         });
       });
     });
@@ -295,10 +298,77 @@ function getIdPieza(prev, piezaBuscada) {
           </div>
         </Row>
         <hr />
+        <Row >
+            <Col md={2}>
+               <Form.Control
+    type="text"
+    value="SITUACION DENTARIA"
+    readOnly
+    style={{
+      backgroundColor: "#d9ead3",
+      color: "black",
+      border: "1px solid #a8c8a3",
+      fontWeight: "500",
+      textAlign: "center",
+      borderRadius: "6px",
+      boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.08)"
+    }}
+  />
+          </Col>
+          <Col md={4}>
+             <Form.Control
+    type="text"
+    value="DESCRIPCION"
+    readOnly
+    style={{
+      backgroundColor: "#d9ead3",
+      color: "black",
+      border: "1px solid #a8c8a3",
+      fontWeight: "500",
+      textAlign: "center",
+      borderRadius: "6px",
+      boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.08)"
+    }}
+  />
+          </Col>
+          <Col md={5}>
+  <Form.Control
+    type="text"
+    value="OBSERVACIÓN"
+    readOnly
+    style={{
+      backgroundColor: "#d9ead3",
+      color: "black",
+      border: "1px solid #a8c8a3",
+      fontWeight: "500",
+      textAlign: "center",
+      borderRadius: "6px",
+      boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.08)"
+    }}
+  />
+</Col>
+          <Col md={1} className="d-flex">
+           <Form.Control
+    type="text"
+    value="COLOR"
+    readOnly
+    style={{
+      backgroundColor: "#d9ead3",
+      color: "black",
+      border: "1px solid #a8c8a3",
+      fontWeight: "500",
+      textAlign: "center",
+      borderRadius: "6px",
+      boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.08)"
+    }}
+  />
+          </Col>
+        </Row>
         <Row className="mt-2">
-          <Col md={2}>
+           <Col md={2}>
             <Form.Control value={situacionSeleccionada.situacion} readOnly />
           </Col>
+
           <Col md={4}>
             <Form.Select
               value={situacionSeleccionada?.idsitudentaria || ""}
@@ -313,18 +383,25 @@ function getIdPieza(prev, piezaBuscada) {
               ))}
             </Form.Select>
           </Col>
-          <Col md={4}>
-            <Form.Control
-              value={situacionSeleccionada.observaciones}
-              readOnly
-            />
+         
+          <Col md={5}>
+          <Form.Control
+  type="text"
+  value={situacionSeleccionada.observaciones}
+  onChange={(e) =>
+    setSituacionSeleccionada({
+      ...situacionSeleccionada,
+      observaciones: e.target.value.toUpperCase()
+    })
+  }
+/>
           </Col>
-          <Col md={2} className="d-flex">
+          <Col md={1} className="d-flex">
             <span
               style={{
                 ...cuadro(situacionSeleccionada.color),
                 height: "100%",
-                width: "70%",
+                width: "100%",
                 display: "block",
               }}
             />

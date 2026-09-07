@@ -351,14 +351,14 @@ const anio1 = ultimoDiaMes.getFullYear();
               </button>
 
                <Button
-
-              variant="success"
+                    title="Buscar profesional"
+               variant="outline-success"
               className="btn"
               size="sm"
                             style={{
                               marginLeft: "auto",
                              
-                              width: "10%",
+                              
                               textAlign: "center",
                               
                               
@@ -367,11 +367,12 @@ const anio1 = ultimoDiaMes.getFullYear();
                            
                            onClick={() => Buscar(1)}
                           >
-                            BUSCAR
+                            <i class="fa-solid fa-magnifying-glass"></i> PROFESIONAL
                           </Button>
                            <Button
                             title="Limpiar parámetros"
                             variant="primary"
+                            
                             className="btn "
                             size="sm"
                             style={{
@@ -397,7 +398,7 @@ const anio1 = ultimoDiaMes.getFullYear();
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -429,7 +430,7 @@ const anio1 = ultimoDiaMes.getFullYear();
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -447,7 +448,7 @@ const anio1 = ultimoDiaMes.getFullYear();
 
                <InputGroup.Text
                          style={{
-                  backgroundColor: "#679bb9",
+                 backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -504,7 +505,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                    backgroundColor: "#4b959b",
                   }}
                 >
                   ID
@@ -512,7 +513,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "left",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   Apellido
@@ -521,7 +522,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "left",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   Nombres
@@ -530,7 +531,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                   key="2"
                 >
@@ -539,7 +540,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                   key="3"
                 >
@@ -549,7 +550,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                    backgroundColor: "#4b959b",
                   }}
                   key="4"
                 >
@@ -558,7 +559,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                   key="5"
                 >
@@ -568,7 +569,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                   key="6"
                 >

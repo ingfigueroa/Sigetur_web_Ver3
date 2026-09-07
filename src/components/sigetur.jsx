@@ -26,13 +26,13 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Tooltip from "@mui/material/Tooltip";
 
 import "../css/sigetur.css";
-import "../css/menu-hamburguesa.css";
+//import "../css/menu-hamburguesa.css";
 
 import {clientesServices} from "../services/clientes.service";
 
 
 
-import Image from "react-bootstrap/Image";
+
 
 import PizarradeTurnos from "./turnos/pizarradeturnos";
 
@@ -54,6 +54,8 @@ import DashboardTurnos from "./dashboard/dashboard_general";
 
 import HistoriaClinica from "./historiasclinicas/hc_historia_clinica";
 
+import MenuAplicaciones from "./menu_google/menu_aplicaciones";
+
 
 import { AuthContext } from "../context/AuthContext"; // 👈 IMPORTANTE
 
@@ -66,14 +68,12 @@ export default function sigetur() {
   const user = JSON.parse(localStorage.getItem("user"));
 
 
-  const [mostrarProfesional, setMostrarProfesional] = useState(false);
 
-  const location = useLocation();
   const { clientId, userId } = useContext(AuthContext);
 
-   const [status, setStatus] = useState("invalid");
+  
 
-   const [titulo, setTitulo] = useState("PIZARRA DE TURNOS");
+   const [titulo, setTitulo] = useState("EMPEZAR A TRABAJAR");
    const [razonsocialCliente, setRazonsocialCliente] = useState("");
 
    const [nombreUsuario, setNombreUsuario] = useState("");
@@ -87,7 +87,8 @@ export default function sigetur() {
    
   setVistaActiva(vista);
   setTitulo(titulo);
-  setOpen(false);
+ 
+  setAbierto(false);
 };
 
 
@@ -131,7 +132,7 @@ const MostrarObrasSociales = () => {
 
   
 
-
+  const [abierto, setAbierto] = useState(false);
 
   const [open, setOpen] = useState(false);
 
@@ -139,15 +140,6 @@ const MostrarObrasSociales = () => {
     setOpen(state);
   };
 
-  const handleLogout = () => {
-
-  localStorage.removeItem("token");
-
-  // opcional
-  localStorage.removeItem("user");
-
-  window.location.href = "/login";
-};
 
 
   useEffect(() => {
@@ -191,7 +183,7 @@ useEffect(() => {
   if (!perfil) return;
 
   if (perfil === "PROFESIONAL") {
-     console.log("pasa por useeffect")
+     
     cambiarVista("pizarradeturnosprofesional", "MIS TURNOS");
     return;
   }
@@ -219,38 +211,33 @@ useEffect(() => {
             display: "flex",
             width: "100%",
             height: "60px",
-            backgroundColor: "#2980B9",
+            backgroundColor: "#4b959b",
+            
           }}
         >
           <div
             style={{
               width: "25%",
-              backgroundColor: "#2980B9",
+              backgroundColor: "#4b959b",
               marginLeft: "0 px",
             }}
           >
-            <IconButton
-              onClick={() => toggleDrawer(true)}
-              style={{ color: "white", marginLeft: "auto" }}
-            >
-              <MenuIcon fontSize="large" />
-            </IconButton>
+             <div style={{ display: "flex", alignItems: "right", gap: "10px", marginTop: "10px"}}>
 
-            <a href="/">
-              <img
-                src="./assets/Logo_2022_resolucion.jpg"
-                alt=""
-                style={{ margin: "20px 20px" }}
-              />
-            </a>
-            
+               <MenuAplicaciones
+                  cambiarVista={cambiarVista}
+                  razonsocial={razonsocialCliente}
+                  user={nombreUsuario}
+                  tipousuario={perfil} />
+     
+            </div>
             
           </div>
            
           <div
             style={{
-              width: "85%",
-              backgroundColor: "#2980B9",
+              width: "100%",
+              backgroundColor: "#4b959b",
 
               color: "white",
               display: "flex", // Usa flexbox
@@ -265,48 +252,26 @@ useEffect(() => {
 
             
             {/* Título alineado a la izquierda */}
-            <h3 style={{ textAlign: "left", margin: 0 }}>{titulo}</h3>
+            <h3 style={{ alignItems: "center", margin: "50px" }}>{titulo}</h3>
 
             {/* Contenedor derecho con usuario e imagen */}
-            <div style={{ display: "flex", alignItems: "right", gap: "10px" }}>
-              <h6 style={{ margin: 0, color: "white", fontSize: "12px" }}>
-                
-                Consultorio: <br />{razonsocialCliente}
-              </h6>
-              {/* <Image
-                style={{
-                  width: "30px",
-                  height: "30px",
-                }}
-                src="assets/sinfoto.png"
-                roundedCircle
-              /> */}
-
-              <h6 style={{ margin: 0,  fontSize: "12px" }}>
-                
-                Usuario: <br /> {nombreUsuario}
-              </h6>
-               <h6 style={{ margin: 0,  fontSize: "12px" }}>
-                
-                Perfil: <br /> {perfil}
-              </h6>
-              <Tooltip title="Cerrar sesión">
-             <IconButton
-                  onClick={handleLogout}
-                  style={{ color: "white" }}
-
-                >
-                  <LogoutIcon />
-              </IconButton>
-            </Tooltip>
-            </div>
+            
+              <a href="/">
+              <img
+                src="./assets/Logo_2022_resolucion.jpg"
+                alt=""
+                style={{ margin: "15px 20px" }}
+              />
+            </a>
+            
+            
             
           </div>
           {/*  */}
 
 
           {/* Drawer (Menú lateral derecho) */}
-          <Drawer
+          {/* <Drawer
             anchor="left"
             open={open}
             onClose={() => toggleDrawer(false)()}
@@ -513,9 +478,9 @@ useEffect(() => {
                 <ListItemText primary="DashBoard" />
               </ListItem>
 
-              {/* Podés agregar más secciones acá */}
+             
             </List>
-          </Drawer>
+          </Drawer> */}
         </div>
 
         <div
@@ -529,7 +494,7 @@ useEffect(() => {
 
           {vistaActiva === "pizarradeturnosprofesional" && <PizarradeTurnosProfesional />}
 
-          {vistaActiva === "obrasocial" && <ObrasSociales />}
+          {vistaActiva === "obrasociales" && <ObrasSociales />}
 
            {vistaActiva === "agendasemanal" && <AgendaSemanal />}
           {vistaActiva === "consultas" && <ConsultaTurnos />}

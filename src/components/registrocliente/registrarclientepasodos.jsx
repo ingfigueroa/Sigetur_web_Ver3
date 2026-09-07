@@ -51,10 +51,10 @@ const volveallogin = async () => {
 const handleSubmit = async () => {
   try {
     
-    console.log("pasa por aca validar token")
+   
     const response = await clientesServices.getValidarCodigoEmail(email, token);
     const verificado = response.data;
-    console.log(verificado)
+  
 
       if (verificado) {
           setMensaje(`Código válido para: ${email}`);
@@ -139,10 +139,10 @@ useEffect(() => {
             1.- Ingresar el mail que identifica a la Clinica o Consultorio.
           </h5>
 
-          <h5 className="rccuerpo-h5"> 2.- Tildar el captcha</h5>
+          {/* <h5 className="rccuerpo-h5"> 2.- Tildar el captcha</h5> */}
           <h5 className="rccuerpo-h5">
             {" "}
-            3.- Hacer click en el botón CREAR CUENTA.
+            2.- Hacer click en el botón VALIDAR CODIGO.
           </h5>
           <br />
        
@@ -198,7 +198,10 @@ useEffect(() => {
           </div>
 
            <div className="volverallogin1">
-             <Button onClick={handleSubmit}>Válidar código</Button>
+             <Button  variant="outline-success" 
+             onClick={handleSubmit}>
+              Válidar código
+              </Button>
             
             
           </div>

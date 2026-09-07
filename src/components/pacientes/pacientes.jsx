@@ -223,7 +223,7 @@ const closeMdlMensaje = () => {
   
     
 
-  async function Limpiar(params) {
+  async function Limpiar() {
     SetApellido("");
     SetDNI("");
     setItems([]);
@@ -292,9 +292,9 @@ const closeMdlMensaje = () => {
 
                <Button
 
-              variant="success"
-              className="btn"
-              size="sm"
+                    variant="outline-success"
+                    className=""
+                    size="sm"
                             style={{
                               marginLeft: "auto",
                              
@@ -307,7 +307,7 @@ const closeMdlMensaje = () => {
                            
                            onClick={() => Buscar(1)}
                           >
-                            BUSCAR
+                            <i class="fa-solid fa-magnifying-glass"></i> PACIENTES
                           </Button>
                            <Button
                             title="Limpiar parámetros"
@@ -336,7 +336,7 @@ const closeMdlMensaje = () => {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -365,7 +365,7 @@ const closeMdlMensaje = () => {
             <InputGroup className="mb-3">
               <InputGroup.Text
                 style={{
-                  backgroundColor: "#679bb9",
+                  backgroundColor: "#4b959b",
                   color: "white",
                   height: "38px",
                 }}
@@ -404,7 +404,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   ID
@@ -412,7 +412,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "left",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   Apellido
@@ -421,7 +421,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "left",
-                    backgroundColor: "rgb(136, 161, 184)",
+                      backgroundColor: "#4b959b",
                   }}
                 >
                   Nombres
@@ -430,7 +430,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   DNI
@@ -439,7 +439,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                    backgroundColor: "#4b959b",
                     width: "15%",
                   }}
                 >
@@ -448,7 +448,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                     width: "15%",
                   }}
                 >
@@ -457,7 +457,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   Estado
@@ -466,7 +466,7 @@ const closeMdlMensaje = () => {
                 <th
                   style={{
                     textAlign: "center",
-                    backgroundColor: "rgb(136, 161, 184)",
+                     backgroundColor: "#4b959b",
                   }}
                 >
                   Acciones

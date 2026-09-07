@@ -54,10 +54,7 @@ const mdlturnoslibresdelmes = ({
 
   async function Buscar(_pagina) {
    
-     console.log(fechainicio)
-    console.log(fechafinal)
-    console.log(idcliente)
-    console.log(idprofesional)
+ 
     
 
     const data = await turnosService.TurnosLibresDelMes(
@@ -68,7 +65,6 @@ const mdlturnoslibresdelmes = ({
      
     );
    
-   console.log(data);
 
 if (data && data.registros && data.registros.length > 0) {
 
@@ -82,7 +78,7 @@ if (data && data.registros && data.registros.length > 0) {
 
 } else {
 
-  console.warn("No se encontraron datos o hubo un error");
+ 
 
   setItems([]);
   setCantidadTurnosLibresDias(0);
@@ -120,11 +116,6 @@ if (data && data.registros && data.registros.length > 0) {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    
-    console.log(mes)
-  }, []);
-
 /*   useEffect(() => {
    
   }, [fechasAgrupadas]); */
@@ -142,7 +133,7 @@ useEffect(() => {
       const fechaRegistro = format(new Date(r.fecha), "yyyy-MM-dd");
       return fechaRegistro === fechaFiltro;
     });
-    console.log(filtrados)
+    
     setRegistrosFiltrados(filtrados);
     setCantidadTurnosLibresDias(filtrados.length);
   } else {

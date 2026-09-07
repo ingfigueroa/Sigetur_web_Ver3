@@ -8,6 +8,7 @@ import { Form, Button, Container, Row, Col, InputGroup } from "react-bootstrap";
 
 import {clientesServices} from "../../services/clientes.service";
 import { provinciasService } from "/src/services/provincias.service.js";
+import { localidadesService } from "/src/services/localidades.service.js";
 
 import "/src/css/registrarconsultorio.css";
 import AbrirMDLMensaje from "../modales/mdlMensaje";
@@ -45,19 +46,23 @@ const [mensaje, setMensaje] = useState("");
     razonSocial: "",
     email: "",
     cuil: "",
-    celular: ""
+    celular: "",
+    idprovincia: "",
+    idlocalidad: ""
+
   });
 
   const location = useLocation();
   const email = location.state?.email;
   
   const cargarLocalidades = async (idprovincia) => {
-    console.log(idprovincia)
+
   try {
 
  if (idprovincia > 0) {
      
     const response = await localidadesService.Buscar(idprovincia);
+    
     setLocalidades(response);
 
     }
@@ -86,18 +91,20 @@ const handleReset = () => {
     });
   };
 
+const volveallogin = async () => {
+   setTimeout(() => {
+              navigate("/login", {
+                
+              });
+            }, 500);
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // 🚨 evita recarga de página
 
     try {
       // 👉 acá llamás a tu service
-
-     
-    
-      const response = await clientesServices.CrearCliente(formData);
-
-    
-
+      const response = await clientesServices.CrearCliente(formData, idprovincia, idlocalidad);
       setClientId(response.idcliente);
       setUserId(response.idusuario);
 
@@ -110,7 +117,8 @@ const handleReset = () => {
         });
       }, 2000);
     } catch (error) {
-      console.error(error);
+      setMensaje(error);
+      openMdlMensaje();
     }
   };
 
@@ -241,13 +249,13 @@ const handleReset = () => {
           <Col md={12}>
             <InputGroup className="mb-3">
                             <InputGroup.Text
-                              style={{ backgroundColor: "#679bb9", color: "white" }}
+                              style={{ backgroundColor: "#679bb9", color: "white", width:"30%" }}
                             >
                               Provincia que reside
                             </InputGroup.Text>
             
                             <select
-                              style={{ width: "34%" }}
+                              style={{  width:"70%" }}
                               value={idprovincia}
                               onChange={(e) => {
                                 const idProv = e.target.value;
@@ -269,15 +277,23 @@ const handleReset = () => {
                               ))}
                             </select>
             
+                       
+                          </InputGroup>
+            
+          </Col>
+          <Col md={12}>
+                      <InputGroup className="mb-3">
+                           
                             <InputGroup.Text
-                              style={{ backgroundColor: "#679bb9", color: "white" }}
+
+                              style={{ backgroundColor: "#679bb9", color: "white", width:"30%" }}
                             >
                               Localidad que reside
                             </InputGroup.Text>
             
                             <select
-                              style={{ width: "34%" }}
-                              value={idlocalidad}
+                              style={{  width:"70%" }}
+                             value={idlocalidad}
                               disabled={!idprovincia}
                               onChange={(e) => {
                                 setIDLocalidad(e.target.value);
@@ -292,19 +308,19 @@ const handleReset = () => {
                               ))}
                             </select>
                           </InputGroup>
-            
-          </Col>
-          <Col md={12}>
-            
           </Col>
 
          
 
 
         </Row>
-
+          <div className="volverallogin1">
+             <Button onClick={volveallogin}>Volver al LOGIN</Button>
+            
+            
+          </div>
         <div style={{ textAlign: "right", marginTop: "20px", padding:"10px" }}>
-          <Button variant="success" type="submit"
+          <Button  variant="outline-success" type="submit"
           style={{margin:"10px" }}>
               Registrar CONSULTORIO
           </Button>

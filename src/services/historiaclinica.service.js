@@ -23,16 +23,18 @@ const HCDiagsnosticoBuscar = config.urlHCDiagnosticoBuscar;
 
 export const historiaclinicaService = {
 
-  CreateHC: async (idpaciente, idprofesional, idusuario) => {
+  CreateHC: async (idcliente, idpaciente, idusuario) => {
     try {
      
       const response = await httpService.post(HCCreate, {
+        
         idpaciente,
-        idprofesional,
-        idusuario
+        
+        idusuario,
+        idcliente
       });
 
-      return response.data;
+      return response;
     } catch (error) {
       console.error(
         "Error al registrar anamnesis:",
@@ -44,7 +46,7 @@ export const historiaclinicaService = {
 
   GrabarAnamnesisMedica: async (payload) => {
     try {
-      console.log(payload)
+     
       const response = await httpService.post(HCAnamnesisMedica, payload);
       return response.data;
     } catch (error) {
@@ -76,6 +78,8 @@ export const historiaclinicaService = {
   
 GrabarFotoOdontograma: async (payload) => {
   try {
+
+    console.log(payload)
 
     if (!Array.isArray(payload) || payload.length === 0) {
       throw new Error("El odontograma debe enviarse como un array no vacío");
@@ -197,11 +201,12 @@ GrabarFotoOdontograma: async (payload) => {
   },
 
   
-  getHCNro: async (idpaciente) => {
+  getHCNro: async ( idpaciente) => {
     try {
      
       const resp = await httpService.get(HCNro, {
         params: {
+          
           idpaciente
         },
       });
@@ -209,7 +214,7 @@ GrabarFotoOdontograma: async (payload) => {
       return resp.data;
     } catch (error) {
       console.error(
-        "Error al registrar anamnesis:",
+        "Error al buscar la historia clinica:",
         error.response?.data || error.message
       );
       throw error; // importante para que el componente lo capture
