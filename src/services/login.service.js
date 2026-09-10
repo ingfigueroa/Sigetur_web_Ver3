@@ -29,13 +29,13 @@ async function updatePassword(password, idusuario) {
 }
 async function tokenResetPassword(email) {
   try {
-    console.log(email)
+    
     const resp = await httpService.get(urlTokenEmailProfesional, {
       params: { email }
     });
 
-    console.log(resp.data)
-  
+    
+ 
     return resp.data;
   } catch (error) {
   

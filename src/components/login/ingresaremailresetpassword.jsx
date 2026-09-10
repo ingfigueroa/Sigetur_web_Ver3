@@ -52,8 +52,8 @@ const handleSubmit = async () => {
    
     const data = await loginService.tokenResetPassword(email);
    
-
-    if (data){
+   
+    if (data.resp){
     
     setMensaje("Se envió el token al correo electrónico ingresado. Chequee y use el enlace.");
     openMdlMensaje();
@@ -72,7 +72,7 @@ const handleSubmit = async () => {
               navigate("/login", {
                 
               });
-            }, 2000);
+            }, 5000);
     
           }   
 

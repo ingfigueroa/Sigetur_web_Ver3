@@ -240,7 +240,7 @@ const volveallogin = async () => {
               <Form.Control
                 type="text"
                 name="razonSocial"
-                value={formData.razonSocial}
+                value={formData.razonSocial.toUpperCase()}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -314,11 +314,7 @@ const volveallogin = async () => {
 
 
         </Row>
-          <div className="volverallogin1">
-             <Button onClick={volveallogin}>Volver al LOGIN</Button>
-            
-            
-          </div>
+         
         <div style={{ textAlign: "right", marginTop: "20px", padding:"10px" }}>
           <Button  variant="outline-success" type="submit"
           style={{margin:"10px" }}>
