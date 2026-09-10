@@ -51,6 +51,7 @@ const handleSubmit = async () => {
   try {
    
     const data = await loginService.tokenResetPassword(email);
+   
 
     if (data){
     
@@ -77,9 +78,9 @@ const handleSubmit = async () => {
 
             
   } catch (error) {
-    console.log(error)
+   
   if (error.response) { 
-    console.log(error)
+    
     return error.response.data;
   }
 
@@ -99,7 +100,7 @@ const handleSubmit = async () => {
 
   return (
         <>
-      <div className="fondoprincipal">
+      <div className="fondoprincipal" >
        <div style={{
               width: "100%",
               height: "65px",
@@ -115,9 +116,9 @@ const handleSubmit = async () => {
               zIndex: 1000
             }}>
             <a href="/" >
-            <img style= {{marginBottom: "20px"}} src="./assets/Logo_2022_resolucion.jpg" alt="" />
+            <img style= {{marginBottom: "20px", marginLeft: "10px"}} src="./assets/Logo_2022_resolucion.jpg" alt="" />
           </a>
-          <h3>Sistema de Gestión de Turnos para profesionales de la salud</h3>
+          <h3  style= {{marginLeft: "10px"}}>Sistema de Gestión de Turnos para profesionales de la salud</h3>
         </div>
       <div > 
        <div >

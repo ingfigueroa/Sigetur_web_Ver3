@@ -228,8 +228,8 @@ const volveallogin = async () => {
                 onChange={handleChange}
               >
                 <option value="">Seleccione...</option>
-                <option value="CONSULTORIO">CONSULTORIO</option>
-                <option value="CLINICA">CLINICA</option>
+                <option value="CONSULTORIO">MI CONSULTORIO</option>
+                <option value="CLINICA">MI CLINICA</option>
               </Form.Select>
             </Form.Group>
           </Col>

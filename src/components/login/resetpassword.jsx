@@ -13,10 +13,12 @@ function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
  // const [token, setToken] = useState(123456)
+
   
    const token = searchParams.get("token");
+  
 
-  const [status, setStatus] = useState("invalid");
+  const [status, setStatus] = useState("");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,17 +47,19 @@ function ResetPassword() {
         const response = await loginService.validarTokenResetPassword(token);
    
         const resultado = response;
-        console.log(resultado)
+
         setIdUsuario(resultado);
 if (resultado === 0) {
         // ❌ inválido
-        setMensaje("El enlace es inválido o ha expirado.");
+      /*   setMensaje("El enlace es inválido o ha expirado.");
         openMdlMensaje();
           setTimeout(() => {
               navigate("/login", {
                 
               });
-            }, 2000);
+            }, 2000); */
+
+             setStatus("invalid");
         
       } else {
         // ✅ válido

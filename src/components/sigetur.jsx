@@ -4,7 +4,7 @@ import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 
 
-import {
+/* import {
   Drawer,
   List,
   ListItem,
@@ -23,7 +23,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-import Tooltip from "@mui/material/Tooltip";
+import Tooltip from "@mui/material/Tooltip"; */
 
 import "../css/sigetur.css";
 //import "../css/menu-hamburguesa.css";
@@ -56,6 +56,8 @@ import HistoriaClinica from "./historiasclinicas/hc_historia_clinica";
 
 import MenuAplicaciones from "./menu_google/menu_aplicaciones";
 
+import EnConstruccion from "./modales/funcionalidadenconstruccion";
+
 
 import { AuthContext } from "../context/AuthContext"; // 👈 IMPORTANTE
 
@@ -71,12 +73,12 @@ export default function sigetur() {
 
   const { clientId, userId } = useContext(AuthContext);
 
-  
+   const [nombreUsuario, setNombreUsuario] = useState("");
 
-   const [titulo, setTitulo] = useState("EMPEZAR A TRABAJAR");
+   const [titulo, setTitulo] = useState("");
    const [razonsocialCliente, setRazonsocialCliente] = useState("");
 
-   const [nombreUsuario, setNombreUsuario] = useState("");
+  
    const [perfil, setPerfil] = useState("");
 
   const [cantidadProfesionales, setCantidadProfesionales] = useState("");
@@ -122,7 +124,7 @@ const MostrarConsulta = () => {
 };
 
 const MostrarDashboard = () => {
-  cambiarVista("dashboard", "DASHBOARD");
+  cambiarVista("dashboard", "DASHBOARD - EN CONSTRUCCION");
 };
 
 const MostrarObrasSociales = () => {
@@ -145,15 +147,11 @@ const MostrarObrasSociales = () => {
   useEffect(() => {
   if (!user?.clienteid || !user?.usuarioid) return;
 
-
-
       const cargarDatos = async () => {
 
     
         try {
           const data = await clientesServices.getValoresPantallaInicial(user.clienteid, user.usuarioid);
-
-          
 
           const cantprof = data.cantidadprofesionales?.[0]?.Cantidaprofesionales ?? 0;
 
@@ -162,6 +160,8 @@ const MostrarObrasSociales = () => {
           setRazonsocialCliente(data.cliente?.[0]?.Cliente);
           setNombreUsuario(data.usuario?.[0]?.Usuario);
           setPerfil(data.perfil?.[0]?.Perfil)
+
+           setTitulo("EMPEZAR A TRABAJAR - " + data.cliente?.[0]?.Cliente);
 
           if (cantprof === 0){
               setTimeout(() => {
@@ -267,220 +267,7 @@ useEffect(() => {
             
             
           </div>
-          {/*  */}
-
-
-          {/* Drawer (Menú lateral derecho) */}
-          {/* <Drawer
-            anchor="left"
-            open={open}
-            onClose={() => toggleDrawer(false)()}
-          >
-            <List style={{ width: 280, padding: 0 }}>
-              <ListItem
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#2980B9",
-                  color: "white",
-                  margin: "5px 0px 5px 0px",
-                }}
-              >
-                <img
-                  src="./assets/Logo_2022_resolucion.jpg"
-                  alt="Logo"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "60px",
-                    objectFit: "contain",
-                  }}
-                />
-              </ListItem>
-
-              <Divider
-                sx={{
-                  marginY: "0.5",
-                  height: "2px",
-                  backgroundColor: "black",
-                }}
-              />
-
-              <ListItem
-                button
-                onClick={MostrarPizarradeTurnos}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <CalendarTodayIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Pizarra de turnos" />
-              </ListItem>
-
-              <ListItem
-                button
-                onClick={MostrarAgendaSemanal}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <EventNoteIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Agenda Semanal" />
-              </ListItem>
-
-              <ListItem
-                button
-                onClick={MostrarProfesionales}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <GroupIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Profesionales" />
-              </ListItem>
-
-              <ListItem
-                button
-                onClick={MostrarPacientes}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <PeopleIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Pacientes" />
-              </ListItem>
-
-              <ListItem
-                button
-                onClick={MostrarObrasSociales}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <LocalHospitalIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Obras Sociales" />
-              </ListItem>
-
-                <ListItem
-                button
-                onClick={MostrarHistoriaClinica}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <LocalHospitalIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Historia Clínica" />
-              </ListItem>
-
-              <Divider sx={{ marginY: "0.5", backgroundColor: "black" }} />
-
-              <ListItem
-                button
-                onClick={MostrarConsulta}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <SearchIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Consultas" />
-              </ListItem>
-              <Divider sx={{ marginY: "0.5", backgroundColor: "black" }} />
-              <ListItem
-                button
-                onClick={MostrarListaDeEspera}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <EventNoteIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="Lista de espera" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={MostrarDashboard}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#2980B9",
-                    color: "white", // texto blanco al hacer hover
-                    "& .MuiListItemIcon-root": {
-                      color: "white", // ícono blanco también
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>
-                  <EventNoteIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText primary="DashBoard" />
-              </ListItem>
-
-             
-            </List>
-          </Drawer> */}
+       
         </div>
 
         <div
@@ -503,7 +290,7 @@ useEffect(() => {
            
           {vistaActiva === "listaespera" && <ListadeEsperaV1 />}
 
-          {vistaActiva === "dashboard" && <DashboardTurnos />}
+          {vistaActiva === "dashboard" && <EnConstruccion titulo1="DASHBOARD - EN CONSTRUCCION"/>}
 
         </div>
       </div>

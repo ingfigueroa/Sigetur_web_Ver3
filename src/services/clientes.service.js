@@ -13,7 +13,7 @@ async function CrearCliente(data, idprovincia, idlocalidad) {
 
     const response = await httpService.post(urlCrearCliente, {
       email: data.email,
-      razonsocial: data.razonSocial,
+      razonsocial: data.razonSocial, 
       tipocliente: data.tipoCliente,
       idprovincia: idprovincia,
       idlocalidad: idlocalidad
@@ -30,7 +30,7 @@ async function CrearCliente(data, idprovincia, idlocalidad) {
 async function getValidarCodigoEmail(email, token) {
   try {
    
-    console.log(email + token)
+   
     const response = await httpService.get(urlvalidarcodigoemail, {
       params: {
         email,
@@ -40,11 +40,11 @@ async function getValidarCodigoEmail(email, token) {
 
   
    
-    console.log(response)
+  
    
     return response;
   } catch (error) {
-    console.error(error);
+    
     throw error;
   }
 };

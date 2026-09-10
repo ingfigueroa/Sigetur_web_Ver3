@@ -3,6 +3,8 @@ import httpService from "./http.service.js";
 
 // mas adelante podemos usar un archivo de configuracion para el urlResource
  import {config} from "../config.js";
+
+
  const urlValidarTokenEmailResetPassword = config.urlValidarTokenEmailResetPassword;
   const urlUpdatePassword = config.urlUpdatePassword;
 
@@ -27,14 +29,16 @@ async function updatePassword(password, idusuario) {
 }
 async function tokenResetPassword(email) {
   try {
-
+    console.log(email)
     const resp = await httpService.get(urlTokenEmailProfesional, {
       params: { email }
     });
+
+    console.log(resp.data)
   
     return resp.data;
   } catch (error) {
-    console.error("Error en la petición:", error);
+  
     return null; 
   }
 }

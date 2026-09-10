@@ -34,7 +34,7 @@ const Home = () => {
    <section className="hero">
 
   <div className="hero-overlay"></div>
- <img 
+        <img 
         src="./assets/logo_1220_330.png"
          alt="SIGETUR"
          className="logo-sigetur"
@@ -249,7 +249,7 @@ const Home = () => {
              </div>
             
          
-            <div className="section-title">
+           {/*  <div className="section-title">
 
                <Link to="/crearcuentapasouno">
                   <Button 
@@ -260,7 +260,7 @@ const Home = () => {
                   </Button>
                 </Link>
             </div>
-           
+            */}
 
           </Row>
 

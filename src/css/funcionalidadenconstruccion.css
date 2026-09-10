@@ -1,0 +1,47 @@
+
+.funcionalidad-construccion {
+  width: 100%;
+  min-height: 400px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.icono-construccion {
+  font-size: 55px;
+  margin-bottom: 20px;
+  color: #6c757d;
+}
+
+.funcionalidad-construccion h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.funcionalidad-construccion h3 {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.funcionalidad-construccion p {
+  font-size: 17px;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.funcionalidad-construccion span {
+  font-size: 14px;
+  color: #999;
+}

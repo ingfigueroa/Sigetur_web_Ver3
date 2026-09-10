@@ -14,8 +14,6 @@ async function CrearCuenta(email) {
   try {
     const response = await httpService.post(urlcrearcuentacorreo, {
       email: email,
-      
-      
     });
   
     return response.data;

@@ -88,12 +88,12 @@ const handleSubmit = async () => {
    
     const data = await correosServices.CrearCuenta(EMail);
     
-    setMensaje(data.message);
-    openMdlMensaje();
-    setTimeout(() => {
-              navigate("/login", {
-                
-              });
+            setMensaje(data.message);
+            openMdlMensaje();
+            setTimeout(() => {
+                      navigate("/login", {
+                        
+                      });
             }, 2000);
    
     
