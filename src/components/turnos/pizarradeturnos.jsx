@@ -1268,20 +1268,6 @@ function tablapizarradeturnos({}) {
                               </>
                             )}
 
-                          {item.estado === "PRESENTE" && item.prestacionesregistradas && (
-                              <button
-                                title="Registrar PRESTACIONES"
-                                className="btn btn-sm btn-light btn-success"
-                                variant="outline-secondary"
-                                onClick={(event) => {
-                                  event.preventDefault();
-
-                                  openMdlTurnoRegistrarPrestaciones(item);
-                                }}
-                              >
-                                <i className="fa-solid fa-notes-medical"></i>
-                              </button>
-                            )}
 
                            
 
@@ -1341,6 +1327,8 @@ function tablapizarradeturnos({}) {
                               >
                                 <i className="fa-solid fa-notes-medical"></i>
                               </button>
+                              
+                              
                             )}
                              {item.estado === "PRESENTE NO COBRADO" && item.prestacionesregistradas && (
                               
@@ -1356,6 +1344,37 @@ function tablapizarradeturnos({}) {
                               >
                                <i className="fa-solid fa-dollar-sign"></i>
                               </button>
+                            )}
+
+                            
+                         {(item.estado === "PRESENTE NO COBRADO" || item.estado === "PRESENTE COBRADO") &&(
+                          <>
+                              <button
+                                title="Registrar OBSERVACIONES"
+                                className="btn btn-sm btn-light btn-success"
+                                variant="outline-secondary"
+                                onClick={(event) => {
+                                  event.preventDefault();
+
+                                 
+                                }}
+                              >
+                                <i className="fa-solid fa-clipboard"></i>
+                              </button>
+
+                                                            <button
+                                title="Subir RADIOGRAFIAS ETC"
+                                className="btn btn-sm btn-light btn-success"
+                                variant="outline-secondary"
+                                onClick={(event) => {
+                                  event.preventDefault();
+
+                                  
+                                }}
+                              >
+                                <i className="fa-solid fa-paperclip"></i>
+                              </button>
+                              </>
                             )}
                           </td>
                         </tr>

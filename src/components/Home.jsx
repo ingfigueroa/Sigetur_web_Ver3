@@ -107,6 +107,361 @@ const Home = () => {
 
 </section> 
 
+<section
+  id="adquisicion"
+  className="section adquisicion-section"
+>
+
+  <Container>
+
+
+{/* TÍTULO */}
+<div className="section-title">
+
+ 
+
+  <h2>
+    Elegí cómo comenzar con SIGETUR
+  </h2>
+
+  <p>
+    Probá todas las funcionalidades de SIGETUR durante
+    30 días sin costo. 
+  </p>
+   <p>
+    Continuá con una
+    suscripción mensual por profesional.
+  </p>
+
+</div>
+
+
+{/* OPCIONES */}
+<Row className="justify-content-center g-4 mt-4">
+
+  {/* OPCIÓN GRATUITA */}
+  <Col lg={5} md={6}>
+
+    <div className="adquisicion-card">
+<div className="plan-probalo">
+  PRUEBA GRATUITA
+</div>
+<hr />
+     
+
+      <h3 >
+        Comenzar gratis
+      </h3>
+
+      <p>
+        Probá SIGETUR durante 30 días y conocé todas
+        sus funcionalidades sin costo.
+      </p>
+
+
+      <div className="adquisicion-price">
+
+       <h5><strong>30 días <span>sin costo</span></strong>
+        </h5>
+       
+
+      </div>
+
+
+      <div className="feature-check">
+
+        
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Gestiona tus pacientes
+        </div>
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+         Gestiona tus profesionales
+        </div>
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+         Gestiona tus turnos
+        </div>
+
+
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Sin limitaciones
+        </div>
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          30 días de prueba
+        </div>
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Sin costo
+        </div>
+
+      </div>
+
+
+    
+
+    </div>
+
+  </Col>
+
+
+  {/* OPCIÓN PAGO */}
+  <Col lg={5} md={6}>
+
+    <div className="adquisicion-card adquisicion-card-destacada">
+<div className="plan-recomendado">
+  RECOMENDADO -  SUSCRIPCIÓN MENSUAL
+</div>
+<hr />
+      
+
+      <h3 >
+       Suscribite
+      </h3>
+
+      <p>
+        Continuá utilizando todas las funcionalidades
+        de SIGETUR con un abono mensual por profesional.
+      </p>
+
+
+     <div className="adquisicion-price">
+
+ 
+
+ 
+   <h5><strong>por profesional/mes</strong>
+        </h5>
+         <span className="precio-valor">
+    USD 10
+  </span>
+
+</div>
+
+
+
+      {/* BENEFICIO */}
+      <div className="beneficio-sigetur">
+
+        <strong>
+          Beneficio de lanzamiento con descuento
+        </strong>
+
+        <div>
+          Primeros 3 meses al 
+          <span>25%</span>
+        </div>
+
+        <div>
+          Hasta el año
+          <span>50%</span>
+        </div>
+
+      
+
+      </div>
+
+
+      <div className="feature-check">
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Todas las funcionalidades
+        </div>
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Abono por profesional
+        </div>
+
+        <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Incorporá los profesionales que necesites
+        </div>
+
+      </div>
+
+
+      
+
+    </div>
+
+  </Col>
+
+</Row>
+
+{/* CTA ÚNICO DE REGISTRO */}
+
+
+
+
+ 
+  </Container>
+
+  
+   <Container>
+
+
+
+{/* OPCIONES */}
+<Row className="justify-content-center g-4 mt-4">
+
+  {/* OPCIÓN GRATUITA */}
+  <Col lg={10} md={12}>
+
+    <div className="adquisicion-card">
+
+    
+<div className="adquisicion-registro text-center">
+
+  <h3>
+    ¿Listo para comenzar?
+  </h3>
+
+  <p>
+    Registrate y comenzá a disfrutar SIGETUR durante
+    30 días sin costo.
+  </p>
+
+
+  <p>
+    <strong>
+      El abono mensual se calcula por profesional
+    </strong>
+    {" "}en cada consultorio o clínica.
+  </p>
+
+  <p className="small-text">
+    El importe se abona en pesos argentinos según la
+    cotización correspondiente.
+  </p>
+
+ <Link to="/crearcuentapasouno">
+      <Button 
+        className="btn-outline-sigetur"
+      >
+        Registrarse
+      </Button>
+    </Link>
+
+</div>
+
+
+{/* CÓMO FUNCIONA */}
+{/* <div className="adquisicion-proceso">
+
+  
+  <div className="proceso-linea">
+
+    <div className="proceso-item">
+
+      <div className="proceso-numero">
+        1
+      </div>
+
+      <strong>
+        30 días
+      </strong>
+
+      <span>
+        GRATIS
+      </span>
+
+    </div>
+
+
+    <div className="proceso-linea-separador"></div>
+
+
+    <div className="proceso-item">
+
+      <div className="proceso-numero">
+        2
+      </div>
+
+      <strong>
+        Meses 1–3
+      </strong>
+
+      <span>
+        25%
+      </span>
+
+    </div>
+
+
+    <div className="proceso-linea-separador"></div>
+
+
+    <div className="proceso-item">
+
+      <div className="proceso-numero">
+        3
+      </div>
+
+      <strong>
+        Meses 4–6
+      </strong>
+
+      <span>
+        50%
+      </span>
+
+    </div>
+
+
+    <div className="proceso-linea-separador"></div>
+
+
+    <div className="proceso-item">
+
+      <div className="proceso-numero">
+        4
+      </div>
+
+      <strong>
+        Desde mes 7
+      </strong>
+
+      <span>
+        100%
+      </span>
+
+    </div>
+
+  </div>
+
+</div> */}
+
+    
+
+    </div>
+
+ 
+  </Col>
+
+
+
+
+</Row>
+
+
+
+
+
+
+  </Container>
+
+</section>
+
+
    {/* =====================================================
           PLANES
       ===================================================== */}
@@ -160,30 +515,6 @@ const Home = () => {
 
                 
 
-{/* 
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Gestión de turnos
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Pacientes
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Historia clínica
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Gestión de prestaciones
-                    </li>
- */}
-                
-
-                 
 
                 </Card.Body>
 
@@ -205,30 +536,7 @@ const Home = () => {
                   </p>
 
                  
-{/* 
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Gestión de turnos
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Pacientes
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Historia clínica
-                    </li>
-
-                    <li>
-                      <FontAwesomeIcon icon={faCheck} />
-                      Gestión de prestaciones
-                    </li>
- */}
-                
-
-                
+     
 
                 </Card.Body>
 
@@ -249,18 +557,7 @@ const Home = () => {
              </div>
             
          
-           {/*  <div className="section-title">
-
-               <Link to="/crearcuentapasouno">
-                  <Button 
-                    className=""
-                    style={{width: "100%"}}
-                  >
-                    Registrarse
-                  </Button>
-                </Link>
-            </div>
-            */}
+        
 
           </Row>
 

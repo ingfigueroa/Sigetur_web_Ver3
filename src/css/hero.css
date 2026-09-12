@@ -163,7 +163,7 @@
 
   font-weight: 750;
 
-  color: #17324d;
+  color: black;
 }
 
 .section-title h3,
@@ -177,7 +177,7 @@
 
   font-weight: 400;
 
-  color: #17324d;
+  color: black;
 }
 
 .section-title h4,
@@ -191,13 +191,13 @@
 
   font-weight: 300;
 
-  color: #17324d;
+  color: black;
 }
 
 .section-title p {
   margin-top: 20px;
 
-  color: #687784;
+  color: black;
 
   font-size: 1.05rem;
   line-height: 1.7;
@@ -606,6 +606,322 @@
   background: #145b80;
 }
 
+/* =========================================================
+ADQUISICIÓN SIGETUR
+========================================================= */
+
+.adquisicion-section {
+background: #e9edf1;
+}
+
+/* ---------------------------------------------------------
+TARJETAS
+--------------------------------------------------------- */
+
+.adquisicion-card {
+height: 100%;
+padding: 40px;
+background: #ffffff;
+border: 1px solid #e1e8ed;
+border-radius: 14px;
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+transition: 0.25s ease;
+}
+
+.adquisicion-card:hover {
+transform: translateY(-5px);
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.09);
+}
+
+/* ---------------------------------------------------------
+TARJETA DESTACADA
+--------------------------------------------------------- */
+
+.adquisicion-card-destacada {
+  border: 2px solid #1976a8;
+  box-shadow: 0 12px 35px rgba(25, 118, 168, 0.12);
+}
+/* ---------------------------------------------------------
+ETIQUETA
+--------------------------------------------------------- */
+
+.adquisicion-label {
+display: inline-block;
+font-size: 0.78rem;
+font-weight: 700;
+letter-spacing: 2px;
+color: #1976a8;
+}
+
+/* ---------------------------------------------------------
+TÍTULO DE LA TARJETA
+--------------------------------------------------------- */
+
+.adquisicion-card h3 {
+margin-top: 14px;
+font-size: 1.75rem;
+line-height: 1.2;
+font-weight: 700;
+color: #17324d;
+}
+
+/* ---------------------------------------------------------
+TEXTO
+--------------------------------------------------------- */
+
+.adquisicion-card > p {
+margin-top: 15px;
+color: #687784;
+line-height: 1.7;
+}
+
+.plan-recomendado {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #38a02a;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.plan-probalo {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  
+  background: #1976a8;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ---------------------------------------------------------
+PRECIO
+--------------------------------------------------------- */
+
+.adquisicion-price {
+margin: 30px 0;
+padding: 22px 20px;
+background: #f7f9fb;
+border-radius: 10px;
+text-align: center;
+}
+
+.precio-valor {
+display: block;
+font-size: 1.0rem;
+font-weight: 500;
+color: #1976a8;
+}
+
+.precio-periodo {
+display: block;
+margin-top: 3px;
+font-size: 1.15rem;
+font-weight: 600;
+color: #17324d;
+}
+
+/* ---------------------------------------------------------
+BENEFICIO DE LANZAMIENTO
+--------------------------------------------------------- */
+
+.beneficio-sigetur {
+margin: 25px 0;
+padding: 20px 22px;
+background: #eaf3f8;
+border-radius: 10px;
+color: #334d61;
+}
+
+.beneficio-sigetur strong {
+display: block;
+margin-bottom: 10px;
+font-size: 0.8rem;
+letter-spacing: 1.5px;
+color: #17324d;
+}
+
+.beneficio-sigetur div {
+display: flex;
+justify-content: space-between;
+padding: 4px 0;
+font-size: 0.95rem;
+}
+
+.beneficio-sigetur span {
+font-weight: 700;
+color: #1976a8;
+}
+
+/* ---------------------------------------------------------
+CHECKS
+--------------------------------------------------------- */
+
+.adquisicion-card .feature-check {
+margin-top: 25px;
+}
+
+.adquisicion-card .feature-check div {
+margin-bottom: 12px;
+color: #334d61;
+}
+
+.adquisicion-card .feature-check svg {
+margin-right: 12px;
+color: #198754;
+}
+
+/* ---------------------------------------------------------
+BOTONES
+--------------------------------------------------------- */
+
+.adquisicion-btn {
+width: 100%;
+margin-top: 25px;
+padding: 13px 20px;
+border: none;
+background: #1976a8;
+border-radius: 8px;
+font-weight: 600;
+}
+
+.adquisicion-btn:hover {
+background: #145b80;
+}
+
+/* ---------------------------------------------------------
+ACLARACIÓN
+--------------------------------------------------------- */
+
+.adquisicion-aclaracion {
+margin-top: 40px;
+}
+
+.adquisicion-aclaracion p {
+margin-bottom: 5px;
+color: #687784;
+}
+
+.adquisicion-aclaracion strong {
+color: #334d61;
+}
+
+.small-text {
+font-size: 0.9rem;
+}
+
+/* =========================================================
+CÓMO FUNCIONA
+========================================================= */
+
+.adquisicion-proceso {
+margin-top: 80px;
+}
+
+.adquisicion-proceso h3 {
+margin-bottom: 40px;
+font-size: 1.7rem;
+font-weight: 600;
+color: #17324d;
+}
+
+/* ---------------------------------------------------------
+LÍNEA DEL PROCESO
+--------------------------------------------------------- */
+
+.proceso-linea {
+display: flex;
+align-items: center;
+justify-content: center;
+max-width: 1000px;
+margin: 0 auto;
+}
+
+.proceso-item {
+min-width: 150px;
+text-align: center;
+}
+
+.proceso-numero {
+width: 38px;
+height: 38px;
+margin: 0 auto 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+background: #1976a8;
+color: #ffffff;
+font-weight: 700;
+}
+
+.proceso-item strong {
+display: block;
+color: #17324d;
+font-size: 0.95rem;
+}
+
+.proceso-item span {
+display: block;
+margin-top: 4px;
+color: #1976a8;
+font-weight: 700;
+font-size: 0.9rem;
+}
+
+.proceso-linea-separador {
+flex: 1;
+max-width: 100px;
+height: 1px;
+margin: 0 10px;
+background: #cdd9e1;
+}
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+.adquisicion-card {
+padding: 30px;
+}
+
+.adquisicion-card h3 {
+font-size: 1.55rem;
+}
+
+
+.precio-periodo {
+font-size: 1.05rem;
+}
+
+.proceso-linea {
+flex-direction: column;
+gap: 10px;
+}
+
+.proceso-linea-separador {
+width: 1px;
+height: 35px;
+flex: none;
+}
+
+.proceso-item {
+min-width: auto;
+}
+
+.adquisicion-proceso {
+margin-top: 60px;
+}
+
+}
 
 /* =========================================================
    RESPONSIVE
