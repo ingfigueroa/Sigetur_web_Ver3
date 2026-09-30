@@ -14,7 +14,7 @@ import "../css/tablapizaturnos.css";
 function listarobrassociales() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 7; // Tamaño de la página
-  const [totalPages, setTotalPages] = useState(0);
+ 
 
 
  // Función para cambiar de página
@@ -28,10 +28,6 @@ const startIndex = (currentPage - 1) * pageSize;
 const endIndex = currentPage * pageSize;
 
 const [contador, setContador] = useState(1); // Inicializamos el contador en 0
-
-  const numerarse = () => {
-    setContador(contador + 1); // Incrementamos el contador en 1 y actualizamos el estado
-  };
 
   return (
     <>

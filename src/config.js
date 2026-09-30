@@ -60,6 +60,8 @@ const urlResourceMailTurnosProfesional = urlServidor + "/turnos/postEnviarTurnos
 const urlResourcepostTurnoCobrar = urlServidor + "/turnos/cobrar"
 const urlResourcepostTurnoRegistrarPrestaciones = urlServidor + "/turnos/registrarprestaciones"
 
+const urlResourceTurnoNotasClinicas = urlServidor + "/turnonotasclinicas"
+
 const urlResourceTurnoIDPrestaciones = urlServidor + "/turnos/prestacionesporturno"
 
 const urlResourceTurnoIDDetalle = urlServidor + "/turnoid/detalle"
@@ -133,6 +135,13 @@ const urlValoresPantallaInicio = urlServidor + "/valorespantallainicio"
 
 //USUARIOS MANEJO DE ROUTES
 const urlResourceUsuarioEmail = urlServidor + "/usuarioemail";
+
+//APIS PUBLICAS
+const urlValorDolarOficial = urlServidor + "/valordolaroficial";
+
+//TIPOS DE ESTUDIO
+const urlTiposdeEstudio= urlServidor + "/tiposestudio";
+const urlSubirArchivo= urlServidor + "/subirarchivo";
 
 
 
@@ -221,5 +230,9 @@ export const config = {
     urlResourceTurnoIDDetalle,
     urlResourceTurnosProfesionalDiaAtiende,
     urlResourcePacienteEMAIL,
-    urlResourceUsuarioEmail
+    urlResourceUsuarioEmail,
+    urlValorDolarOficial,
+    urlTiposdeEstudio,
+    urlSubirArchivo,
+    urlResourceTurnoNotasClinicas
 }

@@ -30,6 +30,8 @@ const urlResourceTurnosProfesionalDiaAtiende = config.urlResourceTurnosProfesion
 
 const urlResourceTurnoIDDetalle = config.urlResourceTurnoIDDetalle
 
+const urlResourceTurnoNotasClinicas = config.urlResourceTurnoNotasClinicas
+
 async function TurnosAnularPorPedidoProfesional(idcliente, idprofesional, observaciones, fecha, idusuario) {
 
   try {
@@ -423,6 +425,23 @@ async function TurnosProfesionalNoAtiendeeseDia(idcliente, idprofesional, fecha)
 }
 
 
+async function postTurnoNotasClinicas(datos) {
+  try {
+
+
+
+    const res = await httpService.post(urlResourceTurnoNotasClinicas, datos);
+
+  
+    
+    return res;
+
+  } catch (error) {
+
+    throw error;
+  }
+}
+
 
 export const turnosService = {
   BuscarPorProfesionalFecha,
@@ -444,5 +463,6 @@ export const turnosService = {
   postTurnoRegistrarPrestaciones,
   TurnoIDPrestaciones,
   TurnoIDDetalle,
-  TurnosProfesionalNoAtiendeeseDia
+  TurnosProfesionalNoAtiendeeseDia,
+  postTurnoNotasClinicas
   };

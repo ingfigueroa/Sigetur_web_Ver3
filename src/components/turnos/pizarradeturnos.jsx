@@ -30,6 +30,10 @@ import MdlAnular from "../modales/mdlAnular";
 import MdlMensaje from "../modales/mdlMensaje";
 import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
+import MDLSubirArchivos from "../archivos/subirarchivos";
+
+import MdlNotasClinicas from "./mdlnotasclinicas";
+
 import { turnosService } from "/src/services/turnos.service";
 import { profesionalesService } from "/src/services/profesional.service";
 
@@ -118,6 +122,9 @@ function tablapizarradeturnos({}) {
   const [modalCuerpo, setModalCuerpo] = useState();
   const [turnosAnulados, setTurnosAnulados] = useState(false);
 
+  const [modalSubirArchivo, setModalSubirArchivo] = useState(false);
+  const [modalNotasClinicas, setModalNotasClinicas] = useState(false);
+
 
 
   const stickyTh = {
@@ -134,6 +141,29 @@ function tablapizarradeturnos({}) {
   const closeMdlEstaSeguro = () => {
     setShowMDLEstaSeguro(false);
   };
+
+  
+  const openMdlSubirArchivo = (fila) => {
+    
+    setItem(fila)
+    setModalSubirArchivo(true);
+  };
+
+  const closeMdlSubirArchivo = () => {
+    setModalSubirArchivo(false);
+  };
+
+  
+  const openMdlNotasClinicas = (fila) => {
+    
+    setItem(fila)
+    setModalNotasClinicas(true);
+  };
+
+  const closeMdlNotasClinicas = () => {
+    setModalNotasClinicas(false);
+  };
+
 
   const openMdlHoraProfe = () => {
 
@@ -435,9 +465,10 @@ function tablapizarradeturnos({}) {
         setapeyNom(`${data[0].Apellido}, ${data[0].Nombres}`); // Concatenar apellido y nombres
         setProfesion(data[0].tprofesion);
       } else {
-        console.error(
+       setModalMostrarMensaje(
           "Los datos del profesional no contienen Apellido o Nombres."
         );
+        openMdlMensaje();
       }
 
       if (data[0].especialidad) {
@@ -494,7 +525,8 @@ function tablapizarradeturnos({}) {
       
     } catch (error) {
 
-      console.log(error)
+      setModalMostrarMensaje(error)
+      openMdlMensaje();
     }
   }
 
@@ -1350,12 +1382,12 @@ function tablapizarradeturnos({}) {
                          {(item.estado === "PRESENTE NO COBRADO" || item.estado === "PRESENTE COBRADO") &&(
                           <>
                               <button
-                                title="Registrar OBSERVACIONES"
+                                title="Registrar NOTAS CLINICAS"
                                 className="btn btn-sm btn-light btn-success"
                                 variant="outline-secondary"
                                 onClick={(event) => {
                                   event.preventDefault();
-
+                                  openMdlNotasClinicas(item)
                                  
                                 }}
                               >
@@ -1368,7 +1400,7 @@ function tablapizarradeturnos({}) {
                                 variant="outline-secondary"
                                 onClick={(event) => {
                                   event.preventDefault();
-
+                                  openMdlSubirArchivo(item);
                                   
                                 }}
                               >
@@ -1518,6 +1550,24 @@ function tablapizarradeturnos({}) {
                    
             />
          )}
+
+          {modalSubirArchivo && (
+            <MDLSubirArchivos 
+             
+             
+              onClose={closeMdlSubirArchivo} 
+              fila={Item}
+            />
+          )}
+
+           {modalNotasClinicas && (
+            <MdlNotasClinicas 
+             
+             
+              onClose={closeMdlNotasClinicas} 
+              fila={Item}
+            />
+          )}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -24,7 +24,38 @@ import "../css/hero.css";
 
 import { Link } from "react-router-dom";
 
+import { apiPublicas } from "/src/services/apipublicas.service.js";
+
 const Home = () => {
+
+const [precioDolar, setPrecioDolar] = useState(0);
+const [off50, setOff50] = useState(0);
+
+useEffect(() => {
+  const obtenerDolar = async () => {
+    try {
+      const data = await apiPublicas.getValorDolarOficial();
+
+      
+
+      const valor = data.venta;
+
+      const profesionalmes = valor * 10
+
+      setPrecioDolar(profesionalmes);
+
+      const varoff50 = profesionalmes/2;
+
+      setOff50(varoff50);
+
+    } catch (error) {
+      console.error("Error obteniendo cotización:", error);
+    }
+  };
+
+  obtenerDolar();
+}, []);
+
   return (
     <div className="home">
 
@@ -83,12 +114,13 @@ const Home = () => {
           <Button
             className="btn-primary-sigetur"
             href="#que-es"
+
           >
             Conocé SIGETUR
-            <FontAwesomeIcon
+          {/*   <FontAwesomeIcon
               icon={faArrowRight}
               className="ms-2"
-            />
+            /> */}
           </Button>
 
           <Button
@@ -106,6 +138,110 @@ const Home = () => {
   </Container>
 
 </section> 
+
+
+   {/* =====================================================
+          PLANES
+      ===================================================== */}
+      <section
+        id="planes"
+        className="section plans-section"
+      >
+
+        <Container>
+
+          <div className="section-title">
+
+            <span className="section-label">
+
+              COMENZÁ A TRABAJAR CON NUESTRA PLATAFORMA DE TURNOS
+            </span>
+
+           
+             <h2>
+                  SIGETUR
+            </h2>
+            <span className="section-label">
+
+               orientada a satisfacer las necesidades de los profesionales de la salud.
+            </span>
+            <p>
+            
+            </p>
+
+          </div>
+
+
+          <Row className="justify-content-center mt-4">
+
+            <Col md={3} lg={4}>
+
+              <Card className="plan-card">
+
+                <Card.Body>
+
+                  <h3>
+                    Crear consultorios particulares
+                  </h3>
+
+                  <p>
+                    Ideal para profesionales
+                    independientes del área de salud.
+                  </p>
+
+                  
+
+                
+
+
+                </Card.Body>
+
+              </Card>
+
+            </Col>
+            <Col md={3} lg={4}>
+
+              <Card className="plan-card">
+
+                <Card.Body>
+
+                  <h3>
+                    Crear consultorios interdisciplinarios
+                  </h3>
+
+                  <p>
+                   Ideal para consultorios donde interactuan profesionales de distintas especialidades.
+                  </p>
+
+                 
+     
+
+                </Card.Body>
+
+              </Card>
+
+            </Col>
+             <div className="section-title">
+ <h3 className="section-label">
+
+              Profesionales con especialidades como
+            </h3>
+            <h4>
+    Odontología - Psicología - Centros de estética 
+            </h4>
+            <h4>
+     Medicina - Nutrición - Quiropraxia
+            </h4>
+             </div>
+            
+         
+        
+
+          </Row>
+
+        </Container>
+
+      </section>
 
 <section
   id="adquisicion"
@@ -197,9 +333,14 @@ const Home = () => {
           30 días de prueba
         </div>
 
-        <div>
+        
+         <div>
           <FontAwesomeIcon icon={faCheck} />
-          Sin costo
+          Menor latencia
+        </div>
+         <div>
+          <FontAwesomeIcon icon={faCheck} />
+          Atención 24/7
         </div>
 
       </div>
@@ -228,7 +369,7 @@ const Home = () => {
 
       <p>
         Continuá utilizando todas las funcionalidades
-        de SIGETUR con un abono mensual por profesional.
+        de SIGETUR con un abono mensual
       </p>
 
 
@@ -240,7 +381,9 @@ const Home = () => {
    <h5><strong>por profesional/mes</strong>
         </h5>
          <span className="precio-valor">
-    USD 10
+ <h2>$ {precioDolar.toLocaleString("es-AR")}</h2>
+  
+
   </span>
 
 </div>
@@ -254,14 +397,45 @@ const Home = () => {
           Beneficio de lanzamiento con descuento
         </strong>
 
-        <div>
-          Primeros 3 meses al 
-          <span>25%</span>
-        </div>
+       <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  <h3>50 %</h3>
 
-        <div>
-          Hasta el año
-          <span>50%</span>
+</div>
+ <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  
+
+   <strong> <h2>$ {off50.toLocaleString("es-AR")}</h2></strong>
+</div>
+<div
+  style={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    textAlign: "center",
+  }}
+>
+  <h6 style={{ maxWidth: "500px" }}>
+    Todo el primer año. Valor por profesional por mes pagando los 12 meses juntos.
+  </h6>
+  
+</div>
+        
+
+         <div>
+          
+          
         </div>
 
       
@@ -460,110 +634,6 @@ const Home = () => {
   </Container>
 
 </section>
-
-
-   {/* =====================================================
-          PLANES
-      ===================================================== */}
-      <section
-        id="planes"
-        className="section plans-section"
-      >
-
-        <Container>
-
-          <div className="section-title">
-
-            <span className="section-label">
-
-              COMENZÁ A TRABAJAR CON NUESTRA PLATAFORMA DE TURNOS
-            </span>
-
-           
-             <h2>
-                  SIGETUR
-            </h2>
-            <span className="section-label">
-
-               orientada a satisfacer las necesidades de los profesionales de la salud.
-            </span>
-            <p>
-            
-            </p>
-
-          </div>
-
-
-          <Row className="justify-content-center mt-4">
-
-            <Col md={3} lg={4}>
-
-              <Card className="plan-card">
-
-                <Card.Body>
-
-                  <h3>
-                    Crear consultorios particulares
-                  </h3>
-
-                  <p>
-                    Ideal para profesionales
-                    independientes del área de salud.
-                  </p>
-
-                  
-
-                
-
-
-                </Card.Body>
-
-              </Card>
-
-            </Col>
-            <Col md={3} lg={4}>
-
-              <Card className="plan-card">
-
-                <Card.Body>
-
-                  <h3>
-                    Crear consultorios interdisciplinarios
-                  </h3>
-
-                  <p>
-                   Ideal para consultorios donde interactuan profesionales de distintas especialidades.
-                  </p>
-
-                 
-     
-
-                </Card.Body>
-
-              </Card>
-
-            </Col>
-             <div className="section-title">
- <h3 className="section-label">
-
-              Profesionales con especialidades como
-            </h3>
-            <h4>
-    Odontología - Psicología - Centros de estética 
-            </h4>
-            <h4>
-     Medicina - Nutrición - Quiropraxia
-            </h4>
-             </div>
-            
-         
-        
-
-          </Row>
-
-        </Container>
-
-      </section>
 
       {/* =====================================================
           EL PROBLEMA

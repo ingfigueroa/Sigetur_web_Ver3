@@ -14,7 +14,7 @@ import { mediosdepagosService } from "/src/services/mediosdepagos.service";
 import { turnosService } from "/src/services/turnos.service";
 
 import { getUsuarioId } from "../utils/auth";
-import { tr } from "date-fns/locale";
+
 
 const CobrarModal = ({ show, handleClose, fila }) => {
 
@@ -28,19 +28,19 @@ const CobrarModal = ({ show, handleClose, fila }) => {
     const [mediosdePagos, setMediosdePagos] = useState([]);
     const [mdePagoElegido, setMdePagoElegido] = useState("EFECTIVO");
     
-       const [idMdePago, setIdMdePago] = useState(0);
+       
 
     const [inputValuePorcentaje, setInputValuePorcentaje] = useState("");
-    const [result, setResult] = useState(0);
+   
      const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
 
-     const [descuento, setDescuento] = useState(0);
+
     const [observaciones, setObservaciones] = useState("");
 
        const [modalTitulo, setModalTitulo] = useState("");
        const [modalCuerpo, setModalCuerpo] = useState("");
 
-       const [totalConDescuento, setTotalConDescuento] = useState(0)
+
 
        const [idTarjeta, setIDTarjeta] = useState(0);
        const [nroTarjeta, setNroTarjeta] = useState("0000");

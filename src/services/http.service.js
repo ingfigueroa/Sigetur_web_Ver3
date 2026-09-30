@@ -2,12 +2,13 @@ import axios from "axios";
 import modalService from "./modalDialog.service";
 
 
-const httpService = axios.create({
+/* const httpService = axios.create({
   headers: {
     "Content-type": "application/json",
   },
-});
+}); */
 
+const httpService = axios.create();
 
 httpService.interceptors.request.use(
   (request) => {
