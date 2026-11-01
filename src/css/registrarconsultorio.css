@@ -31,10 +31,10 @@ img{
 }
 
 #rccuerpo1{
-  margin-top: 50px;
+  margin-top: 10px;
   width: 40%;
   height: auto;
-  background-color:e2dede;
+ 
   color: black;
  
     
@@ -112,14 +112,14 @@ img{
   display: flex;
   width: 100%;
   text-align: center;
-  margin-bottom: 45px;
+  margin-bottom: 15px;
 }
 
 
 .volverallogin1{
   
   width: 50%;
-  margin-top: 65px;
+  margin-top: 25px;
   text-align: center;
 }
 

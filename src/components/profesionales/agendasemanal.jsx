@@ -1,16 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 /* import { format, parse } from "date-fns"; */
 import { format, addDays, parse } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
 
-import "/src/css/pizarradeturnos.css";
+
+
 
 import Button from "react-bootstrap/Button";
+
+
 
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
+
+import "/src/css/pizarradeturnos.css"; 
 import "/src/css/tablapizaturnos.css";
+
 import Mdlhorarioprofesional from "../profesionales/mdlhorarioprofesional";
 import { turnosService } from "/src/services/turnos.service";
 import { profesionalesService } from "/src/services/profesional.service";
@@ -22,7 +27,7 @@ import MdlCambiarEstado from "../modales/mdlCambiarEstado";
 import CobrarModal from "../cobros/cobrarmodal";
 import MdlRegistrarPrestaciones from "../turnos/mdlregistrarprestaciones";
 import MdlTurnoDetalle from "../turnos/mdlturnosdetalle_vers1";
-import { TuneOutlined } from "@mui/icons-material";
+
 import { getClienteId, getUsuarioId } from "../utils/auth";
 
 import { getMonday, crearFechaHora, getFechaActualISO, getFechaDMY, getFechaActualISODevuelve_YYYY_MM_DD} from "../utils/fecha";
@@ -143,35 +148,6 @@ const agendasemanal = ({ show, handleClose }) => {
     } catch (error) {}
   }
 
-/* 
-  const formatearFecha_yyyy_mm_dd = (fecha) => {
-    let fechaActualParseada;
-
-    if (fecha instanceof Date) {
-      fechaActualParseada = fecha;
-    } else if (typeof fecha === "string" && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
-      fechaActualParseada = parse(fecha, "yyyy-MM-dd", new Date());
-    } else if (
-      typeof fecha === "string" &&
-      /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(fecha)
-    ) {
-      fechaActualParseada = parse(fecha, "d/M/yyyy", new Date());
-    } else if (typeof fecha === "string" && !isNaN(Date.parse(fecha))) {
-      fechaActualParseada = new Date(fecha);
-    } else {
-      console.error("Formato de fecha no reconocido:", fecha);
-      return "";
-    }
-
-    // 👉 Forzar a UTC para que no reste horas
-    return format(
-      new Date(
-        fechaActualParseada.getTime() -
-          fechaActualParseada.getTimezoneOffset() * 60000
-      ),
-      "yyyy-MM-dd"
-    );
-  }; */
 
   const openMdlHoraProfe = () => {
     setModalHoraProfe(true);
@@ -503,7 +479,7 @@ const agendasemanal = ({ show, handleClose }) => {
     <>
       <div
         style={{
-          width: "100%",
+          
 
           marginTop: "0",
           marginBottom: "0",
@@ -557,12 +533,68 @@ const agendasemanal = ({ show, handleClose }) => {
             >
               <i class="fa-solid fa-clock"></i>
             </button>
+<div className="sigetur-toolbar-actions">
+            <Button
+              title="Buscar profesional"
+              variant="outline-success"
+              className="sigetur-toolbar-action"
+              size="sm"
+              onClick={openMdlListarProfesionales}
+            >
+              <i className="fa-solid fa-magnifying-glass"></i> Profesional
+            </Button>
+             <Button
+                  title="Buscar turnos"
+                  variant="outline-success"
+                  className="sigetur-toolbar-action"
+                  size="sm"
+
+                  onClick={(event) => {
+                event.preventDefault();
+              
+                BuscarTurnosProfesionalFecha(
+                  ClienteID,
+                  IDProfesional,
+                  fechaComienzoSemana,
+                  UserID
+                );
+              }}
+                >
+                <i className="fa-solid fa-magnifying-glass"></i> Turnos
+            </Button>
+             <Button
+                  title="Limpiar parámetros"
+                  variant="primary"
+                  className="sigetur-toolbar-action"
+                  size="sm"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    limpiar();
+                  }}
+                >
+                  <i className="fa-solid fa-broom"></i>
+                  Limpiar
+              </Button>
+                     
+
+          </div>
+            
+            {/* <Button
+              title="Buscar profesional"
+              variant="outline-success"
+              className="sigetur-toolbar-action"
+              size="sm"
+              onClick={openMdlListarProfesionales}
+            >
+              <i className="fa-solid fa-magnifying-glass"></i> Profesional
+            </Button>
 
             <Button
 
               variant="success"
               className="btn"
               size="sm"
+               title="Buscar turnos"
               style={{
                 marginLeft: "auto",
                
@@ -584,7 +616,7 @@ const agendasemanal = ({ show, handleClose }) => {
                 );
               }}
             >
-              <i class="fa-solid fa-magnifying-glass"></i> TURNOS
+              <i class="fa-solid fa-magnifying-glass"></i> Turnos
             </Button>
              <Button
               title="Limpiar parámetros"
@@ -603,7 +635,7 @@ const agendasemanal = ({ show, handleClose }) => {
               }}
             >
               <i className="fa-solid fa-broom"></i>
-            </Button> 
+            </Button>  */}
 
            {/*  <button
              variant="primary"

@@ -162,7 +162,7 @@ function ConsultaTurnos() {
        <div
         style={{
           display: "grid",
-          width: "100%",
+          
           margin: "15px 15px",
           backgroundColor: "white",
         }}
@@ -213,7 +213,7 @@ function ConsultaTurnos() {
               BuscarTurnosConsultasPorFecha(1);
             }}
           >
-            <i class="fa-solid fa-magnifying-glass"></i> CONSULTAR
+            <i class="fa-solid fa-magnifying-glass"></i> Consultar
           </Button>
 
           {/* Botón */}
@@ -251,6 +251,7 @@ function ConsultaTurnos() {
             paddingTop: "10px",
             gap: "10px",
             flexWrap: "wrap", // permite que baje en pantallas chicas
+            
           }}
         >
           {/* Fecha desde */}
@@ -258,7 +259,7 @@ function ConsultaTurnos() {
             <InputGroup.Text
               style={{
                 backgroundColor: "#4b959b",
-                color: "black",
+                color: "white",
                 height: "28px",
               }}
             >
@@ -276,7 +277,7 @@ function ConsultaTurnos() {
           <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <InputGroup.Text
               style={{
-                color: "black",
+                color: "white",
                backgroundColor: "#4b959b",
                 height: "28px",
               }}
@@ -297,7 +298,7 @@ function ConsultaTurnos() {
               style={{
                 backgroundColor: "#4b959b",
                 width: "auto",
-                color: "black",
+               color: "white",
                 
                 height: "28px",
               }}
@@ -325,7 +326,7 @@ function ConsultaTurnos() {
               style={{
                backgroundColor: "#4b959b",
                 width: "auto",
-                color: "black",
+               color: "white",
                
                 height: "28px",
               }}

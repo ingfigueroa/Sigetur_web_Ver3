@@ -1,0 +1,294 @@
+
+/* =========================================
+   SIGETUR - FORMATO GENERAL
+   Identidad visual de la aplicación
+   ========================================= */
+
+:root {
+  /* Colores institucionales */
+  --sigetur-primary: #176B87;
+  --sigetur-primary-hover: #12566D;
+  --sigetur-success: #2F855A;
+  --sigetur-danger: #C53030;
+  --sigetur-warning: #B7791F;
+
+  /* Fondos */
+  --sigetur-page-bg: #F3F6F8;
+  --sigetur-surface: #FFFFFF;
+  --sigetur-surface-soft: #E8F2F5;
+
+  /* Textos y bordes */
+  --sigetur-text: #263746;
+  --sigetur-text-muted: #64748B;
+  --sigetur-border: #DCE4EA;
+
+  /* Formas */
+  --sigetur-radius: 8px;
+  --sigetur-radius-sm: 5px;
+  --sigetur-shadow: 0 2px 8px rgba(38, 55, 70, 0.06);
+}
+
+/* Base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--sigetur-text);
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--sigetur-page-bg);
+}
+
+/* Títulos */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--sigetur-text);
+}
+
+/* Contenedores reutilizables */
+.sigetur-panel {
+  background-color: var(--sigetur-surface);
+  border: 1px solid var(--sigetur-border);
+  border-radius: var(--sigetur-radius);
+  box-shadow: var(--sigetur-shadow);
+  padding: 16px;
+}
+
+/* Botones React-Bootstrap */
+.btn {
+  border-radius: var(--sigetur-radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--sigetur-primary);
+  --bs-btn-border-color: var(--sigetur-primary);
+  --bs-btn-hover-bg: var(--sigetur-primary-hover);
+  --bs-btn-hover-border-color: var(--sigetur-primary-hover);
+  --bs-btn-active-bg: var(--sigetur-primary-hover);
+  --bs-btn-active-border-color: var(--sigetur-primary-hover);
+}
+
+/* Campos de formularios */
+.form-control,
+.form-select {
+  border-color: var(--sigetur-border);
+  border-radius: var(--sigetur-radius-sm);
+  color: var(--sigetur-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sigetur-primary);
+  box-shadow: 0 0 0 0.2rem rgba(23, 107, 135, 0.15);
+}
+
+/* Tablas */
+.table {
+  color: var(--sigetur-text);
+}
+
+.table thead th {
+  background-color: var(--sigetur-surface-soft);
+  color: var(--sigetur-text);
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* Campos y controles: límites generales */
+img,
+video {
+  max-width: 100%;
+}
+
+/* Accesibilidad: foco visible */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--sigetur-primary);
+  outline-offset: 2px;
+}
+
+
+
+/* =========================================
+   SIGETUR - ENCABEZADO PRINCIPAL
+   ========================================= */
+
+.sigetur {
+  width: 100%;
+  min-height: 100vh;
+  color: var(--sigetur-text);
+  background-color: var(--sigetur-page-bg);
+}
+.sigetur-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  min-height: 42px;
+  padding: 0px 10px;
+  gap: 8px;
+  background-color: #4b959b;
+  color: #fff;
+}
+
+/* Título centrado respecto de toda la barra */
+.sigetur-header .sigetur-header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  color: white;
+  font-size: 24px;
+}
+
+/* Logo a la derecha */
+.sigetur-header a {
+  margin-left: auto;
+  padding-bottom: 8px;
+}
+
+/* Icono y menú */
+.sigetur-header-menu {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* Título y logo */
+.sigetur-header-centro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+.sigetur-header-titulo {
+  margin: 0;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.sigetur-header-logo {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.sigetur-header-logo img {
+  display: block;
+  width: auto;
+  max-width: 120px;
+  max-height: 28px;
+  object-fit: contain;
+}
+
+/* Pantallas pequeñas */
+@media (max-width: 768px) {
+  .sigetur-header {
+    min-height: 38px;
+    padding: 3px 6px;
+    gap: 6px;
+  }
+
+  .sigetur-header-centro {
+    gap: 5px;
+  }
+
+  .sigetur-header-titulo {
+    font-size: 0.9rem;
+  }
+
+  .sigetur-header-logo img {
+    max-width: 90px;
+    max-height: 24px;
+  }
+}
+
+
+/* =========================================
+   SIGETUR - BARRAS DE HERRAMIENTAS
+   ========================================= */
+
+/* Barra de herramientas compacta */
+.sigetur-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 100%;
+  padding-top: 8px;
+    padding-bottom: 8px;
+  font-size: 10px;
+}
+
+/* Botones de iconos */
+.sigetur-toolbar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  font-size: 12px;
+  border-radius: 4px;
+}
+.sigetur-toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-left: auto;
+
+   /* Separación de los bordes */
+
+  padding-right: 12px;
+  
+}
+
+/* Espacio flexible entre grupos */
+.sigetur-toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.sigetur-toolbar .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 768px) {
+  .sigetur-toolbar-actions {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .sigetur-toolbar-spacer {
+    display: none;
+  }
+
+  .sigetur-toolbar-action {
+    flex: 1 1 auto;
+  }
+}
+

@@ -177,7 +177,7 @@ function listadeespera_v1() {
       <div
         style={{
           display: "grid",
-          width: "100%",
+         
           margin: "15px 15px",
           backgroundColor: "white",
         }}
@@ -221,6 +221,7 @@ function listadeespera_v1() {
                               <Button
                           variant="success"
                           size="sm"
+                          title="Buscar obra social"
                            style={{
                                             marginLeft: "auto",
                                            
@@ -234,7 +235,7 @@ function listadeespera_v1() {
                            cargarlistadeespera()
                           }}
                         >
-                          Buscar
+                          <i class="fa-solid fa-magnifying-glass"></i> Buscar
                         </Button>
               
                         {/* Botón */}

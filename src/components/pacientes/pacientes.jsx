@@ -245,7 +245,7 @@ const closeMdlMensaje = () => {
       <div
         style={{
           display: "grid",
-          width: "100%",
+        
           margin: "15px 15px",
           backgroundColor: "white",
         }}
@@ -307,7 +307,7 @@ const closeMdlMensaje = () => {
                            
                            onClick={() => Buscar(1)}
                           >
-                            <i class="fa-solid fa-magnifying-glass"></i> PACIENTES
+                            <i class="fa-solid fa-magnifying-glass"></i> Pacientes
                           </Button>
                            <Button
                             title="Limpiar parámetros"

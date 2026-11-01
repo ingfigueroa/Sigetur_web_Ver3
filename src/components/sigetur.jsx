@@ -205,95 +205,49 @@ useEffect(() => {
 
   return (
     <>
-      <div className="sigetur">
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            height: "60px",
-            backgroundColor: "#4b959b",
-            
-          }}
-        >
-          <div
-            style={{
-              width: "25%",
-              backgroundColor: "#4b959b",
-              marginLeft: "0 px",
-            }}
-          >
-             <div style={{ display: "flex", alignItems: "right", gap: "10px", marginTop: "10px"}}>
+      
+<div className="sigetur">
+  <header className="sigetur-header">
 
-               <MenuAplicaciones
-                  cambiarVista={cambiarVista}
-                  razonsocial={razonsocialCliente}
-                  user={nombreUsuario}
-                  tipousuario={perfil} />
-     
-            </div>
-            
-          </div>
-           
-          <div
-            style={{
-              width: "100%",
-              backgroundColor: "#4b959b",
+    <div className="sigetur-header-menu">
+      <MenuAplicaciones
+        cambiarVista={cambiarVista}
+        razonsocial={razonsocialCliente}
+        user={nombreUsuario}
+        tipousuario={perfil}
+      />
+    </div>
 
-              color: "white",
-              display: "flex", // Usa flexbox
-              alignItems: "center", // Centra verticalmente
-              justifyContent: "space-between", // Separa los elementos, titulo a la izquierda y el resto a la derecha
-              padding: "0 15px", // Espaciado lateral
-            }}
-          >
-             
+    <div className="sigetur-header-centro">
+      <div className="sigetur-header-title">
+      {titulo}
+</div>
+      <a href="/" className="sigetur-header-logo">
+        <img
+          src="./assets/Logo_2022_resolucion.jpg"
+          alt="SIGETUR"
+        />
+      </a>
+    </div>
 
-          
+  </header>
 
-            
-            {/* Título alineado a la izquierda */}
-            <h3 style={{ alignItems: "center", margin: "50px" }}>{titulo}</h3>
+  <main className="sigetur-contenido">
+    {vistaActiva === "historiaClinica" && <HistoriaClinica />}
+    {vistaActiva === "pacientes" && <Pacientes />}
+    {vistaActiva === "profesionales" && <Profesionales />}
+    {vistaActiva === "pizarradeturnos" && <PizarradeTurnos />}
+    {vistaActiva === "pizarradeturnosprofesional" && <PizarradeTurnosProfesional />}
+    {vistaActiva === "obrasociales" && <ObrasSociales />}
+    {vistaActiva === "agendasemanal" && <AgendaSemanal />}
+    {vistaActiva === "consultas" && <ConsultaTurnos />}
+    {vistaActiva === "listaespera" && <ListadeEsperaV1 />}
+    {vistaActiva === "dashboard" && (
+      <EnConstruccion titulo1="DASHBOARD - EN CONSTRUCCION" />
+    )}
+  </main>
+</div>
 
-            {/* Contenedor derecho con usuario e imagen */}
-            
-              <a href="/">
-              <img
-                src="./assets/Logo_2022_resolucion.jpg"
-                alt=""
-                style={{ margin: "15px 20px" }}
-              />
-            </a>
-            
-            
-            
-          </div>
-       
-        </div>
-
-        <div
-          style={{ display: "flex", width: "100%", backgroundColor: "white" }}
-        >
-
-          {vistaActiva === "historiaClinica" && <HistoriaClinica />}
-          {vistaActiva === "pacientes" && <Pacientes />}
-          {vistaActiva === "profesionales" && <Profesionales />}
-          {vistaActiva === "pizarradeturnos" && <PizarradeTurnos />}
-
-          {vistaActiva === "pizarradeturnosprofesional" && <PizarradeTurnosProfesional />}
-
-          {vistaActiva === "obrasociales" && <ObrasSociales />}
-
-           {vistaActiva === "agendasemanal" && <AgendaSemanal />}
-          {vistaActiva === "consultas" && <ConsultaTurnos />}
-
-         
-           
-          {vistaActiva === "listaespera" && <ListadeEsperaV1 />}
-
-          {vistaActiva === "dashboard" && <EnConstruccion titulo1="DASHBOARD - EN CONSTRUCCION"/>}
-
-        </div>
-      </div>
     </>
   );
 }

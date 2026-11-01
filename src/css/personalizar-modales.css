@@ -16,3 +16,189 @@
   height: 100%;
   max-height: none;
 }
+
+
+/* =========================================
+   SECCIONES Y TABLAS DEL DETALLE DEL TURNO
+   ========================================= */
+
+.seccion-tabla-turno {
+  width: 100%;
+  margin-top: 22px;
+  margin-bottom: 24px;
+}
+
+.titulo-seccion-turno {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding-bottom: 9px;
+  color: #044f82;
+  font-size: 17px;
+  font-weight: 600;
+  border-bottom: 2px solid #e6edf2;
+}
+
+/* Contenedor con bordes redondeados y scroll adaptable */
+
+.tabla-turno-contenedor {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #dce4ea;
+  border-radius: 9px;
+  background-color: #fff;
+}
+
+/* Tabla general */
+
+.tabla-turno {
+  width: 100%;
+  min-width: 600px;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+  color: #344054;
+  vertical-align: middle;
+}
+
+/* Encabezado */
+/* Encabezado más compacto */
+.tabla-turno thead th {
+  padding: 5px 8px;
+  background-color: #198754;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  border: none;
+  border-bottom: 1px solid #157347;
+  line-height: 1.2;
+}
+
+.tabla-turno thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.tabla-turno thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* Celdas */
+
+.tabla-turno tbody td {
+  padding: 11px 10px;
+  border-bottom: 1px solid #e9eef2;
+  border-right: none;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Filas alternadas */
+
+.tabla-turno.table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: #f5f9f7;
+  color: #344054;
+}
+
+/* Efecto al pasar el cursor */
+
+.tabla-turno.table-hover > tbody > tr:hover > * {
+  background-color: #e7f4ec;
+  color: #243b30;
+}
+
+/* Última fila sin borde inferior */
+
+.tabla-turno tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Columnas específicas: prestaciones */
+
+.tabla-turno .col-prestacion {
+  min-width: 150px;
+}
+
+.tabla-turno .celda-prestacion {
+  min-width: 150px;
+  font-weight: 600;
+  color: #044f82;
+}
+
+.tabla-turno .celda-observaciones {
+  min-width: 180px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.tabla-turno .celda-monto {
+  min-width: 95px;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Columnas específicas: archivos médicos */
+
+.tabla-turno .col-fecha,
+.tabla-turno .celda-fecha {
+  width: 115px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tabla-turno .col-archivo {
+  width: 135px;
+}
+
+.btn-ver-archivo {
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 5px 9px;
+}
+
+.texto-sin-archivo {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+/* Mensajes cuando no existen registros */
+
+.tabla-turno .tabla-sin-datos {
+  padding: 22px 12px;
+  text-align: center;
+  color: #667085;
+  font-size: 12px;
+  background-color: #f8fafc;
+}
+
+/* Ajustes para pantallas pequeñas */
+
+@media (max-width: 576px) {
+  .seccion-tabla-turno {
+    margin-top: 18px;
+    margin-bottom: 20px;
+  }
+
+  .titulo-seccion-turno {
+    font-size: 15px;
+  }
+
+  .tabla-turno {
+    min-width: 570px;
+    font-size: 11px;
+  }
+
+  .tabla-turno thead th,
+  .tabla-turno tbody td {
+    padding: 9px 8px;
+    font-size: 11px;
+  }
+}
+

@@ -96,7 +96,7 @@ function ObrasSociales() {
       <div
         style={{
           display: "grid",
-          width: "100%",
+        
           margin: "15px 15px",
           backgroundColor: "white",
         }}
@@ -159,7 +159,7 @@ title="Buscar por obra social"
                            
                            onClick={() => Buscar(1)}
                           >
-                           <i class="fa-solid fa-magnifying-glass"></i> TURNOS
+                           <i class="fa-solid fa-magnifying-glass"></i> Obras Sociales
                           </Button>
                            <Button
                             title="Limpiar parámetros"

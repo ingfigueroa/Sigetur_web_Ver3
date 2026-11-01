@@ -2,10 +2,19 @@ import React, {useState} from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEnvelope,
+  faPhone
+} from "@fortawesome/free-solid-svg-icons";
+
+import { faInstagram } from "@fortawesome/free-brands-svg-icons";
+
 import "/src/css/registrarconsultorio.css";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 
 
 import {correosServices} from "../../services/correos.service";
@@ -21,6 +30,7 @@ function registrarconsultoriocuerpo() {
 
   const [EMail, setEMail] = useState("");
 
+  const [showMDLClinica, setShowMDLClinica] = useState(false);
  
   const [showMDLMensaje, setShowMDLMensaje] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -36,6 +46,28 @@ function registrarconsultoriocuerpo() {
     setShowMDLMensaje(false);
     
     
+  };
+
+  
+    const [formData, setFormData] = useState({
+      tipoCliente: "",
+      razonSocial: "",
+      email: "",
+      cuil: "",
+      celular: "",
+      idprovincia: "",
+      idlocalidad: ""
+  
+    });
+  
+
+     const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value
+    });
   };
 
   
@@ -87,14 +119,16 @@ const handleSubmit = async () => {
 
    
     const data = await correosServices.CrearCuenta(EMail);
-    
-            setMensaje(data.message);
+
+setMensaje(
+  `${data.message} Se envió el token al correo electrónico ingresado.`
+);
             openMdlMensaje();
             setTimeout(() => {
                       navigate("/login", {
                         
                       });
-            }, 2000);
+            }, 5000);
    
     
   } catch (error) {
@@ -129,10 +163,10 @@ const volveallogin = async () => {
     <div id="rccuerpo1">
       <div > 
        <div >
- <h3 >
+          {/* <h3 >
             <span className="bolded">Crear una cuenta en el Portal</span>{" "}
-          </h3>
-<br />
+          </h3> */}
+            
           <h1 style={{ 
             marginBottom: "25px",
             color: "#0277bd",
@@ -144,19 +178,58 @@ const volveallogin = async () => {
           <br />
           <h5 className="rccuerpo-h5">
             {" "}
-            1.- Ingresar el mail que identifica a la Clinica o MI CONSULTORIO.
+            1.- Elegir si es un CONSULTORIO o una CLINICA la quevas a registrar.
+          </h5>
+
+          <h5 className="rccuerpo-h5">
+            {" "}
+            2.- Ingresar el mail que identifica a MI CONSULTORIO.
           </h5>
 
           
           <h5 className="rccuerpo-h5">
             {" "}
-            2.- Hacer click en el botón ENVIAR CODIGO.
+            3.- Hacer click en el botón ENVIAR CODIGO.
           </h5>
           <br />
          
           <br />
           <br />
+           
+             
+           
           <InputGroup className="mb-3">
+           <InputGroup.Text>Tipo de Cliente</InputGroup.Text>
+            <Form.Select
+  name="tipoCliente"
+  value={formData.tipoCliente}
+onChange={(e) => {
+  const tipo = e.target.value;
+
+  if (tipo === "CLINICA") {
+    setShowMDLClinica(true);
+
+    setFormData({
+      ...formData,
+      tipoCliente: ""
+    });
+
+    return;
+  }
+
+  setFormData({
+    ...formData,
+    tipoCliente: tipo
+  });
+}}
+
+>
+  <option value="">Seleccione...</option>
+  <option value="CONSULTORIO">MI CONSULTORIO</option>
+  <option value="CLINICA">MI CLINICA</option>
+</Form.Select>
+</InputGroup>
+ <InputGroup className="mb-3">
         <InputGroup.Text>Ingresar mail</InputGroup.Text>
         <Form.Control
           placeholder="Ingrese su mail"
@@ -199,6 +272,80 @@ const volveallogin = async () => {
         </div>
       </div>
     </div>
+
+    <Modal
+  show={showMDLClinica}
+  onHide={() => setShowMDLClinica(false)}
+  centered
+>
+<Modal.Header style={{backgroundColor: "#1565c0", color: "white"}} closeButton>
+  <div className="d-flex align-items-center gap-3">
+   {/*  <img
+     src="./assets/Logo_2022_resolucion.jpg"
+      alt="Logo SIGETUR"
+      style={{
+        width: "55px",
+        height: "55px",
+        objectFit: "contain"
+      }}
+    /> */}
+
+    <Modal.Title>
+      Para registrar una CLÍNICA - Comunicate
+    </Modal.Title>
+  </div>
+</Modal.Header>
+
+<Modal.Body>
+  <p>
+    Para registrar una clínica, comunicate con SIGETUR por cualquiera de estos medios:
+  </p>
+
+  <div className="d-flex align-items-center gap-3 mb-3">
+    <FontAwesomeIcon
+      icon={faEnvelope}
+      style={{ color: "#0277bd", fontSize: "24px", width: "30px" }}
+    />
+
+    <p>sigetur@gmail.com</p>
+  </div>
+
+  <div className="d-flex align-items-center gap-3 mb-3">
+    <FontAwesomeIcon
+      icon={faPhone}
+      style={{ color: "#198754", fontSize: "24px", width: "30px" }}
+    />
+
+   <p>
+      +54 9 351-6557517
+    </p>
+  </div>
+
+  <div className="d-flex align-items-center gap-3 mb-3">
+    <FontAwesomeIcon
+      icon={faInstagram}
+      style={{ color: "#C13584", fontSize: "26px", width: "30px" }}
+    />
+
+    <a
+      href="https://www.instagram.com/sigetur/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      @sigetur
+    </a>
+  </div>
+</Modal.Body>
+
+  <Modal.Footer>
+    <Button
+      variant="secondary"
+      onClick={() => setShowMDLClinica(false)}
+    >
+      Cerrar
+    </Button>
+  </Modal.Footer>
+</Modal>
       {showMDLMensaje && (
             <AbrirMDLMensaje
               show={openMdlMensaje}

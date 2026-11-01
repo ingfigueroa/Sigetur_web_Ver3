@@ -11,6 +11,8 @@ import DiagnosticoPresuntivo from "./hc_diagnostico_presuntivo";
 import PlanTratamiento from "./hc_plan_tratamiento";
 import Evolucion from "./hc_evolucion";
 import Odontograma from "./hc_odontograma";
+import EstudiosMedicos from "./hc_estudios_medicos";
+
 import { pacientesService } from "/src/services/pacientes.service";
 
 import "../../css/historia_clinica.css";
@@ -338,6 +340,8 @@ const closeMdlMensaje = () => {
     initialAnamnesisMedica,
   );
 
+    const [estudiosMedicos, setEstudiosMedicos] = useState([]);
+
   const [anamnesisOdonto, setAnamnesisOdonto] = useState(
     initialAnamnesisOdontologica,
   );
@@ -389,15 +393,11 @@ const closeMdlMensaje = () => {
       
       if (resultado){
 
-       
-      
-         
-         
            mostrarHC(idPaciente);
            setMostrarTabs(true);
-        setTabActivo("anamnesisMedica");
-          setMensaje("Se creó la historia clínica del paciente.")
-          openMdlMensaje();
+           setTabActivo("anamnesisMedica");
+           setMensaje("Se creó la historia clínica del paciente.")
+           openMdlMensaje();
       }
     
     } else {
@@ -435,7 +435,8 @@ async function CreateHC(idcliente, idpaciente, idusuario) {
     cargarAnamnesis(idpaciente);
     cargarAnamnesisOdontologica(idpaciente);
     cargarOdontogramaUltimaFoto(idpaciente);
-    cargarDiagnostico(idpaciente)
+    cargarDiagnostico(idpaciente);
+    cargarEstudiosMedicos(idpaciente);
     
   }
 
@@ -567,6 +568,16 @@ async function CreateHC(idcliente, idpaciente, idusuario) {
     const data = await historiaclinicaService.getHCDiagnosticoBuscar(idpaciente);
 
        setDiagnosticoPresuntivo(data)
+     
+    
+  };
+
+   const cargarEstudiosMedicos = async (idpaciente) => {
+
+    console.log(idpaciente)
+    const data = await historiaclinicaService.getHCEstudiosMedicosBuscar(idpaciente);
+
+       setEstudiosMedicos(data)
      
     
   };
@@ -1132,85 +1143,7 @@ async function CreateHC(idcliente, idpaciente, idusuario) {
            
             
           </Row>
-         {/*  <Row>
-             <div className="acomodarencabezadopizaturnos">
-                        <InputGroup className="mb-3">
-                          <InputGroup.Text
-                            style={{
-                              backgroundColor: "#679bb9",
-                              color: "white",
-                              height: "28px",
-                            }}
-                          >
-                            Profesional
-                          </InputGroup.Text>
-                          <Form.Control
-                            placeholder="Buscar por apellido de profesional"
-                            aria-label="Buscar profesional"
-                            aria-describedby="basic-addon2"
-                            type="text"
-                            style={{height: "28px", marginght: "20px" }}
-                            onChange={(e) => SetApellido(e.target.value.toUpperCase())}
-                            value={Apellido}
-                            autoFocus
-                          />
-            
-                          <Button
-                            className="btn btn-sm btn-outline-secondary"
-                            title="Buscar por profesional"
-                            variant="outline-secondary"
-                            id="button-addon1"
-                            style={{ height: "28px" }}
-                            color="white"
-                            sm
-                            onClick={() => Buscar(1)}
-                          >
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                          </Button>
-                        </InputGroup>
-                        <InputGroup className="mb-3">
-                          <InputGroup.Text
-                            style={{
-                              backgroundColor: "#679bb9",
-                              color: "white",
-                              height: "28px",
-                            }}
-                          >
-                            DNI
-                          </InputGroup.Text>
-                          <Form.Control
-                            placeholder="Buscar por DNI"
-                            aria-label="Profesión"
-                            aria-describedby="basic-addon2"
-                            style={{height: "28px", marginght: "20px" }}
-                            onChange={(e) => SetDNI(e.target.value)}
-                            value={VarDNI}
-                          />
-                          <Button
-                           className="btn btn-sm btn-outline-secondary"
-                            title="Buscar por DNI"
-                            variant="outline-secondary"
-                            id="button-addon1"
-                            style={{ height: "28px" }}
-                            color="white"
-                            onClick={() => Buscar(1)}
-                          >
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                          </Button>
-                          
-                            <Button 
-                             className="btn btn-sm btn-outline-secondary"
-                             style={{ height: "28px" }}
-                            onClick={() => Limpiar()}>
-                              <i className="fa-solid fa-broom"></i>
-                            </Button>
-                            
-                         
-                        </InputGroup>
-                        
-                      </div>
-                      <hr />
-          </Row> */}
+       
           <Row>
             
           </Row>
@@ -1252,6 +1185,16 @@ async function CreateHC(idcliente, idpaciente, idusuario) {
                   idhc={nroHC}
                   idcliente={ClienteID}
                   idusuario={UserID}
+                />
+              </Tab>
+
+              <Tab eventKey="estudiosMedicos" title="Estudios Médicos">
+                <EstudiosMedicos
+                data={estudiosMedicos}
+                idpaciente={idPaciente}
+                  /* 
+                  setData={setEstudiosMedicos}
+                   */
                 />
               </Tab>
 

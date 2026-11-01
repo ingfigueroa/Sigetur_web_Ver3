@@ -17,6 +17,7 @@ const HCNro = config.urlHCNro;
 const HCCreate = config.urlHCCreate;
 const HCCreateDiagnostico = config.urlHCCreateDiagnostico;
 const HCDiagsnosticoBuscar = config.urlHCDiagnosticoBuscar;
+const HCEstudiosMedicosBuscar = config.urlHCEstudiosMedicosBuscar;
 
 
 
@@ -237,6 +238,26 @@ GrabarFotoOdontograma: async (payload) => {
         "Error al registrar anamnesis:",
         error.response?.data || error.message
       );
+      throw error; // importante para que el componente lo capture
+    }
+
+  },
+
+  
+  getHCEstudiosMedicosBuscar: async (idpaciente) => {
+    try {
+      console.log(idpaciente)
+      const resp = await httpService.get(HCEstudiosMedicosBuscar, {
+        params: {
+          idpaciente
+        },
+      });
+
+      
+      /* const resp = await httpService.get(HCAnamnesisMedicaBuscar, idpaciente); */
+      return resp.data;
+    } catch (error) {
+      
       throw error; // importante para que el componente lo capture
     }
 

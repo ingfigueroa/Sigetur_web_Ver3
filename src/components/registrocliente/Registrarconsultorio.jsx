@@ -28,7 +28,7 @@ export default class Registrarconsultorio extends Component {
           <a href="/" >
             <img style= {{marginBottom: "20px"}} src="./assets/Logo_2022_resolucion.jpg" alt="" />
           </a>
-          <h3 style={{ margin: 0, marginLeft: "15px", fontWeight: "400" }}>Sistema de Gestión de Turnos para profesionales de la salud</h3>
+          <h3 style={{ margin: 0, marginLeft: "15px", fontWeight: "400", color: "white" }}>Sistema de Gestión de Turnos para profesionales de la salud</h3>
         </div>
 
         <Registrarconsultoriocuerpo />

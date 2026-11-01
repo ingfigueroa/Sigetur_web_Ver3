@@ -3,7 +3,7 @@
 
 
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -25,6 +25,31 @@ import "../../css/menu.css";
 const MenuAplicaciones = ({ cambiarVista, razonsocial, user, tipousuario }) => {
 
   const [abierto, setAbierto] = useState(false);
+
+  const menuRef = useRef(null);
+
+useEffect(() => {
+  const cerrarAlHacerClickAfuera = (event) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setAbierto(false);
+    }
+  };
+
+  document.addEventListener(
+    "mousedown",
+    cerrarAlHacerClickAfuera
+  );
+
+  return () => {
+    document.removeEventListener(
+      "mousedown",
+      cerrarAlHacerClickAfuera
+    );
+  };
+}, []);
 
   const opciones = [
     {
@@ -100,7 +125,7 @@ const MenuAplicaciones = ({ cambiarVista, razonsocial, user, tipousuario }) => {
   };
 
   return (
-    <div className="menu-aplicaciones">
+    <div className="menu-aplicaciones" ref={menuRef}>
 
     {/*   <button
         className="btn-menu-google"

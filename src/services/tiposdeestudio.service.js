@@ -8,6 +8,7 @@ import {
 
 const urlTiposdeEstudio = config.urlTiposdeEstudio;
 const urlSubirArchivo = config.urlSubirArchivo;
+const urlObtenerImagenDrive = config.urlObtenerImagenDrive;
 
 
 async function getTiposdeEstudio() {
@@ -27,11 +28,9 @@ async function getTiposdeEstudio() {
 async function postSubirArchivo(formData) {
   try {
 
- console.log("Respuesta  POST SUBIR ARCHIVOS ")
 
     const res = await httpService.post(urlSubirArchivo, formData);
 
-    console.log(res)
     
     return res;
 
@@ -42,7 +41,21 @@ async function postSubirArchivo(formData) {
 }
 
 
+async function getImagenDrive(idDrive) {
+  try {
+    const resp = await httpService.get(urlObtenerImagenDrive, {
+      params: { idDrive },
+      responseType: "blob",
+    });
+
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 
 export const tiposdeEstudio = {
-  getTiposdeEstudio, postSubirArchivo
+  getTiposdeEstudio, postSubirArchivo, getImagenDrive
 };

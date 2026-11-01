@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, parse } from "date-fns";
-import "/src/css/pizarradeturnos.css";
+
 
 import Table from "react-bootstrap/Table";
 
@@ -11,6 +11,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 
 import CalendarTurnos from "../calendarios/calendar_ver1";
 
+import "/src/css/pizarradeturnos.css";
 import "/src/css/tablapizaturnos.css";
 import MdlAltaTurno from "./mdlaltaturno";
 import MdlTurnoDetalle from "./mdlturnosdetalle_vers1";
@@ -372,32 +373,6 @@ function tablapizarradeturnos({}) {
     SetIDProfesional(0)
   };
 
-
- /*   const handleFechaChange = (input) => {
-    const valor = typeof input === "string" ? input : input.target.value;
-   
-    setFecha(valor);
-    const fechaISO = valor;
-
-    // Convertir la fecha a objeto Date (sin aplicar ajustes de zona horaria)
-    const fechaObj = new Date(fechaISO);
-
-    // Ajustar la fecha al UTC manualmente
-    const fechaLocal = new Date(
-      fechaObj.getTime() + fechaObj.getTimezoneOffset() * 60000
-    );
-
-    // Formatear usando toLocaleString o date-fns como prefieras
-    const fechaLarga = fechaLocal.toLocaleDateString("es-ES", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    SetFechaLarga(fechaLarga);
-    limpiarTabla();
-  }; */ 
   
   const fechaActual = fechaActualSinParsear;
   
@@ -847,20 +822,11 @@ function tablapizarradeturnos({}) {
 
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "5px",
-              backgroundColor: "white",
-              marginBottom: "5px",
-              padding: "5px",
-            }}
-          >
+          <div className="sigetur-toolbar">
+          
             <button
               title="Anular todos los turnos del día."
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+             className="btn btn-sm btn-outline-primary sigetur-toolbar-icon"
               disabled={Items.length == 0}
               /* style={{ display: "none" }} */
               onClick={(event) => {
@@ -874,7 +840,7 @@ function tablapizarradeturnos({}) {
 
             <button
               title="Enviar recordatorio del turno a todos los pacientes de la grilla"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+             className="btn btn-sm btn-outline-primary sigetur-toolbar-icon"
               disabled={Items.length == 0}
               onClick={(event) => {
                 event.preventDefault();
@@ -886,7 +852,7 @@ function tablapizarradeturnos({}) {
 
             <button
               title="Horarios del profesional"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+             className="btn btn-sm btn-outline-primary sigetur-toolbar-icon"
               disabled={Items.length == 0}
               onClick={(event) => {
                 event.preventDefault();
@@ -898,7 +864,7 @@ function tablapizarradeturnos({}) {
             </button>
             <button
               title="Lista de espera"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+             className="btn btn-sm btn-outline-primary sigetur-toolbar-icon"
               disabled={Items.length == 0}
               onClick={openMdlListaEsperaDesdePizarra}
             >
@@ -907,7 +873,7 @@ function tablapizarradeturnos({}) {
 
             <button
               title="Registrar un sobreturno"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              className="btn btn-sm btn-outline-primary sigetur-toolbar-icon"
               disabled={Items.length == 0}
               onClick={openMdlRegistrarSobreturno}
             >
@@ -915,66 +881,52 @@ function tablapizarradeturnos({}) {
             </button>
             <button
               title="Dashboard"
-              className="btn btn-sm btn-light btn-outline-primary acomodarbotonespt"
+              className="btn btn-sm btn-outline-primary sigetur-toolbar-icon"
               disabled={true}
               // style={{ display: "none" }}
             >
               <i className="fa-solid fa-chart-pie"></i>
             </button>
+            <div className="sigetur-toolbar-actions">
             <Button
-                title="Buscar profesional"
-                 variant="outline-success"
-                  className="btn"
-                  size="sm"
-                            style={{
-                              marginLeft: "auto",
-                             
-                             
-                              textAlign: "center",
-                              
-                              
-                            }}
-                     onClick={openMdlListarProfesionales}
-                   >
-                     <i class="fa-solid fa-magnifying-glass"></i>  PROFESIONAL
-                   </Button>
-              <Button
-                        title="Buscar turnos"
-                        variant="outline-success"
-                        className="btn"
-                        size="sm"
-                        style={{
-                          textAlign: "center",
-                        }}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          procesar(IDProfesional, Fecha, ClienteID);
-                        }}
-                   >
-                     <i class="fa-solid fa-magnifying-glass"></i> TURNOS
-                   </Button>
+              title="Buscar profesional"
+              variant="outline-success"
+              className="sigetur-toolbar-action"
+              size="sm"
+              onClick={openMdlListarProfesionales}
+            >
+              <i className="fa-solid fa-magnifying-glass"></i> Profesional
+            </Button>
              <Button
-                          title="Limpiar parámetros"
-                          variant="primary"
-                          className="btn "
-                          size="sm"
-                          style={{
-                            
-                            
-                            textAlign: "center",
-                           
-                          }}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            limpiar();
-                          }}
-                        >
-                        <i className="fa-solid fa-broom"></i>
-                        </Button> 
-            
+                  title="Buscar turnos"
+                  variant="outline-success"
+                  className="sigetur-toolbar-action"
+                  size="sm"
+
+                  onClick={(event) => {
+                    event.preventDefault();
+                    procesar(IDProfesional, Fecha, ClienteID);
+                  }}
+                >
+                <i className="fa-solid fa-magnifying-glass"></i> Turnos
+            </Button>
+             <Button
+                  title="Limpiar parámetros"
+                  variant="primary"
+                  className="sigetur-toolbar-action"
+                  size="sm"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    limpiar();
+                  }}
+                >
+                  <i className="fa-solid fa-broom"></i>
+                  Limpiar
+              </Button>
+                     
 
           </div>
-          <hr />
+           </div>  
           <div style={{ flex: 1 }}>
             <InputGroup className="mb-3">
               <Form.Control

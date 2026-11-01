@@ -98,33 +98,51 @@ useEffect(() => {
   return (
     <>
      <div className="fondoprincipal">
-       <div style={{
-            width: "100%",
-            height: "65px",
-            backgroundColor: "#1565c0",
-            display: "flex",
-            alignItems: "center",
-            padding: "0 20px",
-            color: "white",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            zIndex: 1000
-          }}>
-          <a href="/" >
-            <img style= {{marginBottom: "20px"}} src="./assets/Logo_2022_resolucion.jpg" alt="" />
-          </a>
-          <h3>Sistema de Gestión de Turnos para profesionales de la salud</h3>
-        </div>
+       
+      <header
+        style={{
+          width: "100%",
+          height: "65px",
+          backgroundColor: "#1565c0",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 20px",
+          color: "white",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 1000
+        }}
+      >
+        <a href="/">
+          <img
+            src="./assets/Logo_2022_resolucion.jpg"
+            alt="Logo SIGETUR"
+            style={{ height: "30px"}}
+          />
+        </a>
+
+        <h3
+          style={{
+            margin: "10px 0 10px 15px",
+            fontWeight: "400",
+            color: "white"
+          }}
+        >
+          Sistema de Gestión de Turnos para profesionales de la salud
+        </h3>
+      </header>
+        
 
      <div id="rccuerpo1">
-       
-       
+ 
           <h1 style={{ 
            
             color: "#0277bd",
             fontFamily: "Roboto",
+            marginTop: "20px",
+            marginBottom: "20px"
            
           }}>Registrar CONSULTORIO - Paso 2</h1>
         
@@ -136,7 +154,7 @@ useEffect(() => {
           <br />
           <h5 className="rccuerpo-h5">
             {" "}
-            1.- Ingresar el mail que identifica a la Clinica o Consultorio.
+            1.- Ingresar el mail que identifica al CONSULTORIO.
           </h5>
 
           {/* <h5 className="rccuerpo-h5"> 2.- Tildar el captcha</h5> */}
@@ -183,14 +201,7 @@ useEffect(() => {
 
         <div className="volverallogin">
           
-         {/*  <div className="volverallogin1">
-            
-            <InputGroup className="mb-3 justify-content-center">
-              <InputGroup.Text style={{ textAlign: "center" }}>
-                <a href="/Login">Volver al login</a>
-              </InputGroup.Text>
-            </InputGroup>
-          </div> */}
+       
             <div className="volverallogin1">
              <Button onClick={volveallogin}>Volver al LOGIN</Button>
             

@@ -305,7 +305,7 @@ const anio1 = ultimoDiaMes.getFullYear();
       <div
         style={{
           display: "grid",
-          width: "100%",
+         
           margin: "15px 15px",
           backgroundColor: "white",
         }}
@@ -367,7 +367,7 @@ const anio1 = ultimoDiaMes.getFullYear();
                            
                            onClick={() => Buscar(1)}
                           >
-                            <i class="fa-solid fa-magnifying-glass"></i> PROFESIONAL
+                            <i class="fa-solid fa-magnifying-glass"></i> Profesional
                           </Button>
                            <Button
                             title="Limpiar parámetros"

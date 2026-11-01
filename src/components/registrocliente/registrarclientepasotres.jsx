@@ -115,7 +115,7 @@ const volveallogin = async () => {
         navigate("/login", {
           state: { email: email }
         });
-      }, 2000);
+      }, 5000);
     } catch (error) {
       setMensaje(error);
       openMdlMensaje();
@@ -146,205 +146,235 @@ const volveallogin = async () => {
     fetchData(); // Ejecuta la función para obtener los datos
   }, []);
 
-  return (
-    <>
+
+return (
+  <>
     <div className="fondoprincipal">
-    
-       <div style={{
-            width: "100%",
-            height: "65px",
-            backgroundColor: "#1565c0",
-            display: "flex",
-            alignItems: "center",
-            padding: "0 20px",
-            color: "white",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            zIndex: 1000
-          }}>
+
+      {/* ENCABEZADO */}
+      <header
+        style={{
+          width: "100%",
+          height: "65px",
+          backgroundColor: "#1565c0",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 10px",
+          color: "white",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 1000
+        }}
+      >
         <a href="/">
-          <img 
-            src="./assets/Logo_2022_resolucion.jpg" 
-            alt="" 
+          <img
+            src="./assets/Logo_2022_resolucion.jpg"
+            alt="Logo SIGETUR"
             style={{ height: "30px", marginBottom: "20px" }}
           />
         </a>
 
-        <h3 style={{ margin: 0, marginLeft: "15px", fontWeight: "400" }}>
-        Sistema de Gestión de Turnos para profesionales de la salud</h3>
-      </div>
+        <h3
+          style={{
+            margin: "10px 0 10px 15px",
+            fontWeight: "400",
+            color: "white"
+          }}
+        >
+          Sistema de Gestión de Turnos para profesionales de la salud
+        </h3>
+      </header>
 
-  {/* CONTENIDO CENTRADO */}
-  <div style={{
-    flex: 1,
-    display: "flex",
-    justifyContent: "center",
-    
-    padding: "5px"
-  }}>
+      {/* CONTENIDO PRINCIPAL */}
+      <main
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "35px 5px 5px"
+        }}
+      >
+        <section
+          style={{
+            width: "100%",
+            maxWidth: "700px",
+            background: "white",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)"
+          }}
+        >
+          <h1
+            style={{
+              marginTop: "25px",
+              marginBottom: "25px",
+              color: "#0277bd",
+              fontFamily: "Roboto",
+              fontSize: "30px"
+            }}
+          >
+            Registrar CONSULTORIO - Paso 3
+          </h1>
 
-    {/* CARD */}
-    <div style={{
-      width: "100%",
-      maxWidth: "700px",
-      background: "white",
-      borderRadius: "12px",
-      padding: "30px",
-      boxShadow: "0 4px 20px rgba(0,0,0,0.08)"
-    }}>
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              <Col md={12}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={email}
+                    readOnly
+                  />
+                </Form.Group>
+              </Col>
 
-      <h1 style={{ 
-        marginBottom: "25px",
-        color: "#0277bd",
-        fontFamily: "Roboto",
-        fontSize: "30px"
-      }}>
-        Registrar CONSULTORIO - Paso 3
-      </h1>
+              <Col md={12}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Tipo de Cliente</Form.Label>
+                  <Form.Select
+                    name="tipoCliente"
+                    value={formData.tipoCliente}
+                    onChange={handleChange}
+                  >
+                    <option value="">Seleccione...</option>
+                    <option value="CONSULTORIO">MI CONSULTORIO</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
 
-      <Form onSubmit={handleSubmit}>
-        <Row>
+              <Col md={12}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Razón Social</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="razonSocial"
+                    value={formData.razonSocial.toUpperCase()}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
 
-      <Col md={12}>
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                value={email}
+              <Col md={12}>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text
+                    style={{
+                      backgroundColor: "#679bb9",
+                      color: "white",
+                      width: "30%"
+                    }}
+                  >
+                    Provincia que reside
+                  </InputGroup.Text>
+
+                  <Form.Select
+                    style={{ width: "70%" }}
+                    value={idprovincia}
+                    onChange={(e) => {
+                      const idProv = e.target.value;
+
+                      setIDProvincia(idProv);
+                      setIDLocalidad("");
+                      setLocalidades([]);
+
+                      cargarLocalidades(idProv);
+                    }}
+                  >
+                    <option value="">Seleccionar</option>
+
+                    {provincias.map((prov) => (
+                      <option key={prov.ID} value={prov.ID}>
+                        {prov.Nombre}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+
+              <Col md={12}>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text
+                    style={{
+                      backgroundColor: "#679bb9",
+                      color: "white",
+                      width: "30%"
+                    }}
+                  >
+                    Localidad que reside
+                  </InputGroup.Text>
+
+                  <Form.Select
+                    style={{ width: "70%" }}
+                    value={idlocalidad}
+                    disabled={!idprovincia}
+                    onChange={(e) => setIDLocalidad(e.target.value)}
+                  >
+                    <option value="">Seleccionar</option>
+
+                    {localidades.map((localidad) => (
+                      <option key={localidad.ID} value={localidad.ID}>
+                        {localidad.localidad}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </Col>
+            </Row>
+
+            <footer
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+                marginTop: "5px",
                 
-                readOnly
-              />
-            </Form.Group>
-          </Col>
-          <Col md={12}>
-            <Form.Group className="mb-3">
-              <Form.Label>Tipo de Cliente</Form.Label>
-              <Form.Select
-                name="tipoCliente"
-                value={formData.tipoCliente}
-                onChange={handleChange}
+              }}
+            >
+               <div className="volverallogin">
+                        
+                      
+                        <div className="volverallogin1">
+                           <Button onClick={volveallogin}>Volver al LOGIN</Button>
+                          
+                          
+                        </div>
+              
+                         <div className="volverallogin1">
+                          <Button variant="outline-success" type="submit">Registrar CONSULTORIO</Button>
+                          
+                        </div>
+                      
+                      </div>
+            {/*  <Button variant="outline-success" type="submit">
+                Registrar CONSULTORIO
+              </Button>
+
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={handleReset}
               >
-                <option value="">Seleccione...</option>
-                <option value="CONSULTORIO">MI CONSULTORIO</option>
-                <option value="CLINICA">MI CLINICA</option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
+                Limpiar
+              </Button> */}
 
-          <Col md={12}>
-            <Form.Group className="mb-3">
-              <Form.Label>Razón Social</Form.Label>
-              <Form.Control
-                type="text"
-                name="razonSocial"
-                value={formData.razonSocial.toUpperCase()}
-                onChange={handleChange}
-              />
-            </Form.Group>
-          </Col>
-
-          <Col md={12}>
-            <InputGroup className="mb-3">
-                            <InputGroup.Text
-                              style={{ backgroundColor: "#679bb9", color: "white", width:"30%" }}
-                            >
-                              Provincia que reside
-                            </InputGroup.Text>
-            
-                            <select
-                              style={{  width:"70%" }}
-                              value={idprovincia}
-                              onChange={(e) => {
-                                const idProv = e.target.value;
-            
-                                setIDProvincia(idProv);
-                                setIDLocalidad("");
-                                setLocalidades([]);
-            
-                                // Próximo paso:
-                                cargarLocalidades(idProv);
-                              }}
-                            >
-                              <option value="">Seleccionar</option>
-            
-                              {provincias.map((prov) => (
-                                <option key={prov.ID} value={prov.ID}>
-                                  {prov.Nombre}
-                                </option>
-                              ))}
-                            </select>
-            
-                       
-                          </InputGroup>
-            
-          </Col>
-          <Col md={12}>
-                      <InputGroup className="mb-3">
-                           
-                            <InputGroup.Text
-
-                              style={{ backgroundColor: "#679bb9", color: "white", width:"30%" }}
-                            >
-                              Localidad que reside
-                            </InputGroup.Text>
-            
-                            <select
-                              style={{  width:"70%" }}
-                             value={idlocalidad}
-                              disabled={!idprovincia}
-                              onChange={(e) => {
-                                setIDLocalidad(e.target.value);
-                              }}
-                            >
-                              <option value="">Seleccionar</option>
-            
-                              {localidades.map((localidad) => (
-                                <option key={localidad.ID} value={localidad.ID}>
-                                  {localidad.localidad}
-                                </option>
-                              ))}
-                            </select>
-                          </InputGroup>
-          </Col>
-
-         
-
-
-        </Row>
-         
-        <div style={{ textAlign: "right", marginTop: "20px", padding:"10px" }}>
-          <Button  variant="outline-success" type="submit"
-          style={{margin:"10px" }}>
-              Registrar CONSULTORIO
-          </Button>
-          
-           <Button variant="secondary" type="button" onClick={handleReset}
-           style={{margin:"10px" }}
-           >
-              Limpiar
-        </Button>
-
-        </div>
-        
-
-      </Form>
-
+            </footer>
+          </Form>
+        </section>
+      </main>
     </div>
-  </div>
-</div>
- {showMDLMensaje && (
-            <AbrirMDLMensaje
-              show={openMdlMensaje}
-              handleClose={closeMdlMensaje}
-              modalMessage={mensaje}
-            />
-          )}
 
-    </>
-  );
+    {showMDLMensaje && (
+      <AbrirMDLMensaje
+        show={openMdlMensaje}
+        handleClose={closeMdlMensaje}
+        modalMessage={mensaje}
+      />
+    )}
+  </>
+);
+
 };
 
 

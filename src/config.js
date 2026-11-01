@@ -142,6 +142,9 @@ const urlValorDolarOficial = urlServidor + "/valordolaroficial";
 //TIPOS DE ESTUDIO
 const urlTiposdeEstudio= urlServidor + "/tiposestudio";
 const urlSubirArchivo= urlServidor + "/subirarchivo";
+const urlObtenerImagenDrive= urlServidor + "/obtenerimagendrive";
+
+const urlHCEstudiosMedicosBuscar = urlServidor + "/estudiosmedicosbuscar";
 
 
 
@@ -234,5 +237,7 @@ export const config = {
     urlValorDolarOficial,
     urlTiposdeEstudio,
     urlSubirArchivo,
-    urlResourceTurnoNotasClinicas
+    urlResourceTurnoNotasClinicas,
+    urlHCEstudiosMedicosBuscar,
+    urlObtenerImagenDrive
 }
