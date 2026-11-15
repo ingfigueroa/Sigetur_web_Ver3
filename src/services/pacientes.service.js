@@ -6,6 +6,7 @@ import httpService from "./http.service";
  import {config} from "../config.js";
 import { Email } from "@mui/icons-material";
  const urlResource = config.urlResourcePacientes;
+ const urlResourcePacienteSoloDNIActivoTablaPaciente = config.urlResourcePacienteSoloDNIActivoTablaPaciente;
  const urlResourceAdd = config.urlResourcePacientesAdd;
  const urlResourceUpdate = config.urlResourcePacientesUpdate;
  const urlResourceID = config.urlResourcePacienteID;
@@ -17,6 +18,17 @@ import { Email } from "@mui/icons-material";
   const resp = await httpService.get(urlResource, {
     params: { idcliente, Apellido, VarDni, pagina, cantidadPorPagina},
   });
+  return resp.data;
+}
+
+ async function BuscarPacienteSoloDNIActivoTablaPaciente(VarDni) {
+
+  const resp = await httpService.get(urlResourcePacienteSoloDNIActivoTablaPaciente, {
+    params: { VarDni},
+  });
+
+  
+
   return resp.data;
 }
 
@@ -101,10 +113,10 @@ async function BuscarPacientexEMail(email) {
   const resp = await httpService.get(urlResourcePacienteEmail, {
     params: {email},
   } );
-  console.log(res.data)
+  console.log(resp.data)
   return resp.data;
 }
 
 export const pacientesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos, GrabarModificar, BuscarPacientexEMail
+  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos, GrabarModificar, BuscarPacientexEMail, BuscarPacienteSoloDNIActivoTablaPaciente
 };

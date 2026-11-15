@@ -6,6 +6,8 @@ import httpService from "./http.service";
  import {config} from "../config.js";
 
  const urlResource = config.urlResourceProfesional;
+ const urlResourceProfesionalesSoloDNIActivoOtroCliente = config.urlResourceProfesionalSoloDNIActivoOtroCliente
+ const urlResourceProfesionalesSoloDNIActivoTablaProfesionales = config.urlResourceProfesionalesSoloDNIActivoTablaProfesionales
  const urlResourceProfesionalAdd = config.urlResourceProfesionalAdd;
  const urlResourceID = config.urlResourceProfesionalID;
  const urlResourceProsefionalHorarios = config.urlResourceProfesionalHorarios;
@@ -19,11 +21,29 @@ const urlResourceProfesionalEmail = config.urlResourceProfesionalEmail
 
 async function Buscar(idcliente, Apellido, VarDni, idprofesion, pagina, cantidadPorPagina) {
   
+
   const resp = await httpService.get(urlResource, {
     params: { idcliente, Apellido, VarDni, idprofesion, pagina, cantidadPorPagina },
   });
   return resp.data;
 }
+
+ async function BuscarSoloDNIActivoOtroCliente(VarDni) {
+
+  const resp = await httpService.get(urlResourceProfesionalesSoloDNIActivoOtroCliente, {
+    params: { VarDni},
+  });
+  return resp.data;
+}
+
+ async function BuscaProfesionalSoloDNIActivoTablaProfesionales(VarDni) {
+
+  const resp = await httpService.get(urlResourceProfesionalesSoloDNIActivoTablaProfesionales, {
+    params: { VarDni},
+  });
+  return resp.data;
+}
+
 
 async function BuscarHorarios(idcliente, idprofesional, fecha) {
 
@@ -150,5 +170,5 @@ async function BuscarProfesionalxEMail(email) {
 }
 
 export const profesionalesService = {
-  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja, getBuscarFechaCambioHorario, putCambioHorarioMultiple, BuscarProfesionalxEMail
+  Buscar, BuscarId, ActivarDesactivar, GrabarAlta, BuscarHorarios, GrabarBaja, getBuscarFechaCambioHorario, putCambioHorarioMultiple, BuscarProfesionalxEMail, BuscarSoloDNIActivoOtroCliente, BuscaProfesionalSoloDNIActivoTablaProfesionales
 };

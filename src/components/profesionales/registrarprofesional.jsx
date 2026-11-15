@@ -21,6 +21,7 @@ import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 
 import "/src/css/registrarprofesional.css";
 import { Email } from "@mui/icons-material";
+import { formatearFecha_a_MM_DD_YYYY, getFechaISO} from "../utils/fecha";
 
 
 const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
@@ -39,15 +40,6 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
     const [mensaje, setMensaje] = useState("");
 
   const [showMDLEstaSeguro, setShowMDLEstaSeguro] = useState(false);
-
-  const [isDisabled, setIsDisabled] = useState(true);
-
-  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState("");
-
-    const [modalTitulo, setModalTitulo] = useState();
-    const [modalCuerpo, setModalCuerpo] = useState();
-
-  const [item, setItem] = useState(null); // usado en BuscarporId (Modificar, Consultar)
 
   const [Apellido, setApellido] = useState("");
   const [Nombres, setNombres] = useState("");
@@ -79,6 +71,40 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
   const [showModalAlta, setShowModalAlta] = useState(false);
   const [nuevo, setNuevo] = useState("");
 
+
+
+
+  const acomodardatosprofesional = (registros) => {
+
+  const profesional = registros[0];
+
+
+
+  if (!profesional) return;
+
+  setApellido(profesional.Apellido || "");
+  setNombres(profesional.Nombres || "");
+// setTipoDocumento(profesional.TipoDocumento || 0);
+  setNroDocumento(profesional.NroDocumento || 0);
+  setEMail(profesional.EMail || "");
+
+  setFechaNacimiento(getFechaISO(profesional.FechaNacimiento) || "");
+
+  setTECelular(profesional.TECelular || "");
+  setCuitCuil(profesional.CuitCuil || "");
+  setMatriculaNro(profesional.matriculanro || "");
+
+  setIDTipoSexoSelected(Number(profesional.Sexo) || 0);
+  
+  setTipoDocumentoSelected(profesional.TipoDocumento || "");
+  setIdTipoProfesionSelected(profesional.idtipoprofesion || "");
+
+  setIDProvincia(profesional.IDProvincia || 0);
+  cargarLocalidades(idprovincia)
+   
+  setIDLocalidad(profesional.IDLocalidad || 0);
+
+};
   
  function validar() {
 
@@ -87,7 +113,7 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
         showModalMessage("Debe seleccionar un tipo de documento");
         return false;
       }
-
+      
       if (typeof NroDocumento !== "string" || !NroDocumento.trim()) {
         showModalMessage(
           "El campo 'Número de Documento' es obligatorio y debe ser un texto válido"
@@ -100,6 +126,7 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
         return false;
       }
 
+      
       if (!idTipoSexoSelected) {
         showModalMessage("Debe seleccionar un sexo");
         return false;
@@ -177,17 +204,18 @@ if (fechaNacimiento > new Date()) {
       return true;
     }
 
- const openMdlEstaSeguro = () => {
- 
+ const openMdlEstaSeguro = (titulo,cuerpo,bandera) => {
+  
+
+    if (bandera == 0){
       if (!validar()){
           
-        
           return;
       }
-
-    setModalTitulo("REGISTRAR PROFESIONAL")
-    setModalCuerpo("¿Está seguro de registrar un profesional.?")
-
+    }
+    
+     setModalMensajeCuerpo(cuerpo)
+     setModalMensajeTitulo(titulo)
     setShowMDLEstaSeguro(true);
   };
 
@@ -233,35 +261,50 @@ if (fechaNacimiento > new Date()) {
     setMdlAltaExitosa(false);
   };
 
-   const BuscaProfesionalPorDNI = async () => {
-            if (!NroDocumento) return;
+ const BuscaProfesionalPorDNIidCliente = async (varDNI, idcliente) => {
+  try {
+
   
-            try {
-                
-                const data = await profesionalesService.Buscar(
-                  ClienteID,
-                  "",
-                  NroDocumento,
-                  1,
-                  10
-                );
-            
-  
-              if (data.total === 1) {
-                setMensaje("Ya existe un profesional con el DNI ingresado.");
-                setNroDocumento(0)
-                openMdlMensaje()
-  
-                
-                // Completar los datos del formulario
-                // setApellido(respuesta.data.apellido);
-                // setNombre(respuesta.data.nombre);
-                // ...
-              } 
-            } catch (error) {
-              console.error(error);
-            }
-          };
+    const data = await profesionalesService.Buscar(
+      idcliente,
+      "",
+      varDNI,
+      1,
+      10
+    );
+
+    return data.total === 1;
+
+  } catch (error) {
+    
+    throw error;
+  }
+};
+const BuscaProfesionalSoloDNIActivoOtroCliente = async (varDNI) => {
+  try {
+    const data = await profesionalesService.BuscarSoloDNIActivoOtroCliente(varDNI);
+
+    return data;
+
+  } catch (error) {
+   
+   
+    throw error;
+  }
+};
+
+const BuscaProfesionalSoloDNIActivoTablaProfesionales = async (varDNI) => {
+  try {
+    const data = await profesionalesService.BuscaProfesionalSoloDNIActivoTablaProfesionales(varDNI);
+
+    return data;
+
+  } catch (error) {
+   
+   
+    throw error;
+  }
+};
 
   const BuscaUsuarioPorEmail = async () => {
             if (!EMail) return;
@@ -317,6 +360,58 @@ if (fechaNacimiento > new Date()) {
             }
           };
 
+
+
+
+const validarProfesional = async (varDNI) => {
+
+  try {
+
+    // Primero verifico si ya está registrado en el consultorio
+    const existeCliente = await BuscaProfesionalPorDNIidCliente(varDNI, ClienteID);
+    if (existeCliente) {
+      setMensaje("El profesional ya está registrado en el CONSULTORIO");
+      openMdlMensaje();
+      return;
+    }
+    // Busca profesional activo en otro consultorio
+    const response = await BuscaProfesionalSoloDNIActivoOtroCliente(varDNI);
+
+     if (response.total) {
+              
+              
+            //  acomodardatosprofesional(response.registros);
+              console.log("Llega hasta aca pero no entra por profesional existente")
+              
+              setMensaje("PROFESIONAL EXISTENTE\nEl DNI del profesional ya esta activo en otro consultorio.\nPara regsitrar al profesional en este consultorio, se tiene que dar la baja en el consultorio antiguo.\nTambién se puede dar de baja mandando un mail a sigetur@gmail.com desde la cuenta del mismo profesional");
+              openMdlMensaje();
+              return;
+        }
+
+
+        //busca profesionales activos en la tabla profesionales
+         const existeProfesional = await BuscaProfesionalSoloDNIActivoTablaProfesionales(varDNI);
+
+     if (existeProfesional.total) {
+              
+              console.log(existeProfesional.registros)
+              acomodardatosprofesional(existeProfesional.registros);
+              console.log("Llega hasta aca pero no entra por profesional existente")
+              
+              openMdlEstaSeguro("DATOS DEL PROFESIONAL", "El profesional tiene registrados los datos.\n¿Desea grabar el profesional en el consultorio?",1);
+              return;
+        }
+   
+
+    // Si no existe, continúa normalmente
+
+  } catch (error) {
+    
+    setMensaje("Error al validar los datos del profesional");
+    openMdlMensaje();
+  }
+};          
+
   const validarEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -324,8 +419,6 @@ if (fechaNacimiento > new Date()) {
 
    async function Grabar() {
     try {
-
-      
 
       const response = await profesionalesService.GrabarAlta(
         ClienteID,
@@ -401,7 +494,7 @@ if (fechaNacimiento > new Date()) {
 
 
       } else {
-          console.log("ENTRA POR FALSE");
+    
 
           setMensaje("No se pudo crear el profesional");
           openMdlMensaje();
@@ -483,6 +576,7 @@ if (fechaNacimiento > new Date()) {
     fetchData(); // Ejecuta la función para obtener los datos
   }, []);
 
+
  
 
   return (
@@ -548,7 +642,7 @@ if (fechaNacimiento > new Date()) {
                         setNroDocumento(value);
                       }
                     }}
-                    onBlur={BuscaProfesionalPorDNI}
+                    onBlur={() => validarProfesional(NroDocumento)}
                     value={NroDocumento}
                   />
                  <InputGroup.Text
@@ -788,9 +882,8 @@ if (fechaNacimiento > new Date()) {
               <ButtonGroup className="mb-2">
                 <Button
                   variant="success"
-                  onClick={openMdlEstaSeguro}
-                  // onClick={() => Grabar() }
-                >
+                 onClick={() => openMdlEstaSeguro("REGISTRAR PROFESIONAL","¿Desea grabar un nuevo profesional?", 0)}>
+                                 
                   Grabar
                 </Button>
                 <Button variant="primary">Limpiar</Button>

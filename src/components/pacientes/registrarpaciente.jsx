@@ -22,7 +22,7 @@ import MDLEstaSeguro from "../modales/mdlEstaSeguro";
 import AbrirMDLMensaje from "../modales/mdlMensaje";
 
 // Utilidades
-import { calcularEdadDiaMesAnio } from "../../components/utils/fecha";
+import { getFechaISO } from "../../components/utils/fecha";
 
 // Contexto
 import { AuthContext } from "/src/context/AuthContext";
@@ -33,6 +33,7 @@ import "/src/css/registrarpaciente.css";
 
 
 const registrarpaciente = ({ show, handleClose, idcliente, idusuario }) => {
+
  const [mdlMensajeCuerpo, setModalMensajeCuerpo] = useState(
     "¿Desea grabar el nuevo paciente?",
   );
@@ -52,8 +53,8 @@ const [TECelular, setTECelular] = useState("");
   const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
 
   
-  const [modalTitulo, setModalTitulo] = useState();
-  const [modalCuerpo, setModalCuerpo] = useState();
+  const [modalTitulo, setModalTitulo] = useState("REGISTRAR PACIENTE");
+  const [modalCuerpo, setModalCuerpo] = useState("¿Está seguro de registrar el paciente?");
 
 const [TipoDocumento, setTipoDocumento] = useState([]);
 const [TipoSexo, setTipoSexo] = useState([]);
@@ -72,19 +73,22 @@ const [mensaje, setMensaje] = useState("");
 const [modalMessage, setModalMessage] = useState("");
          
 
- const openMdlEstaSeguro = () => {
  
+ const openMdlEstaSeguro = (titulo,cuerpo,bandera) => {
+  
+
+    if (bandera == 0){
       if (!validar()){
-         
-         
+          
           return;
       }
-
-    setModalTitulo("REGISTRAR PACIENTE")
-    setModalCuerpo("¿Está seguro de registrar el paciente?")
-
+    }
+    
+     setModalMensajeCuerpo(cuerpo)
+     setModalMensajeTitulo(titulo)
     setShowMDLEstaSeguro(true);
   };
+
 
   const closeMdlEstaSeguro = () => {
     setShowMDLEstaSeguro(false);
@@ -160,10 +164,10 @@ const [modalMessage, setModalMessage] = useState("");
         return false;
       }
 
-      if (!validarEmail(EMail)) {
+     /*  if (!validarEmail(EMail)) {
         showModalMessage("El correo electrónico no es válido");
         return false;
-      }
+      } */
 
 
       if (!TECelular.trim()) {
@@ -198,61 +202,136 @@ const [modalMessage, setModalMessage] = useState("");
             setEMail("");
           }
 
-    const BuscarPacientePorDNI = async () => {
-          if (!NroDocumento) return;
+ 
+    const BuscaPacientePorDNIidCliente = async (varDNI, idcliente) => {
+        try {
+          const data = await pacientesService.Buscar(
+            idcliente,
+            "",
+            varDNI,
+            1,
+            10
+          );
 
-          try {
-              
-              const data = await pacientesService.Buscar(
-                idcliente,
-                Apellido,
-                NroDocumento,
-                1,
-                10
-              );
+          return data.total === 1;
+
+        } catch (error) {
           
+          throw error;
+        }
+      };
 
-            if (data.total === 1) {
-              setMensaje("Ya existe un paciente con el DNI ingresado.");
-              setNroDocumento(0)
-              openMdlMensaje()
-
-              
-              // Completar los datos del formulario
-              // setApellido(respuesta.data.apellido);
-              // setNombre(respuesta.data.nombre);
-              // ...
-            } 
-          } catch (error) {
-            console.error(error);
-          }
-        };
-        const BuscarPacientePorEMAIL = async () => {
-          if (!EMail) return;
-
-          try {
-              
-              const data = await pacientesService.BuscarPacientexEMail(
-                EMail
-              );
+      const acomodardatospaciente = (registros) => {
+    
+          const paciente = registros[0];
+        
+       
+        
+        
+          if (!paciente) return;
+        
+          setApellido(paciente.Apellido || "");
+          setNombres(paciente.Nombres || "");
+        // setTipoDocumento(profesional.TipoDocumento || 0);
+          setNroDocumento(paciente.NroDocumento || 0);
+          setEMail(paciente.EMail || "");
+        
+          setFechaNacimiento(getFechaISO(paciente.FechaNacimiento) || "");
+        
+          setTECelular(paciente.TECelular || "");
+        
+        
+        
+          setIDTipoSexoSelected(Number(paciente.Sexo) || 0);
           
-              console.log(data)
-            if (data.total === 1) {
-              setMensaje("Ya existe un paciente con el EMAIL ingresado.");
-              setEMail("")
-              openMdlMensaje()
+          setTipoDocumentoSelected(paciente.TipoDocumento || "");
+           setIDProvincia(paciente.IDProvincia || 0);
+           cargarLocalidades(idprovincia)
+   
+           setIDLocalidad(paciente.IDLocalidad || 0);
+      
+    };
 
+const BuscaPacienteSoloDNIActivoTablaPaciente = async (varDNI) => {
+  try {
+
+  
+    const data = await pacientesService.BuscarPacienteSoloDNIActivoTablaPaciente(varDNI);
+  
+    return data;
+
+  } catch (error) {
+   
+   
+    throw error;
+  }
+};
+
+
+    const validarPaciente = async (varDNI) => {
+
+      try {
+
+       //36562369
+        const existeCliente = await BuscaPacientePorDNIidCliente(
+          varDNI,
+          idcliente
+        );
+
+ 
+        if (existeCliente) {
+          setMensaje("El Paciente ya está registrado en el CONSULTORIO");
+          openMdlMensaje();
+          return;
+        }
+
+        // 2. Verificar si el paciente existe en SIGETUR
+        const existePaciente = await BuscaPacienteSoloDNIActivoTablaPaciente(varDNI);
+
+       
+
+          if (existePaciente.total === 1) {
+
+
+             console.log(existePaciente.registros)
+              acomodardatospaciente(existePaciente.registros);
               
-              // Completar los datos del formulario
-              // setApellido(respuesta.data.apellido);
-              // setNombre(respuesta.data.nombre);
-              // ...
-            } 
-          } catch (error) {
-            setMensaje(error);
+              openMdlEstaSeguro("PACIENTE EXISTENTE", "Los datos del paciente ya existen.\n¿Desea relacionar el paciente con el CONSULTORIO?",1);
+              return;
+        }
+
+       
+
+      } catch (error) {
+      
+        setMensaje("Error al validar los datos del paciente");
+        openMdlMensaje();
+      }
+    };
+
+
+  const BuscarPacientePorEMAIL = async (email) => {
+    if (!email) return;
+
+
+    try {
+        const data = await pacientesService.BuscarPacientexEMail(email);
+
+
+        if (data.total === 1) {
+            setMensaje("Ya existe un paciente con el EMAIL ingresado.");
+            setEMail("");
             openMdlMensaje();
-          }
-        };
+        }
+
+    } catch (error) {
+        console.log(error);
+        setMensaje(error.message || "Error al consultar el EMAIL");
+        openMdlMensaje();
+    }
+};
+
+    
 
     const cargarLocalidades = async (idprovincia) => {
       
@@ -440,14 +519,15 @@ const [modalMessage, setModalMessage] = useState("");
                       aria-describedby="basic-addon2"
                       type="text"
                       style={{ width: "10%" }}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*$/.test(value)) {
-                          setNroDocumento(value);
-                        }
-                      }}
-                      onBlur={BuscarPacientePorDNI}
-                      value={NroDocumento}
+                     onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d*$/.test(value)) {
+                        // Verifica que solo contenga números
+                        setNroDocumento(value);
+                      }
+                    }}
+                    onBlur={() => validarPaciente(NroDocumento)}
+                    value={NroDocumento}
                     />
 
                    <InputGroup.Text
@@ -532,7 +612,8 @@ const [modalMessage, setModalMessage] = useState("");
                       setEMail(email);
                       
                     }}
-                     onBlur={BuscarPacientePorEMAIL}
+                    onBlur={() => BuscarPacientePorEMAIL(EMail)}
+                   
                     value={EMail}
                   />
                   <InputGroup.Text
@@ -637,7 +718,7 @@ const [modalMessage, setModalMessage] = useState("");
               <ButtonGroup className="mb-2">
                 <Button
                   variant="success"
-                  onClick={openMdlEstaSeguro}
+                 onClick={() => openMdlEstaSeguro("REGISTRAR PACIENTE","¿Desea grabar los datos del paciente?", 0)}
                   // onClick={() => Grabar() }
                 >
                   Grabar

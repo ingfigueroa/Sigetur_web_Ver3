@@ -4,6 +4,8 @@ const urlServidor = "http://localhost:3000"
 
 //PROFESIONALES
 const urlResourceProfesional = urlServidor + "/profesionales";
+const urlResourceProfesionalSoloDNIActivoOtroCliente = urlServidor + "/profesionalessolodniactivootrocliente";
+const urlResourceProfesionalesSoloDNIActivoTablaProfesionales = urlServidor + "/profesionalessolodniactivotablaprofesionales"
 const urlResourceProfesionalAdd = urlServidor + "/profesionalesadd";
 const urlResourceProfesionalProfesionID = urlServidor + "/profesionalesProfesionid";
 const urlResourceProfesionalHorarios = urlServidor + "/profesionaleshorarios";
@@ -16,6 +18,7 @@ const urlResourceProfesionalEmail = urlServidor + "/idprofesionalemail";
 
 //PACIENTES
 const urlResourcePacientes = urlServidor + "/pacientesget";
+const urlResourcePacienteSoloDNIActivoTablaPaciente = urlServidor + "/pacientesolodniactivotablapaciente";
 const urlResourcePacientesAdd = urlServidor + "/pacienteadd"; 
 const urlResourcePacientesUpdate = urlServidor + "/pacienteupdate"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
@@ -239,5 +242,8 @@ export const config = {
     urlSubirArchivo,
     urlResourceTurnoNotasClinicas,
     urlHCEstudiosMedicosBuscar,
-    urlObtenerImagenDrive
+    urlObtenerImagenDrive,
+    urlResourcePacienteSoloDNIActivoTablaPaciente,
+    urlResourceProfesionalSoloDNIActivoOtroCliente,
+    urlResourceProfesionalesSoloDNIActivoTablaProfesionales
 }

@@ -22,7 +22,6 @@ const MdlAltaTurno = ({
   idusuario
 }) => {
 
-  console.log(fila)
   
   const [nombreCompleto, setNombreCompleto] = useState("");
   const [osPorPaciente, setOsPorPaciente] = useState([]);
