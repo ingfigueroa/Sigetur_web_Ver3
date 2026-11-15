@@ -62,13 +62,11 @@ async function ActivarDesactivar(item) {
   async function GrabarAlta(data) {
   try {
     // 🔎 Log completo
-    Object.entries(data).forEach(([key, value]) => {
-      console.log(`${key}:`, value);
-    });
+   
 
     const response = await httpService.post(urlResourceAdd, data);
 
-    console.log("Respuesta backend:", response.data);
+    
 
     return response.data;
 
@@ -113,7 +111,7 @@ async function BuscarPacientexEMail(email) {
   const resp = await httpService.get(urlResourcePacienteEmail, {
     params: {email},
   } );
-  console.log(resp.data)
+
   return resp.data;
 }
 
