@@ -58,6 +58,8 @@ import MenuAplicaciones from "./menu_google/menu_aplicaciones";
 
 import EnConstruccion from "./modales/funcionalidadenconstruccion";
 
+import Bienvenida from "./modales/mdlBienvenida";
+
 
 import { AuthContext } from "../context/AuthContext"; // 👈 IMPORTANTE
 
@@ -162,10 +164,11 @@ const MostrarObrasSociales = () => {
           setPerfil(data.perfil?.[0]?.Perfil)
 
            setTitulo("EMPEZAR A TRABAJAR - " + data.cliente?.[0]?.Cliente);
-
+          console.log(cantprof)
           if (cantprof === 0){
+
               setTimeout(() => {
-          cambiarVista("profesionales", "GESTIÓN DE PROFESIONALES");;
+          cambiarVista("bienvenida", "EMPEZAR A TRABAJAR - " + data.cliente?.[0]?.Cliente);
           }, 2000);
           }
 
@@ -245,6 +248,8 @@ useEffect(() => {
     {vistaActiva === "dashboard" && (
       <EnConstruccion titulo1="DASHBOARD - EN CONSTRUCCION" />
     )}
+     {vistaActiva === "bienvenida" && <Bienvenida />}
+     
   </main>
 </div>
 

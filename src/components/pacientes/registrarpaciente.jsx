@@ -24,8 +24,7 @@ import AbrirMDLMensaje from "../modales/mdlMensaje";
 // Utilidades
 import { getFechaISO } from "../../components/utils/fecha";
 
-// Contexto
-import { AuthContext } from "/src/context/AuthContext";
+
 
 // CSS
 import "/src/css/registrarpaciente.css";
@@ -53,8 +52,7 @@ const [TECelular, setTECelular] = useState("");
   const [TipoDocumentoSelected, setTipoDocumentoSelected] = useState("");
 
   
-  const [modalTitulo, setModalTitulo] = useState("REGISTRAR PACIENTE");
-  const [modalCuerpo, setModalCuerpo] = useState("¿Está seguro de registrar el paciente?");
+
 
 const [TipoDocumento, setTipoDocumento] = useState([]);
 const [TipoSexo, setTipoSexo] = useState([]);
@@ -63,6 +61,9 @@ const [localidades, setLocalidades] = useState([]);
 
  const [idprovincia, setIDProvincia] = useState(0);
   const [idlocalidad, setIDLocalidad] = useState(0);
+  const [idPaciente, setIDPaciente] = useState(0);
+
+  const [varBandera, setVarBandera] = useState(0);
 
 const [showModal, setShowModal] = useState(false);
 const [showModalAlta, setShowModalAlta] = useState(false);
@@ -111,7 +112,7 @@ const [modalMessage, setModalMessage] = useState("");
 
   const closeMdlMensaje = () => {
     setShowMDLMensaje(false);
-     handleClose();
+     
   };
   const openModalAlta = () => {
     setModalMessage("ALTA EXITOSA");
@@ -229,7 +230,7 @@ const [modalMessage, setModalMessage] = useState("");
         
         
           if (!paciente) return;
-        
+          setIDPaciente(paciente.ID || "")
           setApellido(paciente.Apellido || "");
           setNombres(paciente.Nombres || "");
         // setTipoDocumento(profesional.TipoDocumento || 0);
@@ -280,8 +281,11 @@ const BuscaPacienteSoloDNIActivoTablaPaciente = async (varDNI) => {
 
  
         if (existeCliente) {
-          setMensaje("El Paciente ya está registrado en el CONSULTORIO");
+         setMensaje("Ya existe un paciente registrado en el\n CONSULTORIO con ese DNI.");
+          setNroDocumento("");
           openMdlMensaje();
+          
+
           return;
         }
 
@@ -295,7 +299,7 @@ const BuscaPacienteSoloDNIActivoTablaPaciente = async (varDNI) => {
 
              console.log(existePaciente.registros)
               acomodardatospaciente(existePaciente.registros);
-              
+              setVarBandera(1);
               openMdlEstaSeguro("PACIENTE EXISTENTE", "Los datos del paciente ya existen.\n¿Desea relacionar el paciente con el CONSULTORIO?",1);
               return;
         }
@@ -322,6 +326,7 @@ const BuscaPacienteSoloDNIActivoTablaPaciente = async (varDNI) => {
             setMensaje("Ya existe un paciente con el EMAIL ingresado.");
             setEMail("");
             openMdlMensaje();
+            
         }
 
     } catch (error) {
@@ -331,7 +336,12 @@ const BuscaPacienteSoloDNIActivoTablaPaciente = async (varDNI) => {
     }
 };
 
-    
+  function esperarParaCerrar(){
+
+       setTimeout(() => {
+          handleClose();
+          }, 4000);
+  }
 
     const cargarLocalidades = async (idprovincia) => {
       
@@ -382,18 +392,50 @@ const BuscaPacienteSoloDNIActivoTablaPaciente = async (varDNI) => {
 }
   }
 
+     async function grabarpacientecliente() {
+    // agregar o modificar
+    //validaciones
+    // Validaciones
+
+    
+  
+    try {
+    console.log(idcliente)
+    console.log(idusuario)
+    console.log(idPaciente)
+
+    const response = await pacientesService.pacienteADDCliente(idcliente, idPaciente, idusuario);
+     
+      return response;
+  }catch (error) {
+   
+    return false;
+}
+  }
+
+
 
   const mdlSiNo = async (respuesta) => {
     closeMdlEstaSeguro(); // cerramos primero el modal de confirmación
-
+    
     if (respuesta) {
       try {
-         
-       const bandera = await Grabar(); // ejecutamos la función de grabar
-        
-        if (bandera){
+
+      let result;
+        console.log("Viene aca")
+        console.log(varBandera)
+      if (varBandera == 0){
+        result = await Grabar(); // ejecutamos la función de grabar
+      }else{
+        console.log("entra aca")
+        result = await grabarpacientecliente()
+      }
+       
+        console.log(result)
+        if (result){
            setMensaje("Se grabó con éxito el NUEVO PACIENTE."); // mensaje a mostrar
         openMdlMensaje(); // abrimos el modal de mensaje
+          esperarParaCerrar();
        
         }else{
            setMensaje("No se grabó el NUEVO PACIENTE."); // mensaje a mostrar

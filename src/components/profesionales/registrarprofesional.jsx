@@ -72,7 +72,22 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
   const [nuevo, setNuevo] = useState("");
 
 
-
+ function limpiar() {
+            setApellido("");
+            setNombres("");
+            setNroDocumento("");
+            setFechaNacimiento("");
+            setIDTipoSexoSelected("");
+            setTipoDocumentoSelected("Seleccionar");
+            setEMail("");
+            setMatriculaNro("");
+            setTECelular("");
+            setTipoProfesion([]);
+            setIDLocalidad("");
+            setLocalidades([]);
+            cargarLocalidades(idProv);
+            setLocalidades([])
+          }
 
   const acomodardatosprofesional = (registros) => {
 
@@ -142,27 +157,27 @@ const registrarprofesional = ({ show, handleClose, ClienteID, UserID }) => {
         return false;
       }
       if (typeof FechaNacimiento !== "string" || !FechaNacimiento.trim()) {
-  showModalMessage(
-    "El campo 'Fecha de Nacimiento' es obligatorio y debe ser una fecha válida"
-  );
-  return false;
-}
+        showModalMessage(
+          "El campo 'Fecha de Nacimiento' es obligatorio y debe ser una fecha válida"
+        );
+        return false;
+      }
 
-const fechaNacimiento = new Date(FechaNacimiento);
+      const fechaNacimiento = new Date(FechaNacimiento);
 
-if (isNaN(fechaNacimiento.getTime())) {
-  showModalMessage(
-    "El campo 'Fecha de Nacimiento' debe contener una fecha válida"
-  );
-  return false;
-}
+      if (isNaN(fechaNacimiento.getTime())) {
+        showModalMessage(
+          "El campo 'Fecha de Nacimiento' debe contener una fecha válida"
+        );
+        return false;
+      }
 
-if (fechaNacimiento > new Date()) {
-  showModalMessage(
-    "La fecha de nacimiento no puede ser posterior a la fecha actual"
-  );
-  return false;
-}
+      if (fechaNacimiento > new Date()) {
+        showModalMessage(
+          "La fecha de nacimiento no puede ser posterior a la fecha actual"
+        );
+        return false;
+      }
 
       if (!validarEmail(EMail)) {
         showModalMessage("El formato de correo electrónico no es válido");
@@ -181,14 +196,10 @@ if (fechaNacimiento > new Date()) {
       showModalMessage("El campo 'Número de Matrícula' es obligatorio");
       return false;
     }
-  
-
-      if (!TECelular.trim()) {
+       if (!TECelular.trim()) {
         showModalMessage("El campo 'Teléfono Celular' es obligatorio");
         return false;
       }
-
-
 
       if (!idprovincia > 0) {
         showModalMessage("Debe seleccionar una provincia");
@@ -199,8 +210,6 @@ if (fechaNacimiento > new Date()) {
         showModalMessage("Debe seleccionar una localidad");
         return false;
       }
-
-
       return true;
     }
 
@@ -231,7 +240,7 @@ if (fechaNacimiento > new Date()) {
   const closeMdlMensaje = () => {
 
     setShowMDLMensaje(false);
-    handleClose();
+   
   };
 
   const showModalMessage = (message) => {
@@ -370,7 +379,8 @@ const validarProfesional = async (varDNI) => {
     // Primero verifico si ya está registrado en el consultorio
     const existeCliente = await BuscaProfesionalPorDNIidCliente(varDNI, ClienteID);
     if (existeCliente) {
-      setMensaje("El profesional ya está registrado en el CONSULTORIO");
+      setMensaje("Ya existe un profesional registrado en el\n CONSULTORIO con ese DNI.");
+      setNroDocumento("");
       openMdlMensaje();
       return;
     }
@@ -383,28 +393,18 @@ const validarProfesional = async (varDNI) => {
             //  acomodardatosprofesional(response.registros);
               console.log("Llega hasta aca pero no entra por profesional existente")
               
-              setMensaje("PROFESIONAL EXISTENTE\nEl DNI del profesional ya esta activo en otro consultorio.\nPara regsitrar al profesional en este consultorio, se tiene que dar la baja en el consultorio antiguo.\nTambién se puede dar de baja mandando un mail a sigetur@gmail.com desde la cuenta del mismo profesional");
+              setMensaje("PROFESIONAL EXISTENTE\nEl DNI del profesional ya esta activo en otro consultorio.\nPara registrar al profesional en este consultorio, se tiene que dar la baja en el consultorio antiguo.\nTambién se puede dar de baja mandando un mail a sigetur@gmail.com desde la cuenta del mismo profesional");
               openMdlMensaje();
               return;
         }
-
-
         //busca profesionales activos en la tabla profesionales
          const existeProfesional = await BuscaProfesionalSoloDNIActivoTablaProfesionales(varDNI);
 
      if (existeProfesional.total) {
-              
-              console.log(existeProfesional.registros)
               acomodardatosprofesional(existeProfesional.registros);
-              console.log("Llega hasta aca pero no entra por profesional existente")
-              
               openMdlEstaSeguro("DATOS DEL PROFESIONAL", "El profesional tiene registrados los datos.\n¿Desea grabar el profesional en el consultorio?",1);
               return;
         }
-   
-
-    // Si no existe, continúa normalmente
-
   } catch (error) {
     
     setMensaje("Error al validar los datos del profesional");
@@ -453,18 +453,18 @@ const validarProfesional = async (varDNI) => {
 
   const cargarLocalidades = async (idprovincia) => {
    
-  try {
+      try {
 
- if (idprovincia > 0) {
-     
-    const response = await localidadesService.Buscar(idprovincia);
-    setLocalidades(response);
+    if (idprovincia > 0) {
+        
+        const response = await localidadesService.Buscar(idprovincia);
+        setLocalidades(response);
 
-    }
-  } catch (error) {
-    //console.error("Error al cargar localidades:", error);
-    setLocalidades([]);
-  }
+        }
+      } catch (error) {
+        //console.error("Error al cargar localidades:", error);
+        setLocalidades([]);
+      }
 };
 
   const mdlSiNo = async (respuesta) => {
@@ -886,7 +886,7 @@ const validarProfesional = async (varDNI) => {
                                  
                   Grabar
                 </Button>
-                <Button variant="primary">Limpiar</Button>
+                <Button variant="primary" onClick={() => limpiar()}>Limpiar</Button>
                 <Button variant="primary" onClick={handleClose}>
                   Cerrar
                 </Button>

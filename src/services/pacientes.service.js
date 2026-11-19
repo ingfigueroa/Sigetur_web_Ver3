@@ -8,6 +8,7 @@ import { Email } from "@mui/icons-material";
  const urlResource = config.urlResourcePacientes;
  const urlResourcePacienteSoloDNIActivoTablaPaciente = config.urlResourcePacienteSoloDNIActivoTablaPaciente;
  const urlResourceAdd = config.urlResourcePacientesAdd;
+ const urlResourcePacienteAddCliente = config.urlResourcePacientesAddCliente;
  const urlResourceUpdate = config.urlResourcePacientesUpdate;
  const urlResourceID = config.urlResourcePacienteID;
  const urlResourceUltimosTurnos = config.urlResourcePacienteUltimosTurnos;
@@ -80,6 +81,32 @@ async function ActivarDesactivar(item) {
   }
 }
 
+  async function pacienteADDCliente(idcliente, idpaciente, idusuario) {
+  try {
+    // 🔎 Log completo
+   
+    console.log(idcliente)
+    console.log(idpaciente)
+
+    console.log(idusuario)
+    const response = await httpService.post(urlResourcePacienteAddCliente,  {
+    idcliente, idpaciente, idusuario
+  } );
+
+    
+
+    return response.data;
+
+  } catch (error) {
+    console.error(
+      "Error al registrar el paciente:",
+      error.response?.data || error.message
+    );
+
+    throw error;
+  }
+}
+
 
   async function GrabarModificar(data) {
   try {
@@ -116,5 +143,5 @@ async function BuscarPacientexEMail(email) {
 }
 
 export const pacientesService = {
-  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos, GrabarModificar, BuscarPacientexEMail, BuscarPacienteSoloDNIActivoTablaPaciente
+  Buscar,BuscarPorId,ActivarDesactivar,GrabarAlta, BuscarUltimosTurnos, GrabarModificar, BuscarPacientexEMail, BuscarPacienteSoloDNIActivoTablaPaciente, pacienteADDCliente
 };

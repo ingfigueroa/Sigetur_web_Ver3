@@ -20,6 +20,8 @@ const urlResourceProfesionalEmail = urlServidor + "/idprofesionalemail";
 const urlResourcePacientes = urlServidor + "/pacientesget";
 const urlResourcePacienteSoloDNIActivoTablaPaciente = urlServidor + "/pacientesolodniactivotablapaciente";
 const urlResourcePacientesAdd = urlServidor + "/pacienteadd"; 
+const urlResourcePacientesAddCliente = urlServidor + "/pacienteaddcliente"; 
+
 const urlResourcePacientesUpdate = urlServidor + "/pacienteupdate"; 
 const urlResourcePacienteID = urlServidor + "/pacienteid";
 const urlResourcePacienteUltimosTurnos = urlServidor + "/pacientesultimosturnos";
@@ -245,5 +247,6 @@ export const config = {
     urlObtenerImagenDrive,
     urlResourcePacienteSoloDNIActivoTablaPaciente,
     urlResourceProfesionalSoloDNIActivoOtroCliente,
-    urlResourceProfesionalesSoloDNIActivoTablaProfesionales
+    urlResourceProfesionalesSoloDNIActivoTablaProfesionales,
+    urlResourcePacientesAddCliente
 }
